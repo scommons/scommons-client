@@ -1,7 +1,7 @@
 import common.Common
 import definitions._
 
-lazy val root = (project in file("."))
+lazy val scommons = (project in file("."))
   //.settings(Common.settings)
   //.configs(IntegrationTest)
   .aggregate(

@@ -26,8 +26,7 @@ object Common {
     //  _.copy(overrideScalaVersion = true)
     //},
     ideaExcludeFolders := List(
-      ".idea",
-      "node_modules"
+      ".idea"
     ),
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
   )

@@ -1,6 +1,7 @@
 package definitions
 
-import common.{Libs, TestLibs}
+import common.TestLibs
+import org.sbtidea.SbtIdeaPlugin.ideaExcludeFolders
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import sbt._
 
@@ -19,5 +20,12 @@ object Client extends BasicModule {
 
   override def definition: Project = {
     super.definition.enablePlugins(ScalaJSPlugin)
+      .settings(
+        ideaExcludeFolders ++= List(
+          s"$id/build",
+          s"$id/node_modules",
+          s"$id/target"
+        )
+      )
   }
 }

@@ -1,0 +1,70 @@
+
+.browseTree {
+  width: 100%;
+  overflow: auto;
+}
+
+.browseTreeItem {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  cursor: hand;
+  cursor: pointer;
+  zoom: 1;
+}
+
+.browseTreeItemValue {
+  padding-left: 3px;
+  padding-right: 3px;
+  outline: none;
+}
+
+.browseTreeTopItem {
+  font-weight: bold;
+  color: #4b4a4a;
+  margin-top: 20px;
+  padding: 3px 13px 3px 10px !important;
+}
+
+.browseTreeTopItemImageValue {
+  border-bottom: 1px solid #6f7277;
+  padding-bottom: 1px;
+}
+
+.browseTreeKeyboardSelectedItem {
+  background-color: #ffc;
+  outline: none;
+}
+
+.browseTreeSelectedItem {
+  background: url('./img/browseTreeSelectedBackground.png') -0px -0px repeat-x;
+  background-color: #628cd5;
+  color: white;
+  height: auto;
+  overflow: visible;
+}
+
+.browseTreeNode {
+  padding-left: 16px;
+  position: relative;
+}
+
+.browseTreeNodeIcon {
+  left: 0px;
+  height: 15px;
+  width: 15px;
+  position: absolute;
+}
+
+.browseTreeClosedArrow {
+  background: url('./img/browseTreeClosedArrow.png') no-repeat 0px 0px;
+  height: 15px;
+  width: 15px;
+  vertical-align: middle;
+}
+
+.browseTreeOpenArrow {
+  background: url('./img/browseTreeOpenArrow.png') no-repeat 0px 0px;
+  height: 15px;
+  width: 15px;
+  vertical-align: middle;
+}

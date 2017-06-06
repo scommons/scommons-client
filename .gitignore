@@ -5,8 +5,10 @@
 .cache
 .history
 .lib/
+.idea/
 dist/*
 target/
+build/
 node_modules/
 lib_managed/
 src_managed/
