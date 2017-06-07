@@ -3,13 +3,14 @@ package common
 import org.sbtidea.SbtIdeaPlugin.ideaExcludeFolders
 import sbt.Keys._
 import sbt._
+import scoverage.ScoverageKeys.coverageMinimum
 
 object Common {
 
   val settings: Seq[Setting[_]] = Seq(
     organization := "com.github.viktor-podzigun",
     //maintainer := "viktor.podzigun@gmail.com",
-    version := sys.props.getOrElse("version", default = "0"),
+    version := "0.1.0-SNAPSHOT",
     scalaVersion := "2.11.8",
     scalacOptions ++= Seq(
       //"-Xcheckinit",
@@ -19,8 +20,6 @@ object Common {
       "-unchecked",
       "-deprecation",
       "-feature"
-      //"-language:implicitConversions",
-      //"-language:higherKinds"
     ),
     //ivyScala := ivyScala.value map {
     //  _.copy(overrideScalaVersion = true)
@@ -28,6 +27,8 @@ object Common {
     ideaExcludeFolders := List(
       ".idea"
     ),
+    //when run tests with coverage: sbt clean coverage test coverageReport
+    coverageMinimum := 80,
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
   )
 }
