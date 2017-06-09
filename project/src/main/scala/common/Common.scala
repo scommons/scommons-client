@@ -3,7 +3,7 @@ package common
 import org.sbtidea.SbtIdeaPlugin.ideaExcludeFolders
 import sbt.Keys._
 import sbt._
-import scoverage.ScoverageKeys.coverageMinimum
+import scoverage.ScoverageKeys.{coverageExcludedPackages, coverageMinimum}
 
 object Common {
 
@@ -29,6 +29,7 @@ object Common {
     ),
     //when run tests with coverage: sbt clean coverage test coverageReport
     coverageMinimum := 80,
+    coverageExcludedPackages := "scommons.client.components",
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
   )
 }

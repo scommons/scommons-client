@@ -7,6 +7,8 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin
+
 object Client extends BasicModule {
 
   override val id: String = "scommons-client"
@@ -14,6 +16,7 @@ object Client extends BasicModule {
   override def definition: Project = {
     super.definition
       .enablePlugins(ScalaJSPlugin)
+      .enablePlugins(ScalaJSBundlerPlugin)
       .settings(
         scalaJSModuleKind := ModuleKind.CommonJSModule,
         //Opt-in @ScalaJSDefined by default
