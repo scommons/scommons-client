@@ -11,7 +11,7 @@ object Common {
     organization := "com.github.viktor-podzigun",
     //maintainer := "viktor.podzigun@gmail.com",
     version := "0.1.0-SNAPSHOT",
-    scalaVersion := "2.11.8",
+    scalaVersion := "2.12.2",
     scalacOptions ++= Seq(
       //"-Xcheckinit",
       "-Xfatal-warnings",
