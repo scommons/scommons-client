@@ -21,7 +21,7 @@ object Client extends BasicModule {
         scalaJSModuleKind := ModuleKind.CommonJSModule,
         //Opt-in @ScalaJSDefined by default
         scalacOptions += "-P:scalajs:sjsDefinedByDefault",
-        scalaJSUseMainModuleInitializer := true,
+        //scalaJSUseMainModuleInitializer := true,
 //        npmDependencies in Compile ++= Seq(
 //          "react" -> "15.3.2",
 //          "react-dom" -> "15.3.2",
@@ -29,7 +29,13 @@ object Client extends BasicModule {
 //          "react-router" -> "2.6.0",
 //          "redux" -> "3.5.2"
 //        ),
-        (version in webpack) := "2.3.2",
+        npmDependencies in Test ++= Seq(
+          "react-addons-test-utils" -> "15.2.1"
+        ),
+        requiresDOM in Test := true,
+        //(version in webpack) := "2.3.2",
+//        (webpack in(Compile, fastOptJS)) := Seq(),
+//        (webpack in(Compile, fullOptJS)) := Seq(),
         ideaExcludeFolders ++= List(
           s"$id/build",
           s"$id/node_modules",

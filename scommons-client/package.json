@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "bootstrap-treeview": "^1.2.0",
+    "jsdom": "^9.9.0",
     "react-bootstrap-table": "^3.3.4",
     "react-bootstrap-treeview": "^0.1.0"
   }
