@@ -1,7 +1,5 @@
 package scommons.client.test
 
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
@@ -12,8 +10,11 @@ import scala.scalajs.js.annotation.JSImport
 @js.native
 object ReactTestUtils extends js.Object {
 
-  def renderIntoDocument(element: ReactElement): ReactElementInstance = js.native
-}
+  type TreeInstance = js.Object with js.Dynamic
 
-@js.native
-trait ReactElementInstance extends js.Object
+  def renderIntoDocument(element: js.Object): TreeInstance = js.native
+
+  def isDOMComponent(instance: js.Object): Boolean = js.native
+
+  def findRenderedDOMComponentWithClass(tree: js.Object, className: String): TreeInstance = js.native
+}

@@ -9,7 +9,7 @@ case class AppFooterProps(copyright: String = "copyright",
 
 object AppFooter {
 
-  lazy val reactClass: ReactClass = React.createClass[AppFooterProps, Unit]({ self =>
+  lazy val reactClass: ReactClass = React.createClass[AppFooterProps, Unit] { self =>
     val props = self.props.wrapped
     <.div()(
       <.hr.empty,
@@ -21,5 +21,5 @@ object AppFooter {
         )
       )
     )
-  })
+  }
 }

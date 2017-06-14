@@ -36,6 +36,8 @@ object Client extends BasicModule {
         //(version in webpack) := "2.3.2",
 //        (webpack in(Compile, fastOptJS)) := Seq(),
 //        (webpack in(Compile, fullOptJS)) := Seq(),
+        enableReloadWorkflow := true,
+        emitSourceMaps := false,
         ideaExcludeFolders ++= List(
           s"$id/build",
           s"$id/node_modules",

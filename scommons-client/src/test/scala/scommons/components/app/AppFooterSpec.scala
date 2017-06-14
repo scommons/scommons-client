@@ -1,12 +1,20 @@
 package scommons.components.app
 
-import io.github.shogowada.scalajs.reactjs.React
+import io.github.shogowada.scalajs.reactjs.React._
 import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.ReactTestUtils
+import scommons.client.test.ReactTestUtils._
 
 class AppFooterSpec extends FlatSpec with Matchers {
 
   it should "render the component" in {
-    ReactTestUtils.renderIntoDocument(React.createElement(AppFooter.reactClass, React.wrap(AppFooterProps())))
+    //given
+    val component = createElement(AppFooter.reactClass, wrap(AppFooterProps()))
+
+    //when
+    val result = renderIntoDocument(component)
+
+    //then
+    val p = findRenderedDOMComponentWithClass(result, "text-center")
+    isDOMComponent(p) shouldBe true
   }
 }
