@@ -30,7 +30,8 @@ object Client extends BasicModule {
 //          "redux" -> "3.5.2"
 //        ),
         npmDependencies in Test ++= Seq(
-          "react-addons-test-utils" -> "15.2.1"
+          "react-addons-test-utils" -> "15.6.0",
+          "react-test-renderer" -> "15.6.1"
         ),
         requiresDOM in Test := true,
         //(version in webpack) := "2.3.2",
