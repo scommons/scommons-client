@@ -21,11 +21,10 @@ object ClientTest extends ScalaJsModule {
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil
 
-  override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    Libs.sjsReactJs.value
-  ))
+  override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
+    Libs.sjsReactJs.value,
     TestLibs.scalaTest.value
   ) map (_  % "test"))
 }

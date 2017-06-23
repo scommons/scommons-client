@@ -6,13 +6,19 @@ import org.scalatest.{FlatSpec, Matchers}
 import scommons.client.test.ReactTestUtils._
 import scommons.client.test.TestVirtualDOM._
 
-class ReactTestUtilsSimulateSpec extends FlatSpec with Matchers {
+import scala.scalajs.js
+
+class SimulateSpec extends FlatSpec with Matchers {
 
   it should "simulate onClick event" in {
     //given
     var clicked = false
-    def onClick() = { (_: MouseSyntheticEvent) =>
+    var clientX = 0
+    var clientY = 0
+    def onClick() = { (e: MouseSyntheticEvent) =>
       clicked = true
+      clientX = e.clientX
+      clientY = e.clientY
     }
     val comp = renderIntoDocument(React.createElement(React.createClass[Unit, Unit](_ =>
       E.div()(
@@ -22,9 +28,14 @@ class ReactTestUtilsSimulateSpec extends FlatSpec with Matchers {
     val button = findRenderedDOMComponentWithTag(comp, "button")
 
     //when
-    ReactTestUtils.Simulate.click(button)
+    ReactTestUtils.Simulate.click(button, js.Dynamic.literal(
+      clientX = 1,
+      clientY = 2
+    ))
 
     //then
     clicked shouldBe true
+    clientX shouldBe 1
+    clientY shouldBe 2
   }
 }

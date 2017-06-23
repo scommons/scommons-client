@@ -12,7 +12,10 @@ object ReactTestUtils extends js.Object {
 
   type Instance = js.Object with js.Dynamic
 
-  val Simulate: Instance = js.native
+  /**
+    * @see [[scommons.client.test.Simulate]]
+    */
+  val Simulate: Simulate with js.Dynamic = js.native
 
   /**
     * Render a React element into a detached DOM node in the document. This function requires a DOM.
