@@ -1,4 +1,4 @@
-package scommons.client.util
+package scommons.client
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM
 

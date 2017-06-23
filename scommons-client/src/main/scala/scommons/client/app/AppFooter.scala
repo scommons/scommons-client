@@ -1,4 +1,4 @@
-package scommons.components.app
+package scommons.client.app
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
@@ -16,7 +16,7 @@ object AppFooter {
       <.footer()(
         <.p(^.className := "text-center")(
           <.span()(props.copyright),
-          "&nbsp;",
+          " ",
           <.small()(props.version)
         )
       )
