@@ -1,17 +1,19 @@
 package scommons.client
 
+import org.scalajs.dom.Element
+import org.scalajs.dom.Node
 import org.scalatest.Matchers
 
 import scala.scalajs.js
 
 object TestUtils extends Matchers {
 
-  def asArray(value: js.Any): js.Array[js.Dynamic] =
-    value.asInstanceOf[js.Array[js.Dynamic]]
+  def asNode(component: js.Any): Node = TestReactDOM.findDOMNode(component)
 
-  def asNode(component: js.Any, nodeName: String): js.Object with js.Dynamic = {
-    val node = TestReactDOM.findDOMNode(component)
-    node.nodeName.toLowerCase() shouldBe nodeName
-    node
+  def asElement(node: Node, name: String, childCount: Int = 0): Element = {
+    val e = node.asInstanceOf[Element]
+    e.nodeName.toLowerCase() shouldBe name
+    e.childElementCount shouldBe childCount
+    e
   }
 }

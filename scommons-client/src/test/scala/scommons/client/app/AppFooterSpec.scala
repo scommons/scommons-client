@@ -21,19 +21,18 @@ class AppFooterSpec extends FlatSpec with Matchers {
     //then
     result.props.wrapped shouldBe props
 
-    val div = asNode(result, "div")
-    val divChildren = asArray(div.children)
-    divChildren.length shouldBe 2
-    asNode(divChildren(0), "hr")
+    val div = asElement(asNode(result), "div", 2)
+    val hr = asElement(div.firstElementChild, "hr")
+    val footer = asElement(hr.nextElementSibling, "footer", 1)
 
-    val footer = asNode(divChildren(1), "footer")
-    val p = asNode(footer.firstChild, "p")
-    p.className shouldBe "text-center"
+    val p = asElement(footer.firstElementChild, "p", 2)
+    p.classList.contains("text-center") shouldBe true
     p.textContent shouldBe s"${props.copyright} ${props.version}"
 
-    val pChildren = asArray(p.children)
-    pChildren.length shouldBe 2
-    asNode(pChildren(0), "span").textContent shouldBe s"${props.copyright}"
-    asNode(pChildren(1), "small").textContent shouldBe s"${props.version}"
+    val span = asElement(p.firstElementChild, "span")
+    span.textContent shouldBe s"${props.copyright}"
+
+    val small = asElement(span.nextElementSibling, "small")
+    small.textContent shouldBe s"${props.version}"
   }
 }
