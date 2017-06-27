@@ -34,5 +34,20 @@ class AppFooterSpec extends FlatSpec with Matchers {
 
     val small = asElement(span.nextElementSibling, "small")
     small.textContent shouldBe s"${props.version}"
+
+    assertDOMElement(div, asElement(
+      <div>
+        <hr/>
+        <footer>
+          <p class="text-center">
+            <span>
+              {"copyright"}
+            </span>{" "}<small>
+            {"version"}
+          </small>
+          </p>
+        </footer>
+      </div>
+    ))
   }
 }

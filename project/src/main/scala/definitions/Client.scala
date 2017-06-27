@@ -21,6 +21,7 @@ object Client extends ScalaJsModule {
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     TestLibs.scalajsDom.value,
-    TestLibs.scalaTest.value
+    TestLibs.scalaTest.value,
+    TestLibs.scalaXml.value
   ) map (_  % "test"))
 }

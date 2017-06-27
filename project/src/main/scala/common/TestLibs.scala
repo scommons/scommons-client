@@ -9,5 +9,7 @@ object TestLibs {
 
   lazy val scalaTest = Def.setting("org.scalatest" %%% "scalatest" % "3.0.0")
 
+  lazy val scalaXml = Def.setting("scala-xml" %%% "scala-xml" % "1.0.7-SNAPSHOT")
+
   lazy val mockito = Def.setting("org.mockito" % "mockito-all" % "1.9.5")
 }
