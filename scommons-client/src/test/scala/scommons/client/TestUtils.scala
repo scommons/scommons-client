@@ -38,15 +38,19 @@ object TestUtils extends Matchers {
   }
 
   def assertDOMElement(result: Element, expected: Element): Unit = {
-    assertDOMElement(TestDOMPath(result, result), expected)
+    assertElement(TestDOMPath(result, result), expected)
   }
 
-  private def assertDOMElement(path: TestDOMPath, expected: Element): Unit = {
+  private def assertElement(path: TestDOMPath, expected: Element): Unit = {
     val node = path.currNode
     node.nodeName shouldBe expected.nodeName
 
     assertClasses(path, asArray(node.classList), asArray(expected.classList))
-    assertChildNodes(path, asArray(node.childNodes), asArray(expected.childNodes))
+
+    if (expected.hasChildNodes()) {
+      assertChildNodes(path, asArray(node.childNodes), asArray(expected.childNodes))
+    }
+    else assertTextContent(path, expected)
   }
 
   private def assertClasses(path: TestDOMPath,
@@ -69,15 +73,39 @@ object TestUtils extends Matchers {
                                expected: js.Array[Node]): Unit = {
 
     val result = childList.filter(_.nodeName != "#comment")
-    if (result.length != expected.length) {
-      result.map(_.nodeName) shouldBe expected.map(_.nodeName)
+
+    val resultTags = result.map(_.nodeName.toLowerCase).toList
+    val expectedTags = expected.map(_.nodeName.toLowerCase).toList
+    if (resultTags != expectedTags) {
+      fail(
+        s"""$path  <-- child tags doesn't match
+           |got:
+           |\t${resultTags.mkString("<", ">\n\t<", ">")}
+           |expected:
+           |\t${expectedTags.mkString("<", ">\n\t<", ">")}
+           |""".stripMargin)
     }
 
     for (i <- expected.indices) {
       val resultNode = result(i)
       val expectedNode = expected(i)
 
-      assertDOMElement(path.at(asElement(resultNode)), asElement(expectedNode))
+      assertElement(path.at(asElement(resultNode)), asElement(expectedNode))
+    }
+  }
+
+  private def assertTextContent(path: TestDOMPath, expected: Element): Unit = {
+    val resultText = path.currNode.textContent
+    val expectedText = expected.textContent
+
+    if (resultText != expectedText) {
+      fail(
+        s"""$path  <-- text doesn't match
+           |got:
+           |\t[$resultText]
+           |expected:
+           |\t[$expectedText]
+           |""".stripMargin)
     }
   }
 }
