@@ -21,22 +21,32 @@ class AppHeaderSpec extends FlatSpec with Matchers {
     //then
     result.props.wrapped shouldBe props
 
-    val navbar = asElement(asNode(result), "div", 1)
-    navbar.classList.contains("navbar") shouldBe true
-    navbar.classList.contains("navbar-inverse") shouldBe true
-    navbar.classList.contains("navbar-fixed-top") shouldBe true
-
-    val navbarInner = asElement(navbar.firstElementChild, "div", 1)
-    navbarInner.classList.contains("navbar-inner") shouldBe true
-
-    val container = asElement(navbarInner.firstElementChild, "div", 3)
-    container.classList.contains("container-fluid") shouldBe true
-
-    val btnNavbar = asElement(container.firstElementChild, "button", 3)
-    btnNavbar.getAttribute("type") shouldBe "button"
-    btnNavbar.classList.contains("btn") shouldBe true
-    btnNavbar.classList.contains("btn-navbar") shouldBe true
-    btnNavbar.getAttribute("data-toggle") shouldBe "collapse"
-    btnNavbar.getAttribute("data-target") shouldBe ".nav-collapse"
+    assertDOMElement(asElement(asNode(result)),
+      <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container-fluid">
+            <button type="button" class="btn btn-navbar"
+                    data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="#">
+              {s"${props.name}"}
+            </a>
+            <div class="nav-collapse collapse">
+              <ul class="nav pull-right">
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span>{s"${props.user}"}</span>
+                    <b class="caret"/>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 }

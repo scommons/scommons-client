@@ -21,7 +21,7 @@ class AppFooterSpec extends FlatSpec with Matchers {
     //then
     result.props.wrapped shouldBe props
 
-    assertDOMElement(asElement(asNode(result)), asElement(
+    assertDOMElement(asElement(asNode(result)),
       <div>
         <hr/>
         <footer>
@@ -34,6 +34,6 @@ class AppFooterSpec extends FlatSpec with Matchers {
           </p>
         </footer>
       </div>
-    ))
+    )
   }
 }

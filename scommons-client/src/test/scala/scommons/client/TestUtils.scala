@@ -4,7 +4,6 @@ import org.scalajs.dom._
 import org.scalatest.Matchers
 
 import scala.scalajs.js
-import scala.xml.{Elem, Utility}
 
 object TestUtils extends Matchers {
 
@@ -12,73 +11,91 @@ object TestUtils extends Matchers {
 
   def asElement(node: Node): Element = node.asInstanceOf[Element]
 
-  def asElement(node: Node, name: String, childCount: Int = 0): Element = {
-    val e = asElement(node)
-    e.nodeName.toLowerCase() shouldBe name
-    e.childElementCount shouldBe childCount
-    e
+  def assertDOMElement(result: Element, expected: xml.Elem): Unit = {
+    assertElement(TestDOMPath(result, result), xml.Utility.trim(expected))
   }
 
-  def asElement(rootElem: Elem): Element = {
-    val document = new DOMParser().parseFromString(Utility.trim(rootElem).toString(), "text/html")
-    val body = asElement(document.documentElement.getElementsByTagName("body")(0), "body", 1)
-    body.firstElementChild
-  }
-
-  def asArray[T](domList: DOMList[T]): js.Array[T] = {
-    if (js.isUndefined(domList)) new js.Array[T](0)
-    else {
-      val result = new js.Array[T](domList.length)
-      for (i <- 0 until domList.length) {
-        result(i) = domList(i)
-      }
-
-      result
-    }
-  }
-
-  def assertDOMElement(result: Element, expected: Element): Unit = {
-    assertElement(TestDOMPath(result, result), expected)
-  }
-
-  private def assertElement(path: TestDOMPath, expected: Element): Unit = {
+  private def assertElement(path: TestDOMPath, expected: xml.Node): Unit = {
     val node = path.currNode
-    node.nodeName shouldBe expected.nodeName
+    val label = normalizeXmlNodeName(expected.label.toLowerCase)
+    node.nodeName.toLowerCase shouldBe label
 
-    assertClasses(path, asArray(node.classList), asArray(expected.classList))
+    if (label == "#text") assertTextContent(path, expected)
+    else {
+      assertAttributes(path, asMap(node.attributes), expected.attributes.asAttrMap)
 
-    if (expected.hasChildNodes()) {
-      assertChildNodes(path, asArray(node.childNodes), asArray(expected.childNodes))
+      assertChildNodes(path, jsArray(node.childNodes).toList, expected.child.toList)
     }
-    else assertTextContent(path, expected)
   }
 
   private def assertClasses(path: TestDOMPath,
-                            result: js.Array[String],
-                            expected: js.Array[String]): Unit = {
+                            resultClasses: String,
+                            expectedClasses: String): Unit = {
 
-    if (result.toSet != expected.toSet) {
+    if (resultClasses != expectedClasses) {
+      def normalize(classes: String) = classes.split(' ').map(_.trim).filter(_.nonEmpty)
+
+      val result = normalize(resultClasses)
+      val expected = normalize(expectedClasses)
+
+      if (result.toSet != expected.toSet) {
+        fail(
+          s"""$path  <-- classes don't match
+             |got:
+             |\t${result.sorted.mkString(" ")}
+             |expected:
+             |\t${expected.sorted.mkString(" ")}
+             |""".stripMargin)
+      }
+    }
+  }
+
+  private def assertAttributes(path: TestDOMPath,
+                               result: Map[String, String],
+                               expected: Map[String, String]): Unit = {
+
+    val resultKeys = result.keySet - "data-reactroot"
+    val expectedKeys = expected.keySet
+
+    if (resultKeys != expectedKeys) {
       fail(
-        s"""$path  <-- classes doesn't match
+        s"""$path  <-- attribute keys don't match
            |got:
-           |\t${result.sorted.mkString(" ")}
+           |\t${result.keys.toList.sorted.mkString("\n\t")}
            |expected:
-           |\t${expected.sorted.mkString(" ")}
+           |\t${expected.keys.toList.sorted.mkString("\n\t")}
            |""".stripMargin)
+    }
+
+    for ((expectedKey, expectedVal) <- expected) {
+      val resultVal = result(expectedKey)
+
+      if (expectedKey == "class") {
+        assertClasses(path, resultVal, expectedVal)
+      }
+      else if (resultVal != expectedVal) {
+        fail(
+          s"""$path  <-- attribute value don't match
+             |got:
+             |\t$expectedKey = [$resultVal]
+             |expected:
+             |\t$expectedKey = [$expectedVal]
+             |""".stripMargin)
+      }
     }
   }
 
   private def assertChildNodes(path: TestDOMPath,
-                               childList: js.Array[Node],
-                               expected: js.Array[Node]): Unit = {
+                               childList: List[Node],
+                               expected: List[xml.Node]): Unit = {
 
     val result = childList.filter(_.nodeName != "#comment")
 
-    val resultTags = result.map(_.nodeName.toLowerCase).toList
-    val expectedTags = expected.map(_.nodeName.toLowerCase).toList
+    val resultTags = result.map(_.nodeName.toLowerCase)
+    val expectedTags = expected.map(n => normalizeXmlNodeName(n.label.toLowerCase))
     if (resultTags != expectedTags) {
       fail(
-        s"""$path  <-- child tags doesn't match
+        s"""$path  <-- child tags don't match
            |got:
            |\t${resultTags.mkString("<", ">\n\t<", ">")}
            |expected:
@@ -90,13 +107,13 @@ object TestUtils extends Matchers {
       val resultNode = result(i)
       val expectedNode = expected(i)
 
-      assertElement(path.at(asElement(resultNode)), asElement(expectedNode))
+      assertElement(path.at(asElement(resultNode)), expectedNode)
     }
   }
 
-  private def assertTextContent(path: TestDOMPath, expected: Element): Unit = {
+  private def assertTextContent(path: TestDOMPath, expected: xml.Node): Unit = {
     val resultText = path.currNode.textContent
-    val expectedText = expected.textContent
+    val expectedText = expected.text
 
     if (resultText != expectedText) {
       fail(
@@ -108,4 +125,33 @@ object TestUtils extends Matchers {
            |""".stripMargin)
     }
   }
+
+  private def jsArray[T](domList: DOMList[T]): js.Array[T] = {
+    if (js.isUndefined(domList)) new js.Array[T](0)
+    else {
+      val result = new js.Array[T](domList.length)
+      for (i <- 0 until domList.length) {
+        result(i) = domList(i)
+      }
+
+      result
+    }
+  }
+
+  private def asMap(nodeMap: NamedNodeMap): Map[String, String] = {
+    if (nodeMap.length == 0) Map.empty
+    else {
+      var result = List.empty[(String, String)]
+      for (i <- 0 until nodeMap.length) {
+        val attr = nodeMap.item(i)
+        result = (attr.name, attr.value) :: result
+      }
+
+      result.toMap
+    }
+  }
+
+  private def normalizeXmlNodeName(label: String): String =
+    if (label == "#pcdata") "#text"
+    else label
 }
