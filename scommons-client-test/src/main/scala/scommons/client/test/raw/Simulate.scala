@@ -1,6 +1,6 @@
-package scommons.client.test
+package scommons.client.test.raw
 
-import scommons.client.test.Simulate.undefined
+import scommons.client.test.raw.Simulate.undefined
 
 import scala.scalajs.js
 

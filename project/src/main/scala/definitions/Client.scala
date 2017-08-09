@@ -1,6 +1,6 @@
 package definitions
 
-import common.{Libs, TestLibs}
+import common.Libs
 import sbt._
 
 object Client extends ScalaJsModule {
@@ -19,9 +19,5 @@ object Client extends ScalaJsModule {
     Libs.sjsReactJsReduxDevTools.value  // Optional. For redux-devtools facade
   ))
 
-  override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    TestLibs.scalajsDom.value,
-    TestLibs.scalaTest.value,
-    TestLibs.scalaXml.value
-  ) map (_  % "test"))
+  override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)
 }

@@ -1,9 +1,9 @@
 package scommons.client.app
 
 import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.TestUtils._
-import scommons.client.TestVirtualDOM._
-import scommons.client.test.ReactTestUtils._
+import scommons.client.test.TestUtils._
+import scommons.client.test.raw.ReactTestUtils._
+import scommons.client.test.TestVirtualDOM._
 
 class AppMainPanelSpec extends FlatSpec with Matchers {
 
@@ -18,7 +18,7 @@ class AppMainPanelSpec extends FlatSpec with Matchers {
     val result = renderIntoDocument(component)
 
     //then
-    val resultElement = asElement(asNode(result))
+    val resultElement = findReactElement(result)
     resultElement.childElementCount shouldBe 3
 
     val container = resultElement.children(1)

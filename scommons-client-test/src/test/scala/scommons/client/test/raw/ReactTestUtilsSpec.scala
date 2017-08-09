@@ -1,10 +1,10 @@
-package scommons.client.test
+package scommons.client.test.raw
 
 import io.github.shogowada.scalajs.reactjs.React
 import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.ReactTestUtils._
-import scommons.client.test.ReactTestUtilsSpec._
 import scommons.client.test.TestVirtualDOM._
+import scommons.client.test.raw.ReactTestUtils._
+import scommons.client.test.raw.ReactTestUtilsSpec.TestProps
 
 import scala.scalajs.js.JavaScriptException
 

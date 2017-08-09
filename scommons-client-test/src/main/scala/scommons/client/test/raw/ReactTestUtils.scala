@@ -1,4 +1,4 @@
-package scommons.client.test
+package scommons.client.test.raw
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
@@ -13,7 +13,7 @@ object ReactTestUtils extends js.Object {
   type Instance = js.Object with js.Dynamic
 
   /**
-    * @see [[scommons.client.test.Simulate]]
+    * @see [[scommons.client.test.raw.Simulate]]
     */
   val Simulate: Simulate with js.Dynamic = js.native
 

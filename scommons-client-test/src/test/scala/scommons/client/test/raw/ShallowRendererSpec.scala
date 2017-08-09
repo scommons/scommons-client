@@ -1,4 +1,4 @@
-package scommons.client.test
+package scommons.client.test.raw
 
 import io.github.shogowada.scalajs.reactjs.React
 import org.scalatest.{FlatSpec, Matchers}

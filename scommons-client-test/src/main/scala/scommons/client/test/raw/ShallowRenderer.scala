@@ -1,4 +1,4 @@
-package scommons.client.test
+package scommons.client.test.raw
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport

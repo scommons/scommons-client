@@ -2,8 +2,8 @@ package scommons.client.app
 
 import io.github.shogowada.scalajs.reactjs.React._
 import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.TestUtils._
-import scommons.client.test.ReactTestUtils._
+import scommons.client.test.TestUtils._
+import scommons.client.test.raw.ReactTestUtils._
 
 class AppFooterSpec extends FlatSpec with Matchers {
 
@@ -21,7 +21,7 @@ class AppFooterSpec extends FlatSpec with Matchers {
     //then
     result.props.wrapped shouldBe props
 
-    assertDOMElement(asElement(asNode(result)),
+    assertDOMElement(findReactElement(result),
       <div>
         <hr/>
         <footer>

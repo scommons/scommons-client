@@ -1,4 +1,4 @@
-package scommons.client
+package scommons.client.test
 
 import org.scalajs.dom.{Element, Node}
 

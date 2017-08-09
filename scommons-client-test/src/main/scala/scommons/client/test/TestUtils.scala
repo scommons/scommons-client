@@ -1,13 +1,14 @@
-package scommons.client
+package scommons.client.test
 
 import org.scalajs.dom._
 import org.scalatest.Matchers
+import scommons.client.test.raw.TestReactDOM
 
 import scala.scalajs.js
 
 object TestUtils extends Matchers {
 
-  def asNode(component: js.Any): Node = TestReactDOM.findDOMNode(component)
+  def findReactElement(component: js.Any): Element = asElement(TestReactDOM.findDOMNode(component))
 
   def asElement(node: Node): Element = node.asInstanceOf[Element]
 

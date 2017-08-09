@@ -29,7 +29,7 @@ object Common {
     ),
     //when run tests with coverage: sbt clean coverage test coverageReport
     coverageMinimum := 80,
-    coverageExcludedPackages := "scommons.client.components",
+    coverageExcludedPackages := "scommons.client.test.raw",
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
   )
 }
