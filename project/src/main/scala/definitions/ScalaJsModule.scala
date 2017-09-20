@@ -23,8 +23,7 @@ trait ScalaJsModule extends BasicModule {
         emitSourceMaps := false,
         ideaExcludeFolders ++= List(
           s"$id/build",
-          s"$id/node_modules",
-          s"$id/target"
+          s"$id/node_modules"
         ),
         cleanKeepFiles ++= Seq(
           target.value / "scala-2.12" / "scalajs-bundler" / "main" / "node_modules",

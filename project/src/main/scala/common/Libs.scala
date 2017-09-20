@@ -5,6 +5,7 @@ import sbt._
 
 object Libs {
 
+  private val playVer = "2.6.5"
   private val sjsReactJsVer = "0.14.0"
 
   lazy val sjsReactJs = Def.setting("io.github.shogowada" %%% "scalajs-reactjs" % sjsReactJsVer)
@@ -13,12 +14,12 @@ object Libs {
   lazy val sjsReactJsRedux = Def.setting("io.github.shogowada" %%% "scalajs-reactjs-redux" % sjsReactJsVer)
   lazy val sjsReactJsReduxDevTools = Def.setting("io.github.shogowada" %%% "scalajs-reactjs-redux-devtools" % sjsReactJsVer)
 
-  lazy val playJson = "com.typesafe.play" %% "play-json" % "2.5.3"
-  lazy val play = "com.typesafe.play" %% "play" % "2.5.3"
+  lazy val playJson = Def.setting("com.typesafe.play" %% "play-json" % playVer)
+  lazy val play = Def.setting("com.typesafe.play" %% "play" % playVer)
 
-//  lazy val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"
-//  lazy val logback = "ch.qos.logback" % "logback-classic" % "1.1.7"
-//  lazy val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.12"
-//  lazy val log4jToSlf4j = "org.apache.logging.log4j" % "log4j-to-slf4j" % "2.2"
-//  lazy val jclOverSlf4j = "org.slf4j" % "jcl-over-slf4j" % "1.7.12"
+  //lazy val scalaLogging = Def.setting("com.typesafe.scala-logging" %% "scala-logging" % "3.5.0")
+  lazy val logback = Def.setting("ch.qos.logback" % "logback-classic" % "1.1.7")
+  lazy val slf4jApi = Def.setting("org.slf4j" % "slf4j-api" % "1.7.12")
+  lazy val log4jToSlf4j = Def.setting("org.apache.logging.log4j" % "log4j-to-slf4j" % "2.2")
+  lazy val jclOverSlf4j = Def.setting("org.slf4j" % "jcl-over-slf4j" % "1.7.12")
 }

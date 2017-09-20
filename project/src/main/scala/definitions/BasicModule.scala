@@ -1,6 +1,7 @@
 package definitions
 
 import common.Common
+import org.sbtidea.SbtIdeaPlugin.ideaExcludeFolders
 import sbt.Keys._
 import sbt._
 
@@ -12,6 +13,9 @@ trait BasicModule extends ProjectDef {
     .settings(
       libraryDependencies ++= (runtimeDependencies.value ++ testDependencies.value),
       sources in(Compile, doc) := Seq.empty,
-      publishArtifact in(Compile, packageDoc) := false
+      publishArtifact in(Compile, packageDoc) := false,
+      ideaExcludeFolders ++= List(
+        s"$id/target"
+      )
     )
 }

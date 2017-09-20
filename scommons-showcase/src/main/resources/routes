@@ -1,0 +1,6 @@
+
+################################################################################
+# Assets
+#
+GET     /scommons-showcase/assets/*file             controllers.Assets.at(path="/public", file)
+
