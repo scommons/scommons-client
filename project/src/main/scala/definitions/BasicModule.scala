@@ -15,7 +15,7 @@ trait BasicModule extends ProjectDef {
       sources in(Compile, doc) := Seq.empty,
       publishArtifact in(Compile, packageDoc) := false,
       ideaExcludeFolders ++= List(
-        s"$id/target"
+        s"$base/target"
       )
     )
 }

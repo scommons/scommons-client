@@ -15,3 +15,7 @@ lazy val `scommons-client` = Client.definition
 lazy val `scommons-client-test` = ClientTest.definition
 
 lazy val `scommons-showcase` = Showcase.definition
+
+lazy val `scommons-showcase-client` = Showcase.client
+
+lazy val `scommons-showcase-server` = Showcase.server
