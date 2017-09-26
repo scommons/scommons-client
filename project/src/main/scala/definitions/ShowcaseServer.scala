@@ -1,5 +1,7 @@
 package definitions
 
+import com.typesafe.sbt.digest.Import.digest
+import com.typesafe.sbt.gzip.Import.gzip
 import com.typesafe.sbt.web.SbtWeb
 import com.typesafe.sbt.web.SbtWeb.autoImport._
 import common.Libs
@@ -25,7 +27,7 @@ object ShowcaseServer extends BasicModule {
         coverageExcludedPackages := "<empty>;Reverse.*",
         scalaJSProjects := Seq(Showcase.client),
         pipelineStages in Assets := Seq(scalaJSPipeline),
-        //pipelineStages := Seq(digest, gzip),
+        pipelineStages := Seq(digest, gzip),
         // Expose as sbt-web assets some files retrieved from the NPM packages of the `client` project
         npmAssets ++= NpmAssets.ofProject(Showcase.client) { modules => (modules / "font-awesome").*** }.value
       )
