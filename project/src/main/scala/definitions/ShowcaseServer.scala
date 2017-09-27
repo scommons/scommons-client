@@ -33,7 +33,9 @@ object ShowcaseServer extends BasicModule {
       )
   }
 
-  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil
+  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
+    Showcase.client
+  )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     Libs.play.value,

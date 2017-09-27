@@ -1,5 +1,6 @@
 package definitions
 
+import com.typesafe.sbt.web.SbtWeb
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt._
 import webscalajs.ScalaJSWeb
@@ -14,7 +15,7 @@ object ShowcaseClient extends ScalaJsModule {
 
   override def definition: Project = {
     super.definition
-      .enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb)
+      .enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb, SbtWeb)
       .settings(
         scalaJSUseMainModuleInitializer := true
       )

@@ -1,11 +1,17 @@
 package definitions
 
+import com.typesafe.sbt.web.SbtWeb
 import common.Libs
 import sbt._
 
 object Client extends ScalaJsModule {
 
   override val id: String = "scommons-client"
+
+  override def definition: Project = {
+    super.definition
+      .enablePlugins(SbtWeb)
+  }
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
     ClientTest.definition % "test"
