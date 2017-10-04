@@ -7,6 +7,8 @@ class ShowcaseController(protected val controllerComponents: ControllerComponent
 
   val index: Action[AnyContent] = {
     val scriptUrl = bundleUrl("scommons-showcase-client")
+    val scriptUrlPrefix = scriptUrl.take(scriptUrl.lastIndexOf(".js"))
+
     val result =
       Ok(
         html"""<!doctype html>
@@ -29,6 +31,8 @@ class ShowcaseController(protected val controllerComponents: ControllerComponent
               <script src="/scommons-showcase/assets/lib/scommons-client/js/jquery-1.9.1.min.js"></script>
               <script src="/scommons-showcase/assets/lib/scommons-client/js/bootstrap.min.js"></script>
 
+              <script src="$scriptUrlPrefix-library.js"></script>
+              <script src="$scriptUrlPrefix-loader.js"></script>
               <script src="$scriptUrl"></script>
             </body>
           </html>
@@ -41,7 +45,7 @@ class ShowcaseController(protected val controllerComponents: ControllerComponent
   private def bundleUrl(projectName: String): String = {
     val name = projectName.toLowerCase
 
-    Seq(s"$name-opt-bundle.js", s"$name-fastopt-bundle.js")
+    Seq(s"$name-opt.js", s"$name-fastopt.js")
       .find(name => getClass.getResource(s"/public/$name") != null)
       .map(controllers.routes.Assets.versioned(_).url)
       .getOrElse(throw new IllegalArgumentException(

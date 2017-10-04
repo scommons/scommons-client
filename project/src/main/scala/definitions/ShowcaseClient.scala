@@ -5,7 +5,9 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt._
 import webscalajs.ScalaJSWeb
 
+import scalajsbundler.BundlingMode
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
 object ShowcaseClient extends ScalaJsModule {
 
@@ -17,7 +19,8 @@ object ShowcaseClient extends ScalaJsModule {
     super.definition
       .enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb, SbtWeb)
       .settings(
-        scalaJSUseMainModuleInitializer := true
+        scalaJSUseMainModuleInitializer := true,
+        webpackBundlingMode := BundlingMode.LibraryOnly()
       )
   }
 
