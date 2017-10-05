@@ -3,6 +3,7 @@ package scommons.showcase.client
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
+import scommons.client.browsetree.BrowseTreeCss
 
 import scala.scalajs.js.JSApp
 
@@ -16,6 +17,6 @@ object Main extends JSApp {
     )
 
     val mountNode = dom.document.getElementById("root")
-    ReactDOM.render(<(reactClass)(^.wrapped := WrappedProps("World 2"))(), mountNode)
+    ReactDOM.render(<(reactClass)(^.wrapped := WrappedProps("World 2, style: " + BrowseTreeCss.browseTree))(), mountNode)
   }
 }
