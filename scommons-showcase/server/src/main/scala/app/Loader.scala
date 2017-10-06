@@ -1,8 +1,10 @@
+package app
+
 
 import controllers.{AssetsComponents, ShowcaseController}
 import play.api.ApplicationLoader.Context
-import play.api.mvc._
 import play.api._
+import play.api.mvc._
 import router.Routes
 
 class Loader extends ApplicationLoader {

@@ -1,15 +1,12 @@
 //const path = require('path')
-const merge = require("webpack-merge")
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
-const scalajsConf = require('./scalajs.webpack.config')
-
-module.exports = merge(scalajsConf, {
+module.exports = {
 //  target: 'web',
 
   module: {
     loaders: [{
-      loader: "file-loader",
+      loader: "file-loader?name=[hash].[ext]&outputPath=styles/&publicPath=../",
       test: /\.(ico|png|gif|jpe?g|svg)$/i,
       exclude: /node_modules/
     }, {
@@ -27,6 +24,6 @@ module.exports = merge(scalajsConf, {
   },
 
   plugins: [
-    new ExtractTextPlugin('styles.css')
+    new ExtractTextPlugin('styles/styles.css')
   ]
-})
+}

@@ -4,6 +4,7 @@
 #
 GET     /scommons-showcase/assets/*file             controllers.Assets.versioned(path="/public", file: Asset)
 
+GET     /scommons-showcase                          controllers.ShowcaseController.index
 GET     /scommons-showcase/                         controllers.ShowcaseController.index
 GET     /scommons-showcase/index.html               controllers.ShowcaseController.index
 
