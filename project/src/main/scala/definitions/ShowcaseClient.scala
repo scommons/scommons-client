@@ -28,16 +28,7 @@ object ShowcaseClient extends ScalaJsModule {
         //production
         webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js"),
         //reload workflow and tests
-        webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js"),
-
-        npmDevDependencies in Compile ++= Seq(
-          "css-loader" -> "0.23.1",
-          "extract-text-webpack-plugin" -> "1.0.1",
-          "resolve-url-loader" -> "2.0.2",
-          "file-loader" -> "0.11.2",
-          "style-loader" -> "0.13.1",
-          "webpack-merge" -> "4.1.0"
-        )
+        webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js")
       )
   }
 

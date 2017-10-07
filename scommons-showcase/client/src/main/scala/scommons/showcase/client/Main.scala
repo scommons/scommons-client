@@ -3,7 +3,7 @@ package scommons.showcase.client
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom
-import scommons.client.app.{AppMainPanel, AppMainPanelProps}
+import scommons.client.app._
 
 import scala.scalajs.js.JSApp
 
@@ -19,6 +19,8 @@ object Main extends JSApp {
       user = "me",
       copyright = "© scommons-showcase",
       version = "(version: 0.1.0-SNAPSHOT)"
-    ))(), mountNode)
+    ))(
+      <(AppBrowsePanel.reactClass)()()
+    ), mountNode)
   }
 }
