@@ -1,22 +1,24 @@
 package scommons.showcase.client
 
+import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
-import scommons.client.browsetree.BrowseTreeCss
+import scommons.client.app.{AppMainPanel, AppMainPanelProps}
 
 import scala.scalajs.js.JSApp
 
 object Main extends JSApp {
 
   def main(): Unit = {
-    case class WrappedProps(name: String)
-
-    val reactClass = React.createClass[WrappedProps, Unit](
-      (self) => <.div(^.id := "hello-world")(s"Hello, ${self.props.wrapped.name}!")
-    )
-
     val mountNode = dom.document.getElementById("root")
-    ReactDOM.render(<(reactClass)(^.wrapped := WrappedProps("World 2, style: " + BrowseTreeCss.browseTree))(), mountNode)
+
+    dom.document.title = "scommons-showcase"
+
+    ReactDOM.render(<(AppMainPanel.reactClass)(^.wrapped := AppMainPanelProps(
+      name = "scommons-showcase",
+      user = "me",
+      copyright = "© scommons-showcase",
+      version = "(version: 0.1.0-SNAPSHOT)"
+    ))(), mountNode)
   }
 }
