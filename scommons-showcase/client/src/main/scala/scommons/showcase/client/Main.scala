@@ -20,7 +20,9 @@ object Main extends JSApp {
       copyright = "© scommons-showcase",
       version = "(version: 0.1.0-SNAPSHOT)"
     ))(
-      <(AppBrowsePanel.reactClass)()()
+      <(AppBrowsePanel.reactClass)()(
+        <(BrowseTreePanel.reactClass)()()
+      )
     ), mountNode)
   }
 }
