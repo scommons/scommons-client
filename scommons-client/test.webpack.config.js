@@ -1,12 +1,10 @@
-//const path = require('path')
+
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
-//  target: 'web',
-
   module: {
     loaders: [{
-      loader: "file-loader?name=[hash].[ext]&outputPath=styles/&publicPath=../",
+      loader: "url-loader",
       test: /\.(ico|png|gif|jpe?g|svg)$/i,
       exclude: /node_modules/
     }, {

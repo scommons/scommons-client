@@ -15,12 +15,13 @@ object Client extends ScalaJsModule {
     super.definition
       .enablePlugins(SbtWeb)
       .settings(
-        webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js"),
+        webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"),
 
         npmDevDependencies in Compile ++= Seq(
           "css-loader" -> "0.23.1",
           "extract-text-webpack-plugin" -> "1.0.1",
           "resolve-url-loader" -> "2.0.2",
+          "url-loader" -> "0.5.8",
           "file-loader" -> "0.11.2",
           "style-loader" -> "0.13.1",
           "webpack-merge" -> "4.1.0"

@@ -15,4 +15,4 @@ object BrowseTreeData {
 
 case class BrowseTreeItemData(text: String) extends BrowseTreeData
 
-case class BrowseTreeNodeData(text: String, children: List[BrowseTreeData]) extends BrowseTreeData
+case class BrowseTreeNodeData(text: String, children: List[BrowseTreeData] = Nil) extends BrowseTreeData
