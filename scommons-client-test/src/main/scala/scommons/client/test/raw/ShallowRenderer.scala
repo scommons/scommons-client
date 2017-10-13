@@ -7,7 +7,7 @@ import scala.scalajs.js.annotation.JSImport
   * You can think of the shallowRenderer as a "place" to render the component you're testing,
   * and from which you can extract the component's output.
   *
-  * @see https://facebook.github.io/react/docs/shallow-renderer.html
+  * @see https://reactjs.org/docs/shallow-renderer.html
   */
 @JSImport("react-test-renderer/shallow", JSImport.Default)
 @js.native

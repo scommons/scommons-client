@@ -1,18 +1,70 @@
 package scommons.client.browsetree
 
+import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
+import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Matchers}
 import scommons.client.browsetree.BrowseTreeCss._
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
+
+import scala.scalajs.js.annotation.JSExportAll
+import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 
-class BrowseTreeNodeSpec extends FlatSpec with Matchers {
+class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
 
-  it should "render top item" in {
+  "itemClick" should "call onSelect when click on item div" in {
+    //given
+    val onSelect = mockFunction[BrowseTreeData, Unit]
+    val data = BrowseTreeItemData("selected item")
+    val comp = renderIntoDocument(treeNode(nodeProps(data, 0, selected = true, onSelect = onSelect)))
+    val itemDiv = findRenderedDOMComponentWithClass(comp, s"$browseTreeItem $browseTreeSelectedItem")
+
+    //then
+    onSelect.expects(data)
+
+    //when
+    ReactTestUtils.Simulate.click(itemDiv)
+  }
+
+  "arrowClick" should "call onExpand when click on node arrow" in {
+    //given
+    val onExpand = mockFunction[BrowseTreeData, Unit]
+    val data = BrowseTreeNodeData("top empty node", Nil)
+    val comp = renderIntoDocument(treeNode(nodeProps(data, 0, onExpand = onExpand)))
+    val arrowDiv = findRenderedDOMComponentWithClass(comp, s"$browseTreeNodeIcon")
+
+    //then
+    onExpand.expects(data)
+
+    //when
+    ReactTestUtils.Simulate.click(arrowDiv)
+  }
+
+  it should "call stopPropagation on click event" in {
+    //given
+    val onExpand = mockFunction[BrowseTreeData, Unit]
+    val props = nodeProps(BrowseTreeNodeData("test"), 0, onExpand = onExpand)
+    val self = mock[Self[BrowseTreeNodeProps, Unit]]
+    val selfProps = mock[Props[BrowseTreeNodeProps]]
+    val event = mock[MouseSyntheticEventMock]
+
+    //then
+    (event.stopPropagation _).expects()
+    (self.props _).expects().returning(selfProps)
+    (selfProps.wrapped _).expects().returning(props)
+    onExpand.expects(props.data)
+
+    //when
+    BrowseTreeNode.arrowClick(self)(event.asInstanceOf[MouseSyntheticEvent])
+  }
+
+  "rendering" should "render top item" in {
     //given
     val data = BrowseTreeItemData("top item")
-    val component = treeNode(data, 0)
+    val component = treeNode(nodeProps(data, 0))
 
     //when
     val result = renderIntoDocument(component)
@@ -30,7 +82,7 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers {
   it should "render selected item" in {
     //given
     val data = BrowseTreeItemData("selected item")
-    val component = treeNode(data, 1, selected = true)
+    val component = treeNode(nodeProps(data, 1, selected = true))
 
     //when
     val result = renderIntoDocument(component)
@@ -48,7 +100,7 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers {
   it should "render top empty node" in {
     //given
     val data = BrowseTreeNodeData("top empty node", Nil)
-    val component = treeNode(data, 0)
+    val component = treeNode(nodeProps(data, 0))
 
     //when
     val result = renderIntoDocument(component)
@@ -73,8 +125,8 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers {
     //given
     val child = BrowseTreeItemData("child item")
     val data = BrowseTreeNodeData("non-empty node")
-    val component = treeNode(data, 1, children = List(
-      treeNode(child, 2)
+    val component = treeNode(nodeProps(data, 1), List(
+      treeNode(nodeProps(child, 2))
     ))
 
     //when
@@ -106,8 +158,8 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers {
     //given
     val child = BrowseTreeItemData("child item")
     val data = BrowseTreeNodeData("expanded non-empty node")
-    val component = treeNode(data, 1, expanded = true, children = List(
-      treeNode(child, 2)
+    val component = treeNode(nodeProps(data, 1, expanded = true), List(
+      treeNode(nodeProps(child, 2))
     ))
 
     //when
@@ -135,17 +187,26 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers {
     )
   }
 
-  private def treeNode(data: BrowseTreeData,
-                       level: Int,
-                       selected: Boolean = false,
-                       onSelect: BrowseTreeData => Unit = { _ => },
-                       expanded: Boolean = false,
-                       onExpand: BrowseTreeData => Unit = { _ => },
+  private def nodeProps(data: BrowseTreeData,
+                        level: Int,
+                        selected: Boolean = false,
+                        onSelect: BrowseTreeData => Unit = { _ => },
+                        expanded: Boolean = false,
+                        onExpand: BrowseTreeData => Unit = { _ => }): BrowseTreeNodeProps = {
+
+
+    BrowseTreeNodeProps(data, level, selected, onSelect, expanded, onExpand)
+  }
+
+  private def treeNode(props: BrowseTreeNodeProps,
                        children: List[ReactElement] = Nil): ReactElement = {
-
-
-    val props = BrowseTreeNodeProps(data, level, selected, onSelect, expanded, onExpand)
 
     E(BrowseTreeNode.reactClass)(A.wrapped := props)(children)
   }
+}
+
+@JSExportAll
+trait MouseSyntheticEventMock {
+
+  def stopPropagation(): Unit
 }

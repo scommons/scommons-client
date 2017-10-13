@@ -1,7 +1,7 @@
 package definitions
 
 import com.typesafe.sbt.web.SbtWeb
-import common.Libs
+import common.{Libs, TestLibs}
 import sbt.Keys._
 import sbt._
 
@@ -41,5 +41,7 @@ object Client extends ScalaJsModule {
     Libs.sjsReactJsReduxDevTools.value  // Optional. For redux-devtools facade
   ))
 
-  override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)
+  override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
+    TestLibs.scalaMock.value
+  ).map(_ % "test"))
 }

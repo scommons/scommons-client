@@ -72,7 +72,7 @@ object BrowseTreeNode {
     props.onSelect(props.data)
   }
 
-  private def arrowClick(self: BrowseTreeNodeSelf): MouseSyntheticEvent => Unit = { event =>
+  private[browsetree] def arrowClick(self: BrowseTreeNodeSelf): MouseSyntheticEvent => Unit = { event =>
     event.stopPropagation()
 
     val props = self.props.wrapped

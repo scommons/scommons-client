@@ -4,7 +4,7 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
 /**
-  * @see https://facebook.github.io/react/docs/test-utils.html
+  * @see https://reactjs.org/docs/test-utils.html
   */
 @JSImport("react-dom/test-utils", JSImport.Namespace, "React.addons.TestUtils")
 @js.native

@@ -9,7 +9,7 @@ class ShallowRendererSpec extends FlatSpec with Matchers {
   it should "test ShallowRenderer" in {
     //given
     val testElem = React.createElement(React.createClass[Unit, Unit](_ =>
-      E.div(A.className := "test-class")(
+      E.div(A.className := "test-class", A.style := Map("display" -> "none"))(
         E.div.empty,
         E.span()("Hello")
       )
@@ -21,5 +21,7 @@ class ShallowRendererSpec extends FlatSpec with Matchers {
     //then
     result.`type` shouldBe "div"
     result.props.className shouldBe "test-class"
+    result.props.style.display shouldBe "none"
+    result.props.children.length shouldBe 2
   }
 }
