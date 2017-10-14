@@ -55,6 +55,10 @@ object TestUtils extends Matchers {
                                result: Map[String, String],
                                expected: Map[String, String]): Unit = {
 
+    def mkString(attrs: Map[String, String]): String = {
+      attrs.toList.sorted.map(p => s"${p._1}=${p._2}").mkString("\n\t")
+    }
+
     val resultKeys = result.keySet - "data-reactroot"
     val expectedKeys = expected.keySet
 
@@ -62,9 +66,9 @@ object TestUtils extends Matchers {
       fail(
         s"""$path  <-- attribute keys don't match
            |got:
-           |\t${result.keys.toList.sorted.mkString("\n\t")}
+           |\t${mkString(result)}
            |expected:
-           |\t${expected.keys.toList.sorted.mkString("\n\t")}
+           |\t${mkString(expected)}
            |""".stripMargin)
     }
 
