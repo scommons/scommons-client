@@ -1,7 +1,6 @@
 package scommons.client.browsetree
 
 import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
@@ -15,8 +14,6 @@ case class BrowseTreeState(selected: Option[BrowseTreeDataKey] = None,
 
 object BrowseTree {
 
-  type BrowseTreeSelf = Self[BrowseTreeProps, BrowseTreeState]
-
   lazy val reactClass: ReactClass = React.createClass[BrowseTreeProps, BrowseTreeState](
     getInitialState = { _ =>
       BrowseTreeState()
@@ -28,10 +25,10 @@ object BrowseTree {
         <(BrowseTreeNode.reactClass)(^.wrapped := BrowseTreeNodeProps(
           data,
           level,
-          isSelected(self, data),
-          setSelected(self),
-          isExpanded(self, data),
-          toggleExpanded(self)
+          isSelected(self.state, data),
+          setSelected(self.setState),
+          isExpanded(self.state, data),
+          toggleExpanded(self.setState)
         ))(data match {
           case _: BrowseTreeItemData => None
           case data: BrowseTreeNodeData =>
@@ -45,24 +42,25 @@ object BrowseTree {
     }
   )
 
-  private def isSelected(self: BrowseTreeSelf, data: BrowseTreeData): Boolean = {
-    self.state.selected.contains(data.key)
+  private[browsetree] def isSelected(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
+    state.selected.contains(data.key)
   }
 
-  private def setSelected(self: BrowseTreeSelf)(data: BrowseTreeData): Unit = {
-    self.setState(_.copy(selected = Some(data.key)))
+  private[browsetree] def setSelected(setState: (BrowseTreeState => BrowseTreeState) => Unit)
+                                     (data: BrowseTreeData): Unit = {
+
+    setState(_.copy(selected = Some(data.key)))
   }
 
-  private def isExpanded(self: BrowseTreeSelf, data: BrowseTreeData): Boolean = {
-    self.state.expanded.contains(data.key)
+  private[browsetree] def isExpanded(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
+    state.expanded.contains(data.key)
   }
 
-  private def toggleExpanded(self: BrowseTreeSelf)(data: BrowseTreeData): Unit = {
-    val expanded = isExpanded(self, data)
-
-    self.setState { state =>
+  private[browsetree] def toggleExpanded(setState: (BrowseTreeState => BrowseTreeState) => Unit)
+                                        (data: BrowseTreeData): Unit = {
+    setState { state =>
       val newExpanded =
-        if (expanded) state.expanded - data.key
+        if (isExpanded(state, data)) state.expanded - data.key
         else state.expanded + data.key
 
       state.copy(expanded = newExpanded)
