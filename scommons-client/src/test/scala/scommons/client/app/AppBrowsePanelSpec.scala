@@ -9,7 +9,7 @@ class AppBrowsePanelSpec extends FlatSpec with Matchers {
 
   it should "render the component" in {
     //given
-    val component = E(AppBrowsePanel.reactClass)()()
+    val component = E(AppBrowsePanel())()()
 
     //when
     val result = renderIntoDocument(component)

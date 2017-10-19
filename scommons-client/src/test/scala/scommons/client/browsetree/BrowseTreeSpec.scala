@@ -108,7 +108,7 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     val childNode = BrowseTreeNodeData("child node", List(childItem))
     val topNode = BrowseTreeNodeData("top node", List(childNode))
     val props = BrowseTreeProps(List(topItem, topNode))
-    val component = E(BrowseTree.reactClass)(A.wrapped := props)()
+    val component = E(BrowseTree())(A.wrapped := props)()
 
     //when
     val result = renderIntoDocument(component)

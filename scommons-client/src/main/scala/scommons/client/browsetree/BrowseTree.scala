@@ -7,14 +7,17 @@ import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import scommons.client.browsetree.BrowseTreeCss._
 import scommons.client.browsetree.BrowseTreeData.BrowseTreeDataKey
 
-case class BrowseTreeProps(roots: List[BrowseTreeData])
+case class BrowseTreeProps(roots: List[BrowseTreeData],
+                           onSelect: BrowseTreeData => Unit = _ => ())
 
 case class BrowseTreeState(selected: Option[BrowseTreeDataKey] = None,
                            expanded: Set[BrowseTreeDataKey] = Set.empty[BrowseTreeDataKey])
 
 object BrowseTree {
 
-  lazy val reactClass: ReactClass = React.createClass[BrowseTreeProps, BrowseTreeState](
+  def apply(): ReactClass = reactClass
+
+  private lazy val reactClass = React.createClass[BrowseTreeProps, BrowseTreeState](
     getInitialState = { _ =>
       BrowseTreeState()
     },
@@ -26,7 +29,12 @@ object BrowseTree {
           data,
           level,
           isSelected(self.state, data),
-          setSelected(self.setState),
+          selectedData => {
+            if (!isSelected(self.state, data)) {
+              props.onSelect(selectedData)
+              setSelected(self.setState)(selectedData)
+            }
+          },
           isExpanded(self.state, data),
           toggleExpanded(self.setState)
         ))(data match {

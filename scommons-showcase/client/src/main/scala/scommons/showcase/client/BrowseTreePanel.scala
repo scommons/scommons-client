@@ -8,7 +8,7 @@ import scommons.client.browsetree._
 object BrowseTreePanel {
 
   lazy val reactClass: ReactClass = React.createClass[Unit, Unit] { _ =>
-    <(BrowseTree.reactClass)(^.wrapped := BrowseTreeProps(List(
+    <(BrowseTree())(^.wrapped := BrowseTreeProps(List(
       BrowseTreeNodeData("Parent", List(
         BrowseTreeNodeData("Sub Parent 1", List(
           BrowseTreeNodeData("Sub Parent 2", List(
