@@ -8,9 +8,10 @@ import scommons.client.browsetree.BrowseTreeCss._
 import scommons.client.browsetree.BrowseTreeData.BrowseTreeDataKey
 
 case class BrowseTreeProps(roots: List[BrowseTreeData],
+                           selectedItem: Option[BrowseTreeDataKey] = None,
                            onSelect: BrowseTreeData => Unit = _ => ())
 
-case class BrowseTreeState(selected: Option[BrowseTreeDataKey] = None,
+case class BrowseTreeState(selected: Option[BrowseTreeDataKey] = None, //TODO: remove (use selected item from props)
                            expanded: Set[BrowseTreeDataKey] = Set.empty[BrowseTreeDataKey])
 
 object BrowseTree {
@@ -28,11 +29,10 @@ object BrowseTree {
         <(BrowseTreeNode.reactClass)(^.wrapped := BrowseTreeNodeProps(
           data,
           level,
-          isSelected(self.state, data),
+          props.selectedItem.contains(data.key),//isSelected(self.state, data),
           selectedData => {
-            if (!isSelected(self.state, data)) {
+            if (!props.selectedItem.contains(selectedData.key)) {
               props.onSelect(selectedData)
-              setSelected(self.setState)(selectedData)
             }
           },
           isExpanded(self.state, data),

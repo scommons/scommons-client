@@ -5,7 +5,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.browsetree._
 
-object BrowseTreePanel {
+object BrowseTreeDemo {
 
   lazy val reactClass: ReactClass = React.createClass[Unit, Unit] { _ =>
     <(BrowseTree())(^.wrapped := BrowseTreeProps(List(

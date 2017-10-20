@@ -3,13 +3,16 @@ package scommons.showcase.client
 import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
+import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
+import io.github.shogowada.scalajs.reactjs.redux.{ReactRedux, Redux}
 import io.github.shogowada.scalajs.reactjs.router.RouterProps
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 import scommons.client.app._
-import scommons.client.browsetree.{BrowseTreeItemData, BrowseTreeNodeData}
+import scommons.client.browsetree.BrowseTreeData.BrowseTreeDataKey
+import scommons.client.browsetree.{BrowseTreeData, BrowseTreeItemData, BrowseTreeNodeData}
 
 import scala.scalajs.js.JSApp
 
@@ -20,48 +23,114 @@ object Main extends JSApp {
 
     dom.document.title = "scommons-showcase"
 
-    val reposItem = BrowseTreeItemData("Repos")
-    val aboutNode = BrowseTreeNodeData("About", List(reposItem))
+    val store = Redux.createStore(Reducer.reduce)
 
-    ReactDOM.render(<.HashRouter()(
-      <(AppMainPanel())(^.wrapped := AppMainPanelProps(
-        name = "scommons-showcase",
-        user = "me",
-        copyright = "© scommons-showcase",
-        version = "(version: 0.1.0-SNAPSHOT)"
-      ))(
-        <(AppBrowsePanel())(^.wrapped := AppBrowsePanelProps(
-          List(aboutNode),
-          Map(
-            aboutNode.key -> BrowsePanel("/about", About(_: Props[_])),
-            reposItem.key -> BrowsePanel("/repos", Repos(_: Props[_]))
+    val appMainPanelProps = AppMainPanelProps(
+      name = "scommons-showcase",
+      user = "me",
+      copyright = "© scommons-showcase",
+      version = "(version: 0.1.0-SNAPSHOT)"
+    )
+
+    val routes = Reducer.routes.map { path =>
+      <.Route(^.path := path, ^.component := RouteController())()
+    }
+
+    ReactDOM.render(
+      <.Provider(^.store := store)(
+        <.HashRouter()(
+          <(AppMainPanel())(^.wrapped := appMainPanelProps)(
+            <.Switch()(
+              routes
+            )
           )
-        ))()
-      )
-    ), mountNode)
+        )
+      ),
+      mountNode
+    )
   }
 }
 
-object About extends RouterProps {
+object RouteController extends RouterProps {
 
-  def apply(props: Props[_]): ReactElement = {
-    println(s"about: location.pathname: ${props.location.pathname}")
-    println(s"about: match.path: ${props.`match`.path}")
+  def apply(): ReactClass = reactClass
 
+  private lazy val reactClass = ReactRedux.connectAdvanced(
+    (_: Dispatch) => {
+      //val onSelect = (data: BrowseTreeData) => dispatch(SelectBrowseItem(data))
+
+      def getSelectedItem(state: ReduxState, path: String): Option[BrowseTreeDataKey] = {
+        state.routes.find { case (_, panelData) =>
+          panelData.path == path
+        }.map(_._1)
+      }
+
+      (state: ReduxState, ownProps: Props[Unit]) => {
+        val path = ownProps.`match`.path
+
+        AppBrowsePanelProps(
+          state.roots,
+          state.routes,
+          getSelectedItem(state, path)
+        )
+      }
+    }
+  )(AppBrowsePanel())
+}
+
+case class ReduxState(roots: List[BrowseTreeData],
+                      routes: Map[BrowseTreeDataKey, BrowsePanelData])
+
+object Reducer {
+
+  val routes = List("/about", "/repos", "/")
+
+  private val reposItem = BrowseTreeItemData("Repos")
+  private val aboutNode = BrowseTreeNodeData("About", List(reposItem))
+
+  private val rootsDefault = List(aboutNode)
+  private val routesDefault = Map(
+    aboutNode.key -> BrowsePanelData("/about", About()),
+    reposItem.key -> BrowsePanelData("/repos", Repos())
+  )
+
+  val reduce: (Option[ReduxState], Any) => ReduxState = (maybeState, action) =>
+    ReduxState(
+      roots = rootsReducer(maybeState.map(_.roots), action),
+      routes = routesReducer(maybeState.map(_.routes), action)
+    )
+
+  private def rootsReducer(roots: Option[List[BrowseTreeData]],
+                           action: Any): List[BrowseTreeData] = action match {
+
+    case _ => roots.getOrElse(rootsDefault)
+  }
+
+  private def routesReducer(routes: Option[Map[BrowseTreeDataKey, BrowsePanelData]],
+                            action: Any): Map[BrowseTreeDataKey, BrowsePanelData] = action match {
+
+    case _ => routes.getOrElse(routesDefault)
+  }
+}
+
+object About {
+
+  def apply(): ReactClass = reactClass
+
+  private lazy val reactClass = React.createClass[Unit, Unit] { _ =>
     <.div()("About")
   }
 }
 
 object Repos extends RouterProps {
 
-  def apply(props: Props[_]): ReactElement = {
-    println(s"repos: location.pathname: ${props.location.pathname}")
-    println(s"repos: match.path: ${props.`match`.path}")
+  def apply(): ReactClass = reactClass
 
+  private lazy val reactClass = React.createClass[Unit, Unit] { self =>
     <.div()(
       "Repos",
       <.Route(
-        ^.path := s"${props.`match`.path}/:id",
+        ^.path := s"${self.props.`match`.path}/:id",
         ^.component := Repo()
       )()
     )
@@ -75,7 +144,7 @@ object Repo extends RouterProps {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[Unit, Unit](
-    (self) => <.div(^.id := s"repo-${id(self)}")(s"Repo ${id(self)}")
-  )
+  private lazy val reactClass = React.createClass[Unit, Unit] { self =>
+    <.div(^.id := s"repo-${id(self)}")(s"Repo ${id(self)}")
+  }
 }
