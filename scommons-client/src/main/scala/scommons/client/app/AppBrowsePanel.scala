@@ -17,7 +17,7 @@ object AppBrowsePanel extends RouterProps {
 
   def apply(): ReactClass = WithRouter(reactClass)
 
-  private lazy val reactClass = React.createClass[AppBrowsePanelProps, Unit] { self =>
+  private[app] lazy val reactClass = React.createClass[AppBrowsePanelProps, Unit] { self =>
     val props = self.props.wrapped
 
     def onSelectItem(data: BrowseTreeData): Unit = {

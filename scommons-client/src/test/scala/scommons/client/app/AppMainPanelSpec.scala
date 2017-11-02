@@ -15,7 +15,7 @@ class AppMainPanelSpec extends FlatSpec with Matchers {
       copyright = "test copyright",
       version = "test version"
     )
-    val component = E(AppMainPanel())(^.wrapped := props)(
+    val component = E(AppMainPanel.reactClass)(^.wrapped := props)(
       E.div()("Some child element 1"),
       E.div()("Some child element 2")
     )

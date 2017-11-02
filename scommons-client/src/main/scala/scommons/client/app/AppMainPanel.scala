@@ -14,7 +14,7 @@ object AppMainPanel {
 
   def apply(): ReactClass = WithRouter(reactClass)
 
-  private lazy val reactClass = React.createClass[AppMainPanelProps, Unit] { self =>
+  private[app] lazy val reactClass = React.createClass[AppMainPanelProps, Unit] { self =>
     val props = self.props.wrapped
     <.div()(
       <(AppHeader.reactClass)(^.wrapped := AppHeaderProps(props.name, props.user))(),
