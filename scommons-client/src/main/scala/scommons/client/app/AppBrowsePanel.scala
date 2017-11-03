@@ -4,8 +4,8 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
-import scommons.client.browsetree.BrowseTreeData.BrowseTreeDataKey
-import scommons.client.browsetree.{BrowseTree, BrowseTreeData, BrowseTreeProps}
+import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
+import scommons.client.ui.tree.{BrowseTree, BrowseTreeData, BrowseTreeProps}
 
 case class BrowsePanelData(path: String, reactClass: ReactClass)
 

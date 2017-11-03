@@ -3,7 +3,7 @@ package scommons.showcase.client
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.browsetree._
+import scommons.client.ui.tree._
 
 object BrowseTreeDemo {
 

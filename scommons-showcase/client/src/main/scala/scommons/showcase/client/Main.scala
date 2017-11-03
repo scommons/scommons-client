@@ -11,8 +11,8 @@ import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 import scommons.client.app._
-import scommons.client.browsetree.BrowseTreeData.BrowseTreeDataKey
-import scommons.client.browsetree.{BrowseTreeData, BrowseTreeItemData, BrowseTreeNodeData}
+import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
+import scommons.client.ui.tree.{BrowseTreeData, BrowseTreeItemData, BrowseTreeNodeData}
 
 import scala.scalajs.js.JSApp
 

@@ -1,6 +1,6 @@
-package scommons.client.browsetree
+package scommons.client.ui.tree
 
-import scommons.client.browsetree.BrowseTreeData._
+import scommons.client.ui.tree.BrowseTreeData._
 import scommons.client.util.Identity
 
 sealed trait BrowseTreeData {

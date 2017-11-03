@@ -1,11 +1,11 @@
-package scommons.client.browsetree
+package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import scommons.client.browsetree.BrowseTreeCss._
-import scommons.client.browsetree.BrowseTreeData.BrowseTreeDataKey
+import scommons.client.ui.tree.BrowseTreeCss._
+import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 
 case class BrowseTreeProps(roots: List[BrowseTreeData],
                            selectedItem: Option[BrowseTreeDataKey] = None,
@@ -50,21 +50,21 @@ object BrowseTree {
     }
   )
 
-  private[browsetree] def isSelected(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
+  private[tree] def isSelected(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
     state.selected.contains(data.key)
   }
 
-  private[browsetree] def setSelected(setState: (BrowseTreeState => BrowseTreeState) => Unit)
+  private[tree] def setSelected(setState: (BrowseTreeState => BrowseTreeState) => Unit)
                                      (data: BrowseTreeData): Unit = {
 
     setState(_.copy(selected = Some(data.key)))
   }
 
-  private[browsetree] def isExpanded(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
+  private[tree] def isExpanded(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
     state.expanded.contains(data.key)
   }
 
-  private[browsetree] def toggleExpanded(setState: (BrowseTreeState => BrowseTreeState) => Unit)
+  private[tree] def toggleExpanded(setState: (BrowseTreeState => BrowseTreeState) => Unit)
                                         (data: BrowseTreeData): Unit = {
     setState { state =>
       val newExpanded =

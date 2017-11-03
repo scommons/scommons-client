@@ -1,11 +1,11 @@
-package scommons.client.browsetree
+package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.browsetree.BrowseTreeCss._
+import scommons.client.ui.tree.BrowseTreeCss._
 
 case class BrowseTreeNodeProps(data: BrowseTreeData,
                                level: Int,
@@ -72,7 +72,7 @@ object BrowseTreeNode {
     props.onSelect(props.data)
   }
 
-  private[browsetree] def arrowClick(self: BrowseTreeNodeSelf): MouseSyntheticEvent => Unit = { event =>
+  private[tree] def arrowClick(self: BrowseTreeNodeSelf): MouseSyntheticEvent => Unit = { event =>
     event.stopPropagation()
 
     val props = self.props.wrapped

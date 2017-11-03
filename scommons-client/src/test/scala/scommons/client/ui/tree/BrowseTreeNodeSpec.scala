@@ -1,17 +1,17 @@
-package scommons.client.browsetree
+package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.browsetree.BrowseTreeCss._
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
-
-import scala.scalajs.js.annotation.JSExportAll
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
+import scommons.client.ui.tree.BrowseTreeCss._
+
+import scala.scalajs.js.annotation.JSExportAll
 
 class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
 

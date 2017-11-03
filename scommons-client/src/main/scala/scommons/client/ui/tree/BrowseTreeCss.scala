@@ -1,9 +1,9 @@
-package scommons.client.browsetree
+package scommons.client.ui.tree
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
-@JSImport("scommons/client/browsetree/BrowseTree.css", JSImport.Namespace)
+@JSImport("scommons/client/ui/tree/BrowseTree.css", JSImport.Namespace)
 @js.native
 object BrowseTreeCss extends js.Object {
 

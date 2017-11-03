@@ -1,11 +1,11 @@
-package scommons.client.browsetree
+package scommons.client.ui.tree
 
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.browsetree.BrowseTreeCss._
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
+import scommons.client.ui.tree.BrowseTreeCss._
 
 class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
 
