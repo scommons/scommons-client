@@ -11,6 +11,7 @@ import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 import scommons.client.app._
+import scommons.client.ui._
 import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 import scommons.client.ui.tree.{BrowseTreeData, BrowseTreeItemData, BrowseTreeNodeData}
 
@@ -83,14 +84,14 @@ case class ReduxState(roots: List[BrowseTreeData],
 
 object Reducer {
 
-  val routes = List("/about", "/repos", "/")
+  val routes = List("/widgets", "/repos", "/")
 
   private val reposItem = BrowseTreeItemData("Repos")
-  private val aboutNode = BrowseTreeNodeData("About", List(reposItem))
+  private val widgetsNode = BrowseTreeNodeData("Widgets", List(reposItem))
 
-  private val rootsDefault = List(aboutNode)
+  private val rootsDefault = List(widgetsNode)
   private val routesDefault = Map(
-    aboutNode.key -> BrowsePanelData("/about", About()),
+    widgetsNode.key -> BrowsePanelData("/widgets", Widgets()),
     reposItem.key -> BrowsePanelData("/repos", Repos())
   )
 
@@ -113,12 +114,20 @@ object Reducer {
   }
 }
 
-object About {
+object Widgets {
 
   def apply(): ReactClass = reactClass
 
   private lazy val reactClass = React.createClass[Unit, Unit] { _ =>
-    <.div()("About")
+    <.div()(
+      <.h1()("Buttons"),
+      <.div()(
+        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Add")))(),
+        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Disabled"),
+          Some(ButtonImagesCss.acceptDisabled), disabled = true))(),
+        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Primary"), primary = true))()
+      )
+    )
   }
 }
 

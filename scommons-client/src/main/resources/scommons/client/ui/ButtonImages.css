@@ -1,0 +1,138 @@
+
+.accept {
+  background: url('./buttons/accept.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.acceptDisabled {
+  background: url('./buttons/accept_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.add {
+  background: url('./buttons/add.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.addDisabled {
+  background: url('./buttons/add_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.cancel {
+  background: url('./buttons/cancel.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.cancelDisabled {
+  background: url('./buttons/cancel_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.dbSave {
+  background: url('./buttons/db_save.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.dbSaveDisabled {
+  background: url('./buttons/db_save_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.delete {
+  background: url('./buttons/delete.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.deleteDisabled {
+  background: url('./buttons/delete_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.disk {
+  background: url('./buttons/disk.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.diskDisabled {
+  background: url('./buttons/disk_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.find {
+  background: url('./buttons/find.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.folder {
+  background: url('./buttons/folder.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.folderDisabled {
+  background: url('./buttons/folder_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.info {
+  background: url('./buttons/info.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.infoDisabled {
+  background: url('./buttons/info_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.pencil {
+  background: url('./buttons/pencil.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.pencilDisabled {
+  background: url('./buttons/pencil_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.printer {
+  background: url('./buttons/printer.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.printerDisabled {
+  background: url('./buttons/printer_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.refresh {
+  background: url('./buttons/refresh.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.refreshDisabled {
+  background: url('./buttons/refresh_disabled.png') no-repeat 0px 0px;
+  width: 16px;
+  height: 16px;
+}
