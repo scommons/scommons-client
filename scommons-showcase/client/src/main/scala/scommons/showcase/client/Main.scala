@@ -122,10 +122,11 @@ object Widgets {
     <.div()(
       <.h1()("Buttons"),
       <.div()(
-        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Add")))(),
-        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Disabled"),
+        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Add"), () => ()))(),
+        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Disabled"), () => (),
           Some(ButtonImagesCss.acceptDisabled), disabled = true))(),
-        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Primary"), primary = true))()
+        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Primary"), () => (),
+          primary = true))()
       )
     )
   }
