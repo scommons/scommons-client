@@ -6,12 +6,10 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 
-case class ImageButtonProps(image: String,
-                            text: Option[String],
-                            onClick: () => Unit,
-                            disabledImage: Option[String] = None,
+case class ImageButtonProps(data: ImageButtonData,
+                            onClick: ImageButtonData => Unit,
                             disabled: Boolean = false,
-                            primary: Boolean = false)
+                            showTextAsTitle: Boolean = false)
 
 object ImageButton {
 
@@ -21,21 +19,28 @@ object ImageButton {
 
   private lazy val reactClass = React.createClass[ImageButtonProps, Unit] { self =>
     val props = self.props.wrapped
+    val data = props.data
 
-    val image = if (props.disabled) props.disabledImage.getOrElse("") else props.image
-    val primaryClass = if (props.primary) "btn-primary" else ""
+    val image = if (props.disabled) data.disabledImage.getOrElse("") else data.image
+    val primaryClass = if (data.primary) "btn-primary" else ""
 
-    <.button(
+    val attributes = (
+      if (props.showTextAsTitle) Some(^.title := data.text)
+      else None
+    ) :: List(
       ^.className := s"btn $primaryClass",
       ^.disabled := props.disabled,
       ^.onClick := onClick(self)
-    )(
-      ImageLabelWrapper(image, props.text)
+    )
+
+    <.button(attributes)(
+      if (props.showTextAsTitle) ImageLabelWrapper(image, None)
+      else ImageLabelWrapper(image, Some(data.text))
     )
   }
 
   private def onClick(self: ImageButtonSelf): MouseSyntheticEvent => Unit = { _ =>
     val props = self.props.wrapped
-    props.onClick()
+    props.onClick(props.data)
   }
 }

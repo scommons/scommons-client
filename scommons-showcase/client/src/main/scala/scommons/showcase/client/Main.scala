@@ -119,14 +119,31 @@ object Widgets {
   def apply(): ReactClass = reactClass
 
   private lazy val reactClass = React.createClass[Unit, Unit] { _ =>
+    val imageButtons = List(
+      ImageButtonData("add", ButtonImagesCss.add, None, "Add"),
+      ImageButtonData("disabled", ButtonImagesCss.delete, Some(ButtonImagesCss.deleteDisabled), "Disabled"),
+      ImageButtonData("primary", ButtonImagesCss.accept, None, "Primary", primary = true)
+    )
+
     <.div()(
-      <.h1()("Buttons"),
-      <.div()(
-        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Add"), () => ()))(),
-        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Disabled"), () => (),
-          Some(ButtonImagesCss.acceptDisabled), disabled = true))(),
-        <(ImageButton())(^.wrapped := ImageButtonProps(ButtonImagesCss.accept, Some("Primary"), () => (),
-          primary = true))()
+      <.h2()("Image Buttons"),
+      <.hr()(),
+      <.p()(
+        imageButtons.map { data =>
+          <(ImageButton())(^.wrapped := ImageButtonProps(data, _ => (), data.command == "disabled"))()
+        }
+      ),
+      <.h2()("Buttons Panels"),
+      <.hr()(),
+      <.h3()("Toolbar"),
+      <.p()(
+        <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(imageButtons, Set("add", "primary"),
+          group = false, _ => ()))()
+      ),
+      <.h3()("Group"),
+      <.p()(
+        <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(imageButtons, Set("add", "primary"),
+          group = true, _ => ()))()
       )
     )
   }

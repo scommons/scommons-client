@@ -12,13 +12,13 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
 
   "onClick" should "call onClick when click on button" in {
     //given
-    val onClick = mockFunction[Unit]
-    val props = ImageButtonProps(accept, Some("button with text"), onClick)
-    val comp = renderIntoDocument(E(ImageButton())(A.wrapped := props)())
+    val onClick = mockFunction[ImageButtonData, Unit]
+    val data = ImageButtonData("accept", accept, None, "button with text")
+    val comp = renderIntoDocument(E(ImageButton())(A.wrapped := ImageButtonProps(data, onClick))())
     val button = findRenderedDOMComponentWithClass(comp, "btn")
 
     //then
-    onClick.expects()
+    onClick.expects(data)
 
     //when
     ReactTestUtils.Simulate.click(button)
@@ -26,8 +26,8 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
 
   "rendering" should "render button with text" in {
     //given
-    val props = ImageButtonProps(accept, Some("button with text"), () => ())
-    val component = E(ImageButton())(A.wrapped := props)()
+    val data = ImageButtonData("accept", accept, None, "button with text")
+    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, _ => ()))()
 
     //when
     val result = renderIntoDocument(component)
@@ -35,32 +35,32 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
     //then
     assertDOMElement(findReactElement(result),
       <button class="btn">
-        <img class={s"${props.image}"} src=""/>
-        <span style="padding-left: 3px; vertical-align: middle;">{props.text.get}</span>
+        <img class={s"${data.image}"} src=""/>
+        <span style="padding-left: 3px; vertical-align: middle;">{data.text}</span>
       </button>
     )
   }
 
-  it should "render button without text" in {
+  it should "render button with title" in {
     //given
-    val props = ImageButtonProps(accept, None, () => ())
-    val component = E(ImageButton())(A.wrapped := props)()
+    val data = ImageButtonData("accept", accept, None, "test title")
+    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, _ => (), showTextAsTitle = true))()
 
     //when
     val result = renderIntoDocument(component)
 
     //then
     assertDOMElement(findReactElement(result),
-      <button class="btn">
-        <img class={s"${props.image}"} src=""/>
+      <button class="btn" title={s"${data.text}"}>
+        <img class={s"${data.image}"} src=""/>
       </button>
     )
   }
 
   it should "render disabled button" in {
     //given
-    val props = ImageButtonProps(accept, Some("Disabled"), () => (), Some(acceptDisabled), disabled = true)
-    val component = E(ImageButton())(A.wrapped := props)()
+    val data = ImageButtonData("accept", accept, Some(acceptDisabled), "Disabled")
+    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, _ => (), disabled = true))()
 
     //when
     val result = renderIntoDocument(component)
@@ -68,16 +68,16 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
     //then
     assertDOMElement(findReactElement(result),
       <button class="btn" disabled="">
-        <img class={s"${props.disabledImage.get}"} src=""/>
-        <span style="padding-left: 3px; vertical-align: middle;">{props.text.get}</span>
+        <img class={s"${data.disabledImage.get}"} src=""/>
+        <span style="padding-left: 3px; vertical-align: middle;">{data.text}</span>
       </button>
     )
   }
 
   it should "render primary button" in {
     //given
-    val props = ImageButtonProps(accept, Some("Primary"), () => (), primary = true)
-    val component = E(ImageButton())(A.wrapped := props)()
+    val data = ImageButtonData("accept", accept, None, "Primary", primary = true)
+    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, _ => ()))()
 
     //when
     val result = renderIntoDocument(component)
@@ -85,8 +85,8 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
     //then
     assertDOMElement(findReactElement(result),
       <button class="btn btn-primary">
-        <img class={s"${props.image}"} src=""/>
-        <span style="padding-left: 3px; vertical-align: middle;">{props.text.get}</span>
+        <img class={s"${data.image}"} src=""/>
+        <span style="padding-left: 3px; vertical-align: middle;">{data.text}</span>
       </button>
     )
   }
