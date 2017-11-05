@@ -11,7 +11,6 @@ import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 import scommons.client.app._
-import scommons.client.ui._
 import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 import scommons.client.ui.tree.{BrowseTreeData, BrowseTreeItemData, BrowseTreeNodeData}
 
@@ -84,15 +83,17 @@ case class ReduxState(roots: List[BrowseTreeData],
 
 object Reducer {
 
-  val routes = List("/widgets", "/repos", "/")
+  val routes = List("/widgets", "/buttons", "/repos", "/")
 
   private val reposItem = BrowseTreeItemData("Repos")
-  private val widgetsNode = BrowseTreeNodeData("Widgets", List(reposItem))
+  private val buttonsItem = BrowseTreeItemData("Buttons")
+  private val widgetsNode = BrowseTreeNodeData("Widgets", List(buttonsItem, reposItem))
 
   private val rootsDefault = List(widgetsNode)
   private val routesDefault = Map(
-    widgetsNode.key -> BrowsePanelData("/widgets", Widgets()),
-    reposItem.key -> BrowsePanelData("/repos", Repos())
+    widgetsNode.key -> BrowsePanelData("/widgets", None),
+    buttonsItem.key -> BrowsePanelData("/buttons", Some(ButtonsDemo())),
+    reposItem.key -> BrowsePanelData("/repos", Some(Repos()))
   )
 
   val reduce: (Option[ReduxState], Any) => ReduxState = (maybeState, action) =>
@@ -111,41 +112,6 @@ object Reducer {
                             action: Any): Map[BrowseTreeDataKey, BrowsePanelData] = action match {
 
     case _ => routes.getOrElse(routesDefault)
-  }
-}
-
-object Widgets {
-
-  def apply(): ReactClass = reactClass
-
-  private lazy val reactClass = React.createClass[Unit, Unit] { _ =>
-    val imageButtons = List(
-      ImageButtonData("add", ButtonImagesCss.add, None, "Add"),
-      ImageButtonData("disabled", ButtonImagesCss.delete, Some(ButtonImagesCss.deleteDisabled), "Disabled"),
-      ImageButtonData("primary", ButtonImagesCss.accept, None, "Primary", primary = true)
-    )
-
-    <.div()(
-      <.h2()("Image Buttons"),
-      <.hr()(),
-      <.p()(
-        imageButtons.map { data =>
-          <(ImageButton())(^.wrapped := ImageButtonProps(data, _ => (), data.command == "disabled"))()
-        }
-      ),
-      <.h2()("Buttons Panels"),
-      <.hr()(),
-      <.h3()("Toolbar"),
-      <.p()(
-        <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(imageButtons, Set("add", "primary"),
-          group = false, _ => ()))()
-      ),
-      <.h3()("Group"),
-      <.p()(
-        <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(imageButtons, Set("add", "primary"),
-          group = true, _ => ()))()
-      )
-    )
   }
 }
 

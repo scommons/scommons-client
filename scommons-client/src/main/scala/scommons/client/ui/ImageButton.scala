@@ -21,7 +21,7 @@ object ImageButton {
     val props = self.props.wrapped
     val data = props.data
 
-    val image = if (props.disabled) data.disabledImage.getOrElse("") else data.image
+    val image = if (props.disabled) data.disabledImage else data.image
     val primaryClass = if (data.primary) "btn-primary" else ""
 
     val attributes = (

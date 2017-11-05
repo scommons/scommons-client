@@ -13,7 +13,7 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
   "onClick" should "call onClick when click on button" in {
     //given
     val onClick = mockFunction[ButtonData, Unit]
-    val data = ImageButtonData("accept", accept, None, "test button")
+    val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
     val comp = renderIntoDocument(E(ButtonsPanel())(A.wrapped := ButtonsPanelProps(
       List(data), Set(data.command), group = false, onClick
     ))())
@@ -28,8 +28,8 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
 
   "rendering" should "render buttons toolbar" in {
     //given
-    val b1 = ImageButtonData("accept", accept, None, "test button 1")
-    val b2 = ImageButtonData("add", add, Some(addDisabled), "test button 2")
+    val b1 = ImageButtonData("accept", accept, acceptDisabled, "test button 1")
+    val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
     val component = E(ButtonsPanel())(A.wrapped := ButtonsPanelProps(
       List(b1, b2), Set(b1.command), group = false, _ => ()
     ))()
@@ -45,7 +45,7 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
           <span style="padding-left: 3px; vertical-align: middle;">{b1.text}</span>
         </button>
         <button class="btn" disabled="">
-          <img class={s"${b2.disabledImage.get}"} src=""/>
+          <img class={s"${b2.disabledImage}"} src=""/>
           <span style="padding-left: 3px; vertical-align: middle;">{b2.text}</span>
         </button>
       </div>
@@ -54,8 +54,8 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
 
   it should "render buttons group" in {
     //given
-    val b1 = ImageButtonData("accept", accept, None, "test button 1")
-    val b2 = ImageButtonData("add", add, Some(addDisabled), "test button 2")
+    val b1 = ImageButtonData("accept", accept, acceptDisabled, "test button 1")
+    val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
     val component = E(ButtonsPanel())(A.wrapped := ButtonsPanelProps(
       List(b1, b2), Set(b1.command), group = true, _ => ()
     ))()
@@ -70,7 +70,7 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
           <img class={s"${b1.image}"} src=""/>
         </button>
         <button class="btn" disabled="" title={s"${b2.text}"}>
-          <img class={s"${b2.disabledImage.get}"} src=""/>
+          <img class={s"${b2.disabledImage}"} src=""/>
         </button>
       </div>
     )

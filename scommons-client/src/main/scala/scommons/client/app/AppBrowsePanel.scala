@@ -7,7 +7,7 @@ import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 import scommons.client.ui.tree.{BrowseTree, BrowseTreeData, BrowseTreeProps}
 
-case class BrowsePanelData(path: String, reactClass: ReactClass)
+case class BrowsePanelData(path: String, reactClass: Option[ReactClass])
 
 case class AppBrowsePanelProps(roots: List[BrowseTreeData],
                                routes: Map[BrowseTreeDataKey, BrowsePanelData],
@@ -26,8 +26,8 @@ object AppBrowsePanel extends RouterProps {
       }
     }
 
-    val panelComp = props.selectedItem.flatMap(props.routes.get).map { (panel: BrowsePanelData) =>
-      <(WithRouter(panel.reactClass))()()
+    val panelComp = props.selectedItem.flatMap(props.routes.get).flatMap { (panel: BrowsePanelData) =>
+      panel.reactClass.map(reactClass => <(WithRouter(reactClass))()())
     }
 
     <.div(^.className := "row-fluid")(

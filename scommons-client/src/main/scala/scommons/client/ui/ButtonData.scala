@@ -7,6 +7,6 @@ sealed trait ButtonData {
 
 case class ImageButtonData(command: String,
                            image: String,
-                           disabledImage: Option[String],
+                           disabledImage: String,
                            text: String,
                            primary: Boolean = false) extends ButtonData
