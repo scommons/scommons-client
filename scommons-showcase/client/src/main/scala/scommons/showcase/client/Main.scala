@@ -11,8 +11,10 @@ import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 import scommons.client.app._
+import scommons.client.ui.Buttons
 import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 import scommons.client.ui.tree.{BrowseTreeData, BrowseTreeItemData, BrowseTreeNodeData}
+import scommons.client.util.ActionsData
 
 import scala.scalajs.js.JSApp
 
@@ -32,7 +34,7 @@ object Main extends JSApp {
       version = "(version: 0.1.0-SNAPSHOT)"
     )
 
-    val routes = Reducer.routes.map { path =>
+    val routes = (Reducer.defaultRoutes.values.map(_.path).toList :+ "/").map { path =>
       <.Route(^.path := path, ^.component := RouteController())()
     }
 
@@ -51,49 +53,41 @@ object Main extends JSApp {
   }
 }
 
-object RouteController extends RouterProps {
+object RouteController {
 
   def apply(): ReactClass = reactClass
 
   private lazy val reactClass = ReactRedux.connectAdvanced(
     (_: Dispatch) => {
-      //val onSelect = (data: BrowseTreeData) => dispatch(SelectBrowseItem(data))
 
-      def getSelectedItem(state: ReduxState, path: String): Option[BrowseTreeDataKey] = {
-        state.routes.find { case (_, panelData) =>
-          panelData.path == path
-        }.map(_._1)
-      }
-
-      (state: ReduxState, ownProps: Props[Unit]) => {
-        val path = ownProps.`match`.path
-
-        AppBrowsePanelProps(
+      (state: ReduxState, _: Props[Unit]) => {
+        AppBrowseControllerProps(
           state.roots,
           state.routes,
-          getSelectedItem(state, path)
+          List(Buttons.REFRESH, Buttons.ADD, Buttons.REMOVE, Buttons.EDIT)
         )
       }
     }
-  )(AppBrowsePanel())
+  )(AppBrowseController())
 }
 
 case class ReduxState(roots: List[BrowseTreeData],
-                      routes: Map[BrowseTreeDataKey, BrowsePanelData])
+                      routes: Map[BrowseTreeDataKey, AppBrowseData])
 
 object Reducer {
-
-  val routes = List("/widgets", "/buttons", "/repos", "/")
 
   private val reposItem = BrowseTreeItemData("Repos")
   private val buttonsItem = BrowseTreeItemData("Buttons")
   private val widgetsNode = BrowseTreeNodeData("Widgets", List(buttonsItem, reposItem))
 
-  private val rootsDefault = List(widgetsNode)
-  private val routesDefault = Map(
-    widgetsNode.key -> BrowsePanelData("/widgets", None),
-    buttonsItem.key -> BrowsePanelData("/buttons", Some(ButtonsDemo())),
-    reposItem.key -> BrowsePanelData("/repos", Some(Repos()))
+  private val defaultRoots = List(widgetsNode)
+
+  val defaultRoutes = Map(
+    widgetsNode.key -> AppBrowseData("/widgets", ActionsData.empty, None),
+    buttonsItem.key -> AppBrowseData("/buttons", ActionsData.empty, Some(ButtonsDemo())),
+    reposItem.key -> AppBrowseData("/repos",
+      ActionsData(Set(Buttons.REFRESH.command, Buttons.ADD.command), _ => ()), Some(Repos())
+    )
   )
 
   val reduce: (Option[ReduxState], Any) => ReduxState = (maybeState, action) =>
@@ -105,13 +99,13 @@ object Reducer {
   private def rootsReducer(roots: Option[List[BrowseTreeData]],
                            action: Any): List[BrowseTreeData] = action match {
 
-    case _ => roots.getOrElse(rootsDefault)
+    case _ => roots.getOrElse(defaultRoots)
   }
 
-  private def routesReducer(routes: Option[Map[BrowseTreeDataKey, BrowsePanelData]],
-                            action: Any): Map[BrowseTreeDataKey, BrowsePanelData] = action match {
+  private def routesReducer(routes: Option[Map[BrowseTreeDataKey, AppBrowseData]],
+                            action: Any): Map[BrowseTreeDataKey, AppBrowseData] = action match {
 
-    case _ => routes.getOrElse(routesDefault)
+    case _ => routes.getOrElse(defaultRoutes)
   }
 }
 

@@ -3,42 +3,30 @@ package scommons.client.app
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
-import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
-import scommons.client.ui.tree.{BrowseTree, BrowseTreeData, BrowseTreeProps}
+import scommons.client.ui.tree.{BrowseTree, BrowseTreeProps}
+import scommons.client.ui.{ButtonsPanel, ButtonsPanelProps}
 
-case class BrowsePanelData(path: String, reactClass: Option[ReactClass])
+case class AppBrowsePanelProps(buttonsProps: ButtonsPanelProps,
+                               treeProps: BrowseTreeProps)
 
-case class AppBrowsePanelProps(roots: List[BrowseTreeData],
-                               routes: Map[BrowseTreeDataKey, BrowsePanelData],
-                               selectedItem: Option[BrowseTreeDataKey])
+object AppBrowsePanel {
 
-object AppBrowsePanel extends RouterProps {
+  def apply(): ReactClass = reactClass
 
-  def apply(): ReactClass = WithRouter(reactClass)
-
-  private[app] lazy val reactClass = React.createClass[AppBrowsePanelProps, Unit] { self =>
+  private lazy val reactClass = React.createClass[AppBrowsePanelProps, Unit] { self =>
     val props = self.props.wrapped
-
-    def onSelectItem(data: BrowseTreeData): Unit = {
-      props.routes.get(data.key).foreach { panel =>
-        self.props.history.push(panel.path)
-      }
-    }
-
-    val panelComp = props.selectedItem.flatMap(props.routes.get).flatMap { (panel: BrowsePanelData) =>
-      panel.reactClass.map(reactClass => <(WithRouter(reactClass))()())
-    }
 
     <.div(^.className := "row-fluid")(
       <.div(^.className := "span4")(
         <.div(^.className := "well sidebar-nav")(
-          <.div(^.className := AppBrowsePanelCss.sidebarBp)("ButtonsPanel"),
-          <(BrowseTree())(^.wrapped := BrowseTreeProps(props.roots, props.selectedItem, onSelect = onSelectItem))()
+          <.div(^.className := AppBrowsePanelCss.sidebarBp)(
+            <(ButtonsPanel())(^.wrapped := props.buttonsProps)()
+          ),
+          <(BrowseTree())(^.wrapped := props.treeProps)()
         )
       ),
       <.div(^.className := "span8")(
-        panelComp
+        self.props.children
       )
     )
   }

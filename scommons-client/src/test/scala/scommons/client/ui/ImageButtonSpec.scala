@@ -12,13 +12,13 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
 
   "onClick" should "call onClick when click on button" in {
     //given
-    val onClick = mockFunction[ImageButtonData, Unit]
+    val onClick = mockFunction[Unit]
     val data = ImageButtonData("accept", accept, acceptDisabled, "button with text")
     val comp = renderIntoDocument(E(ImageButton())(A.wrapped := ImageButtonProps(data, onClick))())
     val button = findRenderedDOMComponentWithClass(comp, "btn")
 
     //then
-    onClick.expects(data)
+    onClick.expects()
 
     //when
     ReactTestUtils.Simulate.click(button)
@@ -27,7 +27,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
   "rendering" should "render button with text" in {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "button with text")
-    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, _ => ()))()
+    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, () => ()))()
 
     //when
     val result = renderIntoDocument(component)
@@ -44,7 +44,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
   it should "render button with title" in {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "test title")
-    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, _ => (), showTextAsTitle = true))()
+    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, () => (), showTextAsTitle = true))()
 
     //when
     val result = renderIntoDocument(component)
@@ -60,7 +60,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
   it should "render disabled button" in {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "Disabled")
-    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, _ => (), disabled = true))()
+    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, () => (), disabled = true))()
 
     //when
     val result = renderIntoDocument(component)
@@ -77,7 +77,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
   it should "render primary button" in {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "Primary", primary = true)
-    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, _ => ()))()
+    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, () => ()))()
 
     //when
     val result = renderIntoDocument(component)

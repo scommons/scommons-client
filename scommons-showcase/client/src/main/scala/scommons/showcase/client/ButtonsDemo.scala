@@ -5,6 +5,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.ButtonImagesCss._
 import scommons.client.ui._
+import scommons.client.util.ActionsData
 
 object ButtonsDemo {
 
@@ -22,20 +23,26 @@ object ButtonsDemo {
       <.hr()(),
       <.p()(
         imageButtons.map { data =>
-          <(ImageButton())(^.wrapped := ImageButtonProps(data, _ => (), data.command == Buttons.REMOVE.command))()
+          <(ImageButton())(^.wrapped := ImageButtonProps(data, () => (), data.command == Buttons.REMOVE.command))()
         }
       ),
       <.h2()("Buttons Panels"),
       <.hr()(),
       <.h3()("Toolbar"),
       <.p()(
-        <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(imageButtons, Set(Buttons.ADD.command, "primary"),
-          group = false, _ => ()))()
+        <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
+          imageButtons,
+          ActionsData(Set(Buttons.ADD.command, "primary"), _ => ()),
+          group = false
+        ))()
       ),
       <.h3()("Group"),
       <.p()(
-        <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(imageButtons, Set(Buttons.ADD.command, "primary"),
-          group = true, _ => ()))()
+        <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
+          imageButtons,
+          ActionsData(Set(Buttons.ADD.command, "primary"), _ => ()),
+          group = true
+        ))()
       )
     )
   }

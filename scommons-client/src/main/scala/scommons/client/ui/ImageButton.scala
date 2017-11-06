@@ -7,7 +7,7 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 
 case class ImageButtonProps(data: ImageButtonData,
-                            onClick: ImageButtonData => Unit,
+                            onClick: () => Unit,
                             disabled: Boolean = false,
                             showTextAsTitle: Boolean = false)
 
@@ -41,6 +41,6 @@ object ImageButton {
 
   private def onClick(self: ImageButtonSelf): MouseSyntheticEvent => Unit = { _ =>
     val props = self.props.wrapped
-    props.onClick(props.data)
+    props.onClick()
   }
 }

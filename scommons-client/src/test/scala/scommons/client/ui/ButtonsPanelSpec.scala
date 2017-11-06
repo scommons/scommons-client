@@ -7,20 +7,21 @@ import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.ButtonImagesCss._
+import scommons.client.util.ActionsData
 
 class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
 
   "onClick" should "call onClick when click on button" in {
     //given
-    val onClick = mockFunction[ButtonData, Unit]
+    val onCommand = mockFunction[String, Unit]
     val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
     val comp = renderIntoDocument(E(ButtonsPanel())(A.wrapped := ButtonsPanelProps(
-      List(data), Set(data.command), group = false, onClick
+      List(data), ActionsData(Set(data.command), onCommand), group = false
     ))())
     val button = findRenderedDOMComponentWithClass(comp, "btn")
 
     //then
-    onClick.expects(data)
+    onCommand.expects(data.command)
 
     //when
     ReactTestUtils.Simulate.click(button)
@@ -31,7 +32,7 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
     val b1 = ImageButtonData("accept", accept, acceptDisabled, "test button 1")
     val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
     val component = E(ButtonsPanel())(A.wrapped := ButtonsPanelProps(
-      List(b1, b2), Set(b1.command), group = false, _ => ()
+      List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = false
     ))()
 
     //when
@@ -57,7 +58,7 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
     val b1 = ImageButtonData("accept", accept, acceptDisabled, "test button 1")
     val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
     val component = E(ButtonsPanel())(A.wrapped := ButtonsPanelProps(
-      List(b1, b2), Set(b1.command), group = true, _ => ()
+      List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = true
     ))()
 
     //when
