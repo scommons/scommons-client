@@ -8,17 +8,19 @@ import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.tree.BrowseTreeCss._
 
 case class BrowseTreeNodeProps(data: BrowseTreeData,
-                               level: Int,
-                               selected: Boolean,
-                               onSelect: BrowseTreeData => Unit,
-                               expanded: Boolean,
-                               onExpand: BrowseTreeData => Unit)
+                               level: Int = 0,
+                               selected: Boolean = false,
+                               onSelect: BrowseTreeData => Unit = _ => (),
+                               expanded: Boolean = false,
+                               onExpand: BrowseTreeData => Unit = _ => ())
 
 object BrowseTreeNode {
 
   type BrowseTreeNodeSelf = Self[BrowseTreeNodeProps, Unit]
 
-  lazy val reactClass: ReactClass = React.createClass[BrowseTreeNodeProps, Unit]{ self =>
+  def apply(): ReactClass = reactClass
+
+  private lazy val reactClass: ReactClass = React.createClass[BrowseTreeNodeProps, Unit]{ self =>
     val props = self.props.wrapped
 
     val (itemText, isNode) = props.data match {

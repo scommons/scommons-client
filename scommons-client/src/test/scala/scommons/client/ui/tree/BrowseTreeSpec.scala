@@ -116,40 +116,12 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     //then
     assertDOMElement(findReactElement(result),
       <div class={s"$browseTree"}>
-        <div class={s"$browseTreeItem $browseTreeTopItem"}>
-          <div class={s"$browseTreeItem $browseTreeTopItemImageValue"}>
-            <div class={browseTreeItemValue}>{topItem.text}</div>
-          </div>
-        </div>
-        <div>
-          <div class={s"$browseTreeItem $browseTreeTopItem"}>
-            <div class={s"$browseTreeItem $browseTreeNode $browseTreeTopItemImageValue"}>
-              <div class={s"$browseTreeNodeIcon"}>
-                <div class={browseTreeClosedArrow}/>
-              </div>
-              <div class={browseTreeItemValue}>{topNode.text}</div>
-            </div>
-          </div>
-          <div style="display: none;">
-            <div>
-              <div class={s"$browseTreeItem"} style="padding-left: 16px;">
-                <div class={s"$browseTreeItem $browseTreeNode"}>
-                  <div class={s"$browseTreeNodeIcon"}>
-                    <div class={browseTreeClosedArrow}/>
-                  </div>
-                  <div class={browseTreeItemValue}>{childNode.text}</div>
-                </div>
-              </div>
-              <div style="display: none;">
-                <div class={s"$browseTreeItem"} style="padding-left: 32px;">
-                  <div class={s"$browseTreeItem"}>
-                    <div class={browseTreeItemValue}>{childItem.text}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {renderAsXml(BrowseTreeNode(), BrowseTreeNodeProps(topItem))}
+        {renderAsXml(BrowseTreeNode(), BrowseTreeNodeProps(topNode),
+          E(BrowseTreeNode())(A.wrapped := BrowseTreeNodeProps(childNode, level = 1))(
+            E(BrowseTreeNode())(A.wrapped := BrowseTreeNodeProps(childItem, level = 2))()
+          )
+        )}
       </div>
     )
   }

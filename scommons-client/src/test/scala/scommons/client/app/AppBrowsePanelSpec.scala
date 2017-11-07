@@ -4,9 +4,8 @@ import org.scalatest.{FlatSpec, Matchers}
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.ui.tree.BrowseTreeCss._
-import scommons.client.ui.tree.{BrowseTreeItemData, BrowseTreeNodeData, BrowseTreeProps}
-import scommons.client.ui.{Buttons, ButtonsPanelProps}
+import scommons.client.ui.tree.{BrowseTree, BrowseTreeItemData, BrowseTreeNodeData, BrowseTreeProps}
+import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
 import scommons.client.util.ActionsData
 
 class AppBrowsePanelSpec extends FlatSpec with Matchers {
@@ -15,12 +14,13 @@ class AppBrowsePanelSpec extends FlatSpec with Matchers {
     //given
     val b1 = Buttons.ADD
     val b2 = Buttons.REMOVE
+    val buttonsPanelProps = ButtonsPanelProps(List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = false)
+
     val childItem = BrowseTreeItemData("child item")
     val topNode = BrowseTreeNodeData("top node", List(childItem))
-    val props = AppBrowsePanelProps(
-      ButtonsPanelProps(List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = false),
-      BrowseTreeProps(List(topNode))
-    )
+    val browseTreeProps = BrowseTreeProps(List(topNode))
+
+    val props = AppBrowsePanelProps(buttonsPanelProps, browseTreeProps)
     val component = E(AppBrowsePanel())(A.wrapped := props)(
       E.div()("Some child element")
     )
@@ -34,36 +34,9 @@ class AppBrowsePanelSpec extends FlatSpec with Matchers {
         <div class="span4">
           <div class="well sidebar-nav">
             <div class={AppBrowsePanelCss.sidebarBp}>
-              <div class="btn-toolbar">
-                <button class="btn">
-                  <img class={s"${b1.image}"} src=""/>
-                  <span style="padding-left: 3px; vertical-align: middle;">{b1.text}</span>
-                </button>
-                <button class="btn" disabled="">
-                  <img class={s"${b2.disabledImage}"} src=""/>
-                  <span style="padding-left: 3px; vertical-align: middle;">{b2.text}</span>
-                </button>
-              </div>
+              {renderAsXml(ButtonsPanel(), buttonsPanelProps)}
             </div>
-            <div class={s"$browseTree"}>
-              <div>
-                <div class={s"$browseTreeItem $browseTreeTopItem"}>
-                  <div class={s"$browseTreeItem $browseTreeNode $browseTreeTopItemImageValue"}>
-                    <div class={s"$browseTreeNodeIcon"}>
-                      <div class={browseTreeClosedArrow}/>
-                    </div>
-                    <div class={browseTreeItemValue}>{topNode.text}</div>
-                  </div>
-                </div>
-                <div style="display: none;">
-                  <div class={s"$browseTreeItem"} style="padding-left: 16px;">
-                    <div class={s"$browseTreeItem"}>
-                      <div class={browseTreeItemValue}>{childItem.text}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {renderAsXml(BrowseTree(), browseTreeProps)}
           </div>
         </div>
         <div class="span8">

@@ -201,7 +201,7 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
   private def treeNode(props: BrowseTreeNodeProps,
                        children: List[ReactElement] = Nil): ReactElement = {
 
-    E(BrowseTreeNode.reactClass)(A.wrapped := props)(children)
+    E(BrowseTreeNode())(A.wrapped := props)(children)
   }
 }
 

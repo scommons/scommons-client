@@ -1,8 +1,11 @@
 package scommons.client.test
 
+import io.github.shogowada.scalajs.reactjs.React
+import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalajs.dom._
 import org.scalatest.Matchers
-import scommons.client.test.raw.TestReactDOM
+import scommons.client.test.raw.{ReactTestUtils, TestReactDOM}
 
 import scala.scalajs.js
 
@@ -10,7 +13,44 @@ object TestUtils extends Matchers {
 
   def findReactElement(component: js.Any): Element = asElement(TestReactDOM.findDOMNode(component))
 
-  def asElement(node: Node): Element = node.asInstanceOf[Element]
+  private def asElement(node: Node): Element = node.asInstanceOf[Element]
+
+  def renderAsXml(reactClass: ReactClass, props: Any, children: ReactElement*): xml.Elem = {
+    domElement2XmlElem(findReactElement(ReactTestUtils.renderIntoDocument(
+      React.createElement(reactClass, React.wrap(props), children: _*)
+    )))
+  }
+
+  def domElement2XmlElem(node: Element): xml.Elem = {
+    convertElement(node)
+  }
+
+  private def convertElement(node: Node): xml.Elem = {
+    val label = node.nodeName.toLowerCase
+
+    val attrs = convertAttributes(getAttributes(node))
+    val children = convertChildElements(getChildNodes(node))
+
+    xml.Elem(null, label, attrs, xml.TopScope, minimizeEmpty = false, children: _*)
+  }
+
+  private def convertChildElements(childList: List[Node]): List[xml.Node] = childList.map { node =>
+    val label = node.nodeName.toLowerCase
+
+    if (label == "#text") xml.Text(node.textContent)
+    else convertElement(node)
+  }
+
+  private def convertAttributes(attrs: List[(String, String)]): xml.MetaData = {
+    @annotation.tailrec
+    def loop(attrs: List[(String, String)], next: xml.MetaData): xml.MetaData = attrs match {
+      case Nil => next
+      case head :: tail =>
+        loop(tail, xml.Attribute(None, head._1, xml.Text(head._2), next))
+    }
+
+    loop(attrs, xml.Null)
+  }
 
   def assertDOMElement(result: Element, expected: xml.Elem): Unit = {
     assertElement(TestDOMPath(result, result), xml.Utility.trim(expected))
@@ -23,9 +63,9 @@ object TestUtils extends Matchers {
 
     if (label == "#text") assertTextContent(path, expected)
     else {
-      assertAttributes(path, asMap(node.attributes), expected.attributes.asAttrMap)
+      assertAttributes(path, getAttributes(node).toMap, expected.attributes.asAttrMap)
 
-      assertChildNodes(path, jsArray(node.childNodes).toList, expected.child.toList)
+      assertChildNodes(path, getChildNodes(node), expected.child.toList)
     }
   }
 
@@ -52,14 +92,17 @@ object TestUtils extends Matchers {
   }
 
   private def assertAttributes(path: TestDOMPath,
-                               result: Map[String, String],
-                               expected: Map[String, String]): Unit = {
+                               resultAttrs: Map[String, String],
+                               expectedAttrs: Map[String, String]): Unit = {
+
+    val result = resultAttrs - "data-reactroot"
+    val expected = expectedAttrs - "data-reactroot"
 
     def mkString(attrs: Map[String, String]): String = {
       attrs.toList.sorted.map(p => s"${p._1}=${p._2}").mkString("\n\t")
     }
 
-    val resultKeys = result.keySet - "data-reactroot"
+    val resultKeys = result.keySet
     val expectedKeys = expected.keySet
 
     if (resultKeys != expectedKeys) {
@@ -131,20 +174,24 @@ object TestUtils extends Matchers {
     }
   }
 
-  private def jsArray[T](domList: DOMList[T]): js.Array[T] = {
-    if (js.isUndefined(domList)) new js.Array[T](0)
+  private def getChildNodes(node: Node): List[Node] = {
+    val childNodes = node.childNodes
+
+    if (js.isUndefined(childNodes) || childNodes.length == 0) List.empty[Node]
     else {
-      val result = new js.Array[T](domList.length)
-      for (i <- 0 until domList.length) {
-        result(i) = domList(i)
+      var result = List.empty[Node]
+      for (i <- (0 until childNodes.length).reverse) {
+        result = childNodes(i) :: result
       }
 
       result
     }
   }
 
-  private def asMap(nodeMap: NamedNodeMap): Map[String, String] = {
-    if (nodeMap.length == 0) Map.empty
+  private def getAttributes(node: Node): List[(String, String)] = {
+    val nodeMap = node.attributes
+
+    if (nodeMap.length == 0) List.empty
     else {
       var result = List.empty[(String, String)]
       for (i <- 0 until nodeMap.length) {
@@ -152,7 +199,7 @@ object TestUtils extends Matchers {
         result = (attr.name, attr.value) :: result
       }
 
-      result.toMap
+      result
     }
   }
 

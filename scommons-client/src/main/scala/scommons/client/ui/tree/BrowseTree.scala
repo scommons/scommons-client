@@ -26,7 +26,7 @@ object BrowseTree {
       val props = self.props.wrapped
 
       def createElements(items: List[BrowseTreeData], level: Int): List[ReactElement] = items.map { data =>
-        <(BrowseTreeNode.reactClass)(^.wrapped := BrowseTreeNodeProps(
+        <(BrowseTreeNode())(^.wrapped := BrowseTreeNodeProps(
           data,
           level,
           props.selectedItem.contains(data.key),//isSelected(self.state, data),
