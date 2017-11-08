@@ -5,6 +5,7 @@ import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
+import scommons.client.ui.ImageLabelWrapper
 import scommons.client.ui.tree.BrowseTreeCss._
 
 case class BrowseTreeNodeProps(data: BrowseTreeData,
@@ -23,24 +24,25 @@ object BrowseTreeNode {
   private lazy val reactClass: ReactClass = React.createClass[BrowseTreeNodeProps, Unit]{ self =>
     val props = self.props.wrapped
 
-    val (itemText, isNode) = props.data match {
-      case BrowseTreeItemData(text) => (text, false)
-      case BrowseTreeNodeData(text, _) => (text, true)
+    val (itemText, itemImage, isNode) = props.data match {
+      case BrowseTreeItemData(text, image) => (text, image, false)
+      case BrowseTreeNodeData(text, image, _) => (text, image, true)
     }
 
     val topItemClass = if (props.level == 0) browseTreeTopItem else ""
     val topItemImageClass = if (props.level == 0) browseTreeTopItemImageValue else ""
     val selectedClass = if (props.selected) browseTreeSelectedItem else ""
     val nodeClass = if (isNode) browseTreeNode else ""
+    val valueClass = if (isNode) browseTreeNodeValue else browseTreeItemValue
     val arrowClass = if (props.expanded) browseTreeOpenArrow else browseTreeClosedArrow
 
     val itemStyle =
-      if (props.level == 0) Map.empty[String, String]
-      else Map("paddingLeft" -> s"${props.level * 16}px")
+      if (props.level == 0) None
+      else Some(^.style := Map("paddingLeft" -> s"${props.level * 16}px"))
 
     val treeItem = <.div(
       ^.className := s"$browseTreeItem $selectedClass $topItemClass",
-      ^.style := itemStyle,
+      itemStyle,
       ^.onClick := itemClick(self)
     )(
       <.div(^.className := s"$browseTreeItem $nodeClass $topItemImageClass")(
@@ -50,7 +52,10 @@ object BrowseTreeNode {
           )
         }
         else None,
-        <.div(^.className := s"$browseTreeItemValue")(itemText)
+        <.div(^.className := s"$valueClass")(itemImage match {
+          case None => itemText
+          case Some(image) => ImageLabelWrapper(image, Some(itemText), alignText = false)
+        })
       )
     )
 

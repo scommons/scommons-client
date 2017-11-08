@@ -12,8 +12,14 @@
   zoom: 1;
 }
 
-.browseTreeItemValue {
+.browseTreeNodeValue {
   padding-left: 3px;
+  padding-right: 3px;
+  outline: none;
+}
+
+.browseTreeItemValue {
+  padding-left: 18px;
   padding-right: 3px;
   outline: none;
 }

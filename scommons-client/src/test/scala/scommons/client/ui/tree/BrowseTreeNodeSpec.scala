@@ -9,6 +9,7 @@ import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
+import scommons.client.ui.Buttons
 import scommons.client.ui.tree.BrowseTreeCss._
 
 import scala.scalajs.js.annotation.JSExportAll
@@ -97,6 +98,27 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
     )
   }
 
+  it should "render item with image" in {
+    //given
+    val data = BrowseTreeItemData("item with image", Some(Buttons.ADD.image))
+    val component = treeNode(nodeProps(data, 1))
+
+    //when
+    val result = renderIntoDocument(component)
+
+    //then
+    assertDOMElement(findReactElement(result),
+      <div class={s"$browseTreeItem"} style="padding-left: 16px;">
+        <div class={s"$browseTreeItem"}>
+          <div class={browseTreeItemValue}>
+            <img class={s"${data.image.get}"} src=""/>
+            <span style="padding-left: 3px;">{data.text}</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   it should "render top empty node" in {
     //given
     val data = BrowseTreeNodeData("top empty node", Nil)
@@ -113,7 +135,7 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
             <div class={s"$browseTreeNodeIcon"}>
               <div class={browseTreeClosedArrow}/>
             </div>
-            <div class={browseTreeItemValue}>{data.text}</div>
+            <div class={browseTreeNodeValue}>{data.text}</div>
           </div>
         </div>
         <div style="display: none;"/>
@@ -140,7 +162,7 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
             <div class={s"$browseTreeNodeIcon"}>
               <div class={browseTreeClosedArrow}/>
             </div>
-            <div class={browseTreeItemValue}>{data.text}</div>
+            <div class={browseTreeNodeValue}>{data.text}</div>
           </div>
         </div>
         <div style="display: none;">
@@ -173,7 +195,7 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
             <div class={s"$browseTreeNodeIcon"}>
               <div class={browseTreeOpenArrow}/>
             </div>
-            <div class={browseTreeItemValue}>{data.text}</div>
+            <div class={browseTreeNodeValue}>{data.text}</div>
           </div>
         </div>
         <div>

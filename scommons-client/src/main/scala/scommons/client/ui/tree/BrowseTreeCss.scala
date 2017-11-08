@@ -11,6 +11,8 @@ object BrowseTreeCss extends js.Object {
 
   val browseTreeItem: String = js.native
 
+  val browseTreeNodeValue: String = js.native
+
   val browseTreeItemValue: String = js.native
 
   val browseTreeTopItem: String = js.native

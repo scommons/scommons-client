@@ -76,8 +76,9 @@ case class ReduxState(roots: List[BrowseTreeData],
 
 object Reducer {
 
-  private val reposItem = BrowseTreeItemData("Repos")
-  private val buttonsItem = BrowseTreeItemData("Buttons")
+  private val repoItem = BrowseTreeItemData("Repo", Some(Buttons.REMOVE.image))
+  private val reposItem = BrowseTreeNodeData("Repos", Some(Buttons.ADD.image), List(repoItem))
+  private val buttonsItem = BrowseTreeItemData("Buttons", Some(Buttons.CANCEL.image))
   private val widgetsNode = BrowseTreeNodeData("Widgets", List(buttonsItem, reposItem))
 
   private val defaultRoots = List(widgetsNode)

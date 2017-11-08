@@ -13,6 +13,20 @@ object BrowseTreeData {
   type BrowseTreeDataKey = Identity[BrowseTreeData]
 }
 
-case class BrowseTreeItemData(text: String) extends BrowseTreeData
+case class BrowseTreeItemData(text: String,
+                              image: Option[String]) extends BrowseTreeData
 
-case class BrowseTreeNodeData(text: String, children: List[BrowseTreeData] = Nil) extends BrowseTreeData
+object BrowseTreeItemData {
+
+  def apply(text: String): BrowseTreeItemData = BrowseTreeItemData(text, None)
+}
+
+case class BrowseTreeNodeData(text: String,
+                              image: Option[String],
+                              children: List[BrowseTreeData]) extends BrowseTreeData
+
+object BrowseTreeNodeData {
+
+  def apply(text: String, children: List[BrowseTreeData] = Nil): BrowseTreeNodeData =
+    BrowseTreeNodeData(text, None, children)
+}

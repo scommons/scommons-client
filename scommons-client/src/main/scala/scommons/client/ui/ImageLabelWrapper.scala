@@ -8,21 +8,22 @@ import io.github.shogowada.scalajs.reactjs.elements.ReactElement
   */
 object ImageLabelWrapper {
 
-  def apply(image: String, maybeText: Option[String]): List[ReactElement] = {
+  private val alignedTextStyle = Map(
+    "paddingLeft" -> "3px",
+    "verticalAlign" -> "middle"
+  )
+
+  private val nonAlignedTextStyle = alignedTextStyle - "verticalAlign"
+
+  def apply(image: String, maybeText: Option[String], alignText: Boolean = true): List[ReactElement] = {
     val imageElement = <.img(^.className := image, ^.src := "")()
 
     maybeText match {
       case None => List(imageElement)
-      case Some(text) =>
-        val textStyle = Map(
-          "paddingLeft" -> "3px",
-          "verticalAlign" -> "middle"
-        )
-
-        List(
-          imageElement,
-          <.span(^.style := textStyle)(text)
-        )
+      case Some(text) => List(
+        imageElement,
+        <.span(^.style := (if (alignText) alignedTextStyle else nonAlignedTextStyle))(text)
+      )
     }
   }
 }
