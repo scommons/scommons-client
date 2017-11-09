@@ -17,6 +17,10 @@ object Client extends ScalaJsModule {
       .settings(
         webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"),
 
+        npmDependencies in Compile ++= Seq(
+          "react-modal" -> "3.1.2"
+        ),
+
         npmDevDependencies in Compile ++= Seq(
           "css-loader" -> "0.23.1",
           "extract-text-webpack-plugin" -> "1.0.1",
