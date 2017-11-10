@@ -23,9 +23,23 @@ object PopupsDemo {
           <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Show ReactModal"), { () =>
             self.setState(_ => true)
           }))(),
-          <.ReactModal(^.isOpen := self.state, ^.onRequestClose := { () =>
-            self.setState(_ => false)
-          })(
+          <.ReactModal(
+            ^.isOpen := self.state,
+            ^.onRequestClose := { () =>
+              self.setState(_ => false)
+            },
+            ^.modalClassName := "scommons-modal",
+            ^.overlayClassName := "scommons-PopupPanelGlass"
+//            ^.modalStyle := new ReactModalStyle {
+//              override val overlay = new ReactModalStyleOverlay {
+//                override val position = "fixed"
+//                override val top = 0
+//                override val left = 0
+//                override val right = 0
+//                override val bottom = 0
+//              }
+//            }
+          )(
             <.p()("Modal text!")
           )
         ),
