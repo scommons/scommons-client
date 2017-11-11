@@ -28,6 +28,7 @@ trait ReactModalStyleOverlay extends js.Object {
 
 trait ReactModalStyleContent extends js.Object {
   val position: js.UndefOr[String] = js.undefined
+  val marginTop: js.UndefOr[String] = js.undefined
   val top: js.UndefOr[String] = js.undefined
   val left: js.UndefOr[String] = js.undefined
   val right: js.UndefOr[String] = js.undefined
