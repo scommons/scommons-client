@@ -6,15 +6,15 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.react.modal.ReactModal._
 import scommons.react.modal.{ReactModalStyle, ReactModalStyleContent}
 
-case class StatusPanelProps(text: String,
+case class StatusPopupProps(text: String,
                             show: Boolean,
                             onHide: () => Unit)
 
-object StatusPanel {
+object StatusPopup {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[StatusPanelProps, Unit] { self =>
+  private lazy val reactClass = React.createClass[StatusPopupProps, Unit] { self =>
     val props = self.props.wrapped
 
     <.ReactModal(

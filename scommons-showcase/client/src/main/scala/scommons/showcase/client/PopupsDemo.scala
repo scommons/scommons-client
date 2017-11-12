@@ -3,7 +3,7 @@ package scommons.showcase.client
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.panel.{StatusPanel, StatusPanelProps}
+import scommons.client.ui.panel.{StatusPopup, StatusPopupProps}
 import scommons.client.ui.{Buttons, ImageButton, ImageButtonProps}
 import scommons.react.modal.ReactModal._
 import scommons.react.modal.{ReactModalStyle, ReactModalStyleContent, ReactModalStyleOverlay}
@@ -72,7 +72,7 @@ object PopupsDemo {
           <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Show Status"), { () =>
             self.setState(_.copy(showStatus = true))
           }))(),
-          <(StatusPanel())(^.wrapped := StatusPanelProps("Fetching data...", show = self.state.showStatus, { () =>
+          <(StatusPopup())(^.wrapped := StatusPopupProps("Fetching data...", show = self.state.showStatus, { () =>
             self.setState(_.copy(showStatus = false))
           }))()
         ),

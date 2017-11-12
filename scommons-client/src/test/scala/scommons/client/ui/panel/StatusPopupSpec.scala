@@ -7,12 +7,12 @@ import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.TestReactDOM._
 import scommons.react.modal.NativeReactModal
 
-class StatusPanelSpec extends FlatSpec with Matchers {
+class StatusPopupSpec extends FlatSpec with Matchers {
 
   "rendering" should "render the component" in {
     //given
     val text = "test text"
-    val component = E(StatusPanel())(A.wrapped := StatusPanelProps(text, show = true, () => ()))()
+    val component = E(StatusPopup())(A.wrapped := StatusPopupProps(text, show = true, () => ()))()
 
     //when
     val result = renderIntoDocument(component)
