@@ -1,0 +1,6 @@
+
+.loading {
+  background: url('./loading.gif') no-repeat 0px 0px;
+  width: 32px;
+  height: 32px;
+}

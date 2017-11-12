@@ -3,10 +3,10 @@ package scommons.showcase.client
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.panel.{StatusPopup, StatusPopupProps}
+import org.scalajs.dom
+import scommons.client.ui.panel.{LoadingPopup, LoadingPopupProps, StatusPopup, StatusPopupProps}
 import scommons.client.ui.{Buttons, ImageButton, ImageButtonProps}
 import scommons.react.modal.ReactModal._
-import scommons.react.modal.{ReactModalStyle, ReactModalStyleContent, ReactModalStyleOverlay}
 
 case class ModalState(showModal: Boolean = false,
                       showLoading: Boolean = false,
@@ -40,40 +40,20 @@ object PopupsDemo {
         ),
 
         <.p()(
-          <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Loading"), { () =>
-            self.setState(_.copy(showLoading = true))
-          }))(),
-          <.ReactModal(
-            ^.isOpen := self.state.showLoading,
-            ^.onRequestClose := { () =>
-              self.setState(_.copy(showLoading = false))
-            },
-            ^.modalStyle := new ReactModalStyle {
-              override val overlay = new ReactModalStyleOverlay {
-                override val backgroundColor = "rgba(0,0,0, 0)"
-              }
-              override val content = new ReactModalStyleContent {
-                override val position = "fixed"
-                override val top = "50%"
-                override val left = "50%"
-                override val right = ""
-                override val bottom = ""
-                override val border = ""
-                override val borderRadius = ""
-                override val padding = ""
-              }
-            }
-          )(
-            <.p()("Loading...")
-          )
-        ),
+          <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Show Loading and Status"), { () =>
+            self.setState(_.copy(showLoading = true, showStatus = true))
 
-        <.p()(
-          <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Show Status"), { () =>
-            self.setState(_.copy(showStatus = true))
+            var timerId = 0
+            timerId = dom.window.setInterval({ () =>
+              self.setState(_.copy(showLoading = false))
+              dom.window.clearInterval(timerId)
+            }, 3000)
           }))(),
+          <(LoadingPopup())(^.wrapped := LoadingPopupProps(show = self.state.showLoading))(),
           <(StatusPopup())(^.wrapped := StatusPopupProps("Fetching data...", show = self.state.showStatus, { () =>
-            self.setState(_.copy(showStatus = false))
+            if (!self.state.showLoading) {
+              self.setState(_.copy(showStatus = false))
+            }
           }))()
         ),
 
