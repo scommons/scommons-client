@@ -1,7 +1,6 @@
 package scommons.client.ui.panel
 
 import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
@@ -18,8 +17,6 @@ object WithAutoHide {
                                        getAutoHideDiv: () => HTMLElement,
                                        autoHideHandle: Option[js.Function1[Event, Unit]] = None)
 
-  private type WithAutoHideSelf = Self[WithAutoHideProps, WithAutoHideState]
-
   def apply(): ReactClass = reactClass
 
   private lazy val reactClass = React.createClass[WithAutoHideProps, WithAutoHideState](
@@ -33,9 +30,12 @@ object WithAutoHide {
       })
     },
     componentDidMount = { self =>
-      val autoHideHandle: js.Function1[Event, Unit] = onAutoHide(self)
-      dom.document.body.addEventListener("mouseup", autoHideHandle)
-      dom.document.body.addEventListener("keyup", autoHideHandle)
+      val autoHideHandle: js.Function1[Event, Unit] = onAutoHide(
+        self.state.getAutoHideDiv(),
+        self.props.wrapped.onHide
+      )
+      dom.document.addEventListener("mouseup", autoHideHandle)
+      dom.document.addEventListener("keyup", autoHideHandle)
 
       self.setState(_.copy(autoHideHandle = Some(autoHideHandle)))
     },
@@ -43,8 +43,8 @@ object WithAutoHide {
       self.state.autoHideHandle match {
         case None =>
         case Some(autoHideHandle) =>
-          dom.document.body.removeEventListener("mouseup", autoHideHandle)
-          dom.document.body.removeEventListener("keyup", autoHideHandle)
+          dom.document.removeEventListener("mouseup", autoHideHandle)
+          dom.document.removeEventListener("keyup", autoHideHandle)
           self.setState(_.copy(autoHideHandle = None))
       }
     },
@@ -57,12 +57,12 @@ object WithAutoHide {
     }
   )
 
-  private def onAutoHide(self: WithAutoHideSelf): Event => Unit = { e =>
-    val autoHideDiv = self.state.getAutoHideDiv()
+  private[panel] def onAutoHide(autoHideDiv: HTMLElement, onHide: () => Unit): Event => Unit = { e =>
     require(autoHideDiv != null, "autoHideDiv is not null")
 
-    if (!autoHideDiv.contains(e.target.asInstanceOf[HTMLElement])) {
-      self.props.wrapped.onHide()
+    val target = e.target.asInstanceOf[HTMLElement]
+    if (!autoHideDiv.contains(target)) {
+      onHide()
     }
   }
 }
