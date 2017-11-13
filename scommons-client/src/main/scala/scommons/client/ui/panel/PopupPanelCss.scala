@@ -7,5 +7,9 @@ import scala.scalajs.js.annotation.JSImport
 @js.native
 object PopupPanelCss extends js.Object {
 
-  val loading: String = js.native
+  val loadingOverlay: String = js.native
+  val loadingContent: String = js.native
+  val loadingImg: String = js.native
+
+  val statusContent: String = js.native
 }

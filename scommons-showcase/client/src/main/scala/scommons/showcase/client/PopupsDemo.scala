@@ -33,7 +33,7 @@ object PopupsDemo {
               self.setState(_.copy(showModal = false))
             },
             ^.modalClassName := "scommons-modal",
-            ^.overlayClassName := "scommons-PopupPanelGlass"
+            ^.overlayClassName := "scommons-modal-overlay"
           )(
             <.p()("Modal text!")
           )

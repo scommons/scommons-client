@@ -5,6 +5,7 @@ import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.TestReactDOM._
+import scommons.client.ui.panel.PopupPanelCss._
 import scommons.react.modal.NativeReactModal
 
 class StatusPopupSpec extends FlatSpec with Matchers {
@@ -20,10 +21,8 @@ class StatusPopupSpec extends FlatSpec with Matchers {
     //then
     val modal = findRenderedComponentWithType(result, NativeReactModal).portal
     assertDOMElement(findReactElement(modal),
-      <div class="ReactModal__Overlay ReactModal__Overlay--after-open no-overlay">
-        <div class="ReactModal__Content ReactModal__Content--after-open"
-             style="position: fixed; top: 100%; background: rgb(255, 255, 255); overflow: auto; border-radius: 4px; outline: none; margin-top: -20px;"
-             tabindex="-1">
+      <div class="ReactModal__Overlay ReactModal__Overlay--after-open scommons-status-no-overlay">
+        <div class={s"ReactModal__Content ReactModal__Content--after-open $statusContent"} tabindex="-1">
           <div>
             {text}
           </div>
