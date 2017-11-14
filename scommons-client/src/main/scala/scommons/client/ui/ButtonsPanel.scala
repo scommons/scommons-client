@@ -7,7 +7,8 @@ import scommons.client.util.ActionsData
 
 case class ButtonsPanelProps(buttons: List[ButtonData],
                              actions: ActionsData,
-                             group: Boolean)
+                             group: Boolean,
+                             className: Option[String] = None)
 
 object ButtonsPanel {
 
@@ -16,7 +17,10 @@ object ButtonsPanel {
   private lazy val reactClass = React.createClass[ButtonsPanelProps, Unit] { self =>
     val props = self.props.wrapped
 
-    val panelClass = if (props.group) "btn-group" else "btn-toolbar"
+    val panelClass = props.className match {
+      case None => if (props.group) "btn-group" else "btn-toolbar"
+      case Some(className) => className
+    }
 
     <.div(^.className := panelClass)(props.buttons.map { buttonData =>
       val disabled = !props.actions.actionCommands.contains(buttonData.command)

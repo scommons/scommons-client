@@ -3,9 +3,11 @@ package scommons.showcase.client
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import org.scalajs.dom
 import scommons.client.ui.panel.{LoadingPopup, LoadingPopupProps, StatusPopup, StatusPopupProps}
-import scommons.client.ui.{Buttons, ImageButton, ImageButtonProps}
+import scommons.client.ui._
+import scommons.client.util.ActionsData
 import scommons.react.modal.ReactModal._
 
 case class ModalState(showModal: Boolean = false,
@@ -22,7 +24,6 @@ object PopupsDemo {
       <.div()(
         <.h2()("Modal"),
         <.hr()(),
-
         <.p()(
           <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Modal"), { () =>
             self.setState(_.copy(showModal = true))
@@ -35,10 +36,26 @@ object PopupsDemo {
             ^.modalClassName := "scommons-modal",
             ^.overlayClassName := "scommons-modal-overlay"
           )(
-            <.p()("Modal text!")
+            <.div(^.className := "modal-header")(
+              <.button(^.`type` := "button", ^.className := "close", ^.onClick := { _: MouseSyntheticEvent =>
+                self.setState(_.copy(showModal = false))
+              })("×"),
+              <.h3()("Modal header")
+            ),
+            <.div(^.className := "modal-body")(
+              <.p()("One fine body...")
+            ),
+            <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
+              List(Buttons.OK, Buttons.CANCEL),
+              ActionsData(Set(Buttons.OK.command, Buttons.CANCEL.command), _ => ()),
+              group = false,
+              className = Some("modal-footer")
+            ))()
           )
         ),
 
+        <.h2()("Popups"),
+        <.hr()(),
         <.p()(
           <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Show Loading and Status"), { () =>
             self.setState(_.copy(showLoading = true, showStatus = true))
@@ -55,24 +72,6 @@ object PopupsDemo {
               self.setState(_.copy(showStatus = false))
             }
           }))()
-        ),
-
-        <.a(^.href := "#myModal", ^.role := "button", ^.className := "btn", ^("data-toggle") := "modal")("Launch demo modal"),
-
-        <.div(^.id := "myModal", ^.className := "modal hide fade", ^.tabindex := -1, ^.role := "dialog",
-          ^("aria-labelledby") := "myModalLabel", ^("aria-hidden") := "true"
-        )(
-          <.div(^.className := "modal-header")(
-            <.button(^.`type` := "button", ^.className := "close", ^("data-dismiss") := "modal", ^("aria-hidden") := "true")("×"),
-            <.h3(^.id := "myModalLabel")("Modal header")
-          ),
-          <.div(^.className := "modal-body")(
-            <.p()("One fine body...")
-          ),
-          <.div(^.className := "modal-footer")(
-            <.button(^.className := "btn", ^("data-dismiss") := "modal", ^("aria-hidden") := "true")("Close"),
-            <.button(^.className := "btn btn-primary")("Save changes")
-          )
         )
       )
     }

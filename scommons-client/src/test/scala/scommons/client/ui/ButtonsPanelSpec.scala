@@ -4,14 +4,14 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Matchers}
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
-import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
+import scommons.client.test.raw.{ReactTestUtils, ShallowRenderer}
 import scommons.client.ui.ButtonImagesCss._
 import scommons.client.util.ActionsData
 
 class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
 
-  "onClick" should "call onClick when click on button" in {
+  "onClick" should "call onCommand when click on button" in {
     //given
     val onCommand = mockFunction[String, Unit]
     val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
@@ -27,12 +27,34 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
     ReactTestUtils.Simulate.click(button)
   }
 
-  "rendering" should "render buttons toolbar" in {
+  "rendering" should "pass correct props to the children" in {
     //given
     val b1 = ImageButtonData("accept", accept, acceptDisabled, "test button 1")
     val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
+    val props = ButtonsPanelProps(
+      List(b1, b2),
+      ActionsData(Set(b1.command), _ => ()),
+      group = false,
+      className = Some("custom-class")
+    )
+    val component = E(ButtonsPanel())(A.wrapped := props)()
+
+    //when
+    val result = ShallowRenderer.renderAndGetOutput(component)
+
+    //then
+    result.`type` shouldBe "div"
+    result.props.className shouldBe props.className.get
+    result.props.children.length shouldBe 2
+  }
+
+  it should "render buttons toolbar in the DOM" in {
+    //given
+    val b1 = ImageButtonData("accept", accept, acceptDisabled, "test button 1")
+    val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
+    val group = false
     val component = E(ButtonsPanel())(A.wrapped := ButtonsPanelProps(
-      List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = false
+      List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = group
     ))()
 
     //when
@@ -41,24 +63,19 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
     //then
     assertDOMElement(findReactElement(result),
       <div class="btn-toolbar">
-        <button class="btn">
-          <img class={s"${b1.image}"} src=""/>
-          <span style="padding-left: 3px; vertical-align: middle;">{b1.text}</span>
-        </button>
-        <button class="btn" disabled="">
-          <img class={s"${b2.disabledImage}"} src=""/>
-          <span style="padding-left: 3px; vertical-align: middle;">{b2.text}</span>
-        </button>
+        {renderAsXml(ImageButton(), ImageButtonProps(b1, () => (), showTextAsTitle = group))}
+        {renderAsXml(ImageButton(), ImageButtonProps(b2, () => (), showTextAsTitle = group, disabled = true))}
       </div>
     )
   }
 
-  it should "render buttons group" in {
+  it should "render buttons group in the DOM" in {
     //given
     val b1 = ImageButtonData("accept", accept, acceptDisabled, "test button 1")
     val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
+    val group = true
     val component = E(ButtonsPanel())(A.wrapped := ButtonsPanelProps(
-      List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = true
+      List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = group
     ))()
 
     //when
@@ -67,12 +84,8 @@ class ButtonsPanelSpec extends FlatSpec with Matchers with MockFactory {
     //then
     assertDOMElement(findReactElement(result),
       <div class="btn-group">
-        <button class="btn" title={s"${b1.text}"}>
-          <img class={s"${b1.image}"} src=""/>
-        </button>
-        <button class="btn" disabled="" title={s"${b2.text}"}>
-          <img class={s"${b2.disabledImage}"} src=""/>
-        </button>
+        {renderAsXml(ImageButton(), ImageButtonProps(b1, () => (), showTextAsTitle = group))}
+        {renderAsXml(ImageButton(), ImageButtonProps(b2, () => (), showTextAsTitle = group, disabled = true))}
       </div>
     )
   }
