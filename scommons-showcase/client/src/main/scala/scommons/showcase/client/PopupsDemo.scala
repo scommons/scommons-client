@@ -3,12 +3,10 @@ package scommons.showcase.client
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import org.scalajs.dom
-import scommons.client.ui.panel.{LoadingPopup, LoadingPopupProps, StatusPopup, StatusPopupProps}
 import scommons.client.ui._
+import scommons.client.ui.panel._
 import scommons.client.util.ActionsData
-import scommons.react.modal.ReactModal._
 
 case class ModalState(showModal: Boolean = false,
                       showLoading: Boolean = false,
@@ -22,35 +20,25 @@ object PopupsDemo {
     getInitialState = { _ => ModalState() },
     render = { self =>
       <.div()(
-        <.h2()("Modal"),
+        <.h2()("Simple Modal"),
         <.hr()(),
         <.p()(
           <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Modal"), { () =>
             self.setState(_.copy(showModal = true))
           }))(),
-          <.ReactModal(
-            ^.isOpen := self.state.showModal,
-            ^.onRequestClose := { () =>
+          <(Modal())(^.wrapped := ModalProps(
+            self.state.showModal,
+            "Modal header",
+            List(Buttons.OK, Buttons.CANCEL),
+            ActionsData(Set(Buttons.OK.command, Buttons.CANCEL.command), {
+              case Buttons.CANCEL.command => self.setState(_.copy(showModal = false))
+              case _ =>
+            }),
+            onClose = { () =>
               self.setState(_.copy(showModal = false))
-            },
-            ^.modalClassName := "scommons-modal",
-            ^.overlayClassName := "scommons-modal-overlay"
-          )(
-            <.div(^.className := "modal-header")(
-              <.button(^.`type` := "button", ^.className := "close", ^.onClick := { _: MouseSyntheticEvent =>
-                self.setState(_.copy(showModal = false))
-              })("×"),
-              <.h3()("Modal header")
-            ),
-            <.div(^.className := "modal-body")(
-              <.p()("One fine body...")
-            ),
-            <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
-              List(Buttons.OK, Buttons.CANCEL),
-              ActionsData(Set(Buttons.OK.command, Buttons.CANCEL.command), _ => ()),
-              group = false,
-              className = Some("modal-footer")
-            ))()
+            }
+          ))(
+            <.p()("One fine body...")
           )
         ),
 
