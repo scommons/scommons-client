@@ -9,6 +9,7 @@ import scommons.client.ui.panel._
 import scommons.client.util.ActionsData
 
 case class ModalState(showModal: Boolean = false,
+                      showInputBox: Boolean = false,
                       showLoading: Boolean = false,
                       showStatus: Boolean = false)
 
@@ -20,10 +21,10 @@ object PopupsDemo {
     getInitialState = { _ => ModalState() },
     render = { self =>
       <.div()(
-        <.h2()("Simple Modal"),
+        <.h2()("Modal"),
         <.hr()(),
         <.p()(
-          <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Modal"), { () =>
+          <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Modal", primary = true), { () =>
             self.setState(_.copy(showModal = true))
           }))(),
           <(Modal())(^.wrapped := ModalProps(
@@ -42,18 +43,40 @@ object PopupsDemo {
           )
         ),
 
+        <.h2()("InputBox"),
+        <.hr()(),
+        <.p()(
+          <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "InputBox", primary = true), { () =>
+            self.setState(_.copy(showInputBox = true))
+          }))(),
+          <(InputBox())(^.wrapped := InputBoxProps(
+            self.state.showInputBox,
+            "Input header",
+            "Please, enter a value",
+            onOk = { _ =>
+              self.setState(_.copy(showInputBox = false))
+            },
+            onCancel = { () =>
+              self.setState(_.copy(showInputBox = false))
+            },
+            initialValue = Some("initial value")
+          ))()
+        ),
+
         <.h2()("Popups"),
         <.hr()(),
         <.p()(
-          <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Show Loading and Status"), { () =>
-            self.setState(_.copy(showLoading = true, showStatus = true))
+          <(ImageButton())(^.wrapped := ImageButtonProps(
+            Buttons.OK.copy(text = "Show Loading and Status", primary = true), { () =>
+              self.setState(_.copy(showLoading = true, showStatus = true))
 
-            var timerId = 0
-            timerId = dom.window.setInterval({ () =>
-              self.setState(_.copy(showLoading = false))
-              dom.window.clearInterval(timerId)
-            }, 3000)
-          }))(),
+              var timerId = 0
+              timerId = dom.window.setInterval({ () =>
+                self.setState(_.copy(showLoading = false))
+                dom.window.clearInterval(timerId)
+              }, 3000)
+            }
+          ))(),
           <(LoadingPopup())(^.wrapped := LoadingPopupProps(show = self.state.showLoading))(),
           <(StatusPopup())(^.wrapped := StatusPopupProps("Fetching data...", show = self.state.showStatus, { () =>
             if (!self.state.showLoading) {

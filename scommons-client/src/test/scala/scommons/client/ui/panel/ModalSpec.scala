@@ -13,6 +13,20 @@ import scommons.react.modal.NativeReactModal
 
 class ModalSpec extends FlatSpec with Matchers with MockFactory {
 
+  "onAfterOpen" should "call onOpen function" in {
+    //given
+    val onOpen = mockFunction[Unit]
+    val props = getModalProps(closable = true, onOpen = onOpen)
+    val component = E(Modal())(A.wrapped := props)()
+
+    //then
+    onOpen.expects()
+
+    //when
+    val result = ShallowRenderer.renderAndGetOutput(component)
+    result.props.onAfterOpen()
+  }
+
   "onRequestClose" should "call onClose function" in {
     //given
     val onClose = mockFunction[Unit]
@@ -131,12 +145,14 @@ class ModalSpec extends FlatSpec with Matchers with MockFactory {
   }
 
   private def getModalProps(closable: Boolean,
-                            onClose: () => Unit = () => ()): ModalProps = ModalProps(
+                            onClose: () => Unit = () => (),
+                            onOpen: () => Unit = () => ()): ModalProps = ModalProps(
     show = true,
     "test header",
     List(Buttons.OK, Buttons.CANCEL),
     ActionsData(Set(Buttons.OK.command, Buttons.CANCEL.command), _ => ()),
     onClose,
-    closable
+    closable,
+    onOpen
   )
 }

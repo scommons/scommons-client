@@ -13,7 +13,8 @@ case class ModalProps(show: Boolean,
                       buttons: List[ButtonData],
                       actions: ActionsData,
                       onClose: () => Unit,
-                      closable: Boolean = true)
+                      closable: Boolean = true,
+                      onOpen: () => Unit = () => ())
 
 object Modal {
 
@@ -37,6 +38,7 @@ object Modal {
     <.ReactModal(
       ^.isOpen := props.show,
       ^.shouldCloseOnOverlayClick := props.closable,
+      ^.onAfterOpen := props.onOpen,
       ^.onRequestClose := props.onClose,
       ^.overlayClassName := "scommons-modal-overlay",
       ^.modalClassName := "scommons-modal"
