@@ -3,10 +3,8 @@ package scommons.client.ui.panel
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, KeyboardSyntheticEvent}
-import org.scalajs.dom.raw.HTMLInputElement
-import scommons.client.ui.Buttons
-import scommons.client.util.{ActionsData, KeyCodes}
+import scommons.client.ui.{Buttons, TextField, TextFieldProps}
+import scommons.client.util.ActionsData
 
 case class InputBoxProps(show: Boolean,
                          message: String,
@@ -19,30 +17,28 @@ object InputBox {
 
   private case class InputBoxState(value: String,
                                    actionCommands: Set[String],
-                                   setInputRef: HTMLInputElement => Unit,
-                                   getInputRef: () => HTMLInputElement)
+                                   requestFocus: Boolean = false,
+                                   requestSelect: Boolean = false)
 
   def apply(): ReactClass = reactClass
 
   private lazy val reactClass = React.createClass[InputBoxProps, InputBoxState](
     getInitialState = { self =>
       val value = self.props.wrapped.initialValue.getOrElse("")
-      var inputRef: HTMLInputElement = null
 
-      InputBoxState(value, getActionCommands(value), { ref =>
-        inputRef = ref
-      }, { () =>
-        inputRef
-      })
+      InputBoxState(value, getActionCommands(value))
     },
-    componentWillReceiveProps = { (self, props) =>
-      val value = props.wrapped.initialValue.getOrElse("")
-      self.setState(_.copy(value = value, actionCommands = getActionCommands(value)))
+    componentWillReceiveProps = { (self, nextProps) =>
+      val value = nextProps.wrapped.initialValue.getOrElse("")
+      self.setState(_.copy(
+        value = value,
+        actionCommands = getActionCommands(value),
+        requestFocus = false,
+        requestSelect = false
+      ))
     },
     render = { self =>
       val props = self.props.wrapped
-
-      val placeholderAttr = props.placeholder.map(p => ^.placeholder := p)
 
       def onCommand(command: String): Unit = command match {
         case Buttons.OK.command => props.onOk(self.state.value)
@@ -55,36 +51,25 @@ object InputBox {
         ActionsData(self.state.actionCommands, onCommand),
         props.onCancel,
         onOpen = { () =>
-          val inputRef = self.state.getInputRef()
-          val value = self.state.value
-          if (value.nonEmpty) {
-            inputRef.setSelectionRange(0, value.length)
-          }
-
-          inputRef.focus()
+          self.setState(_.copy(requestFocus = true, requestSelect = true))
         }
       ))(
         <.div(^.className := "row-fluid")(
           <.p()(props.message),
           <.div(^.className := "control-group")(
-            <.input(
-              ^.`type` := "text",
-              ^.className := "span12",
-              ^.value := self.state.value,
-              placeholderAttr,
-              ^.ref := { ref: HTMLInputElement =>
-                self.state.setInputRef(ref)
-              },
-              ^.onChange := { e: FormSyntheticEvent[HTMLInputElement] =>
-                val value = e.target.value
+            <(TextField())(^.wrapped := TextFieldProps(
+              self.state.value,
+              onChange = { value =>
                 self.setState(_.copy(value = value, actionCommands = getActionCommands(value)))
               },
-              ^.onKeyDown := { e: KeyboardSyntheticEvent =>
-                if (e.keyCode == KeyCodes.KEY_ENTER) {
-                  onCommand(Buttons.OK.command)
-                }
+              requestFocus = self.state.requestFocus,
+              requestSelect = self.state.requestSelect,
+              className = Some("span12"),
+              placeholder = props.placeholder,
+              onEnter = { () =>
+                onCommand(Buttons.OK.command)
               }
-            )()
+            ))()
           )
         )
       )
