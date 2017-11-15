@@ -29,7 +29,7 @@ object PopupsDemo {
           }))(),
           <(Modal())(^.wrapped := ModalProps(
             self.state.showModal,
-            "Modal header",
+            Some("Modal header"),
             List(Buttons.OK, Buttons.CANCEL),
             ActionsData(Set(Buttons.OK.command, Buttons.CANCEL.command), {
               case Buttons.CANCEL.command => self.setState(_.copy(showModal = false))
@@ -51,7 +51,6 @@ object PopupsDemo {
           }))(),
           <(InputBox())(^.wrapped := InputBoxProps(
             self.state.showInputBox,
-            "Input header",
             "Please, enter a value",
             onOk = { _ =>
               self.setState(_.copy(showInputBox = false))

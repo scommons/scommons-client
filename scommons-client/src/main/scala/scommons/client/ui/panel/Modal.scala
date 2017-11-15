@@ -9,7 +9,7 @@ import scommons.client.util.ActionsData
 import scommons.react.modal.ReactModal._
 
 case class ModalProps(show: Boolean,
-                      header: String,
+                      header: Option[String],
                       buttons: List[ButtonData],
                       actions: ActionsData,
                       onClose: () => Unit,
@@ -43,10 +43,12 @@ object Modal {
       ^.overlayClassName := "scommons-modal-overlay",
       ^.modalClassName := "scommons-modal"
     )(
-      <.div(^.className := "modal-header")(
-        closeButton,
-        <.h3()(props.header)
-      ),
+      props.header.map { header =>
+        <.div(^.className := "modal-header")(
+          closeButton,
+          <.h3()(header)
+        )
+      },
       <.div(^.className := "modal-body")(
         self.props.children
       ),

@@ -30,7 +30,7 @@ class ModalSpec extends FlatSpec with Matchers with MockFactory {
   "onRequestClose" should "call onClose function" in {
     //given
     val onClose = mockFunction[Unit]
-    val props = getModalProps(closable = true, onClose)
+    val props = getModalProps(closable = true, onClose = onClose)
     val component = E(Modal())(A.wrapped := props)()
 
     //then
@@ -91,7 +91,7 @@ class ModalSpec extends FlatSpec with Matchers with MockFactory {
         <div class="ReactModal__Content ReactModal__Content--after-open scommons-modal" tabindex="-1">
           <div class="modal-header">
             <button type="button" class="close">×</button>
-            <h3>{props.header}</h3>
+            <h3>{props.header.get}</h3>
           </div>
           <div class="modal-body">
             {body}
@@ -125,7 +125,7 @@ class ModalSpec extends FlatSpec with Matchers with MockFactory {
       <div class="ReactModal__Overlay ReactModal__Overlay--after-open scommons-modal-overlay">
         <div class="ReactModal__Content ReactModal__Content--after-open scommons-modal" tabindex="-1">
           <div class="modal-header">
-            <h3>{props.header}</h3>
+            <h3>{props.header.get}</h3>
           </div>
           <div class="modal-body">
             {body}
@@ -144,11 +144,43 @@ class ModalSpec extends FlatSpec with Matchers with MockFactory {
     unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
   }
 
+  it should "render modal without header in the DOM" in {
+    //given
+    val body = "test body"
+    val props = getModalProps(closable = true, header = None)
+    val component = E(Modal())(A.wrapped := props)(body)
+
+    //when
+    val result = renderIntoDocument(component)
+
+    //then
+    val modal = findRenderedComponentWithType(result, NativeReactModal).portal
+    assertDOMElement(findReactElement(modal),
+      <div class="ReactModal__Overlay ReactModal__Overlay--after-open scommons-modal-overlay">
+        <div class="ReactModal__Content ReactModal__Content--after-open scommons-modal" tabindex="-1">
+          <div class="modal-body">
+            {body}
+          </div>
+          {renderAsXml(ButtonsPanel(), ButtonsPanelProps(
+            props.buttons,
+            props.actions,
+            group = false,
+            className = Some("modal-footer")
+          ))}
+        </div>
+      </div>
+    )
+
+    //cleanup
+    unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
+  }
+
   private def getModalProps(closable: Boolean,
+                            header: Option[String] = Some("test header"),
                             onClose: () => Unit = () => (),
                             onOpen: () => Unit = () => ()): ModalProps = ModalProps(
     show = true,
-    "test header",
+    header,
     List(Buttons.OK, Buttons.CANCEL),
     ActionsData(Set(Buttons.OK.command, Buttons.CANCEL.command), _ => ()),
     onClose,
