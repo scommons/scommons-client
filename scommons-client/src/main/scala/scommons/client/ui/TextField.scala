@@ -11,7 +11,7 @@ case class TextFieldProps(text: String,
                           onChange: (String) => Unit,
                           requestFocus: Boolean = false,
                           requestSelect: Boolean = false,
-                          className: Option[String],
+                          className: Option[String] = None,
                           placeholder: Option[String] = None,
                           onEnter: () => Unit = () => ())
 
