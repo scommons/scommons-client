@@ -19,5 +19,13 @@ trait ShallowRendererUtils extends Matchers {
         case resultValue => resultValue shouldBe attr.value
       }
     }
+
+    expectedElement.flattenedContents match {
+      case Nil =>
+        result.props.children shouldBe js.undefined
+      case Seq(expectedChild) =>
+        result.props.children shouldBe expectedChild
+//      case expectedChildren =>
+    }
   }
 }

@@ -24,7 +24,7 @@ object PopupsDemo {
         <.h2()("Modal"),
         <.hr()(),
         <.p()(
-          <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "Modal", primary = true), { () =>
+          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Modal", primary = true), { () =>
             self.setState(_.copy(showModal = true))
           }))(),
           <(Modal())(^.wrapped := ModalProps(
@@ -46,7 +46,7 @@ object PopupsDemo {
         <.h2()("InputBox"),
         <.hr()(),
         <.p()(
-          <(ImageButton())(^.wrapped := ImageButtonProps(Buttons.OK.copy(text = "InputBox", primary = true), { () =>
+          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "InputBox", primary = true), { () =>
             self.setState(_.copy(showInputBox = true))
           }))(),
           <(InputBox())(^.wrapped := InputBoxProps(
@@ -65,17 +65,15 @@ object PopupsDemo {
         <.h2()("Popups"),
         <.hr()(),
         <.p()(
-          <(ImageButton())(^.wrapped := ImageButtonProps(
-            Buttons.OK.copy(text = "Show Loading and Status", primary = true), { () =>
-              self.setState(_.copy(showLoading = true, showStatus = true))
+          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Loading and Status", primary = true), { () =>
+            self.setState(_.copy(showLoading = true, showStatus = true))
 
-              var timerId = 0
-              timerId = dom.window.setInterval({ () =>
-                self.setState(_.copy(showLoading = false))
-                dom.window.clearInterval(timerId)
-              }, 3000)
-            }
-          ))(),
+            var timerId = 0
+            timerId = dom.window.setInterval({ () =>
+              self.setState(_.copy(showLoading = false))
+              dom.window.clearInterval(timerId)
+            }, 3000)
+          }))(),
           <(LoadingPopup())(^.wrapped := LoadingPopupProps(show = self.state.showLoading))(),
           <(StatusPopup())(^.wrapped := StatusPopupProps("Fetching data...", show = self.state.showStatus, { () =>
             if (!self.state.showLoading) {

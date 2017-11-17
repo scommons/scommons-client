@@ -22,12 +22,19 @@ object ButtonsPanel {
       case Some(className) => className
     }
 
+    def onCommand(command: String): () => Unit = { () =>
+      props.actions.onCommand(command)
+    }
+
     <.div(^.className := panelClass)(props.buttons.map { buttonData =>
       val disabled = !props.actions.actionCommands.contains(buttonData.command)
 
       buttonData match {
+        case data: SimpleButtonData => <(SimpleButton())(^.wrapped := SimpleButtonProps(
+          data, onCommand(data.command), disabled = disabled
+        ))()
         case data: ImageButtonData => <(ImageButton())(^.wrapped := ImageButtonProps(
-          data, () => props.actions.onCommand(data.command), showTextAsTitle = props.group, disabled = disabled
+          data, onCommand(data.command), showTextAsTitle = props.group, disabled = disabled
         ))()
       }
     })
