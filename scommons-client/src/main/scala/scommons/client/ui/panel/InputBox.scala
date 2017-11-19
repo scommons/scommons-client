@@ -11,25 +11,25 @@ case class InputBoxProps(show: Boolean,
                          onOk: String => Unit,
                          onCancel: () => Unit,
                          placeholder: Option[String] = None,
-                         initialValue: Option[String] = None)
+                         initialValue: String = "")
 
 object InputBox {
 
-  private case class InputBoxState(value: String,
-                                   actionCommands: Set[String],
-                                   requestFocus: Boolean = false,
-                                   requestSelect: Boolean = false)
+  private[panel] case class InputBoxState(value: String,
+                                          actionCommands: Set[String],
+                                          requestFocus: Boolean = false,
+                                          requestSelect: Boolean = false)
 
   def apply(): ReactClass = reactClass
 
   private lazy val reactClass = React.createClass[InputBoxProps, InputBoxState](
     getInitialState = { self =>
-      val value = self.props.wrapped.initialValue.getOrElse("")
+      val value = self.props.wrapped.initialValue
 
       InputBoxState(value, getActionCommands(value))
     },
     componentWillReceiveProps = { (self, nextProps) =>
-      val value = nextProps.wrapped.initialValue.getOrElse("")
+      val value = nextProps.wrapped.initialValue
       self.setState(_.copy(
         value = value,
         actionCommands = getActionCommands(value),

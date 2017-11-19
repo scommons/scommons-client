@@ -36,7 +36,7 @@ class SimpleButtonSpec extends FlatSpec
     val result = shallowRender(component)
 
     //then
-    assertShallowRenderedElement(result, E.button(
+    assertDOMComponent(result, E.button(
       ^.`type` := "button",
       ^.className := "btn"
     )(data.text))
@@ -52,7 +52,7 @@ class SimpleButtonSpec extends FlatSpec
     val result = shallowRender(component)
 
     //then
-    assertShallowRenderedElement(result, E.button(
+    assertDOMComponent(result, E.button(
       ^.`type` := "button",
       ^.className := "btn",
       ^.disabled := true
@@ -69,7 +69,7 @@ class SimpleButtonSpec extends FlatSpec
     val result = shallowRender(component)
 
     //then
-    assertShallowRenderedElement(result, E.button(
+    assertDOMComponent(result, E.button(
       ^.`type` := "button",
       ^.className := "btn btn-primary"
     )(data.text))
@@ -85,7 +85,7 @@ class SimpleButtonSpec extends FlatSpec
     val result = shallowRender(component)
 
     //then
-    assertShallowRenderedElement(result, E.button(
+    assertDOMComponent(result, E.button(
       ^.`type` := "button",
       ^.className := "btn btn-primary",
       ^.disabled := true

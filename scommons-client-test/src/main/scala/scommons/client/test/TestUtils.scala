@@ -5,6 +5,7 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalajs.dom._
 import org.scalatest.Matchers
+import scommons.client.test.raw.ReactTestUtils.Instance
 import scommons.client.test.raw.{ReactTestUtils, TestReactDOM}
 
 import scala.scalajs.js
@@ -14,6 +15,10 @@ object TestUtils extends Matchers {
   def createDomEvent[T <: Event](args: js.Any*)(implicit tag: js.ConstructorTag[T]): T = {
     js.Dynamic.newInstance(tag.constructor)(args: _*).asInstanceOf[T]
   }
+
+  def getComponentState[T](component: Instance): T = component.state.wrapped.asInstanceOf[T]
+
+  def getComponentProps[T](component: Instance): T = component.props.wrapped.asInstanceOf[T]
 
   def findReactElement(component: js.Any): Element = asElement(TestReactDOM.findDOMNode(component))
 

@@ -78,7 +78,7 @@ class TextFieldSpec extends FlatSpec
     val result = shallowRender(component)
 
     //then
-    assertShallowRenderedElement(result, E.input(
+    assertDOMComponent(result, E.input(
       ^.`type` := "text",
       props.className.map(^.className := _),
       props.placeholder.map(^.placeholder := _),

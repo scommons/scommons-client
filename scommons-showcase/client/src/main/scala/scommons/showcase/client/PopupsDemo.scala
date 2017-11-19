@@ -58,7 +58,7 @@ object PopupsDemo {
             onCancel = { () =>
               self.setState(_.copy(showInputBox = false))
             },
-            initialValue = Some("initial value")
+            initialValue = "initial value"
           ))()
         ),
 
