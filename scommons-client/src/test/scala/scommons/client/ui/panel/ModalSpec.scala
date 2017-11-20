@@ -1,183 +1,96 @@
 package scommons.client.ui.panel
 
-import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.TestUtils._
+import scommons.client.test.ShallowRendererUtils
 import scommons.client.test.TestVirtualDOM._
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.raw.ShallowRenderer
-import scommons.client.test.raw.TestReactDOM._
-import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
+import scommons.client.test.raw.ShallowRenderer.ComponentInstance
+import scommons.client.ui.Buttons
 import scommons.client.util.ActionsData
-import scommons.react.modal.NativeReactModal
 
-class ModalSpec extends FlatSpec with Matchers with MockFactory {
+class ModalSpec extends FlatSpec
+  with Matchers
+  with ShallowRendererUtils {
 
-  "onAfterOpen" should "call onOpen function" in {
+  "rendering" should "render closable modal with header" in {
     //given
-    val onOpen = mockFunction[Unit]
-    val props = getModalProps(closable = true, onOpen = onOpen)
-    val component = E(Modal())(A.wrapped := props)()
-
-    //then
-    onOpen.expects()
+    val props = getModalProps()
+    val component = E(Modal())(A.wrapped := props)(
+      E.p()("some children")
+    )
 
     //when
-    val result = ShallowRenderer.renderAndGetOutput(component)
-    result.props.onAfterOpen()
-  }
-
-  "onRequestClose" should "call onClose function" in {
-    //given
-    val onClose = mockFunction[Unit]
-    val props = getModalProps(closable = true, onClose = onClose)
-    val component = E(Modal())(A.wrapped := props)()
+    val result = shallowRender(component)
 
     //then
-    onClose.expects()
-
-    //when
-    val result = ShallowRenderer.renderAndGetOutput(component)
-    result.props.onRequestClose()
+    assertModal(result, props)
   }
 
-  "rendering" should "render correct props for closable modal" in {
-    //given
-    val props = getModalProps(closable = true)
-    val component = E(Modal())(A.wrapped := props)()
-
-    //when
-    val result = ShallowRenderer.renderAndGetOutput(component)
-
-    //then
-    result.`type` shouldBe NativeReactModal
-    result.props.isOpen shouldBe true
-    result.props.shouldCloseOnOverlayClick shouldBe true
-    result.props.overlayClassName shouldBe "scommons-modal-overlay"
-    result.props.className shouldBe "scommons-modal"
-    result.props.children.length shouldBe 3
-  }
-
-  it should "render correct props for non-closable modal" in {
+  it should "render non-closable modal with header" in {
     //given
     val props = getModalProps(closable = false)
-    val component = E(Modal())(A.wrapped := props)()
-
-    //when
-    val result = ShallowRenderer.renderAndGetOutput(component)
-
-    //then
-    result.`type` shouldBe NativeReactModal
-    result.props.isOpen shouldBe true
-    result.props.shouldCloseOnOverlayClick shouldBe false
-    result.props.overlayClassName shouldBe "scommons-modal-overlay"
-    result.props.className shouldBe "scommons-modal"
-    result.props.children.length shouldBe 3
-  }
-
-  it should "render closable modal in the DOM" in {
-    //given
-    val body = "test body"
-    val props = getModalProps(closable = true)
-    val component = E(Modal())(A.wrapped := props)(body)
-
-    //when
-    val result = renderIntoDocument(component)
-
-    //then
-    val modal = findRenderedComponentWithType(result, NativeReactModal).portal
-    assertDOMElement(findReactElement(modal),
-      <div class="ReactModal__Overlay ReactModal__Overlay--after-open scommons-modal-overlay">
-        <div class="ReactModal__Content ReactModal__Content--after-open scommons-modal" tabindex="-1">
-          <div class="modal-header">
-            <button type="button" class="close">×</button>
-            <h3>{props.header.get}</h3>
-          </div>
-          <div class="modal-body">
-            {body}
-          </div>
-          {renderAsXml(ButtonsPanel(), ButtonsPanelProps(
-            props.buttons,
-            props.actions,
-            group = false,
-            className = Some("modal-footer")
-          ))}
-        </div>
-      </div>
+    val component = E(Modal())(A.wrapped := props)(
+      E.p()("some children")
     )
 
-    //cleanup
-    unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
-  }
-
-  it should "render non-closable modal in the DOM" in {
-    //given
-    val body = "test body"
-    val props = getModalProps(closable = false)
-    val component = E(Modal())(A.wrapped := props)(body)
-
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    val modal = findRenderedComponentWithType(result, NativeReactModal).portal
-    assertDOMElement(findReactElement(modal),
-      <div class="ReactModal__Overlay ReactModal__Overlay--after-open scommons-modal-overlay">
-        <div class="ReactModal__Content ReactModal__Content--after-open scommons-modal" tabindex="-1">
-          <div class="modal-header">
-            <h3>{props.header.get}</h3>
-          </div>
-          <div class="modal-body">
-            {body}
-          </div>
-          {renderAsXml(ButtonsPanel(), ButtonsPanelProps(
-            props.buttons,
-            props.actions,
-            group = false,
-            className = Some("modal-footer")
-          ))}
-        </div>
-      </div>
-    )
-
-    //cleanup
-    unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
+    assertModal(result, props)
   }
 
-  it should "render modal without header in the DOM" in {
+  it should "render modal without header" in {
     //given
-    val body = "test body"
-    val props = getModalProps(closable = true, header = None)
-    val component = E(Modal())(A.wrapped := props)(body)
+    val props = getModalProps(header = None)
+    val component = E(Modal())(A.wrapped := props)(
+      E.p()("some children")
+    )
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    val modal = findRenderedComponentWithType(result, NativeReactModal).portal
-    assertDOMElement(findReactElement(modal),
-      <div class="ReactModal__Overlay ReactModal__Overlay--after-open scommons-modal-overlay">
-        <div class="ReactModal__Content ReactModal__Content--after-open scommons-modal" tabindex="-1">
-          <div class="modal-body">
-            {body}
-          </div>
-          {renderAsXml(ButtonsPanel(), ButtonsPanelProps(
-            props.buttons,
-            props.actions,
-            group = false,
-            className = Some("modal-footer")
-          ))}
-        </div>
-      </div>
-    )
-
-    //cleanup
-    unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
+    assertComponent(result, Popup(), { popupProps: PopupProps =>
+      popupProps shouldBe PopupProps(
+        props.show,
+        props.onClose,
+        closable = props.closable,
+        props.onOpen
+      )
+    }, { case List(body, footer) =>
+      assertComponent(body, ModalBody(), { _: Unit => () }, { case List(child) =>
+        assertDOMComponent(child, E.p()("some children"))
+      })
+      assertComponent(footer, ModalFooter(), { footerProps: ModalFooterProps =>
+        footerProps shouldBe ModalFooterProps(props.buttons, props.actions)
+      })
+    })
   }
 
-  private def getModalProps(closable: Boolean,
-                            header: Option[String] = Some("test header"),
+  private def assertModal(result: ComponentInstance, props: ModalProps): Unit = {
+    assertComponent(result, Popup(), { popupProps: PopupProps =>
+      popupProps shouldBe PopupProps(
+        props.show,
+        props.onClose,
+        closable = props.closable,
+        props.onOpen
+      )
+    }, { case List(header, body, footer) =>
+      assertComponent(header, ModalHeader(), { headerProps: ModalHeaderProps =>
+        headerProps shouldBe ModalHeaderProps(props.header.get, props.onClose, closable = props.closable)
+      })
+      assertComponent(body, ModalBody(), { _: Unit => () }, { case List(child) =>
+        assertDOMComponent(child, E.p()("some children"))
+      })
+      assertComponent(footer, ModalFooter(), { footerProps: ModalFooterProps =>
+        footerProps shouldBe ModalFooterProps(props.buttons, props.actions)
+      })
+    })
+  }
+
+  private def getModalProps(header: Option[String] = Some("test header"),
                             onClose: () => Unit = () => (),
+                            closable: Boolean = true,
                             onOpen: () => Unit = () => ()): ModalProps = ModalProps(
     show = true,
     header,

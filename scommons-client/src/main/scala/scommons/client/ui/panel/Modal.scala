@@ -3,10 +3,8 @@ package scommons.client.ui.panel
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.ui.{ButtonData, ButtonsPanel, ButtonsPanelProps}
+import scommons.client.ui.ButtonData
 import scommons.client.util.ActionsData
-import scommons.react.modal.ReactModal._
 
 case class ModalProps(show: Boolean,
                       header: Option[String],
@@ -23,41 +21,19 @@ object Modal {
   private lazy val reactClass = React.createClass[ModalProps, Unit] { self =>
     val props = self.props.wrapped
 
-    val closeButton =
-      if (props.closable) {
-        Some(<.button(
-          ^.`type` := "button",
-          ^.className := "close",
-          ^.onClick := { _: MouseSyntheticEvent =>
-            props.onClose()
-          }
-        )("×"))
-      }
-      else None
-
-    <.ReactModal(
-      ^.isOpen := props.show,
-      ^.shouldCloseOnOverlayClick := props.closable,
-      ^.onAfterOpen := props.onOpen,
-      ^.onRequestClose := props.onClose,
-      ^.overlayClassName := "scommons-modal-overlay",
-      ^.modalClassName := "scommons-modal"
-    )(
+    <(Popup())(^.wrapped := PopupProps(
+      props.show,
+      props.onClose,
+      closable = props.closable,
+      props.onOpen
+    ))(
       props.header.map { header =>
-        <.div(^.className := "modal-header")(
-          closeButton,
-          <.h3()(header)
-        )
+        <(ModalHeader())(^.wrapped := ModalHeaderProps(header, props.onClose, closable = props.closable))()
       },
-      <.div(^.className := "modal-body")(
+      <(ModalBody())()(
         self.props.children
       ),
-      <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
-        props.buttons,
-        props.actions,
-        group = false,
-        className = Some("modal-footer")
-      ))()
+      <(ModalFooter())(^.wrapped := ModalFooterProps(props.buttons, props.actions))()
     )
   }
 }

@@ -3,7 +3,6 @@ package scommons.client.ui.panel
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.react.modal.ReactModal._
 
 case class LoadingPopupProps(show: Boolean)
 
@@ -14,12 +13,13 @@ object LoadingPopup {
   private lazy val reactClass = React.createClass[LoadingPopupProps, Unit] { self =>
     val props = self.props.wrapped
 
-    <.ReactModal(
-      ^.isOpen := props.show,
-      ^.shouldCloseOnOverlayClick := false,
-      ^.overlayClassName := PopupPanelCss.loadingOverlay,
-      ^.modalClassName := PopupPanelCss.loadingContent
-    )(
+    <(Popup())(^.wrapped := PopupProps(
+      props.show,
+      onClose = () => (),
+      closable = false,
+      overlayClass = PopupPanelCss.loadingOverlay,
+      popupClass = PopupPanelCss.loadingContent
+    ))(
       <.img(^.className := PopupPanelCss.loadingImg, ^.src := "")()
     )
   }
