@@ -217,7 +217,7 @@ class InputPopupSpec extends FlatSpec
         show shouldBe props.show
         header shouldBe None
         buttons shouldBe List(Buttons.OK, Buttons.CANCEL)
-        actions.actionCommands shouldBe actionCommands
+        actions.enabledCommands shouldBe actionCommands
         onClose shouldBe props.onCancel
         closable shouldBe true
       }

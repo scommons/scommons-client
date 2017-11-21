@@ -1,5 +1,8 @@
 package scommons.client.ui
 
+import io.github.shogowada.scalajs.reactjs.ReactDOM
+import org.scalajs.dom.document
+import org.scalajs.dom.raw.HTMLButtonElement
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Matchers}
 import scommons.client.test.TestUtils._
@@ -34,7 +37,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
 
     //then
     assertDOMElement(findReactElement(result),
-      <button class="btn">
+      <button type= "button" class="btn">
         <img class={s"${data.image}"} src=""/>
         <span style="padding-left: 3px; vertical-align: middle;">{data.text}</span>
       </button>
@@ -51,7 +54,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
 
     //then
     assertDOMElement(findReactElement(result),
-      <button class="btn" title={s"${data.text}"}>
+      <button type= "button" class="btn" title={s"${data.text}"}>
         <img class={s"${data.image}"} src=""/>
       </button>
     )
@@ -67,7 +70,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
 
     //then
     assertDOMElement(findReactElement(result),
-      <button class="btn" disabled="">
+      <button type= "button" class="btn" disabled="">
         <img class={s"${data.disabledImage}"} src=""/>
         <span style="padding-left: 3px; vertical-align: middle;">{data.text}</span>
       </button>
@@ -84,10 +87,52 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
 
     //then
     assertDOMElement(findReactElement(result),
-      <button class="btn btn-primary">
+      <button type= "button" class="btn btn-primary">
         <img class={s"${data.image}"} src=""/>
         <span style="padding-left: 3px; vertical-align: middle;">{data.text}</span>
       </button>
     )
+  }
+
+  "requestFocus" should "focus button element if requestFocus prop changed from false to true" in {
+    //given
+    val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
+    val prevProps = ImageButtonProps(data, () => ())
+    val comp = renderIntoDocument(E(ImageButton())(A.wrapped := prevProps)())
+    val props = ImageButtonProps(data, () => (), requestFocus = true)
+    val containerElement = findReactElement(comp).parentNode
+    document.body.appendChild(containerElement)
+    props should not be prevProps
+
+    //when
+    ReactDOM.render(E(ImageButton())(A.wrapped := props)(), containerElement)
+
+    //then
+    val buttonElem = findRenderedDOMComponentWithTag(comp, "button").asInstanceOf[HTMLButtonElement]
+    buttonElem shouldBe document.activeElement
+
+    //cleanup
+    document.body.removeChild(containerElement)
+  }
+
+  it should "not focus button element if requestFocus prop not changed" in {
+    //given
+    val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
+    val prevProps = ImageButtonProps(data, () => (), requestFocus = true)
+    val comp = renderIntoDocument(E(ImageButton())(A.wrapped := prevProps)())
+    val props = ImageButtonProps(data, () => (), showTextAsTitle = true, requestFocus = true)
+    val containerElement = findReactElement(comp).parentNode
+    document.body.appendChild(containerElement)
+    props should not be prevProps
+
+    //when
+    ReactDOM.render(E(ImageButton())(A.wrapped := props)(), containerElement)
+
+    //then
+    val buttonElem = findRenderedDOMComponentWithTag(comp, "button").asInstanceOf[HTMLButtonElement]
+    buttonElem should not be document.activeElement
+
+    //cleanup
+    document.body.removeChild(containerElement)
   }
 }

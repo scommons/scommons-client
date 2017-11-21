@@ -27,14 +27,15 @@ object ButtonsPanel {
     }
 
     <.div(^.className := panelClass)(props.buttons.map { buttonData =>
-      val disabled = !props.actions.actionCommands.contains(buttonData.command)
+      val disabled = !props.actions.enabledCommands.contains(buttonData.command)
+      val focused = props.actions.focusedCommand.contains(buttonData.command)
 
       buttonData match {
         case data: SimpleButtonData => <(SimpleButton())(^.wrapped := SimpleButtonProps(
-          data, onCommand(data.command), disabled = disabled
+          data, onCommand(data.command), disabled = disabled, requestFocus = focused
         ))()
         case data: ImageButtonData => <(ImageButton())(^.wrapped := ImageButtonProps(
-          data, onCommand(data.command), showTextAsTitle = props.group, disabled = disabled
+          data, onCommand(data.command), showTextAsTitle = props.group, disabled = disabled, requestFocus = focused
         ))()
       }
     })

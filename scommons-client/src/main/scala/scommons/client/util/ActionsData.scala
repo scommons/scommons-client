@@ -1,7 +1,8 @@
 package scommons.client.util
 
-case class ActionsData(actionCommands: Set[String],
-                       onCommand: String => Unit)
+case class ActionsData(enabledCommands: Set[String],
+                       onCommand: String => Unit,
+                       focusedCommand: Option[String] = None)
 
 object ActionsData {
 
