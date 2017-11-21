@@ -15,27 +15,27 @@ case class InputPopupProps(show: Boolean,
 
 object InputPopup {
 
-  private[panel] case class InputBoxState(value: String,
-                                          actionCommands: Set[String],
-                                          requestFocus: Boolean = false,
-                                          requestSelect: Boolean = false)
+  private[panel] case class InputPopupState(value: String,
+                                            actionCommands: Set[String],
+                                            opened: Boolean = false)
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[InputPopupProps, InputBoxState](
+  private lazy val reactClass = React.createClass[InputPopupProps, InputPopupState](
     getInitialState = { self =>
-      val value = self.props.wrapped.initialValue
+      val props = self.props.wrapped
 
-      InputBoxState(value, getActionCommands(value))
+      InputPopupState(props.initialValue, getActionCommands(props.initialValue))
     },
     componentWillReceiveProps = { (self, nextProps) =>
-      val value = nextProps.wrapped.initialValue
-      self.setState(_.copy(
-        value = value,
-        actionCommands = getActionCommands(value),
-        requestFocus = false,
-        requestSelect = false
-      ))
+      val props = nextProps.wrapped
+      if (self.props.wrapped != props) {
+        self.setState(_.copy(
+          value = props.initialValue,
+          actionCommands = getActionCommands(props.initialValue),
+          opened = false
+        ))
+      }
     },
     render = { self =>
       val props = self.props.wrapped
@@ -51,7 +51,7 @@ object InputPopup {
         ActionsData(self.state.actionCommands, onCommand),
         props.onCancel,
         onOpen = { () =>
-          self.setState(_.copy(requestFocus = true, requestSelect = true))
+          self.setState(_.copy(opened = true))
         }
       ))(
         <.div(^.className := "row-fluid")(
@@ -62,8 +62,8 @@ object InputPopup {
               onChange = { value =>
                 self.setState(_.copy(value = value, actionCommands = getActionCommands(value)))
               },
-              requestFocus = self.state.requestFocus,
-              requestSelect = self.state.requestSelect,
+              requestFocus = self.state.opened,
+              requestSelect = self.state.opened,
               className = Some("span12"),
               placeholder = props.placeholder,
               onEnter = { () =>

@@ -9,7 +9,7 @@ import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.test.raw.TestReactDOM._
-import scommons.client.ui.panel.InputPopup.InputBoxState
+import scommons.client.ui.panel.InputPopup.InputPopupState
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
 import scommons.react.modal.NativeReactModal
 
@@ -87,11 +87,10 @@ class InputPopupSpec extends FlatSpec
     val modal = findRenderedComponentWithType(component, Modal())
     val modalProps = getComponentProps[ModalProps](modal)
     modalProps.onOpen()
-    val prevState = getComponentState[InputBoxState](component)
+    val prevState = getComponentState[InputPopupState](component)
     prevState.value shouldBe prevProps.initialValue
     prevState.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
-    prevState.requestFocus shouldBe true
-    prevState.requestSelect shouldBe true
+    prevState.opened shouldBe true
     val reactModal = findRenderedComponentWithType(component, NativeReactModal).portal
     val containerElement = findReactElement(parentComp).parentNode
     val props = getInputBoxProps("Test message", initialValue = "new initial value")
@@ -100,17 +99,16 @@ class InputPopupSpec extends FlatSpec
     ReactDOM.render(E(parentClass)(^.wrapped := props)(), containerElement)
 
     //then
-    val state = getComponentState[InputBoxState](component)
+    val state = getComponentState[InputPopupState](component)
     state.value shouldBe props.initialValue
     state.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
-    state.requestFocus shouldBe false
-    state.requestSelect shouldBe false
+    state.opened shouldBe false
 
     //cleanup
     unmountComponentAtNode(findDOMNode(reactModal).parentNode) shouldBe true
   }
 
-  "onOpen" should "set requestFocus and requestSelect to true" in {
+  "onOpen" should "set opened state to true" in {
     //given
     val props = getInputBoxProps("Test message", initialValue = "initial value")
     val component = renderIntoDocument(E(InputPopup())(A.wrapped := props)())
@@ -122,11 +120,10 @@ class InputPopupSpec extends FlatSpec
     modalProps.onOpen()
 
     //then
-    val state = getComponentState[InputBoxState](component)
+    val state = getComponentState[InputPopupState](component)
     state.value shouldBe props.initialValue
     state.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
-    state.requestFocus shouldBe true
-    state.requestSelect shouldBe true
+    state.opened shouldBe true
 
     //cleanup
     unmountComponentAtNode(findDOMNode(reactModal).parentNode) shouldBe true
@@ -144,7 +141,7 @@ class InputPopupSpec extends FlatSpec
     textFieldProps.onChange(newValue)
 
     //then
-    val state = getComponentState[InputBoxState](component)
+    val state = getComponentState[InputPopupState](component)
     state.value shouldBe newValue
     state.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
 
@@ -166,7 +163,7 @@ class InputPopupSpec extends FlatSpec
     textFieldProps.onChange(newValue)
 
     //then
-    val state = getComponentState[InputBoxState](component)
+    val state = getComponentState[InputPopupState](component)
     state.value shouldBe newValue
     state.actionCommands shouldBe Set(Buttons.CANCEL.command)
 
