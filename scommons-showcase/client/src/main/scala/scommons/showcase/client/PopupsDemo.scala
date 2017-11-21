@@ -5,7 +5,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
 import scommons.client.ui._
-import scommons.client.ui.panel._
+import scommons.client.ui.popup._
 import scommons.client.util.ActionsData
 
 case class ModalState(showModal: Boolean = false,

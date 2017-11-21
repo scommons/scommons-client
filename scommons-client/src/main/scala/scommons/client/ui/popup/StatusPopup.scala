@@ -1,4 +1,4 @@
-package scommons.client.ui.panel
+package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
@@ -19,7 +19,7 @@ object StatusPopup {
       props.show,
       onClose = () => (),
       overlayClass = "scommons-status-no-overlay",
-      popupClass = PopupPanelCss.statusContent
+      popupClass = PopupCss.statusContent
     ))(
       <(WithAutoHide())(^.wrapped := WithAutoHideProps(props.onHide))(props.text)
     )

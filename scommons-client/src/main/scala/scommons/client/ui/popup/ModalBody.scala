@@ -1,4 +1,4 @@
-package scommons.client.ui.panel
+package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._

@@ -1,4 +1,4 @@
-package scommons.client.ui.panel
+package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
@@ -15,7 +15,7 @@ case class InputPopupProps(show: Boolean,
 
 object InputPopup {
 
-  private[panel] case class InputPopupState(value: String,
+  private[popup] case class InputPopupState(value: String,
                                             actionCommands: Set[String],
                                             opened: Boolean = false)
 

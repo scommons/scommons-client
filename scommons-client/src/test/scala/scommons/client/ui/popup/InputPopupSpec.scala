@@ -1,4 +1,4 @@
-package scommons.client.ui.panel
+package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalamock.scalatest.MockFactory
@@ -9,7 +9,7 @@ import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.test.raw.TestReactDOM._
-import scommons.client.ui.panel.InputPopup.InputPopupState
+import scommons.client.ui.popup.InputPopup.InputPopupState
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
 import scommons.react.modal.NativeReactModal
 

@@ -1,4 +1,4 @@
-package scommons.client.ui.panel
+package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
@@ -57,7 +57,7 @@ object WithAutoHide {
     }
   )
 
-  private[panel] def onAutoHide(autoHideDiv: HTMLElement, onHide: () => Unit): Event => Unit = { e =>
+  private[popup] def onAutoHide(autoHideDiv: HTMLElement, onHide: () => Unit): Event => Unit = { e =>
     require(autoHideDiv != null, "autoHideDiv is not null")
 
     val target = e.target.asInstanceOf[HTMLElement]

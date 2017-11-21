@@ -1,4 +1,4 @@
-package scommons.client.ui.panel
+package scommons.client.ui.popup
 
 import org.scalajs.dom.raw.{EventTarget, HTMLElement}
 import org.scalajs.dom.{KeyboardEvent, MouseEvent, document}

@@ -1,4 +1,4 @@
-package scommons.client.ui.panel
+package scommons.client.ui.popup
 
 import org.scalatest.{FlatSpec, Inside, Matchers}
 import scommons.client.test.ShallowRendererUtils

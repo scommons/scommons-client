@@ -1,4 +1,4 @@
-package scommons.client.ui.panel
+package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
@@ -17,10 +17,10 @@ object LoadingPopup {
       props.show,
       onClose = () => (),
       closable = false,
-      overlayClass = PopupPanelCss.loadingOverlay,
-      popupClass = PopupPanelCss.loadingContent
+      overlayClass = PopupCss.loadingOverlay,
+      popupClass = PopupCss.loadingContent
     ))(
-      <.img(^.className := PopupPanelCss.loadingImg, ^.src := "")()
+      <.img(^.className := PopupCss.loadingImg, ^.src := "")()
     )
   }
 }
