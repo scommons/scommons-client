@@ -6,14 +6,14 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
 import scommons.client.util.ActionsData
 
-case class InputBoxProps(show: Boolean,
-                         message: String,
-                         onOk: String => Unit,
-                         onCancel: () => Unit,
-                         placeholder: Option[String] = None,
-                         initialValue: String = "")
+case class InputPopupProps(show: Boolean,
+                           message: String,
+                           onOk: String => Unit,
+                           onCancel: () => Unit,
+                           placeholder: Option[String] = None,
+                           initialValue: String = "")
 
-object InputBox {
+object InputPopup {
 
   private[panel] case class InputBoxState(value: String,
                                           actionCommands: Set[String],
@@ -22,7 +22,7 @@ object InputBox {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[InputBoxProps, InputBoxState](
+  private lazy val reactClass = React.createClass[InputPopupProps, InputBoxState](
     getInitialState = { self =>
       val value = self.props.wrapped.initialValue
 

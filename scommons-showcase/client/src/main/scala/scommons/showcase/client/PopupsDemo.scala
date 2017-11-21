@@ -49,7 +49,7 @@ object PopupsDemo {
           <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "InputBox", primary = true), { () =>
             self.setState(_.copy(showInputBox = true))
           }))(),
-          <(InputBox())(^.wrapped := InputBoxProps(
+          <(InputPopup())(^.wrapped := InputPopupProps(
             self.state.showInputBox,
             "Please, enter a value",
             onOk = { _ =>
