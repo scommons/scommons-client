@@ -1,0 +1,24 @@
+
+.dialogError {
+  background: url('./dialog-error.png') no-repeat 0px 0px;
+  width: 32px;
+  height: 32px;
+}
+
+.dialogInformation {
+  background: url('./dialog-information.png') no-repeat 0px 0px;
+  width: 32px;
+  height: 32px;
+}
+
+.dialogQuestion {
+  background: url('./dialog-question.png') no-repeat 0px 0px;
+  width: 32px;
+  height: 32px;
+}
+
+.dialogWarning {
+  background: url('./dialog-warning.png') no-repeat 0px 0px;
+  width: 32px;
+  height: 32px;
+}

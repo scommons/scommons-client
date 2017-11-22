@@ -5,6 +5,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
 import scommons.client.ui._
+import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup._
 import scommons.client.util.ActionsData
 
@@ -63,7 +64,7 @@ object PopupsDemo {
           ))()
         ),
 
-        <.h2()("Ok/Yes/No/Cancel Popups"),
+        <.h2()("OK/Yes/No/Cancel Popups"),
         <.hr()(),
         <.p()(
           <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "OkPopup", primary = true), { () =>
@@ -72,6 +73,7 @@ object PopupsDemo {
           <(OkPopup())(^.wrapped := OkPopupProps(
             self.state.showOkPopup,
             "Hello World!",
+            image = Some(IconCss.dialogInformation),
             onClose = { () =>
               self.setState(_.copy(showOkPopup = false))
             }

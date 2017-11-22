@@ -8,7 +8,8 @@ import scommons.client.util.ActionsData
 
 case class OkPopupProps(show: Boolean,
                         message: String,
-                        onClose: () => Unit)
+                        onClose: () => Unit,
+                        image: Option[String] = None)
 
 object OkPopup {
 
@@ -42,6 +43,9 @@ object OkPopup {
         }
       ))(
         <.div(^.className := "row-fluid")(
+          props.image.map { image =>
+            <.img(^.className := image, ^.src := "")()
+          },
           <.p()(props.message)
         )
       )

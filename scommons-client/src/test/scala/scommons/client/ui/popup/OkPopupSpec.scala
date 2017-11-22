@@ -10,6 +10,7 @@ import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.test.raw.TestReactDOM._
 import scommons.client.ui.Buttons
+import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.OkPopup.OkPopupState
 import scommons.react.modal.NativeReactModal
 
@@ -33,7 +34,19 @@ class OkPopupSpec extends FlatSpec
     modalProps.actions.onCommand(Buttons.OK.command)
   }
 
-  it should "render component with correct props" in {
+  it should "render component with image" in {
+    //given
+    val props = getOkPopupProps("Test message", image = Some(IconCss.dialogInformation))
+    val component = E(OkPopup())(A.wrapped := props)()
+
+    //when
+    val result = shallowRender(component)
+
+    //then
+    assertOkPopup(result, props)
+  }
+
+  it should "render component without image" in {
     //given
     val props = getOkPopupProps("Test message")
     val component = E(OkPopup())(A.wrapped := props)()
@@ -96,10 +109,12 @@ class OkPopupSpec extends FlatSpec
 
   private def getOkPopupProps(message: String,
                               onClose: () => Unit = () => (),
+                              image: Option[String] = None,
                               show: Boolean = true): OkPopupProps = OkPopupProps(
     show = show,
     message = message,
-    onClose = onClose
+    onClose = onClose,
+    image = image
   )
 
   private def assertOkPopup(result: ComponentInstance, props: OkPopupProps): Unit = {
@@ -115,7 +130,15 @@ class OkPopupSpec extends FlatSpec
         closable shouldBe true
       }
     }, { case List(modalChild) =>
-      assertDOMComponent(modalChild, E.div(^.className := "row-fluid")(), { case List(p) =>
+      assertDOMComponent(modalChild, E.div(^.className := "row-fluid")(), { children =>
+        val (img, p) = children match {
+          case List(pElem) => (None, pElem)
+          case List(imgElem, pElem) => (Some(imgElem), pElem)
+        }
+        props.image.foreach { image =>
+          img should not be None
+          assertDOMComponent(img.get, E.img(^.className := image, ^.src := "")())
+        }
         assertDOMComponent(p, E.p()(props.message))
       })
     })
