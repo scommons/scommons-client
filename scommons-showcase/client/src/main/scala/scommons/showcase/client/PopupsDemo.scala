@@ -9,7 +9,8 @@ import scommons.client.ui.popup._
 import scommons.client.util.ActionsData
 
 case class ModalState(showModal: Boolean = false,
-                      showInputBox: Boolean = false,
+                      showInputPopup: Boolean = false,
+                      showOkPopup: Boolean = false,
                       showLoading: Boolean = false,
                       showStatus: Boolean = false)
 
@@ -43,26 +44,41 @@ object PopupsDemo {
           )
         ),
 
-        <.h2()("InputBox"),
+        <.h2()("InputPopup"),
         <.hr()(),
         <.p()(
-          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "InputBox", primary = true), { () =>
-            self.setState(_.copy(showInputBox = true))
+          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "InputPopup", primary = true), { () =>
+            self.setState(_.copy(showInputPopup = true))
           }))(),
           <(InputPopup())(^.wrapped := InputPopupProps(
-            self.state.showInputBox,
+            self.state.showInputPopup,
             "Please, enter a value",
             onOk = { _ =>
-              self.setState(_.copy(showInputBox = false))
+              self.setState(_.copy(showInputPopup = false))
             },
             onCancel = { () =>
-              self.setState(_.copy(showInputBox = false))
+              self.setState(_.copy(showInputPopup = false))
             },
             initialValue = "initial value"
           ))()
         ),
 
-        <.h2()("Popups"),
+        <.h2()("Ok/Yes/No/Cancel Popups"),
+        <.hr()(),
+        <.p()(
+          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "OkPopup", primary = true), { () =>
+            self.setState(_.copy(showOkPopup = true))
+          }))(),
+          <(OkPopup())(^.wrapped := OkPopupProps(
+            self.state.showOkPopup,
+            "Hello World!",
+            onClose = { () =>
+              self.setState(_.copy(showOkPopup = false))
+            }
+          ))()
+        ),
+
+        <.h2()("Other Popups"),
         <.hr()(),
         <.p()(
           <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Loading and Status", primary = true), { () =>

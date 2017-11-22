@@ -22,7 +22,7 @@ class InputPopupSpec extends FlatSpec
   "onCancelCommand" should "call onCancel function" in {
     //given
     val onCancel = mockFunction[Unit]
-    val props = getInputBoxProps("Test message", onCancel = onCancel)
+    val props = getInputPopupProps("Test message", onCancel = onCancel)
     val component = shallowRender(E(InputPopup())(A.wrapped := props)())
     val modalProps = getComponentProps[ModalProps](component)
 
@@ -36,7 +36,7 @@ class InputPopupSpec extends FlatSpec
   "onOkCommand" should "call onOk function" in {
     //given
     val onOk = mockFunction[String, Unit]
-    val props = getInputBoxProps("Test message", initialValue = "initial value", onOk = onOk)
+    val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
     val component = shallowRender(E(InputPopup())(A.wrapped := props)())
     val modalProps = getComponentProps[ModalProps](component)
 
@@ -49,19 +49,19 @@ class InputPopupSpec extends FlatSpec
 
   "rendering" should "render component with empty initial value" in {
     //given
-    val props = getInputBoxProps("Test message", placeholder = Some("test placeholder"))
+    val props = getInputPopupProps("Test message", placeholder = Some("test placeholder"))
     val component = E(InputPopup())(A.wrapped := props)()
 
     //when
     val result = shallowRender(component)
 
     //then
-    assertInputBox(result, props)
+    assertInputPopup(result, props)
   }
 
   it should "render component with non-empty initial value" in {
     //given
-    val props = getInputBoxProps("Test message",
+    val props = getInputPopupProps("Test message",
       placeholder = Some("test placeholder"),
       initialValue = "initial value"
     )
@@ -71,12 +71,12 @@ class InputPopupSpec extends FlatSpec
     val result = shallowRender(component)
 
     //then
-    assertInputBox(result, props)
+    assertInputPopup(result, props)
   }
 
   "componentWillReceiveProps" should "reset state with new props" in {
     //given
-    val prevProps = getInputBoxProps("Test message", initialValue = "old initial value")
+    val prevProps = getInputPopupProps("Test message", initialValue = "old initial value")
     val parentClass = React.createClass[InputPopupProps, Unit](self =>
       E.div()(
         E(InputPopup())(A.wrapped := self.props.wrapped)()
@@ -93,7 +93,7 @@ class InputPopupSpec extends FlatSpec
     prevState.opened shouldBe true
     val reactModal = findRenderedComponentWithType(component, NativeReactModal).portal
     val containerElement = findReactElement(parentComp).parentNode
-    val props = getInputBoxProps("Test message", initialValue = "new initial value")
+    val props = getInputPopupProps("Test message", initialValue = "new initial value")
 
     //when
     ReactDOM.render(E(parentClass)(^.wrapped := props)(), containerElement)
@@ -110,7 +110,7 @@ class InputPopupSpec extends FlatSpec
 
   "onOpen" should "set opened state to true" in {
     //given
-    val props = getInputBoxProps("Test message", initialValue = "initial value")
+    val props = getInputPopupProps("Test message", initialValue = "initial value")
     val component = renderIntoDocument(E(InputPopup())(A.wrapped := props)())
     val modal = findRenderedComponentWithType(component, Modal())
     val modalProps = getComponentProps[ModalProps](modal)
@@ -131,7 +131,7 @@ class InputPopupSpec extends FlatSpec
 
   "onChange" should "enable OK command when new value is non-emtpy" in {
     //given
-    val component = renderIntoDocument(E(InputPopup())(A.wrapped := getInputBoxProps("Test message"))())
+    val component = renderIntoDocument(E(InputPopup())(A.wrapped := getInputPopupProps("Test message"))())
     val modal = findRenderedComponentWithType(component, NativeReactModal).portal
     val textField = findRenderedComponentWithType(modal, TextField())
     val textFieldProps = getComponentProps[TextFieldProps](textField)
@@ -151,7 +151,7 @@ class InputPopupSpec extends FlatSpec
 
   it should "disable OK command when new value is emtpy" in {
     //given
-    val component = renderIntoDocument(E(InputPopup())(A.wrapped := getInputBoxProps(
+    val component = renderIntoDocument(E(InputPopup())(A.wrapped := getInputPopupProps(
       "Test message", initialValue = "initial value"
     ))())
     val modal = findRenderedComponentWithType(component, NativeReactModal).portal
@@ -174,7 +174,7 @@ class InputPopupSpec extends FlatSpec
   "onEnter" should "call onOk functions with new value" in {
     //given
     val onOk = mockFunction[String, Unit]
-    val component = renderIntoDocument(E(InputPopup())(A.wrapped := getInputBoxProps(
+    val component = renderIntoDocument(E(InputPopup())(A.wrapped := getInputPopupProps(
       "Test message", onOk = onOk
     ))())
     val modal = findRenderedComponentWithType(component, NativeReactModal).portal
@@ -193,12 +193,12 @@ class InputPopupSpec extends FlatSpec
     unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
   }
 
-  private def getInputBoxProps(message: String,
-                               onOk: String => Unit = _ => (),
-                               onCancel: () => Unit = () => (),
-                               placeholder: Option[String] = None,
-                               initialValue: String = "",
-                               show: Boolean = true): InputPopupProps = InputPopupProps(
+  private def getInputPopupProps(message: String,
+                                 onOk: String => Unit = _ => (),
+                                 onCancel: () => Unit = () => (),
+                                 placeholder: Option[String] = None,
+                                 initialValue: String = "",
+                                 show: Boolean = true): InputPopupProps = InputPopupProps(
     show = show,
     message = message,
     onOk = onOk,
@@ -207,7 +207,7 @@ class InputPopupSpec extends FlatSpec
     initialValue = initialValue
   )
 
-  private def assertInputBox(result: ComponentInstance, props: InputPopupProps): Unit = {
+  private def assertInputPopup(result: ComponentInstance, props: InputPopupProps): Unit = {
     val actionCommands =
       if (props.initialValue.nonEmpty) Set(Buttons.OK.command, Buttons.CANCEL.command)
       else Set(Buttons.CANCEL.command)
