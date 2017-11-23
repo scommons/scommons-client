@@ -7,7 +7,7 @@ import scommons.client.util.ActionsData
 
 case class ButtonsPanelProps(buttons: List[ButtonData],
                              actions: ActionsData,
-                             group: Boolean,
+                             group: Boolean = false,
                              className: Option[String] = None)
 
 object ButtonsPanel {

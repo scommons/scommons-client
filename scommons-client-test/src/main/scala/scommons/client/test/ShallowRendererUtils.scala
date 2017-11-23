@@ -3,6 +3,7 @@ package scommons.client.test
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.statictags.Element
 import org.scalatest.Matchers
+import scommons.client.test.raw.ShallowRenderer
 import scommons.client.test.raw.ShallowRenderer._
 
 import scala.scalajs.js
@@ -13,29 +14,31 @@ trait ShallowRendererUtils extends Matchers {
     children shouldBe Nil
   }
 
+  def createRenderer(): ShallowRenderer = new ShallowRenderer
+
   def shallowRender(element: js.Object): ComponentInstance = renderAndGetOutput(element)
 
-//  def findChildComponent(component: ComponentInstance,
-//                         componentClass: ReactClass): ComponentInstance = {
-//
-//    def search(components: List[ComponentInstance]): Option[ComponentInstance] = components match {
-//      case Nil => None
-//      case head :: tail =>
-//        if (head.`type` == componentClass) Some(head)
-//        else {
-//          search(getComponentChildren(head)) match {
-//            case None => search(tail)
-//            case comp => comp
-//          }
-//        }
-//    }
-//
-//    search(List(component)) match {
-//      case Some(comp) => comp
-//      case None =>
-//        fail(s"Component with type: $componentClass not found")
-//    }
-//  }
+  def findComponentWithType(component: ComponentInstance,
+                            componentClass: ReactClass): ComponentInstance = {
+
+    def search(components: List[ComponentInstance]): Option[ComponentInstance] = components match {
+      case Nil => None
+      case head :: tail =>
+        if (head.`type` == componentClass) Some(head)
+        else {
+          search(getComponentChildren(head)) match {
+            case None => search(tail)
+            case comp => comp
+          }
+        }
+    }
+
+    search(List(component)) match {
+      case Some(comp) => comp
+      case None =>
+        fail(s"Component with type: $componentClass not found")
+    }
+  }
 
   def assertComponent[T](result: ComponentInstance,
                          expectedClass: ReactClass,

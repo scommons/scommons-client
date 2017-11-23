@@ -6,12 +6,15 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
 import scommons.client.ui._
 import scommons.client.ui.icon.IconCss
+import scommons.client.ui.popup.YesNoCancelOption._
 import scommons.client.ui.popup._
 import scommons.client.util.ActionsData
 
 case class ModalState(showModal: Boolean = false,
-                      showInputPopup: Boolean = false,
-                      showOkPopup: Boolean = false,
+                      showInput: Boolean = false,
+                      showOk: Boolean = false,
+                      okMessage: String = "",
+                      showYesNoCancel: Boolean = false,
                       showLoading: Boolean = false,
                       showStatus: Boolean = false)
 
@@ -49,16 +52,16 @@ object PopupsDemo {
         <.hr()(),
         <.p()(
           <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "InputPopup", primary = true), { () =>
-            self.setState(_.copy(showInputPopup = true))
+            self.setState(_.copy(showInput = true))
           }))(),
           <(InputPopup())(^.wrapped := InputPopupProps(
-            self.state.showInputPopup,
+            self.state.showInput,
             "Please, enter a value",
             onOk = { _ =>
-              self.setState(_.copy(showInputPopup = false))
+              self.setState(_.copy(showInput = false))
             },
             onCancel = { () =>
-              self.setState(_.copy(showInputPopup = false))
+              self.setState(_.copy(showInput = false))
             },
             initialValue = "initial value"
           ))()
@@ -67,15 +70,31 @@ object PopupsDemo {
         <.h2()("OK/Yes/No/Cancel Popups"),
         <.hr()(),
         <.p()(
-          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "OkPopup", primary = true), { () =>
-            self.setState(_.copy(showOkPopup = true))
-          }))(),
+          <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(List(
+            SimpleButtonData("ok", "OK", primary = true),
+            SimpleButtonData("yes-no-cancel", "Yes/No/Cancel", primary = true)
+          ),
+          ActionsData(Set("ok", "yes-no-cancel"), {
+            case "ok" => self.setState(_.copy(showOk = true, okMessage = "Hello World!"))
+            case "yes-no-cancel" => self.setState(_.copy(showYesNoCancel = true))
+          })))(),
+
           <(OkPopup())(^.wrapped := OkPopupProps(
-            self.state.showOkPopup,
-            "Hello World!",
+            self.state.showOk,
+            self.state.okMessage,
             image = Some(IconCss.dialogInformation),
             onClose = { () =>
-              self.setState(_.copy(showOkPopup = false))
+              self.setState(_.copy(showOk = false))
+            }
+          ))(),
+          <(YesNoCancelPopup())(^.wrapped := YesNoCancelPopupProps(
+            self.state.showYesNoCancel,
+            "Do you like Scala.js ?",
+            image = Some(IconCss.dialogQuestion),
+            onSelect = {
+              case Yes => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected YES :)"))
+              case No => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected NO :("))
+              case _ => self.setState(_.copy(showYesNoCancel = false))
             }
           ))()
         ),

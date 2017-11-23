@@ -8,10 +8,8 @@ import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
-import scommons.client.test.raw.TestReactDOM._
 import scommons.client.ui.popup.InputPopup.InputPopupState
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
-import scommons.react.modal.NativeReactModal
 
 class InputPopupSpec extends FlatSpec
   with Matchers
@@ -19,7 +17,7 @@ class InputPopupSpec extends FlatSpec
   with ShallowRendererUtils
   with MockFactory {
 
-  "onCancelCommand" should "call onCancel function" in {
+  it should "call onCancel function when cancel command" in {
     //given
     val onCancel = mockFunction[Unit]
     val props = getInputPopupProps("Test message", onCancel = onCancel)
@@ -33,7 +31,7 @@ class InputPopupSpec extends FlatSpec
     modalProps.actions.onCommand(Buttons.CANCEL.command)
   }
 
-  "onOkCommand" should "call onOk function" in {
+  it should "call onOk function when ok command" in {
     //given
     val onOk = mockFunction[String, Unit]
     val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
@@ -47,7 +45,66 @@ class InputPopupSpec extends FlatSpec
     modalProps.actions.onCommand(Buttons.OK.command)
   }
 
-  "rendering" should "render component with empty initial value" in {
+  it should "call onOk functions with new value when onEnter" in {
+    //given
+    val onOk = mockFunction[String, Unit]
+    val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
+    val component = shallowRender(E(InputPopup())(A.wrapped := props)())
+    val textField = findComponentWithType(component, TextField())
+    val textFieldProps = getComponentProps[TextFieldProps](textField)
+    val newValue = "new value"
+    textFieldProps.onChange(newValue)
+
+    //then
+    onOk.expects(newValue)
+
+    //when
+    textFieldProps.onEnter()
+  }
+
+  it should "enable OK command when new value is non-emtpy" in {
+    //given
+    val props = getInputPopupProps("Test message")
+    val renderer = createRenderer()
+    renderer.render(E(InputPopup())(A.wrapped := props)())
+    val comp = renderer.getRenderOutput()
+    val prevTextProps = getComponentProps[TextFieldProps](findComponentWithType(comp, TextField()))
+    val newValue = "new value"
+
+    //when
+    prevTextProps.onChange(newValue)
+
+    //then
+    val updatedComp = renderer.getRenderOutput()
+    val textProps = getComponentProps[TextFieldProps](findComponentWithType(updatedComp, TextField()))
+    textProps.text shouldBe newValue
+
+    val modalProps = getComponentProps[ModalProps](findComponentWithType(updatedComp, Modal()))
+    modalProps.actions.enabledCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
+  }
+
+  it should "disable OK command when new value is emtpy" in {
+    //given
+    val props = getInputPopupProps("Test message", initialValue = "initial value")
+    val renderer = createRenderer()
+    renderer.render(E(InputPopup())(A.wrapped := props)())
+    val comp = renderer.getRenderOutput()
+    val prevTextProps = getComponentProps[TextFieldProps](findComponentWithType(comp, TextField()))
+    val newValue = ""
+
+    //when
+    prevTextProps.onChange(newValue)
+
+    //then
+    val updatedComp = renderer.getRenderOutput()
+    val textProps = getComponentProps[TextFieldProps](findComponentWithType(updatedComp, TextField()))
+    textProps.text shouldBe newValue
+
+    val modalProps = getComponentProps[ModalProps](findComponentWithType(updatedComp, Modal()))
+    modalProps.actions.enabledCommands shouldBe Set(Buttons.CANCEL.command)
+  }
+
+  it should "render component with empty initial value" in {
     //given
     val props = getInputPopupProps("Test message", placeholder = Some("test placeholder"))
     val component = E(InputPopup())(A.wrapped := props)()
@@ -74,7 +131,7 @@ class InputPopupSpec extends FlatSpec
     assertInputPopup(result, props)
   }
 
-  "componentWillReceiveProps" should "reset state with new props" in {
+  it should "reset state with new props when componentWillReceiveProps" in {
     //given
     val prevProps = getInputPopupProps("Test message", initialValue = "old initial value")
     val parentClass = React.createClass[InputPopupProps, Unit](self =>
@@ -84,14 +141,10 @@ class InputPopupSpec extends FlatSpec
     )
     val parentComp = renderIntoDocument(E(parentClass)(^.wrapped := prevProps)())
     val component = findRenderedComponentWithType(parentComp, InputPopup())
-    val modal = findRenderedComponentWithType(component, Modal())
-    val modalProps = getComponentProps[ModalProps](modal)
-    modalProps.onOpen()
     val prevState = getComponentState[InputPopupState](component)
     prevState.value shouldBe prevProps.initialValue
     prevState.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
     prevState.opened shouldBe true
-    val reactModal = findRenderedComponentWithType(component, NativeReactModal).portal
     val containerElement = findReactElement(parentComp).parentNode
     val props = getInputPopupProps("Test message", initialValue = "new initial value")
 
@@ -103,94 +156,20 @@ class InputPopupSpec extends FlatSpec
     state.value shouldBe props.initialValue
     state.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
     state.opened shouldBe false
-
-    //cleanup
-    unmountComponentAtNode(findDOMNode(reactModal).parentNode) shouldBe true
   }
 
-  "onOpen" should "set opened state to true" in {
+  it should "set opened state to true when open" in {
     //given
     val props = getInputPopupProps("Test message", initialValue = "initial value")
-    val component = renderIntoDocument(E(InputPopup())(A.wrapped := props)())
-    val modal = findRenderedComponentWithType(component, Modal())
-    val modalProps = getComponentProps[ModalProps](modal)
-    val reactModal = findRenderedComponentWithType(component, NativeReactModal).portal
 
     //when
-    modalProps.onOpen()
+    val component = renderIntoDocument(E(InputPopup())(A.wrapped := props)())
 
     //then
     val state = getComponentState[InputPopupState](component)
     state.value shouldBe props.initialValue
     state.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
     state.opened shouldBe true
-
-    //cleanup
-    unmountComponentAtNode(findDOMNode(reactModal).parentNode) shouldBe true
-  }
-
-  "onChange" should "enable OK command when new value is non-emtpy" in {
-    //given
-    val component = renderIntoDocument(E(InputPopup())(A.wrapped := getInputPopupProps("Test message"))())
-    val modal = findRenderedComponentWithType(component, NativeReactModal).portal
-    val textField = findRenderedComponentWithType(modal, TextField())
-    val textFieldProps = getComponentProps[TextFieldProps](textField)
-    val newValue = "new value"
-
-    //when
-    textFieldProps.onChange(newValue)
-
-    //then
-    val state = getComponentState[InputPopupState](component)
-    state.value shouldBe newValue
-    state.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
-
-    //cleanup
-    unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
-  }
-
-  it should "disable OK command when new value is emtpy" in {
-    //given
-    val component = renderIntoDocument(E(InputPopup())(A.wrapped := getInputPopupProps(
-      "Test message", initialValue = "initial value"
-    ))())
-    val modal = findRenderedComponentWithType(component, NativeReactModal).portal
-    val textField = findRenderedComponentWithType(modal, TextField())
-    val textFieldProps = getComponentProps[TextFieldProps](textField)
-    val newValue = ""
-
-    //when
-    textFieldProps.onChange(newValue)
-
-    //then
-    val state = getComponentState[InputPopupState](component)
-    state.value shouldBe newValue
-    state.actionCommands shouldBe Set(Buttons.CANCEL.command)
-
-    //cleanup
-    unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
-  }
-
-  "onEnter" should "call onOk functions with new value" in {
-    //given
-    val onOk = mockFunction[String, Unit]
-    val component = renderIntoDocument(E(InputPopup())(A.wrapped := getInputPopupProps(
-      "Test message", onOk = onOk
-    ))())
-    val modal = findRenderedComponentWithType(component, NativeReactModal).portal
-    val textField = findRenderedComponentWithType(modal, TextField())
-    val textFieldProps = getComponentProps[TextFieldProps](textField)
-    val newValue = "new value"
-    textFieldProps.onChange(newValue)
-
-    //then
-    onOk.expects(newValue)
-
-    //when
-    textFieldProps.onEnter()
-
-    //cleanup
-    unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
   }
 
   private def getInputPopupProps(message: String,

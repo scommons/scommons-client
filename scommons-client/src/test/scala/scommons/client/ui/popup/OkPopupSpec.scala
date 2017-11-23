@@ -8,11 +8,9 @@ import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
-import scommons.client.test.raw.TestReactDOM._
 import scommons.client.ui.Buttons
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.OkPopup.OkPopupState
-import scommons.react.modal.NativeReactModal
 
 class OkPopupSpec extends FlatSpec
   with Matchers
@@ -68,12 +66,8 @@ class OkPopupSpec extends FlatSpec
     )
     val parentComp = renderIntoDocument(E(parentClass)(^.wrapped := prevProps)())
     val component = findRenderedComponentWithType(parentComp, OkPopup())
-    val modal = findRenderedComponentWithType(component, Modal())
-    val modalProps = getComponentProps[ModalProps](modal)
-    modalProps.onOpen()
     val prevState = getComponentState[OkPopupState](component)
     prevState.opened shouldBe true
-    val reactModal = findRenderedComponentWithType(component, NativeReactModal).portal
     val containerElement = findReactElement(parentComp).parentNode
     val props = getOkPopupProps("New message")
 
@@ -83,28 +77,21 @@ class OkPopupSpec extends FlatSpec
     //then
     val state = getComponentState[OkPopupState](component)
     state.opened shouldBe false
-
-    //cleanup
-    unmountComponentAtNode(findDOMNode(reactModal).parentNode) shouldBe true
   }
 
-  it should "set opened state to true when onOpen" in {
+  it should "set opened state to true when open" in {
     //given
     val props = getOkPopupProps("Test message")
-    val component = renderIntoDocument(E(OkPopup())(A.wrapped := props)())
-    val modal = findRenderedComponentWithType(component, Modal())
-    val modalProps = getComponentProps[ModalProps](modal)
-    val reactModal = findRenderedComponentWithType(component, NativeReactModal).portal
 
     //when
-    modalProps.onOpen()
+    val component = renderIntoDocument(E(OkPopup())(A.wrapped := props)())
 
     //then
     val state = getComponentState[OkPopupState](component)
     state.opened shouldBe true
 
-    //cleanup
-    unmountComponentAtNode(findDOMNode(reactModal).parentNode) shouldBe true
+    val modalProps = getComponentProps[ModalProps](findRenderedComponentWithType(component, Modal()))
+    modalProps.actions.focusedCommand shouldBe Some(Buttons.OK.command)
   }
 
   private def getOkPopupProps(message: String,
@@ -126,6 +113,7 @@ class OkPopupSpec extends FlatSpec
         header shouldBe None
         buttons shouldBe List(Buttons.OK)
         actions.enabledCommands shouldBe actionCommands
+        actions.focusedCommand shouldBe None
         onClose shouldBe props.onClose
         closable shouldBe true
       }
