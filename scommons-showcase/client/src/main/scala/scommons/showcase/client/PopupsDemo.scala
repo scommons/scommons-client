@@ -15,6 +15,7 @@ case class ModalState(showModal: Boolean = false,
                       showOk: Boolean = false,
                       okMessage: String = "",
                       showYesNoCancel: Boolean = false,
+                      showYesNo: Boolean = false,
                       showLoading: Boolean = false,
                       showStatus: Boolean = false)
 
@@ -48,10 +49,10 @@ object PopupsDemo {
           )
         ),
 
-        <.h2()("InputPopup"),
+        <.h2()("Input Popup"),
         <.hr()(),
         <.p()(
-          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "InputPopup", primary = true), { () =>
+          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Input", primary = true), { () =>
             self.setState(_.copy(showInput = true))
           }))(),
           <(InputPopup())(^.wrapped := InputPopupProps(
@@ -72,11 +73,13 @@ object PopupsDemo {
         <.p()(
           <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(List(
             SimpleButtonData("ok", "OK", primary = true),
-            SimpleButtonData("yes-no-cancel", "Yes/No/Cancel", primary = true)
+            SimpleButtonData("yes-no-cancel", "Yes/No/Cancel", primary = true),
+            SimpleButtonData("yes-no", "Yes/No", primary = true)
           ),
-          ActionsData(Set("ok", "yes-no-cancel"), {
+          ActionsData(Set("ok", "yes-no-cancel", "yes-no"), {
             case "ok" => self.setState(_.copy(showOk = true, okMessage = "Hello World!"))
             case "yes-no-cancel" => self.setState(_.copy(showYesNoCancel = true))
+            case "yes-no" => self.setState(_.copy(showYesNo = true))
           })))(),
 
           <(OkPopup())(^.wrapped := OkPopupProps(
@@ -92,9 +95,18 @@ object PopupsDemo {
             "Do you like Scala.js ?",
             image = Some(IconCss.dialogQuestion),
             onSelect = {
-              case Yes => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected YES :)"))
-              case No => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected NO :("))
+              case Yes => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected: YES"))
+              case No => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected: NO"))
               case _ => self.setState(_.copy(showYesNoCancel = false))
+            }
+          ))(),
+          <(YesNoPopup())(^.wrapped := YesNoPopupProps(
+            self.state.showYesNo,
+            "Do you like Scala.js and React.js ?",
+            image = Some(IconCss.dialogQuestion),
+            onSelect = {
+              case Yes => self.setState(_.copy(showYesNo = false, showOk = true, okMessage = "You selected: YES"))
+              case _ => self.setState(_.copy(showYesNo = false, showOk = true, okMessage = "You selected: NO"))
             }
           ))()
         ),
@@ -102,7 +114,7 @@ object PopupsDemo {
         <.h2()("Other Popups"),
         <.hr()(),
         <.p()(
-          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Loading and Status", primary = true), { () =>
+          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Loading/Status", primary = true), { () =>
             self.setState(_.copy(showLoading = true, showStatus = true))
 
             var timerId = 0

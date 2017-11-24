@@ -1,14 +1,11 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Inside, Matchers}
 import scommons.client.test.ShallowRendererUtils
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
-import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
-import scommons.client.ui.popup.InputPopup.InputPopupState
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
 
 class InputPopupSpec extends FlatSpec
@@ -131,45 +128,58 @@ class InputPopupSpec extends FlatSpec
     assertInputPopup(result, props)
   }
 
-  it should "reset state with new props when componentWillReceiveProps" in {
+  it should "set requestFocus when onOpen" in {
     //given
-    val prevProps = getInputPopupProps("Test message", initialValue = "old initial value")
-    val parentClass = React.createClass[InputPopupProps, Unit](self =>
-      E.div()(
-        E(InputPopup())(A.wrapped := self.props.wrapped)()
-      )
-    )
-    val parentComp = renderIntoDocument(E(parentClass)(^.wrapped := prevProps)())
-    val component = findRenderedComponentWithType(parentComp, InputPopup())
-    val prevState = getComponentState[InputPopupState](component)
-    prevState.value shouldBe prevProps.initialValue
-    prevState.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
-    prevState.opened shouldBe true
-    val containerElement = findReactElement(parentComp).parentNode
-    val props = getInputPopupProps("Test message", initialValue = "new initial value")
+    val props = getInputPopupProps("Test message")
+    val renderer = createRenderer()
+    renderer.render(E(InputPopup())(A.wrapped := props)())
+    val comp = renderer.getRenderOutput()
+    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
+    val textProps = getComponentProps[TextFieldProps](findComponentWithType(comp, TextField()))
+    textProps.requestFocus shouldBe false
+    textProps.requestSelect shouldBe false
 
     //when
-    ReactDOM.render(E(parentClass)(^.wrapped := props)(), containerElement)
+    modalProps.onOpen()
 
     //then
-    val state = getComponentState[InputPopupState](component)
-    state.value shouldBe props.initialValue
-    state.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
-    state.opened shouldBe false
+    val updatedComp = renderer.getRenderOutput()
+    val updatedTextProps = getComponentProps[TextFieldProps](findComponentWithType(updatedComp, TextField()))
+    updatedTextProps.requestFocus shouldBe true
+    updatedTextProps.requestSelect shouldBe true
   }
 
-  it should "set opened state to true when open" in {
+  it should "reset requestFocus and value when componentWillReceiveProps" in {
     //given
-    val props = getInputPopupProps("Test message", initialValue = "initial value")
+    val prevProps = getInputPopupProps("Test message", initialValue = "some value")
+    val renderer = createRenderer()
+    renderer.render(E(InputPopup())(A.wrapped := prevProps)())
+    val comp = renderer.getRenderOutput()
+    val textProps = getComponentProps[TextFieldProps](findComponentWithType(comp, TextField()))
+    textProps.text shouldBe prevProps.initialValue
+    textProps.requestFocus shouldBe false
+    textProps.requestSelect shouldBe false
+    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
+    modalProps.actions.enabledCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
+    modalProps.onOpen()
+    val compV2 = renderer.getRenderOutput()
+    val textPropsV2 = getComponentProps[TextFieldProps](findComponentWithType(compV2, TextField()))
+    textPropsV2.requestFocus shouldBe true
+    textPropsV2.requestSelect shouldBe true
+    val props = getInputPopupProps("New message")
 
     //when
-    val component = renderIntoDocument(E(InputPopup())(A.wrapped := props)())
+    renderer.render(E(InputPopup())(A.wrapped := props)())
 
     //then
-    val state = getComponentState[InputPopupState](component)
-    state.value shouldBe props.initialValue
-    state.actionCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
-    state.opened shouldBe true
+    val compV3 = renderer.getRenderOutput()
+    val modalPropsV3 = getComponentProps[ModalProps](findComponentWithType(compV3, Modal()))
+    modalPropsV3.actions.enabledCommands shouldBe Set(Buttons.CANCEL.command)
+
+    val textPropsV3 = getComponentProps[TextFieldProps](findComponentWithType(compV3, TextField()))
+    textPropsV3.text shouldBe props.initialValue
+    textPropsV3.requestFocus shouldBe false
+    textPropsV3.requestSelect shouldBe false
   }
 
   private def getInputPopupProps(message: String,

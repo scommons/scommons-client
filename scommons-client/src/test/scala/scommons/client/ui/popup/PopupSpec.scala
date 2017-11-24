@@ -14,7 +14,7 @@ class PopupSpec extends FlatSpec
   with ShallowRendererUtils
   with MockFactory {
 
-  "onAfterOpen" should "call onOpen function" in {
+  it should "call onOpen function when onAfterOpen" in {
     //given
     val onOpen = mockFunction[Unit]
     val props = PopupProps(show = true, onClose = () => (), onOpen = onOpen)
@@ -27,7 +27,7 @@ class PopupSpec extends FlatSpec
     component.props.onAfterOpen()
   }
 
-  "onRequestClose" should "call onClose function" in {
+  it should "call onClose function when onRequestClose" in {
     //given
     val onClose = mockFunction[Unit]
     val props = PopupProps(show = true, onClose = onClose)
@@ -40,7 +40,7 @@ class PopupSpec extends FlatSpec
     component.props.onRequestClose()
   }
 
-  "rendering" should "render closable popup with default styles" in {
+  it should "render closable popup with default styles" in {
     //given
     val props = PopupProps(show = true, () => ())
     val component = E(Popup())(A.wrapped := props)()
@@ -74,6 +74,21 @@ class PopupSpec extends FlatSpec
     result.props.shouldCloseOnOverlayClick shouldBe props.closable
     result.props.overlayClassName shouldBe props.overlayClass
     result.props.className shouldBe props.popupClass
+  }
+
+  it should "render and call onOpen function when render in the DOM" in {
+    //given
+    val onOpen = mockFunction[Unit]
+    val props = PopupProps(show = true, onClose = () => (), onOpen = onOpen)
+    val component = E(Popup())(A.wrapped := props)(
+      E.p()("some children")
+    )
+
+    //then
+    onOpen.expects()
+
+    //when
+    renderIntoDocument(component)
   }
 
   it should "render component in the DOM" in {

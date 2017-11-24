@@ -1,16 +1,13 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Inside, Matchers}
 import scommons.client.test.ShallowRendererUtils
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
-import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.YesNoCancelOption._
-import scommons.client.ui.popup.YesNoCancelPopup.YesNoCancelPopupState
 import scommons.client.ui.{Buttons, SimpleButtonData}
 
 class YesNoCancelPopupSpec extends FlatSpec
@@ -99,42 +96,45 @@ class YesNoCancelPopupSpec extends FlatSpec
     assertYesNoCancelPopup(result, props)
   }
 
-  it should "reset state with new props when componentWillReceiveProps" in {
+  it should "set focusedCommand when onOpen" in {
+    //given
+    val props = getYesNoCancelPopupProps("Test message")
+    val renderer = createRenderer()
+    renderer.render(E(YesNoCancelPopup())(A.wrapped := props)())
+    val comp = renderer.getRenderOutput()
+    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
+    modalProps.actions.focusedCommand shouldBe None
+
+    //when
+    modalProps.onOpen()
+
+    //then
+    val updatedComp = renderer.getRenderOutput()
+    val updatedModalProps = getComponentProps[ModalProps](findComponentWithType(updatedComp, Modal()))
+    updatedModalProps.actions.focusedCommand shouldBe Some(props.selected.command)
+  }
+
+  it should "reset focusedCommand when componentWillReceiveProps" in {
     //given
     val prevProps = getYesNoCancelPopupProps("Test message")
-    val parentClass = React.createClass[YesNoCancelPopupProps, Unit](self =>
-      E.div()(
-        E(YesNoCancelPopup())(A.wrapped := self.props.wrapped)()
-      )
-    )
-    val parentComp = renderIntoDocument(E(parentClass)(^.wrapped := prevProps)())
-    val component = findRenderedComponentWithType(parentComp, YesNoCancelPopup())
-    val prevState = getComponentState[YesNoCancelPopupState](component)
-    prevState.opened shouldBe true
-    val containerElement = findReactElement(parentComp).parentNode
+    val renderer = createRenderer()
+    renderer.render(E(YesNoCancelPopup())(A.wrapped := prevProps)())
+    val comp = renderer.getRenderOutput()
+    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
+    modalProps.actions.focusedCommand shouldBe None
+    modalProps.onOpen()
+    val compV2 = renderer.getRenderOutput()
+    val modalPropsV2 = getComponentProps[ModalProps](findComponentWithType(compV2, Modal()))
+    modalPropsV2.actions.focusedCommand shouldBe Some(prevProps.selected.command)
     val props = getYesNoCancelPopupProps("New message")
 
     //when
-    ReactDOM.render(E(parentClass)(^.wrapped := props)(), containerElement)
+    renderer.render(E(YesNoCancelPopup())(A.wrapped := props)())
 
     //then
-    val state = getComponentState[YesNoCancelPopupState](component)
-    state.opened shouldBe false
-  }
-
-  it should "set opened state to true when open" in {
-    //given
-    val props = getYesNoCancelPopupProps("Test message")
-
-    //when
-    val component = renderIntoDocument(E(YesNoCancelPopup())(A.wrapped := props)())
-
-    //then
-    val state = getComponentState[YesNoCancelPopupState](component)
-    state.opened shouldBe true
-
-    val modalProps = getComponentProps[ModalProps](findRenderedComponentWithType(component, Modal()))
-    modalProps.actions.focusedCommand shouldBe Some(props.selected.command)
+    val compV3 = renderer.getRenderOutput()
+    val modalPropsV3 = getComponentProps[ModalProps](findComponentWithType(compV3, Modal()))
+    modalPropsV3.actions.focusedCommand shouldBe None
   }
 
   private def getYesNoCancelPopupProps(message: String,

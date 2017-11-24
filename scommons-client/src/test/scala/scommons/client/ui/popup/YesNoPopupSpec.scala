@@ -6,58 +6,73 @@ import scommons.client.test.ShallowRendererUtils
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
-import scommons.client.ui.Buttons
+import scommons.client.ui.SimpleButtonData
 import scommons.client.ui.icon.IconCss
+import scommons.client.ui.popup.YesNoCancelOption._
 
-class OkPopupSpec extends FlatSpec
+class YesNoPopupSpec extends FlatSpec
   with Matchers
   with Inside
   with ShallowRendererUtils
   with MockFactory {
 
-  it should "call onClose function when onOkCommand" in {
+  it should "call onSelect(Yes) function when Yes selected" in {
     //given
-    val onClose = mockFunction[Unit]
-    val props = getOkPopupProps("Test message", onClose = onClose)
-    val component = shallowRender(E(OkPopup())(A.wrapped := props)())
+    val onSelect = mockFunction[YesNoCancelOption, Unit]
+    val props = getYesNoPopupProps("Test message", onSelect = onSelect)
+    val component = shallowRender(E(YesNoPopup())(A.wrapped := props)())
     val modalProps = getComponentProps[ModalProps](component)
 
     //then
-    onClose.expects()
+    onSelect.expects(Yes)
 
     //when
-    modalProps.actions.onCommand(Buttons.OK.command)
+    modalProps.actions.onCommand(Yes.command)
+  }
+
+  it should "call onSelect(No) function when No selected" in {
+    //given
+    val onSelect = mockFunction[YesNoCancelOption, Unit]
+    val props = getYesNoPopupProps("Test message", onSelect = onSelect)
+    val component = shallowRender(E(YesNoPopup())(A.wrapped := props)())
+    val modalProps = getComponentProps[ModalProps](component)
+
+    //then
+    onSelect.expects(No)
+
+    //when
+    modalProps.actions.onCommand(No.command)
   }
 
   it should "render component with image" in {
     //given
-    val props = getOkPopupProps("Test message", image = Some(IconCss.dialogInformation))
-    val component = E(OkPopup())(A.wrapped := props)()
+    val props = getYesNoPopupProps("Test message", image = Some(IconCss.dialogInformation))
+    val component = E(YesNoPopup())(A.wrapped := props)()
 
     //when
     val result = shallowRender(component)
 
     //then
-    assertOkPopup(result, props)
+    assertYesNoPopup(result, props)
   }
 
   it should "render component without image" in {
     //given
-    val props = getOkPopupProps("Test message")
-    val component = E(OkPopup())(A.wrapped := props)()
+    val props = getYesNoPopupProps("Test message")
+    val component = E(YesNoPopup())(A.wrapped := props)()
 
     //when
     val result = shallowRender(component)
 
     //then
-    assertOkPopup(result, props)
+    assertYesNoPopup(result, props)
   }
 
   it should "set focusedCommand when onOpen" in {
     //given
-    val props = getOkPopupProps("Test message")
+    val props = getYesNoPopupProps("Test message")
     val renderer = createRenderer()
-    renderer.render(E(OkPopup())(A.wrapped := props)())
+    renderer.render(E(YesNoPopup())(A.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
     modalProps.actions.focusedCommand shouldBe None
@@ -68,25 +83,25 @@ class OkPopupSpec extends FlatSpec
     //then
     val updatedComp = renderer.getRenderOutput()
     val updatedModalProps = getComponentProps[ModalProps](findComponentWithType(updatedComp, Modal()))
-    updatedModalProps.actions.focusedCommand shouldBe Some(Buttons.OK.command)
+    updatedModalProps.actions.focusedCommand shouldBe Some(props.selected.command)
   }
 
   it should "reset focusedCommand when componentWillReceiveProps" in {
     //given
-    val prevProps = getOkPopupProps("Test message")
+    val prevProps = getYesNoPopupProps("Test message")
     val renderer = createRenderer()
-    renderer.render(E(OkPopup())(A.wrapped := prevProps)())
+    renderer.render(E(YesNoPopup())(A.wrapped := prevProps)())
     val comp = renderer.getRenderOutput()
     val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
     modalProps.actions.focusedCommand shouldBe None
     modalProps.onOpen()
     val compV2 = renderer.getRenderOutput()
     val modalPropsV2 = getComponentProps[ModalProps](findComponentWithType(compV2, Modal()))
-    modalPropsV2.actions.focusedCommand shouldBe Some(Buttons.OK.command)
-    val props = getOkPopupProps("New message")
+    modalPropsV2.actions.focusedCommand shouldBe Some(prevProps.selected.command)
+    val props = getYesNoPopupProps("New message")
 
     //when
-    renderer.render(E(OkPopup())(A.wrapped := props)())
+    renderer.render(E(YesNoPopup())(A.wrapped := props)())
 
     //then
     val compV3 = renderer.getRenderOutput()
@@ -94,28 +109,33 @@ class OkPopupSpec extends FlatSpec
     modalPropsV3.actions.focusedCommand shouldBe None
   }
 
-  private def getOkPopupProps(message: String,
-                              onClose: () => Unit = () => (),
-                              image: Option[String] = None,
-                              show: Boolean = true): OkPopupProps = OkPopupProps(
+  private def getYesNoPopupProps(message: String,
+                                 onSelect: YesNoCancelOption => Unit = _ => (),
+                                 selected: YesNoCancelOption = Yes,
+                                 image: Option[String] = None,
+                                 show: Boolean = true): YesNoPopupProps = YesNoPopupProps(
     show = show,
     message = message,
-    onClose = onClose,
+    onSelect = onSelect,
+    selected = selected,
     image = image
   )
 
-  private def assertOkPopup(result: ComponentInstance, props: OkPopupProps): Unit = {
-    val actionCommands = Set(Buttons.OK.command)
+  private def assertYesNoPopup(result: ComponentInstance, props: YesNoPopupProps): Unit = {
+    val expectedButtons = List(
+      SimpleButtonData(Yes.command, "Yes", props.selected == Yes),
+      SimpleButtonData(No.command, "No", props.selected == No)
+    )
+    val enabledCommands = Set(Yes.command, No.command)
 
     assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, onClose, closable, _) =>
+      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, closable, _) =>
         show shouldBe props.show
         header shouldBe None
-        buttons shouldBe List(Buttons.OK)
-        actions.enabledCommands shouldBe actionCommands
+        buttons shouldBe expectedButtons
+        actions.enabledCommands shouldBe enabledCommands
         actions.focusedCommand shouldBe None
-        onClose shouldBe props.onClose
-        closable shouldBe true
+        closable shouldBe false
       }
     }, { case List(modalChild) =>
       assertDOMComponent(modalChild, E.div(^.className := "row-fluid")(), { children =>

@@ -13,7 +13,7 @@ case class OkPopupProps(show: Boolean,
 
 object OkPopup {
 
-  private[popup] case class OkPopupState(opened: Boolean = false)
+  private case class OkPopupState(opened: Boolean = false)
 
   def apply(): ReactClass = reactClass
 

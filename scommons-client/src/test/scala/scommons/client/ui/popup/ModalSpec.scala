@@ -11,7 +11,7 @@ class ModalSpec extends FlatSpec
   with Matchers
   with ShallowRendererUtils {
 
-  "rendering" should "render closable modal with header" in {
+  it should "render closable modal with header" in {
     //given
     val props = getModalProps()
     val component = E(Modal())(A.wrapped := props)(

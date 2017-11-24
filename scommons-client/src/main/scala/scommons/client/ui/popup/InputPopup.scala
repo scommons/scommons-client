@@ -15,9 +15,9 @@ case class InputPopupProps(show: Boolean,
 
 object InputPopup {
 
-  private[popup] case class InputPopupState(value: String,
-                                            actionCommands: Set[String],
-                                            opened: Boolean = false)
+  private case class InputPopupState(value: String,
+                                     actionCommands: Set[String],
+                                     opened: Boolean = false)
 
   def apply(): ReactClass = reactClass
 
