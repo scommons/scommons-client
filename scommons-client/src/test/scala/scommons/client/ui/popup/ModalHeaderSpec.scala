@@ -1,17 +1,12 @@
 package scommons.client.ui.popup
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.ShallowRendererUtils
+import scommons.client.test.TestSpec
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 
-class ModalHeaderSpec extends FlatSpec
-  with Matchers
-  with ShallowRendererUtils
-  with MockFactory {
+class ModalHeaderSpec extends TestSpec {
 
-  "onCloseClick" should "call onClose function" in {
+  it should "call onClose function when onCloseClick" in {
     //given
     val onClose = mockFunction[Unit]
     val props = ModalHeaderProps("Test Header", onClose = onClose)
@@ -25,7 +20,7 @@ class ModalHeaderSpec extends FlatSpec
     Simulate.click(button)
   }
 
-  "rendering" should "render closable header component" in {
+  it should "render closable header component" in {
     //given
     val props = ModalHeaderProps("Test Header", () => ())
     val component = E(ModalHeader())(^.wrapped := props)()

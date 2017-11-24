@@ -2,18 +2,18 @@ package scommons.client.ui.popup
 
 import org.scalajs.dom.raw.{EventTarget, HTMLElement}
 import org.scalajs.dom.{KeyboardEvent, MouseEvent, document}
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers}
+import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.TestReactDOM._
+import scommons.client.ui.popup.WithAutoHideSpec.DomEventMock
 
 import scala.scalajs.js.annotation.JSExportAll
 
-class WithAutoHideSpec extends FlatSpec with Matchers with MockFactory {
+class WithAutoHideSpec extends TestSpec {
 
-  "mouseUp" should "call onHide when triggered outside content element" in {
+  it should "call onHide when triggered outside content element on mouseUp" in {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
@@ -30,7 +30,7 @@ class WithAutoHideSpec extends FlatSpec with Matchers with MockFactory {
     unmountComponentAtNode(findDOMNode(comp).parentNode) shouldBe true
   }
 
-  it should "not call onHide when unmounted" in {
+  it should "not call onHide when unmounted on mouseUp" in {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
@@ -45,7 +45,7 @@ class WithAutoHideSpec extends FlatSpec with Matchers with MockFactory {
     document.dispatchEvent(createDomEvent[MouseEvent]("mouseup"))
   }
 
-  "keyUp" should "call onHide when triggered outside content element" in {
+  it should "call onHide when triggered outside content element on keyUp" in {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
@@ -62,7 +62,7 @@ class WithAutoHideSpec extends FlatSpec with Matchers with MockFactory {
     unmountComponentAtNode(findDOMNode(comp).parentNode) shouldBe true
   }
 
-  it should "not call onHide when unmounted" in {
+  it should "not call onHide when unmounted on keyUp" in {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
@@ -77,7 +77,7 @@ class WithAutoHideSpec extends FlatSpec with Matchers with MockFactory {
     document.dispatchEvent(createDomEvent[KeyboardEvent]("keyup"))
   }
 
-  "onAutoHide" should "call onHide when event target is outside autoHide element" in {
+  it should "call onHide when event target is outside autoHide element" in {
     //given
     val onHide = mockFunction[Unit]
     val child = document.createElement("div").asInstanceOf[HTMLElement]
@@ -109,7 +109,7 @@ class WithAutoHideSpec extends FlatSpec with Matchers with MockFactory {
     WithAutoHide.onAutoHide(parent, onHide)(event.asInstanceOf[MouseEvent])
   }
 
-  "rendering" should "render the component" in {
+  it should "render the component" in {
     //given
     val content = "test content"
     val component = E(WithAutoHide())(A.wrapped := WithAutoHideProps(() => ()))(
@@ -131,8 +131,11 @@ class WithAutoHideSpec extends FlatSpec with Matchers with MockFactory {
   }
 }
 
-@JSExportAll
-trait DomEventMock {
+object WithAutoHideSpec {
 
-  def target: EventTarget
+  @JSExportAll
+  trait DomEventMock {
+
+    def target: EventTarget
+  }
 }

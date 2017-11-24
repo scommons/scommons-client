@@ -3,13 +3,16 @@ package scommons.client.app
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import scommons.client.ui.UiComponent
 
 case class AppHeaderProps(name: String = "App",
                           user: String = "user")
 
-object AppHeader {
+object AppHeader extends UiComponent[AppHeaderProps] {
 
-  lazy val reactClass: ReactClass = React.createClass[AppHeaderProps, Unit] { self =>
+  def apply(): ReactClass = reactClass
+
+  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
     <.div(^.className := "navbar navbar-inverse navbar-fixed-top")(
       <.div(^.className := "navbar-inner")(

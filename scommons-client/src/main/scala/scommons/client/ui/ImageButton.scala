@@ -12,14 +12,14 @@ case class ImageButtonProps(data: ImageButtonData,
                             showTextAsTitle: Boolean = false,
                             requestFocus: Boolean = false)
 
-object ImageButton {
+object ImageButton extends UiComponent[ImageButtonProps] {
 
   private case class ImageButtonState(setButtonRef: HTMLButtonElement => Unit,
                                       getButtonRef: () => HTMLButtonElement)
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[ImageButtonProps, ImageButtonState](
+  lazy val reactClass: ReactClass = React.createClass[PropsType, ImageButtonState](
     getInitialState = { _ =>
       var buttonRef: HTMLButtonElement = null
 

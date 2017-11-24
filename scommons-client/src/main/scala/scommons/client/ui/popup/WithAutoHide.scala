@@ -6,12 +6,13 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
 import org.scalajs.dom.Event
 import org.scalajs.dom.raw.HTMLElement
+import scommons.client.ui.UiComponent
 
 import scala.scalajs.js
 
 case class WithAutoHideProps(onHide: () => Unit)
 
-object WithAutoHide {
+object WithAutoHide extends UiComponent[WithAutoHideProps] {
 
   private case class WithAutoHideState(setAutoHideDiv: HTMLElement => Unit,
                                        getAutoHideDiv: () => HTMLElement,
@@ -19,7 +20,7 @@ object WithAutoHide {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[WithAutoHideProps, WithAutoHideState](
+  lazy val reactClass: ReactClass = React.createClass[PropsType, WithAutoHideState](
     getInitialState = { _ =>
       var autoHideDiv: HTMLElement = null
 

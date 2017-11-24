@@ -1,15 +1,12 @@
 package scommons.client.ui.popup
 
-import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.ShallowRendererUtils
+import scommons.client.test.TestSpec
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.Buttons
 import scommons.client.util.ActionsData
 
-class ModalSpec extends FlatSpec
-  with Matchers
-  with ShallowRendererUtils {
+class ModalSpec extends TestSpec {
 
   it should "render closable modal with header" in {
     //given

@@ -10,11 +10,11 @@ case class ButtonsPanelProps(buttons: List[ButtonData],
                              group: Boolean = false,
                              className: Option[String] = None)
 
-object ButtonsPanel {
+object ButtonsPanel extends UiComponent[ButtonsPanelProps] {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[ButtonsPanelProps, Unit] { self =>
+  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
 
     val panelClass = props.className match {

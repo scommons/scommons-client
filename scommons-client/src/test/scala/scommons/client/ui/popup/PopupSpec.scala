@@ -1,18 +1,13 @@
 package scommons.client.ui.popup
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.ShallowRendererUtils
+import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.TestReactDOM._
 import scommons.react.modal.NativeReactModal
 
-class PopupSpec extends FlatSpec
-  with Matchers
-  with ShallowRendererUtils
-  with MockFactory {
+class PopupSpec extends TestSpec {
 
   it should "call onOpen function when onAfterOpen" in {
     //given

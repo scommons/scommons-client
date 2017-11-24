@@ -1,14 +1,11 @@
 package scommons.client.ui.popup
 
-import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.ShallowRendererUtils
+import scommons.client.test.TestSpec
 import scommons.client.test.TestVirtualDOM._
 
-class ModalBodySpec extends FlatSpec
-  with Matchers
-  with ShallowRendererUtils {
+class ModalBodySpec extends TestSpec {
 
-  "rendering" should "render component with provided children" in {
+  it should "render component with provided children" in {
     //given
     val component = E(ModalBody())()(
       E.p()("some children")

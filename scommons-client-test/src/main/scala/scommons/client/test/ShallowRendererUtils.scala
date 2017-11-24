@@ -18,6 +18,8 @@ trait ShallowRendererUtils extends Matchers {
 
   def shallowRender(element: js.Object): ComponentInstance = renderAndGetOutput(element)
 
+  def getComponentProps[T](component: ComponentInstance): T = component.props.wrapped.asInstanceOf[T]
+
   def findComponentWithType(component: ComponentInstance,
                             componentClass: ReactClass): ComponentInstance = {
 

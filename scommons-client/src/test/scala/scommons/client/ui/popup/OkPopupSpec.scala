@@ -1,26 +1,19 @@
 package scommons.client.ui.popup
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Inside, Matchers}
-import scommons.client.test.ShallowRendererUtils
-import scommons.client.test.TestUtils._
+import scommons.client.test.TestSpec
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.Buttons
 import scommons.client.ui.icon.IconCss
 
-class OkPopupSpec extends FlatSpec
-  with Matchers
-  with Inside
-  with ShallowRendererUtils
-  with MockFactory {
+class OkPopupSpec extends TestSpec {
 
   it should "call onClose function when onOkCommand" in {
     //given
     val onClose = mockFunction[Unit]
     val props = getOkPopupProps("Test message", onClose = onClose)
     val component = shallowRender(E(OkPopup())(A.wrapped := props)())
-    val modalProps = getComponentProps[ModalProps](component)
+    val modalProps = findComponentProps(component, Modal)
 
     //then
     onClose.expects()
@@ -59,7 +52,7 @@ class OkPopupSpec extends FlatSpec
     val renderer = createRenderer()
     renderer.render(E(OkPopup())(A.wrapped := props)())
     val comp = renderer.getRenderOutput()
-    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
+    val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
 
     //when
@@ -67,7 +60,7 @@ class OkPopupSpec extends FlatSpec
 
     //then
     val updatedComp = renderer.getRenderOutput()
-    val updatedModalProps = getComponentProps[ModalProps](findComponentWithType(updatedComp, Modal()))
+    val updatedModalProps = findComponentProps(updatedComp, Modal)
     updatedModalProps.actions.focusedCommand shouldBe Some(Buttons.OK.command)
   }
 
@@ -77,11 +70,11 @@ class OkPopupSpec extends FlatSpec
     val renderer = createRenderer()
     renderer.render(E(OkPopup())(A.wrapped := prevProps)())
     val comp = renderer.getRenderOutput()
-    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
+    val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
     modalProps.onOpen()
     val compV2 = renderer.getRenderOutput()
-    val modalPropsV2 = getComponentProps[ModalProps](findComponentWithType(compV2, Modal()))
+    val modalPropsV2 = findComponentProps(compV2, Modal)
     modalPropsV2.actions.focusedCommand shouldBe Some(Buttons.OK.command)
     val props = getOkPopupProps("New message")
 
@@ -90,7 +83,7 @@ class OkPopupSpec extends FlatSpec
 
     //then
     val compV3 = renderer.getRenderOutput()
-    val modalPropsV3 = getComponentProps[ModalProps](findComponentWithType(compV3, Modal()))
+    val modalPropsV3 = findComponentProps(compV3, Modal)
     modalPropsV3.actions.focusedCommand shouldBe None
   }
 

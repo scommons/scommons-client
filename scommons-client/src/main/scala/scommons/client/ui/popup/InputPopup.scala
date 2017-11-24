@@ -3,7 +3,7 @@ package scommons.client.ui.popup
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.{Buttons, TextField, TextFieldProps}
+import scommons.client.ui.{Buttons, TextField, TextFieldProps, UiComponent}
 import scommons.client.util.ActionsData
 
 case class InputPopupProps(show: Boolean,
@@ -13,7 +13,7 @@ case class InputPopupProps(show: Boolean,
                            placeholder: Option[String] = None,
                            initialValue: String = "")
 
-object InputPopup {
+object InputPopup extends UiComponent[InputPopupProps] {
 
   private case class InputPopupState(value: String,
                                      actionCommands: Set[String],
@@ -21,7 +21,7 @@ object InputPopup {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[InputPopupProps, InputPopupState](
+  lazy val reactClass: ReactClass = React.createClass[PropsType, InputPopupState](
     getInitialState = { self =>
       val props = self.props.wrapped
 

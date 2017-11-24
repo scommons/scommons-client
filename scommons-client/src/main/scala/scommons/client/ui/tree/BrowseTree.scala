@@ -4,6 +4,7 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import scommons.client.ui.UiComponent
 import scommons.client.ui.tree.BrowseTreeCss._
 import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 
@@ -14,11 +15,11 @@ case class BrowseTreeProps(roots: List[BrowseTreeData],
 case class BrowseTreeState(selected: Option[BrowseTreeDataKey] = None, //TODO: remove (use selected item from props)
                            expanded: Set[BrowseTreeDataKey] = Set.empty[BrowseTreeDataKey])
 
-object BrowseTree {
+object BrowseTree extends UiComponent[BrowseTreeProps] {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[BrowseTreeProps, BrowseTreeState](
+  lazy val reactClass: ReactClass = React.createClass[PropsType, BrowseTreeState](
     getInitialState = { _ =>
       BrowseTreeState()
     },

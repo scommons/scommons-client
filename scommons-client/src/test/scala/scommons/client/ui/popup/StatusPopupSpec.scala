@@ -1,16 +1,12 @@
 package scommons.client.ui.popup
 
-import org.scalatest.{FlatSpec, Inside, Matchers}
-import scommons.client.test.ShallowRendererUtils
+import scommons.client.test.TestSpec
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.ui.popup.PopupCss._
 
-class StatusPopupSpec extends FlatSpec
-  with Matchers
-  with Inside
-  with ShallowRendererUtils {
+class StatusPopupSpec extends TestSpec {
 
-  "rendering" should "render component with correct props" in {
+  it should "render component with correct props" in {
     //given
     val props = StatusPopupProps("test text", show = true, () => ())
     val component = E(StatusPopup())(A.wrapped := props)()

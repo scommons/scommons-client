@@ -5,7 +5,7 @@ import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.ui.ImageLabelWrapper
+import scommons.client.ui.{ImageLabelWrapper, UiComponent}
 import scommons.client.ui.tree.BrowseTreeCss._
 
 case class BrowseTreeNodeProps(data: BrowseTreeData,
@@ -15,13 +15,13 @@ case class BrowseTreeNodeProps(data: BrowseTreeData,
                                expanded: Boolean = false,
                                onExpand: BrowseTreeData => Unit = _ => ())
 
-object BrowseTreeNode {
+object BrowseTreeNode extends UiComponent[BrowseTreeNodeProps] {
 
   type BrowseTreeNodeSelf = Self[BrowseTreeNodeProps, Unit]
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass: ReactClass = React.createClass[BrowseTreeNodeProps, Unit]{ self =>
+  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit]{ self =>
     val props = self.props.wrapped
 
     val (itemText, itemImage, isNode) = props.data match {

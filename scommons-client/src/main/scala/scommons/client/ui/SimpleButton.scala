@@ -11,14 +11,14 @@ case class SimpleButtonProps(data: SimpleButtonData,
                              disabled: Boolean = false,
                              requestFocus: Boolean = false)
 
-object SimpleButton {
+object SimpleButton extends UiComponent[SimpleButtonProps] {
 
   private case class SimpleButtonState(setButtonRef: HTMLButtonElement => Unit,
                                        getButtonRef: () => HTMLButtonElement)
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[SimpleButtonProps, SimpleButtonState](
+  lazy val reactClass: ReactClass = React.createClass[PropsType, SimpleButtonState](
     getInitialState = { _ =>
       var buttonRef: HTMLButtonElement = null
 

@@ -3,7 +3,7 @@ package scommons.client.ui.popup
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.SimpleButtonData
+import scommons.client.ui.{SimpleButtonData, UiComponent}
 import scommons.client.ui.popup.YesNoCancelOption._
 import scommons.client.util.ActionsData
 
@@ -13,13 +13,13 @@ case class YesNoPopupProps(show: Boolean,
                            selected: YesNoCancelOption = Yes,
                            image: Option[String] = None)
 
-object YesNoPopup {
+object YesNoPopup extends UiComponent[YesNoPopupProps] {
 
   private case class YesNoPopupState(opened: Boolean = false)
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[YesNoPopupProps, YesNoPopupState](
+  lazy val reactClass: ReactClass = React.createClass[PropsType, YesNoPopupState](
     getInitialState = { _ =>
       YesNoPopupState()
     },

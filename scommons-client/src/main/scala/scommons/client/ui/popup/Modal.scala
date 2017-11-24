@@ -3,7 +3,7 @@ package scommons.client.ui.popup
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.ButtonData
+import scommons.client.ui.{ButtonData, UiComponent}
 import scommons.client.util.ActionsData
 
 case class ModalProps(show: Boolean,
@@ -14,11 +14,11 @@ case class ModalProps(show: Boolean,
                       closable: Boolean = true,
                       onOpen: () => Unit = () => ())
 
-object Modal {
+object Modal extends UiComponent[ModalProps] {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[ModalProps, Unit] { self =>
+  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
 
     <(Popup())(^.wrapped := PopupProps(

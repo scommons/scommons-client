@@ -1,17 +1,13 @@
 package scommons.client.ui.popup
 
-import org.scalatest.{FlatSpec, Inside, Matchers}
-import scommons.client.test.ShallowRendererUtils
+import scommons.client.test.TestSpec
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
 import scommons.client.util.ActionsData
 
-class ModalFooterSpec extends FlatSpec
-  with Matchers
-  with Inside
-  with ShallowRendererUtils {
+class ModalFooterSpec extends TestSpec {
 
-  "rendering" should "render component with correct props" in {
+  it should "render component with correct props" in {
     //given
     val props = ModalFooterProps(
       List(Buttons.OK, Buttons.CANCEL),

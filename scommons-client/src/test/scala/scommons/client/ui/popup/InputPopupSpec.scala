@@ -1,25 +1,18 @@
 package scommons.client.ui.popup
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Inside, Matchers}
-import scommons.client.test.ShallowRendererUtils
-import scommons.client.test.TestUtils._
+import scommons.client.test.TestSpec
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
 
-class InputPopupSpec extends FlatSpec
-  with Matchers
-  with Inside
-  with ShallowRendererUtils
-  with MockFactory {
+class InputPopupSpec extends TestSpec {
 
   it should "call onCancel function when cancel command" in {
     //given
     val onCancel = mockFunction[Unit]
     val props = getInputPopupProps("Test message", onCancel = onCancel)
     val component = shallowRender(E(InputPopup())(A.wrapped := props)())
-    val modalProps = getComponentProps[ModalProps](component)
+    val modalProps = findComponentProps(component, Modal)
 
     //then
     onCancel.expects()
@@ -33,7 +26,7 @@ class InputPopupSpec extends FlatSpec
     val onOk = mockFunction[String, Unit]
     val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
     val component = shallowRender(E(InputPopup())(A.wrapped := props)())
-    val modalProps = getComponentProps[ModalProps](component)
+    val modalProps = findComponentProps(component, Modal)
 
     //then
     onOk.expects(props.initialValue)
@@ -47,8 +40,7 @@ class InputPopupSpec extends FlatSpec
     val onOk = mockFunction[String, Unit]
     val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
     val component = shallowRender(E(InputPopup())(A.wrapped := props)())
-    val textField = findComponentWithType(component, TextField())
-    val textFieldProps = getComponentProps[TextFieldProps](textField)
+    val textFieldProps = findComponentProps(component, TextField)
     val newValue = "new value"
     textFieldProps.onChange(newValue)
 
@@ -65,7 +57,7 @@ class InputPopupSpec extends FlatSpec
     val renderer = createRenderer()
     renderer.render(E(InputPopup())(A.wrapped := props)())
     val comp = renderer.getRenderOutput()
-    val prevTextProps = getComponentProps[TextFieldProps](findComponentWithType(comp, TextField()))
+    val prevTextProps = findComponentProps(comp, TextField)
     val newValue = "new value"
 
     //when
@@ -73,10 +65,10 @@ class InputPopupSpec extends FlatSpec
 
     //then
     val updatedComp = renderer.getRenderOutput()
-    val textProps = getComponentProps[TextFieldProps](findComponentWithType(updatedComp, TextField()))
+    val textProps = findComponentProps(updatedComp, TextField)
     textProps.text shouldBe newValue
 
-    val modalProps = getComponentProps[ModalProps](findComponentWithType(updatedComp, Modal()))
+    val modalProps = findComponentProps(updatedComp, Modal)
     modalProps.actions.enabledCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
   }
 
@@ -86,7 +78,7 @@ class InputPopupSpec extends FlatSpec
     val renderer = createRenderer()
     renderer.render(E(InputPopup())(A.wrapped := props)())
     val comp = renderer.getRenderOutput()
-    val prevTextProps = getComponentProps[TextFieldProps](findComponentWithType(comp, TextField()))
+    val prevTextProps = findComponentProps(comp, TextField)
     val newValue = ""
 
     //when
@@ -94,10 +86,10 @@ class InputPopupSpec extends FlatSpec
 
     //then
     val updatedComp = renderer.getRenderOutput()
-    val textProps = getComponentProps[TextFieldProps](findComponentWithType(updatedComp, TextField()))
+    val textProps = findComponentProps(updatedComp, TextField)
     textProps.text shouldBe newValue
 
-    val modalProps = getComponentProps[ModalProps](findComponentWithType(updatedComp, Modal()))
+    val modalProps = findComponentProps(updatedComp, Modal)
     modalProps.actions.enabledCommands shouldBe Set(Buttons.CANCEL.command)
   }
 
@@ -134,8 +126,8 @@ class InputPopupSpec extends FlatSpec
     val renderer = createRenderer()
     renderer.render(E(InputPopup())(A.wrapped := props)())
     val comp = renderer.getRenderOutput()
-    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
-    val textProps = getComponentProps[TextFieldProps](findComponentWithType(comp, TextField()))
+    val modalProps = findComponentProps(comp, Modal)
+    val textProps = findComponentProps(comp, TextField)
     textProps.requestFocus shouldBe false
     textProps.requestSelect shouldBe false
 
@@ -144,7 +136,7 @@ class InputPopupSpec extends FlatSpec
 
     //then
     val updatedComp = renderer.getRenderOutput()
-    val updatedTextProps = getComponentProps[TextFieldProps](findComponentWithType(updatedComp, TextField()))
+    val updatedTextProps = findComponentProps(updatedComp, TextField)
     updatedTextProps.requestFocus shouldBe true
     updatedTextProps.requestSelect shouldBe true
   }
@@ -155,15 +147,15 @@ class InputPopupSpec extends FlatSpec
     val renderer = createRenderer()
     renderer.render(E(InputPopup())(A.wrapped := prevProps)())
     val comp = renderer.getRenderOutput()
-    val textProps = getComponentProps[TextFieldProps](findComponentWithType(comp, TextField()))
+    val textProps = findComponentProps(comp, TextField)
     textProps.text shouldBe prevProps.initialValue
     textProps.requestFocus shouldBe false
     textProps.requestSelect shouldBe false
-    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
+    val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.enabledCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
     modalProps.onOpen()
     val compV2 = renderer.getRenderOutput()
-    val textPropsV2 = getComponentProps[TextFieldProps](findComponentWithType(compV2, TextField()))
+    val textPropsV2 = findComponentProps(compV2, TextField)
     textPropsV2.requestFocus shouldBe true
     textPropsV2.requestSelect shouldBe true
     val props = getInputPopupProps("New message")
@@ -173,10 +165,10 @@ class InputPopupSpec extends FlatSpec
 
     //then
     val compV3 = renderer.getRenderOutput()
-    val modalPropsV3 = getComponentProps[ModalProps](findComponentWithType(compV3, Modal()))
+    val modalPropsV3 = findComponentProps(compV3, Modal)
     modalPropsV3.actions.enabledCommands shouldBe Set(Buttons.CANCEL.command)
 
-    val textPropsV3 = getComponentProps[TextFieldProps](findComponentWithType(compV3, TextField()))
+    val textPropsV3 = findComponentProps(compV3, TextField)
     textPropsV3.text shouldBe props.initialValue
     textPropsV3.requestFocus shouldBe false
     textPropsV3.requestSelect shouldBe false

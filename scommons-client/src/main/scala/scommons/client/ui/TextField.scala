@@ -15,14 +15,14 @@ case class TextFieldProps(text: String,
                           placeholder: Option[String] = None,
                           onEnter: () => Unit = () => ())
 
-object TextField {
+object TextField extends UiComponent[TextFieldProps] {
 
   private case class TextFieldState(setInputRef: HTMLInputElement => Unit,
                                     getInputRef: () => HTMLInputElement)
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[TextFieldProps, TextFieldState](
+  lazy val reactClass: ReactClass = React.createClass[PropsType, TextFieldState](
     getInitialState = { _ =>
       var inputRef: HTMLInputElement = null
 

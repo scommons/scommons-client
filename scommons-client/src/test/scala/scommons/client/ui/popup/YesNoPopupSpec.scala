@@ -1,27 +1,20 @@
 package scommons.client.ui.popup
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Inside, Matchers}
-import scommons.client.test.ShallowRendererUtils
-import scommons.client.test.TestUtils._
+import scommons.client.test.TestSpec
 import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.SimpleButtonData
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.YesNoCancelOption._
 
-class YesNoPopupSpec extends FlatSpec
-  with Matchers
-  with Inside
-  with ShallowRendererUtils
-  with MockFactory {
+class YesNoPopupSpec extends TestSpec {
 
   it should "call onSelect(Yes) function when Yes selected" in {
     //given
     val onSelect = mockFunction[YesNoCancelOption, Unit]
     val props = getYesNoPopupProps("Test message", onSelect = onSelect)
     val component = shallowRender(E(YesNoPopup())(A.wrapped := props)())
-    val modalProps = getComponentProps[ModalProps](component)
+    val modalProps = findComponentProps(component, Modal)
 
     //then
     onSelect.expects(Yes)
@@ -35,7 +28,7 @@ class YesNoPopupSpec extends FlatSpec
     val onSelect = mockFunction[YesNoCancelOption, Unit]
     val props = getYesNoPopupProps("Test message", onSelect = onSelect)
     val component = shallowRender(E(YesNoPopup())(A.wrapped := props)())
-    val modalProps = getComponentProps[ModalProps](component)
+    val modalProps = findComponentProps(component, Modal)
 
     //then
     onSelect.expects(No)
@@ -74,7 +67,7 @@ class YesNoPopupSpec extends FlatSpec
     val renderer = createRenderer()
     renderer.render(E(YesNoPopup())(A.wrapped := props)())
     val comp = renderer.getRenderOutput()
-    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
+    val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
 
     //when
@@ -82,7 +75,7 @@ class YesNoPopupSpec extends FlatSpec
 
     //then
     val updatedComp = renderer.getRenderOutput()
-    val updatedModalProps = getComponentProps[ModalProps](findComponentWithType(updatedComp, Modal()))
+    val updatedModalProps = findComponentProps(updatedComp, Modal)
     updatedModalProps.actions.focusedCommand shouldBe Some(props.selected.command)
   }
 
@@ -92,11 +85,11 @@ class YesNoPopupSpec extends FlatSpec
     val renderer = createRenderer()
     renderer.render(E(YesNoPopup())(A.wrapped := prevProps)())
     val comp = renderer.getRenderOutput()
-    val modalProps = getComponentProps[ModalProps](findComponentWithType(comp, Modal()))
+    val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
     modalProps.onOpen()
     val compV2 = renderer.getRenderOutput()
-    val modalPropsV2 = getComponentProps[ModalProps](findComponentWithType(compV2, Modal()))
+    val modalPropsV2 = findComponentProps(compV2, Modal)
     modalPropsV2.actions.focusedCommand shouldBe Some(prevProps.selected.command)
     val props = getYesNoPopupProps("New message")
 
@@ -105,7 +98,7 @@ class YesNoPopupSpec extends FlatSpec
 
     //then
     val compV3 = renderer.getRenderOutput()
-    val modalPropsV3 = getComponentProps[ModalProps](findComponentWithType(compV3, Modal()))
+    val modalPropsV3 = findComponentProps(compV3, Modal)
     modalPropsV3.actions.focusedCommand shouldBe None
   }
 
