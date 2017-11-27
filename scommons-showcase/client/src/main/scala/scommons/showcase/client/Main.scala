@@ -78,16 +78,18 @@ object Reducer {
 
   private val repoItem = BrowseTreeItemData("Repo", Some(Buttons.REMOVE.image))
   private val reposItem = BrowseTreeNodeData("Repos", Some(Buttons.ADD.image), List(repoItem))
+  private val htmlItem = BrowseTreeItemData("HTML", Some(Buttons.INFO.image))
   private val buttonsItem = BrowseTreeItemData("Buttons", Some(Buttons.CANCEL.image))
   private val popupsItem = BrowseTreeItemData("Popups", Some(Buttons.INFO.image))
   private val widgetsNode = BrowseTreeNodeData("Widgets", List(
-    buttonsItem, popupsItem, reposItem
+    htmlItem, buttonsItem, popupsItem, reposItem
   ))
 
   private val defaultRoots = List(widgetsNode)
 
   val defaultRoutes = Map(
     widgetsNode.key -> AppBrowseData("/widgets", ActionsData.empty, None),
+    htmlItem.key -> AppBrowseData("/html", ActionsData.empty, Some(HTMLDemo())),
     buttonsItem.key -> AppBrowseData("/buttons", ActionsData.empty, Some(ButtonsDemo())),
     popupsItem.key -> AppBrowseData("/popups", ActionsData.empty, Some(PopupsDemo())),
     reposItem.key -> AppBrowseData("/repos",

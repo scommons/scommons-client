@@ -16,6 +16,7 @@ case class ModalState(showModal: Boolean = false,
                       okMessage: String = "",
                       showYesNoCancel: Boolean = false,
                       showYesNo: Boolean = false,
+                      showError: Boolean = false,
                       showLoading: Boolean = false,
                       showStatus: Boolean = false)
 
@@ -107,6 +108,22 @@ object PopupsDemo {
             onSelect = {
               case Yes => self.setState(_.copy(showYesNo = false, showOk = true, okMessage = "You selected: YES"))
               case _ => self.setState(_.copy(showYesNo = false, showOk = true, okMessage = "You selected: NO"))
+            }
+          ))()
+        ),
+
+        <.h2()("Error Popup"),
+        <.hr()(),
+        <.p()(
+          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Error", primary = true), { () =>
+            self.setState(_.copy(showError = true))
+          }))(),
+          <(ErrorPopup())(^.wrapped := ErrorPopupProps(
+            self.state.showError,
+            "Some error occurred",
+            exception = new Exception(),
+            onClose = { () =>
+              self.setState(_.copy(showError = false))
             }
           ))()
         ),
