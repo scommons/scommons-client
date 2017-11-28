@@ -1,11 +1,11 @@
 package scommons.client.app
 
-import org.scalatest.{FlatSpec, Matchers}
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 
-class AppMainPanelSpec extends FlatSpec with Matchers {
+class AppMainPanelSpec extends TestSpec {
 
   it should "render the component" in {
     //given
@@ -15,9 +15,9 @@ class AppMainPanelSpec extends FlatSpec with Matchers {
       copyright = "test copyright",
       version = "test version"
     )
-    val component = E(AppMainPanel.reactClass)(^.wrapped := props)(
-      E.div()("Some child element 1"),
-      E.div()("Some child element 2")
+    val component = <(AppMainPanel.reactClass)(^.wrapped := props)(
+      <.div()("Some child element 1"),
+      <.div()("Some child element 2")
     )
 
     //when

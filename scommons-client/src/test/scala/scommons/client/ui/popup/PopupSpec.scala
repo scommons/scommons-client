@@ -1,8 +1,8 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.TestReactDOM._
 import scommons.react.modal.NativeReactModal
@@ -13,7 +13,7 @@ class PopupSpec extends TestSpec {
     //given
     val onOpen = mockFunction[Unit]
     val props = PopupProps(show = true, onClose = () => (), onOpen = onOpen)
-    val component = shallowRender(E(Popup())(A.wrapped := props)())
+    val component = shallowRender(<(Popup())(^.wrapped := props)())
 
     //then
     onOpen.expects()
@@ -26,7 +26,7 @@ class PopupSpec extends TestSpec {
     //given
     val onClose = mockFunction[Unit]
     val props = PopupProps(show = true, onClose = onClose)
-    val component = shallowRender(E(Popup())(A.wrapped := props)())
+    val component = shallowRender(<(Popup())(^.wrapped := props)())
 
     //then
     onClose.expects()
@@ -38,7 +38,7 @@ class PopupSpec extends TestSpec {
   it should "render closable popup with default styles" in {
     //given
     val props = PopupProps(show = true, () => ())
-    val component = E(Popup())(A.wrapped := props)()
+    val component = <(Popup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -58,7 +58,7 @@ class PopupSpec extends TestSpec {
       overlayClass = "test-overlay",
       popupClass = "test-popup"
     )
-    val component = E(Popup())(A.wrapped := props)()
+    val component = <(Popup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -75,8 +75,8 @@ class PopupSpec extends TestSpec {
     //given
     val onOpen = mockFunction[Unit]
     val props = PopupProps(show = true, onClose = () => (), onOpen = onOpen)
-    val component = E(Popup())(A.wrapped := props)(
-      E.p()("some children")
+    val component = <(Popup())(^.wrapped := props)(
+      <.p()("some children")
     )
 
     //then
@@ -89,8 +89,8 @@ class PopupSpec extends TestSpec {
   it should "render component in the DOM" in {
     //given
     val props = PopupProps(show = true, () => ())
-    val component = E(Popup())(A.wrapped := props)(
-      E.p()("some children")
+    val component = <(Popup())(^.wrapped := props)(
+      <.p()("some children")
     )
 
     //when

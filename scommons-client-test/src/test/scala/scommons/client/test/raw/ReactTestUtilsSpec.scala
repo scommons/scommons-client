@@ -1,20 +1,20 @@
 package scommons.client.test.raw
 
 import io.github.shogowada.scalajs.reactjs.React
-import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.TestVirtualDOM._
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import scommons.client.test.TestSpec
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ReactTestUtilsSpec.TestProps
 
 import scala.scalajs.js.JavaScriptException
 
-class ReactTestUtilsSpec extends FlatSpec with Matchers {
+class ReactTestUtilsSpec extends TestSpec {
 
   it should "test renderIntoDocument" in {
     //given
     val testProps = TestProps("this is a test")
     val testCompClass = React.createClass[TestProps, Unit] { (self) =>
-      E.div()(
+      <.div()(
         s"Hello, ${self.props.wrapped.test}!"
       )
     }
@@ -29,7 +29,7 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
 
   it should "test isElement" in {
     //given
-    val testCompClass = React.createClass[Unit, Unit](_ => E.div()("Hello"))
+    val testCompClass = React.createClass[Unit, Unit](_ => <.div()("Hello"))
     val testElem = React.createElement(testCompClass)
     val tree = renderIntoDocument(testElem)
     val div = findRenderedDOMComponentWithTag(tree, "div")
@@ -43,8 +43,8 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
 
   it should "test isElementOfType" in {
     //given
-    val testCompClass = React.createClass[Unit, Unit](_ => E.div()("Hello"))
-    val testCompClass2 = React.createClass[Unit, Unit](_ => E.div()("Hello2"))
+    val testCompClass = React.createClass[Unit, Unit](_ => <.div()("Hello"))
+    val testCompClass2 = React.createClass[Unit, Unit](_ => <.div()("Hello2"))
     val testElem = React.createElement(testCompClass)
 
     //when & then
@@ -56,7 +56,7 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
 
   it should "test isDOMComponent" in {
     //given
-    val testCompClass = React.createClass[Unit, Unit](_ => E.div()("Hello"))
+    val testCompClass = React.createClass[Unit, Unit](_ => <.div()("Hello"))
     val testElem = React.createElement(testCompClass)
     val tree = renderIntoDocument(testElem)
     val div = findRenderedDOMComponentWithTag(tree, "div")
@@ -70,7 +70,7 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
 
   it should "test isCompositeComponent" in {
     //given
-    val testCompClass = React.createClass[Unit, Unit](_ => E.div()("Hello"))
+    val testCompClass = React.createClass[Unit, Unit](_ => <.div()("Hello"))
     val testElem = React.createElement(testCompClass)
     val tree = renderIntoDocument(testElem)
     val div = findRenderedDOMComponentWithTag(tree, "div")
@@ -84,8 +84,8 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
 
   it should "test isCompositeComponentWithType" in {
     //given
-    val testCompClass = React.createClass[Unit, Unit](_ => E.div()("Hello"))
-    val testCompClass2 = React.createClass[Unit, Unit](_ => E.div()("Hello2"))
+    val testCompClass = React.createClass[Unit, Unit](_ => <.div()("Hello"))
+    val testCompClass2 = React.createClass[Unit, Unit](_ => <.div()("Hello2"))
     val tree = renderIntoDocument(React.createElement(testCompClass))
 
     //when & then
@@ -97,7 +97,7 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
 
   it should "test findAllInRenderedTree" in {
     //given
-    val testCompClass = React.createClass[Unit, Unit](_ => E.div()(E.span()("Hello")))
+    val testCompClass = React.createClass[Unit, Unit](_ => <.div()(<.span()("Hello")))
     val tree = renderIntoDocument(React.createElement(testCompClass))
 
     //when & then
@@ -113,9 +113,9 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
   it should "test scryRenderedDOMComponentsWithClass" in {
     //given
     val tree = renderIntoDocument(React.createElement(React.createClass[Unit, Unit](_ =>
-      E.div(A.className := "test")(
-        E.div(A.className := "test2")(),
-        E.span(A.className := "test")("Hello")
+      <.div(^.className := "test")(
+        <.div(^.className := "test2")(),
+        <.span(^.className := "test")("Hello")
       )
     )))
 
@@ -132,9 +132,9 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
   it should "test findRenderedDOMComponentWithClass" in {
     //given
     val tree = renderIntoDocument(React.createElement(React.createClass[Unit, Unit](_ =>
-      E.div(A.className := "test")(
-        E.div(A.id := "2", A.className := "test2")(),
-        E.span(A.className := "test")("Hello")
+      <.div(^.className := "test")(
+        <.div(^.id := "2", ^.className := "test2")(),
+        <.span(^.className := "test")("Hello")
       )
     )))
 
@@ -155,9 +155,9 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
   it should "test scryRenderedDOMComponentsWithTag" in {
     //given
     val tree = renderIntoDocument(React.createElement(React.createClass[Unit, Unit](_ =>
-      E.div()(
-        E.div.empty,
-        E.span()("Hello")
+      <.div()(
+        <.div.empty,
+        <.span()("Hello")
       )
     )))
 
@@ -177,11 +177,11 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
     val testClassName = "test-class"
     val testProps = TestProps("this is a test")
     val testCompClass = React.createClass[TestProps, Unit] { (self) =>
-      E.div()("div 1",
-        E.div()("div 2"),
-        E.p(
-          A.id := testId,
-          A.className := testClassName)(
+      <.div()("div 1",
+        <.div()("div 2"),
+        <.p(
+          ^.id := testId,
+          ^.className := testClassName)(
           s"Hello, ${self.props.wrapped.test}!"
         )
       )
@@ -207,13 +207,13 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
 
   it should "test scryRenderedComponentsWithType" in {
     //given
-    val testCompClass = React.createClass[Unit, Unit](self => E.div()(self.props.children))
-    val testCompClass2 = React.createClass[Unit, Unit](_ => E.div()("Hello2"))
-    val testCompClass3 = React.createClass[Unit, Unit](_ => E.div()("Hello3"))
+    val testCompClass = React.createClass[Unit, Unit](self => <.div()(self.props.children))
+    val testCompClass2 = React.createClass[Unit, Unit](_ => <.div()("Hello2"))
+    val testCompClass3 = React.createClass[Unit, Unit](_ => <.div()("Hello3"))
     val tree = renderIntoDocument(React.createElement(React.createClass[Unit, Unit](_ =>
-      E(testCompClass)()(
-        E(testCompClass2).empty,
-        E(testCompClass2).empty
+      <(testCompClass)()(
+        <(testCompClass2).empty,
+        <(testCompClass2).empty
       )
     )))
 
@@ -229,13 +229,13 @@ class ReactTestUtilsSpec extends FlatSpec with Matchers {
 
   it should "test findRenderedComponentWithType" in {
     //given
-    val testCompClass = React.createClass[Unit, Unit](self => E.div()(self.props.children))
-    val testCompClass2 = React.createClass[Unit, Unit](_ => E.div()("Hello2"))
-    val testCompClass3 = React.createClass[Unit, Unit](_ => E.div()("Hello3"))
+    val testCompClass = React.createClass[Unit, Unit](self => <.div()(self.props.children))
+    val testCompClass2 = React.createClass[Unit, Unit](_ => <.div()("Hello2"))
+    val testCompClass3 = React.createClass[Unit, Unit](_ => <.div()("Hello3"))
     val tree = renderIntoDocument(React.createElement(React.createClass[Unit, Unit](_ =>
-      E(testCompClass)(A.id := "2")(
-        E(testCompClass2).empty,
-        E(testCompClass2).empty
+      <(testCompClass)(^.id := "2")(
+        <(testCompClass2).empty,
+        <(testCompClass2).empty
       )
     )))
 

@@ -1,7 +1,7 @@
 package scommons.client.ui
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.TestUtils._
 import scommons.client.test.raw.ReactTestUtils._
 
@@ -12,7 +12,7 @@ class HTMLSpec extends TestSpec {
   it should "render component with wordWrap = true" in {
     //given
     val props = HTMLProps("Test <p>html</p> <br/> text", wordWrap = true)
-    val component = E(HTML())(A.wrapped := props)()
+    val component = <(HTML())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -26,7 +26,7 @@ class HTMLSpec extends TestSpec {
   it should "render component with wordWrap = false" in {
     //given
     val props = HTMLProps("Test <p>html</p> <br/> text", wordWrap = false)
-    val component = E(HTML())(A.wrapped := props)()
+    val component = <(HTML())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -40,7 +40,7 @@ class HTMLSpec extends TestSpec {
   it should "render component in the DOM" in {
     //given
     val props = HTMLProps("Test<p>html</p><br/>text", wordWrap = false)
-    val component = E(HTML())(A.wrapped := props)()
+    val component = <(HTML())(^.wrapped := props)()
 
     //when
     val result = renderIntoDocument(component)

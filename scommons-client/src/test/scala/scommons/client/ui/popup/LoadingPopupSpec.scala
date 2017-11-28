@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.ui.popup.PopupCss._
 
 class LoadingPopupSpec extends TestSpec {
@@ -9,7 +9,7 @@ class LoadingPopupSpec extends TestSpec {
   it should "render component with correct props" in {
     //given
     val props = LoadingPopupProps(show = true)
-    val component = E(LoadingPopup())(A.wrapped := props)()
+    val component = <(LoadingPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -23,7 +23,7 @@ class LoadingPopupSpec extends TestSpec {
         popupClass shouldBe loadingContent
       }
     }, { case List(img) =>
-      assertDOMComponent(img, E.img(^.className := loadingImg, ^.src := "")())
+      assertDOMComponent(img, <.img(^.className := loadingImg, ^.src := "")())
     })
   }
 }

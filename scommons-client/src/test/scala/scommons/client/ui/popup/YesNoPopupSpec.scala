@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.SimpleButtonData
 import scommons.client.ui.icon.IconCss
@@ -13,7 +13,7 @@ class YesNoPopupSpec extends TestSpec {
     //given
     val onSelect = mockFunction[YesNoCancelOption, Unit]
     val props = getYesNoPopupProps("Test message", onSelect = onSelect)
-    val component = shallowRender(E(YesNoPopup())(A.wrapped := props)())
+    val component = shallowRender(<(YesNoPopup())(^.wrapped := props)())
     val modalProps = findComponentProps(component, Modal)
 
     //then
@@ -27,7 +27,7 @@ class YesNoPopupSpec extends TestSpec {
     //given
     val onSelect = mockFunction[YesNoCancelOption, Unit]
     val props = getYesNoPopupProps("Test message", onSelect = onSelect)
-    val component = shallowRender(E(YesNoPopup())(A.wrapped := props)())
+    val component = shallowRender(<(YesNoPopup())(^.wrapped := props)())
     val modalProps = findComponentProps(component, Modal)
 
     //then
@@ -40,7 +40,7 @@ class YesNoPopupSpec extends TestSpec {
   it should "render component with image" in {
     //given
     val props = getYesNoPopupProps("Test message", image = Some(IconCss.dialogInformation))
-    val component = E(YesNoPopup())(A.wrapped := props)()
+    val component = <(YesNoPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -52,7 +52,7 @@ class YesNoPopupSpec extends TestSpec {
   it should "render component without image" in {
     //given
     val props = getYesNoPopupProps("Test message")
-    val component = E(YesNoPopup())(A.wrapped := props)()
+    val component = <(YesNoPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -65,7 +65,7 @@ class YesNoPopupSpec extends TestSpec {
     //given
     val props = getYesNoPopupProps("Test message")
     val renderer = createRenderer()
-    renderer.render(E(YesNoPopup())(A.wrapped := props)())
+    renderer.render(<(YesNoPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
@@ -83,7 +83,7 @@ class YesNoPopupSpec extends TestSpec {
     //given
     val prevProps = getYesNoPopupProps("Test message")
     val renderer = createRenderer()
-    renderer.render(E(YesNoPopup())(A.wrapped := prevProps)())
+    renderer.render(<(YesNoPopup())(^.wrapped := prevProps)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
@@ -94,7 +94,7 @@ class YesNoPopupSpec extends TestSpec {
     val props = getYesNoPopupProps("New message")
 
     //when
-    renderer.render(E(YesNoPopup())(A.wrapped := props)())
+    renderer.render(<(YesNoPopup())(^.wrapped := props)())
 
     //then
     val compV3 = renderer.getRenderOutput()
@@ -131,16 +131,16 @@ class YesNoPopupSpec extends TestSpec {
         closable shouldBe false
       }
     }, { case List(modalChild) =>
-      assertDOMComponent(modalChild, E.div(^.className := "row-fluid")(), { children =>
+      assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
         val (img, p) = children match {
           case List(pElem) => (None, pElem)
           case List(imgElem, pElem) => (Some(imgElem), pElem)
         }
         props.image.foreach { image =>
           img should not be None
-          assertDOMComponent(img.get, E.img(^.className := image, ^.src := "")())
+          assertDOMComponent(img.get, <.img(^.className := image, ^.src := "")())
         }
-        assertDOMComponent(p, E.p()(props.message))
+        assertDOMComponent(p, <.p()(props.message))
       })
     })
   }

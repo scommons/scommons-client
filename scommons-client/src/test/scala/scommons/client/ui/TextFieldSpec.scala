@@ -1,29 +1,24 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLInputElement
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.ShallowRendererUtils
+import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.util.KeyCodes
 
 import scala.scalajs.js
 
-class TextFieldSpec extends FlatSpec
-  with Matchers
-  with ShallowRendererUtils
-  with MockFactory {
+class TextFieldSpec extends TestSpec {
 
-  "onChange" should "call onChange function when input is changed" in {
+  it should "call onChange function when input is changed" in {
     //given
     val onChange = mockFunction[String, Unit]
     val props = TextFieldProps("test text", onChange)
-    val comp = renderIntoDocument(E(TextField())(A.wrapped := props)())
+    val comp = renderIntoDocument(<(TextField())(^.wrapped := props)())
     val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.text
 
@@ -34,11 +29,11 @@ class TextFieldSpec extends FlatSpec
     ReactTestUtils.Simulate.change(inputElem, js.Dynamic.literal(target = inputElem))
   }
 
-  "onKeyDown" should "call onEnter function when keyCode is Enter" in {
+  it should "call onEnter function when keyCode is Enter" in {
     //given
     val onEnter = mockFunction[Unit]
     val props = TextFieldProps("test text", _ => (), onEnter = onEnter)
-    val comp = renderIntoDocument(E(TextField())(A.wrapped := props)())
+    val comp = renderIntoDocument(<(TextField())(^.wrapped := props)())
     val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.text
 
@@ -53,7 +48,7 @@ class TextFieldSpec extends FlatSpec
     //given
     val onEnter = mockFunction[Unit]
     val props = TextFieldProps("test text", _ => (), onEnter = onEnter)
-    val comp = renderIntoDocument(E(TextField())(A.wrapped := props)())
+    val comp = renderIntoDocument(<(TextField())(^.wrapped := props)())
     val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.text
 
@@ -64,7 +59,7 @@ class TextFieldSpec extends FlatSpec
     ReactTestUtils.Simulate.keyDown(inputElem, js.Dynamic.literal(keyCode = KeyCodes.KEY_UP))
   }
 
-  "rendering" should "render correct props" in {
+  it should "render correct props" in {
     //given
     val props = TextFieldProps(
       "test text",
@@ -72,13 +67,13 @@ class TextFieldSpec extends FlatSpec
       className = Some("test-class"),
       placeholder = Some("test-placeholder")
     )
-    val component = E(TextField())(A.wrapped := props)()
+    val component = <(TextField())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, E.input(
+    assertDOMComponent(result, <.input(
       ^.`type` := "text",
       props.className.map(^.className := _),
       props.placeholder.map(^.placeholder := _),
@@ -86,17 +81,17 @@ class TextFieldSpec extends FlatSpec
     )())
   }
 
-  "requestFocus" should "focus input element if requestFocus prop changed from false to true" in {
+  it should "focus input element if requestFocus prop changed from false to true" in {
     //given
     val prevProps = TextFieldProps("test text", onChange = _ => ())
-    val comp = renderIntoDocument(E(TextField())(A.wrapped := prevProps)())
+    val comp = renderIntoDocument(<(TextField())(^.wrapped := prevProps)())
     val props = TextFieldProps("new test text", onChange = _ => (), requestFocus = true)
     val containerElement = findReactElement(comp).parentNode
     document.body.appendChild(containerElement)
     props should not be prevProps
 
     //when
-    ReactDOM.render(E(TextField())(A.wrapped := props)(), containerElement)
+    ReactDOM.render(<(TextField())(^.wrapped := props)(), containerElement)
 
     //then
     val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
@@ -110,14 +105,14 @@ class TextFieldSpec extends FlatSpec
   it should "not focus input element if requestFocus prop not changed" in {
     //given
     val prevProps = TextFieldProps("test text", onChange = _ => (), requestFocus = true)
-    val comp = renderIntoDocument(E(TextField())(A.wrapped := prevProps)())
+    val comp = renderIntoDocument(<(TextField())(^.wrapped := prevProps)())
     val props = TextFieldProps("new test text", onChange = _ => (), requestFocus = true)
     val containerElement = findReactElement(comp).parentNode
     document.body.appendChild(containerElement)
     props should not be prevProps
 
     //when
-    ReactDOM.render(E(TextField())(A.wrapped := props)(), containerElement)
+    ReactDOM.render(<(TextField())(^.wrapped := props)(), containerElement)
 
     //then
     val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
@@ -128,16 +123,16 @@ class TextFieldSpec extends FlatSpec
     document.body.removeChild(containerElement)
   }
 
-  "requestSelect" should "select text if requestSelect prop changed from false to true" in {
+  it should "select text if requestSelect prop changed from false to true" in {
     //given
     val prevProps = TextFieldProps("test text", onChange = _ => ())
-    val comp = renderIntoDocument(E(TextField())(A.wrapped := prevProps)())
+    val comp = renderIntoDocument(<(TextField())(^.wrapped := prevProps)())
     val props = TextFieldProps("new test text", onChange = _ => (), requestSelect = true)
     val containerElement = findReactElement(comp).parentNode
     props should not be prevProps
 
     //when
-    ReactDOM.render(E(TextField())(A.wrapped := props)(), containerElement)
+    ReactDOM.render(<(TextField())(^.wrapped := props)(), containerElement)
 
     //then
     val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
@@ -149,13 +144,13 @@ class TextFieldSpec extends FlatSpec
   it should "not select text if requestSelect prop not changed" in {
     //given
     val prevProps = TextFieldProps("test text", onChange = _ => (), requestSelect = true)
-    val comp = renderIntoDocument(E(TextField())(A.wrapped := prevProps)())
+    val comp = renderIntoDocument(<(TextField())(^.wrapped := prevProps)())
     val props = TextFieldProps("new test text", onChange = _ => (), requestSelect = true)
     val containerElement = findReactElement(comp).parentNode
     props should not be prevProps
 
     //when
-    ReactDOM.render(E(TextField())(A.wrapped := props)(), containerElement)
+    ReactDOM.render(<(TextField())(^.wrapped := props)(), containerElement)
 
     //then
     val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]

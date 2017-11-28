@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.ui.popup.PopupCss._
 
 class StatusPopupSpec extends TestSpec {
@@ -9,7 +9,7 @@ class StatusPopupSpec extends TestSpec {
   it should "render component with correct props" in {
     //given
     val props = StatusPopupProps("test text", show = true, () => ())
-    val component = E(StatusPopup())(A.wrapped := props)()
+    val component = <(StatusPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)

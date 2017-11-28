@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.Buttons
 import scommons.client.util.ActionsData
@@ -11,8 +11,8 @@ class ModalSpec extends TestSpec {
   it should "render closable modal with header" in {
     //given
     val props = getModalProps()
-    val component = E(Modal())(A.wrapped := props)(
-      E.p()("some children")
+    val component = <(Modal())(^.wrapped := props)(
+      <.p()("some children")
     )
 
     //when
@@ -25,8 +25,8 @@ class ModalSpec extends TestSpec {
   it should "render non-closable modal with header" in {
     //given
     val props = getModalProps(closable = false)
-    val component = E(Modal())(A.wrapped := props)(
-      E.p()("some children")
+    val component = <(Modal())(^.wrapped := props)(
+      <.p()("some children")
     )
 
     //when
@@ -39,8 +39,8 @@ class ModalSpec extends TestSpec {
   it should "render modal without header" in {
     //given
     val props = getModalProps(header = None)
-    val component = E(Modal())(A.wrapped := props)(
-      E.p()("some children")
+    val component = <(Modal())(^.wrapped := props)(
+      <.p()("some children")
     )
 
     //when
@@ -56,7 +56,7 @@ class ModalSpec extends TestSpec {
       )
     }, { case List(body, footer) =>
       assertComponent(body, ModalBody(), { _: Unit => () }, { case List(child) =>
-        assertDOMComponent(child, E.p()("some children"))
+        assertDOMComponent(child, <.p()("some children"))
       })
       assertComponent(footer, ModalFooter(), { footerProps: ModalFooterProps =>
         footerProps shouldBe ModalFooterProps(props.buttons, props.actions)
@@ -77,7 +77,7 @@ class ModalSpec extends TestSpec {
         headerProps shouldBe ModalHeaderProps(props.header.get, props.onClose, closable = props.closable)
       })
       assertComponent(body, ModalBody(), { _: Unit => () }, { case List(child) =>
-        assertDOMComponent(child, E.p()("some children"))
+        assertDOMComponent(child, <.p()("some children"))
       })
       assertComponent(footer, ModalFooter(), { footerProps: ModalFooterProps =>
         footerProps shouldBe ModalFooterProps(props.buttons, props.actions)

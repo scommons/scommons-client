@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.{HTML, HTMLProps, SimpleButtonData}
@@ -28,7 +28,7 @@ class ErrorPopupSpec extends TestSpec {
     //given
     val onClose = mockFunction[Unit]
     val props = ErrorPopupProps(show = true, "Some error text", onClose = onClose)
-    val component = shallowRender(E(ErrorPopup())(A.wrapped := props)())
+    val component = shallowRender(<(ErrorPopup())(^.wrapped := props)())
     val modalProps = findComponentProps(component, Modal)
 
     //then
@@ -42,7 +42,7 @@ class ErrorPopupSpec extends TestSpec {
     //given
     val props = ErrorPopupProps(show = true, "Some error text", () => (), details = Some("Error details"))
     val renderer = createRenderer()
-    renderer.render(E(ErrorPopup())(A.wrapped := props)())
+    renderer.render(<(ErrorPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
 
@@ -57,7 +57,7 @@ class ErrorPopupSpec extends TestSpec {
     //given
     val props = ErrorPopupProps(show = true, "Some error text", () => (), details = Some("Error details"))
     val renderer = createRenderer()
-    renderer.render(E(ErrorPopup())(A.wrapped := props)())
+    renderer.render(<(ErrorPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.onCommand("details")
@@ -73,7 +73,7 @@ class ErrorPopupSpec extends TestSpec {
   it should "render component without details" in {
     //given
     val props = ErrorPopupProps(show = true, "Some error text", () => ())
-    val component = E(ErrorPopup())(A.wrapped := props)()
+    val component = <(ErrorPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -85,7 +85,7 @@ class ErrorPopupSpec extends TestSpec {
   it should "render component with details" in {
     //given
     val props = ErrorPopupProps(show = true, "Some error text", () => (), details = Some("Error details"))
-    val component = E(ErrorPopup())(A.wrapped := props)()
+    val component = <(ErrorPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -98,7 +98,7 @@ class ErrorPopupSpec extends TestSpec {
     //given
     val props = ErrorPopupProps(show = true, "Some error text", () => ())
     val renderer = createRenderer()
-    renderer.render(E(ErrorPopup())(A.wrapped := props)())
+    renderer.render(<(ErrorPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
@@ -116,7 +116,7 @@ class ErrorPopupSpec extends TestSpec {
     //given
     val prevProps = ErrorPopupProps(show = true, "Some error text", () => ())
     val renderer = createRenderer()
-    renderer.render(E(ErrorPopup())(A.wrapped := prevProps)())
+    renderer.render(<(ErrorPopup())(^.wrapped := prevProps)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
@@ -127,7 +127,7 @@ class ErrorPopupSpec extends TestSpec {
     val props = ErrorPopupProps(show = true, "New error text", () => ())
 
     //when
-    renderer.render(E(ErrorPopup())(A.wrapped := props)())
+    renderer.render(<(ErrorPopup())(^.wrapped := props)())
 
     //then
     val compV3 = renderer.getRenderOutput()
@@ -153,8 +153,8 @@ class ErrorPopupSpec extends TestSpec {
         closable shouldBe true
       }
     }, { case List(modalChild) =>
-      assertDOMComponent(modalChild, E.div(^.className := "row-fluid")(), { case List(img, html) =>
-        assertDOMComponent(img, E.img(^.className := IconCss.dialogError, ^.src := "")())
+      assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(img, html) =>
+        assertDOMComponent(img, <.img(^.className := IconCss.dialogError, ^.src := "")())
         assertComponent(html, HTML(), { htmlProps: HTMLProps =>
           inside(htmlProps) { case HTMLProps(htmlText, wordWrap) =>
             if (showDetails)

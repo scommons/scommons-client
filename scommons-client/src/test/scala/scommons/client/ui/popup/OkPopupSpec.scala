@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.Buttons
 import scommons.client.ui.icon.IconCss
@@ -12,7 +12,7 @@ class OkPopupSpec extends TestSpec {
     //given
     val onClose = mockFunction[Unit]
     val props = getOkPopupProps("Test message", onClose = onClose)
-    val component = shallowRender(E(OkPopup())(A.wrapped := props)())
+    val component = shallowRender(<(OkPopup())(^.wrapped := props)())
     val modalProps = findComponentProps(component, Modal)
 
     //then
@@ -25,7 +25,7 @@ class OkPopupSpec extends TestSpec {
   it should "render component with image" in {
     //given
     val props = getOkPopupProps("Test message", image = Some(IconCss.dialogInformation))
-    val component = E(OkPopup())(A.wrapped := props)()
+    val component = <(OkPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -37,7 +37,7 @@ class OkPopupSpec extends TestSpec {
   it should "render component without image" in {
     //given
     val props = getOkPopupProps("Test message")
-    val component = E(OkPopup())(A.wrapped := props)()
+    val component = <(OkPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -50,7 +50,7 @@ class OkPopupSpec extends TestSpec {
     //given
     val props = getOkPopupProps("Test message")
     val renderer = createRenderer()
-    renderer.render(E(OkPopup())(A.wrapped := props)())
+    renderer.render(<(OkPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
@@ -68,7 +68,7 @@ class OkPopupSpec extends TestSpec {
     //given
     val prevProps = getOkPopupProps("Test message")
     val renderer = createRenderer()
-    renderer.render(E(OkPopup())(A.wrapped := prevProps)())
+    renderer.render(<(OkPopup())(^.wrapped := prevProps)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
     modalProps.actions.focusedCommand shouldBe None
@@ -79,7 +79,7 @@ class OkPopupSpec extends TestSpec {
     val props = getOkPopupProps("New message")
 
     //when
-    renderer.render(E(OkPopup())(A.wrapped := props)())
+    renderer.render(<(OkPopup())(^.wrapped := props)())
 
     //then
     val compV3 = renderer.getRenderOutput()
@@ -111,16 +111,16 @@ class OkPopupSpec extends TestSpec {
         closable shouldBe true
       }
     }, { case List(modalChild) =>
-      assertDOMComponent(modalChild, E.div(^.className := "row-fluid")(), { children =>
+      assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
         val (img, p) = children match {
           case List(pElem) => (None, pElem)
           case List(imgElem, pElem) => (Some(imgElem), pElem)
         }
         props.image.foreach { image =>
           img should not be None
-          assertDOMComponent(img.get, E.img(^.className := image, ^.src := "")())
+          assertDOMComponent(img.get, <.img(^.className := image, ^.src := "")())
         }
-        assertDOMComponent(p, E.p()(props.message))
+        assertDOMComponent(p, <.p()(props.message))
       })
     })
   }

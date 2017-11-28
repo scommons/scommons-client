@@ -1,23 +1,22 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLButtonElement
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers}
+import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.ButtonImagesCss._
 
-class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
+class ImageButtonSpec extends TestSpec {
 
-  "onClick" should "call onClick when click on button" in {
+  it should "call onClick when click on button" in {
     //given
     val onClick = mockFunction[Unit]
     val data = ImageButtonData("accept", accept, acceptDisabled, "button with text")
-    val comp = renderIntoDocument(E(ImageButton())(A.wrapped := ImageButtonProps(data, onClick))())
+    val comp = renderIntoDocument(<(ImageButton())(^.wrapped := ImageButtonProps(data, onClick))())
     val button = findRenderedDOMComponentWithClass(comp, "btn")
 
     //then
@@ -27,10 +26,10 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
     ReactTestUtils.Simulate.click(button)
   }
 
-  "rendering" should "render button with text" in {
+  it should "render button with text" in {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "button with text")
-    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, () => ()))()
+    val component = <(ImageButton())(^.wrapped := ImageButtonProps(data, () => ()))()
 
     //when
     val result = renderIntoDocument(component)
@@ -47,7 +46,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
   it should "render button with title" in {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "test title")
-    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, () => (), showTextAsTitle = true))()
+    val component = <(ImageButton())(^.wrapped := ImageButtonProps(data, () => (), showTextAsTitle = true))()
 
     //when
     val result = renderIntoDocument(component)
@@ -63,7 +62,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
   it should "render disabled button" in {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "Disabled")
-    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, () => (), disabled = true))()
+    val component = <(ImageButton())(^.wrapped := ImageButtonProps(data, () => (), disabled = true))()
 
     //when
     val result = renderIntoDocument(component)
@@ -80,7 +79,7 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
   it should "render primary button" in {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "Primary", primary = true)
-    val component = E(ImageButton())(A.wrapped := ImageButtonProps(data, () => ()))()
+    val component = <(ImageButton())(^.wrapped := ImageButtonProps(data, () => ()))()
 
     //when
     val result = renderIntoDocument(component)
@@ -94,18 +93,18 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
     )
   }
 
-  "requestFocus" should "focus button element if requestFocus prop changed from false to true" in {
+  it should "focus button element if requestFocus prop changed from false to true" in {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
     val prevProps = ImageButtonProps(data, () => ())
-    val comp = renderIntoDocument(E(ImageButton())(A.wrapped := prevProps)())
+    val comp = renderIntoDocument(<(ImageButton())(^.wrapped := prevProps)())
     val props = ImageButtonProps(data, () => (), requestFocus = true)
     val containerElement = findReactElement(comp).parentNode
     document.body.appendChild(containerElement)
     props should not be prevProps
 
     //when
-    ReactDOM.render(E(ImageButton())(A.wrapped := props)(), containerElement)
+    ReactDOM.render(<(ImageButton())(^.wrapped := props)(), containerElement)
 
     //then
     val buttonElem = findRenderedDOMComponentWithTag(comp, "button").asInstanceOf[HTMLButtonElement]
@@ -119,14 +118,14 @@ class ImageButtonSpec extends FlatSpec with Matchers with MockFactory {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
     val prevProps = ImageButtonProps(data, () => (), requestFocus = true)
-    val comp = renderIntoDocument(E(ImageButton())(A.wrapped := prevProps)())
+    val comp = renderIntoDocument(<(ImageButton())(^.wrapped := prevProps)())
     val props = ImageButtonProps(data, () => (), showTextAsTitle = true, requestFocus = true)
     val containerElement = findReactElement(comp).parentNode
     document.body.appendChild(containerElement)
     props should not be prevProps
 
     //when
-    ReactDOM.render(E(ImageButton())(A.wrapped := props)(), containerElement)
+    ReactDOM.render(<(ImageButton())(^.wrapped := props)(), containerElement)
 
     //then
     val buttonElem = findRenderedDOMComponentWithTag(comp, "button").asInstanceOf[HTMLButtonElement]

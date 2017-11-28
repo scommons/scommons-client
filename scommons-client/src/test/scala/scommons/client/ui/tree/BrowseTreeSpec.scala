@@ -1,15 +1,14 @@
 package scommons.client.ui.tree
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers}
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.tree.BrowseTreeCss._
 
-class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
+class BrowseTreeSpec extends TestSpec {
 
-  "isSelected" should "return false if item is not selected" in {
+  it should "return false if item is not selected when isSelected" in {
     //given
     val data = BrowseTreeItemData("test")
     val state = BrowseTreeState()
@@ -18,7 +17,7 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     BrowseTree.isSelected(state, data) shouldBe false
   }
 
-  it should "return true if item is selected" in {
+  it should "return true if item is selected when isSelected" in {
     //given
     val data = BrowseTreeItemData("test")
     val state = BrowseTreeState(Some(data.key))
@@ -27,7 +26,7 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     BrowseTree.isSelected(state, data) shouldBe true
   }
 
-  "setSelected" should "put selected item into state" in {
+  it should "put selected item into state when setSelected" in {
     //given
     val data = BrowseTreeItemData("test")
     val state = BrowseTreeState()
@@ -41,7 +40,7 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     BrowseTree.setSelected(setState)(data)
   }
 
-  it should "replace existing selected item in state" in {
+  it should "replace existing selected item in state when setSelected" in {
     //given
     val data = BrowseTreeItemData("new item")
     val state = BrowseTreeState(Some(BrowseTreeItemData("current item").key))
@@ -55,7 +54,7 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     BrowseTree.setSelected(setState)(data)
   }
 
-  "isExpanded" should "return false if item is not expanded" in {
+  it should "return false if item is not expanded when isExpanded" in {
     //given
     val data = BrowseTreeItemData("test")
     val state = BrowseTreeState()
@@ -64,7 +63,7 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     BrowseTree.isExpanded(state, data) shouldBe false
   }
 
-  it should "return true if item is expanded" in {
+  it should "return true if item is expanded when isExpanded" in {
     //given
     val data = BrowseTreeItemData("test")
     val state = BrowseTreeState(expanded = Set(data.key))
@@ -73,7 +72,7 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     BrowseTree.isExpanded(state, data) shouldBe true
   }
 
-  "toggleExpanded" should "put expanded item into state" in {
+  it should "put expanded item into state when toggleExpanded" in {
     //given
     val data = BrowseTreeItemData("test")
     val state = BrowseTreeState()
@@ -87,7 +86,7 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     BrowseTree.toggleExpanded(setState)(data)
   }
 
-  it should "remove expanded item from state" in {
+  it should "remove expanded item from state when toggleExpanded" in {
     //given
     val data = BrowseTreeItemData("test")
     val state = BrowseTreeState(expanded = Set(data.key))
@@ -101,14 +100,14 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
     BrowseTree.toggleExpanded(setState)(data)
   }
 
-  "rendering" should "render the component" in {
+  it should "render the component" in {
     //given
     val topItem = BrowseTreeItemData("top item")
     val childItem = BrowseTreeItemData("child item")
     val childNode = BrowseTreeNodeData("child node", List(childItem))
     val topNode = BrowseTreeNodeData("top node", List(childNode))
     val props = BrowseTreeProps(List(topItem, topNode))
-    val component = E(BrowseTree())(A.wrapped := props)()
+    val component = <(BrowseTree())(^.wrapped := props)()
 
     //when
     val result = renderIntoDocument(component)
@@ -118,8 +117,8 @@ class BrowseTreeSpec extends FlatSpec with Matchers with MockFactory {
       <div class={s"$browseTree"}>
         {renderAsXml(BrowseTreeNode(), BrowseTreeNodeProps(topItem))}
         {renderAsXml(BrowseTreeNode(), BrowseTreeNodeProps(topNode),
-          E(BrowseTreeNode())(A.wrapped := BrowseTreeNodeProps(childNode, level = 1))(
-            E(BrowseTreeNode())(A.wrapped := BrowseTreeNodeProps(childItem, level = 2))()
+          <(BrowseTreeNode())(^.wrapped := BrowseTreeNodeProps(childNode, level = 1))(
+            <(BrowseTreeNode())(^.wrapped := BrowseTreeNodeProps(childItem, level = 2))()
           )
         )}
       </div>

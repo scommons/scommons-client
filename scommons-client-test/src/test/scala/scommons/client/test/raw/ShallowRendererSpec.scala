@@ -1,17 +1,20 @@
 package scommons.client.test.raw
 
 import io.github.shogowada.scalajs.reactjs.React
-import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.TestVirtualDOM._
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import scommons.client.test.TestSpec
 
-class ShallowRendererSpec extends FlatSpec with Matchers {
+class ShallowRendererSpec extends TestSpec {
 
   it should "test ShallowRenderer" in {
     //given
     val testElem = React.createElement(React.createClass[Unit, Unit](_ =>
-      E.div(A.className := "test-class", A.style := Map("display" -> "none"))(
-        E.div.empty,
-        E.span()("Hello")
+      <.div(
+        ^.className := "test-class",
+        ^.style := Map("display" -> "none")
+      )(
+        <.div.empty,
+        <.span()("Hello")
       )
     ))
 

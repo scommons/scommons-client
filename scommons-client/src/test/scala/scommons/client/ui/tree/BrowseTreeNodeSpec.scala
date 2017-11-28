@@ -1,22 +1,22 @@
 package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers}
+import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.Buttons
 import scommons.client.ui.tree.BrowseTreeCss._
+import scommons.client.ui.tree.BrowseTreeNodeSpec.MouseSyntheticEventMock
 
 import scala.scalajs.js.annotation.JSExportAll
 
-class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
+class BrowseTreeNodeSpec extends TestSpec {
 
-  "itemClick" should "call onSelect when click on item div" in {
+  it should "call onSelect when click on item div" in {
     //given
     val onSelect = mockFunction[BrowseTreeData, Unit]
     val data = BrowseTreeItemData("selected item")
@@ -30,7 +30,7 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
     ReactTestUtils.Simulate.click(itemDiv)
   }
 
-  "arrowClick" should "call onExpand when click on node arrow" in {
+  it should "call onExpand when click on node arrow" in {
     //given
     val onExpand = mockFunction[BrowseTreeData, Unit]
     val data = BrowseTreeNodeData("top empty node", Nil)
@@ -62,7 +62,7 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
     BrowseTreeNode.arrowClick(self)(event.asInstanceOf[MouseSyntheticEvent])
   }
 
-  "rendering" should "render top item" in {
+  it should "render top item" in {
     //given
     val data = BrowseTreeItemData("top item")
     val component = treeNode(nodeProps(data, 0))
@@ -223,12 +223,15 @@ class BrowseTreeNodeSpec extends FlatSpec with Matchers with MockFactory {
   private def treeNode(props: BrowseTreeNodeProps,
                        children: List[ReactElement] = Nil): ReactElement = {
 
-    E(BrowseTreeNode())(A.wrapped := props)(children)
+    <(BrowseTreeNode())(^.wrapped := props)(children)
   }
 }
 
-@JSExportAll
-trait MouseSyntheticEventMock {
+object BrowseTreeNodeSpec {
 
-  def stopPropagation(): Unit
+  @JSExportAll
+  trait MouseSyntheticEventMock {
+
+    def stopPropagation(): Unit
+  }
 }

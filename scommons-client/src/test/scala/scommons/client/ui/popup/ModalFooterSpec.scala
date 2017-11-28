@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
 import scommons.client.util.ActionsData
 
@@ -13,7 +13,7 @@ class ModalFooterSpec extends TestSpec {
       List(Buttons.OK, Buttons.CANCEL),
       ActionsData.empty
     )
-    val component = E(ModalFooter())(A.wrapped := props)()
+    val component = <(ModalFooter())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)

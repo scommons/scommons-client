@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
 
@@ -11,7 +11,7 @@ class InputPopupSpec extends TestSpec {
     //given
     val onCancel = mockFunction[Unit]
     val props = getInputPopupProps("Test message", onCancel = onCancel)
-    val component = shallowRender(E(InputPopup())(A.wrapped := props)())
+    val component = shallowRender(<(InputPopup())(^.wrapped := props)())
     val modalProps = findComponentProps(component, Modal)
 
     //then
@@ -25,7 +25,7 @@ class InputPopupSpec extends TestSpec {
     //given
     val onOk = mockFunction[String, Unit]
     val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
-    val component = shallowRender(E(InputPopup())(A.wrapped := props)())
+    val component = shallowRender(<(InputPopup())(^.wrapped := props)())
     val modalProps = findComponentProps(component, Modal)
 
     //then
@@ -39,7 +39,7 @@ class InputPopupSpec extends TestSpec {
     //given
     val onOk = mockFunction[String, Unit]
     val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
-    val component = shallowRender(E(InputPopup())(A.wrapped := props)())
+    val component = shallowRender(<(InputPopup())(^.wrapped := props)())
     val textFieldProps = findComponentProps(component, TextField)
     val newValue = "new value"
     textFieldProps.onChange(newValue)
@@ -55,7 +55,7 @@ class InputPopupSpec extends TestSpec {
     //given
     val props = getInputPopupProps("Test message")
     val renderer = createRenderer()
-    renderer.render(E(InputPopup())(A.wrapped := props)())
+    renderer.render(<(InputPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val prevTextProps = findComponentProps(comp, TextField)
     val newValue = "new value"
@@ -76,7 +76,7 @@ class InputPopupSpec extends TestSpec {
     //given
     val props = getInputPopupProps("Test message", initialValue = "initial value")
     val renderer = createRenderer()
-    renderer.render(E(InputPopup())(A.wrapped := props)())
+    renderer.render(<(InputPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val prevTextProps = findComponentProps(comp, TextField)
     val newValue = ""
@@ -96,7 +96,7 @@ class InputPopupSpec extends TestSpec {
   it should "render component with empty initial value" in {
     //given
     val props = getInputPopupProps("Test message", placeholder = Some("test placeholder"))
-    val component = E(InputPopup())(A.wrapped := props)()
+    val component = <(InputPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -111,7 +111,7 @@ class InputPopupSpec extends TestSpec {
       placeholder = Some("test placeholder"),
       initialValue = "initial value"
     )
-    val component = E(InputPopup())(A.wrapped := props)()
+    val component = <(InputPopup())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -124,7 +124,7 @@ class InputPopupSpec extends TestSpec {
     //given
     val props = getInputPopupProps("Test message")
     val renderer = createRenderer()
-    renderer.render(E(InputPopup())(A.wrapped := props)())
+    renderer.render(<(InputPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
     val textProps = findComponentProps(comp, TextField)
@@ -145,7 +145,7 @@ class InputPopupSpec extends TestSpec {
     //given
     val prevProps = getInputPopupProps("Test message", initialValue = "some value")
     val renderer = createRenderer()
-    renderer.render(E(InputPopup())(A.wrapped := prevProps)())
+    renderer.render(<(InputPopup())(^.wrapped := prevProps)())
     val comp = renderer.getRenderOutput()
     val textProps = findComponentProps(comp, TextField)
     textProps.text shouldBe prevProps.initialValue
@@ -161,7 +161,7 @@ class InputPopupSpec extends TestSpec {
     val props = getInputPopupProps("New message")
 
     //when
-    renderer.render(E(InputPopup())(A.wrapped := props)())
+    renderer.render(<(InputPopup())(^.wrapped := props)())
 
     //then
     val compV3 = renderer.getRenderOutput()
@@ -203,9 +203,9 @@ class InputPopupSpec extends TestSpec {
         closable shouldBe true
       }
     }, { case List(modalChild) =>
-      assertDOMComponent(modalChild, E.div(^.className := "row-fluid")(), { case List(p, div) =>
-        assertDOMComponent(p, E.p()(props.message))
-        assertDOMComponent(div, E.div(^.className := "control-group")(), { case List(textField) =>
+      assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(p, div) =>
+        assertDOMComponent(p, <.p()(props.message))
+        assertDOMComponent(div, <.div(^.className := "control-group")(), { case List(textField) =>
           assertComponent(textField, TextField(), { textFieldProps: TextFieldProps =>
             inside(textFieldProps) {
               case TextFieldProps(text, _, requestFocus, requestSelect, className, placeholder, _) =>

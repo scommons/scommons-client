@@ -17,7 +17,7 @@ object AppBrowseController extends RouterProps {
 
   def apply(): ReactClass = WithRouter(reactClass)
 
-  private[app] lazy val reactClass = React.createClass[AppBrowseControllerProps, Unit] { self =>
+  private lazy val reactClass = React.createClass[AppBrowseControllerProps, Unit] { self =>
     val props = self.props.wrapped
     val path = self.props.`match`.path
 

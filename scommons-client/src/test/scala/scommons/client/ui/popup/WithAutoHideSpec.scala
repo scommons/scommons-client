@@ -1,10 +1,10 @@
 package scommons.client.ui.popup
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom.raw.{EventTarget, HTMLElement}
 import org.scalajs.dom.{KeyboardEvent, MouseEvent, document}
 import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
-import scommons.client.test.TestVirtualDOM._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.TestReactDOM._
 import scommons.client.ui.popup.WithAutoHideSpec.DomEventMock
@@ -17,7 +17,7 @@ class WithAutoHideSpec extends TestSpec {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
-      E(WithAutoHide())(A.wrapped := WithAutoHideProps(onHide))("test content")
+      <(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content")
     )
 
     //then
@@ -34,7 +34,7 @@ class WithAutoHideSpec extends TestSpec {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
-      E(WithAutoHide())(A.wrapped := WithAutoHideProps(onHide))("test content")
+      <(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content")
     )
     unmountComponentAtNode(findDOMNode(comp).parentNode) shouldBe true
 
@@ -49,7 +49,7 @@ class WithAutoHideSpec extends TestSpec {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
-      E(WithAutoHide())(A.wrapped := WithAutoHideProps(onHide))("test content")
+      <(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content")
     )
 
     //then
@@ -66,7 +66,7 @@ class WithAutoHideSpec extends TestSpec {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
-      E(WithAutoHide())(A.wrapped := WithAutoHideProps(onHide))("test content")
+      <(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content")
     )
     unmountComponentAtNode(findDOMNode(comp).parentNode) shouldBe true
 
@@ -112,8 +112,8 @@ class WithAutoHideSpec extends TestSpec {
   it should "render the component" in {
     //given
     val content = "test content"
-    val component = E(WithAutoHide())(A.wrapped := WithAutoHideProps(() => ()))(
-      E.p()(content)
+    val component = <(WithAutoHide())(^.wrapped := WithAutoHideProps(() => ()))(
+      <.p()(content)
     )
 
     //when

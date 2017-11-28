@@ -1,14 +1,14 @@
 package scommons.client.test.raw
 
 import io.github.shogowada.scalajs.reactjs.React
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.TestVirtualDOM._
+import scommons.client.test.TestSpec
 import scommons.client.test.raw.ReactTestUtils._
 
 import scala.scalajs.js
 
-class SimulateSpec extends FlatSpec with Matchers {
+class SimulateSpec extends TestSpec {
 
   it should "simulate onClick event" in {
     //given
@@ -21,8 +21,8 @@ class SimulateSpec extends FlatSpec with Matchers {
       clientY = e.clientY
     }
     val comp = renderIntoDocument(React.createElement(React.createClass[Unit, Unit](_ =>
-      E.div()(
-        E.button(A.onClick := onClick)("Click me")
+      <.div()(
+        <.button(^.onClick := onClick)("Click me")
       )
     )))
     val button = findRenderedDOMComponentWithTag(comp, "button")
