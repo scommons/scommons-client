@@ -3,7 +3,6 @@ package scommons.client.ui.tree
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
-import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.tree.BrowseTreeCss._
 
 class BrowseTreeSpec extends TestSpec {

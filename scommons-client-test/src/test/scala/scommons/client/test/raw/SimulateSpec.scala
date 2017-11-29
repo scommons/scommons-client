@@ -3,12 +3,12 @@ package scommons.client.test.raw
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.test.TestSpec
+import scommons.client.test.TestUtilSpec
 import scommons.client.test.raw.ReactTestUtils._
 
 import scala.scalajs.js
 
-class SimulateSpec extends TestSpec {
+class SimulateSpec extends TestUtilSpec {
 
   it should "simulate onClick event" in {
     //given

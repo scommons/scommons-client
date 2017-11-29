@@ -5,7 +5,6 @@ import org.scalajs.dom.raw.{EventTarget, HTMLElement}
 import org.scalajs.dom.{KeyboardEvent, MouseEvent, document}
 import scommons.client.test.TestSpec
 import scommons.client.test.TestUtils._
-import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.TestReactDOM._
 import scommons.client.ui.popup.WithAutoHideSpec.DomEventMock
 

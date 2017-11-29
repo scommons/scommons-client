@@ -22,6 +22,10 @@ object MemoryRouter {
     case class EntriesAttributeSpec(name: String) extends AttributeSpec {
       def :=(entries: List[String]) = Attribute[js.Array[String]](name, js.Array(entries: _*), AS_IS)
     }
+
+    case class IntAttributeSpec(name: String) extends AttributeSpec {
+      def :=(value: Int) = Attribute[Int](name, value, AS_IS)
+    }
   }
 
   implicit class MemoryRouterVirtualDOMAttributes(attribute: VirtualDOMAttributes) {
@@ -29,7 +33,7 @@ object MemoryRouter {
     import MemoryRouterVirtualDOMAttributes._
 
     lazy val initialEntries = EntriesAttributeSpec("initialEntries")
-    lazy val initialIndex = IntegerAttributeSpec("initialIndex")
-    lazy val keyLength = IntegerAttributeSpec("keyLength")
+    lazy val initialIndex = IntAttributeSpec("initialIndex")
+    lazy val keyLength = IntAttributeSpec("keyLength")
   }
 }
