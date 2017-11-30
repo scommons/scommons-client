@@ -2,104 +2,94 @@ package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.TestSpec
-import scommons.client.test.TestUtils._
 import scommons.client.ui.tree.BrowseTreeCss._
 
 class BrowseTreeSpec extends TestSpec {
 
-  it should "return false if item is not selected when isSelected" in {
+  it should "call onSelect function when select new item" in {
+    //given
+    val onSelect = mockFunction[BrowseTreeData, Unit]
+    val data = BrowseTreeItemData("test")
+    val props = BrowseTreeProps(List(data), onSelect = onSelect)
+    val comp = shallowRender(<(BrowseTree())(^.wrapped := props)())
+    val nodeProps = findComponentProps(comp, BrowseTreeNode)
+
+    //then
+    onSelect.expects(data)
+
+    //when
+    nodeProps.onSelect(data)
+  }
+
+  it should "not call onSelect function when select the same item" in {
+    //given
+    val onSelect = mockFunction[BrowseTreeData, Unit]
+    val data = BrowseTreeItemData("test")
+    val props = BrowseTreeProps(List(data), selectedItem = Some(data.key), onSelect = onSelect)
+    val comp = shallowRender(<(BrowseTree())(^.wrapped := props)())
+    val nodeProps = findComponentProps(comp, BrowseTreeNode)
+    nodeProps.selected shouldBe true
+
+    //then
+    onSelect.expects(_: BrowseTreeData).never()
+
+    //when
+    nodeProps.onSelect(data)
+  }
+
+  it should "expand node when onExpand" in {
     //given
     val data = BrowseTreeItemData("test")
-    val state = BrowseTreeState()
+    val props = BrowseTreeProps(List(data))
+    val renderer = createRenderer()
+    renderer.render(<(BrowseTree())(^.wrapped := props)())
+    val comp = renderer.getRenderOutput()
+    val nodeProps = findComponentProps(comp, BrowseTreeNode)
+    nodeProps.expanded shouldBe false
 
-    //when & then
-    BrowseTree.isSelected(state, data) shouldBe false
+    //when
+    nodeProps.onExpand(data)
+
+    //then
+    val updatedComp = renderer.getRenderOutput()
+    findComponentProps(updatedComp, BrowseTreeNode).expanded shouldBe true
   }
 
-  it should "return true if item is selected when isSelected" in {
+  it should "collapse node when onExpand again" in {
     //given
     val data = BrowseTreeItemData("test")
-    val state = BrowseTreeState(Some(data.key))
+    val props = BrowseTreeProps(List(data))
+    val renderer = createRenderer()
+    renderer.render(<(BrowseTree())(^.wrapped := props)())
+    val comp = renderer.getRenderOutput()
+    val nodeProps = findComponentProps(comp, BrowseTreeNode)
+    nodeProps.expanded shouldBe false
+    nodeProps.onExpand(data)
+    val nodePropsV2 = findComponentProps(renderer.getRenderOutput(), BrowseTreeNode)
+    nodePropsV2.expanded shouldBe true
 
-    //when & then
-    BrowseTree.isSelected(state, data) shouldBe true
+    //when
+    nodePropsV2.onExpand(data)
+
+    //then
+    val nodePropsV3 = findComponentProps(renderer.getRenderOutput(), BrowseTreeNode)
+    nodePropsV3.expanded shouldBe false
   }
 
-  it should "put selected item into state when setSelected" in {
+  it should "render selected node" in {
     //given
     val data = BrowseTreeItemData("test")
-    val state = BrowseTreeState()
-    val newState = BrowseTreeState(Some(data.key))
-    val setState = mockFunction[BrowseTreeState => BrowseTreeState, Unit]
-    setState.expects(where { (f: BrowseTreeState => BrowseTreeState) => f(state) == newState })
-    BrowseTree.isSelected(state, data) shouldBe false
-    BrowseTree.isSelected(newState, data) shouldBe true
+    val props = BrowseTreeProps(List(data), selectedItem = Some(data.key))
+    val component = <(BrowseTree())(^.wrapped := props)()
 
-    //when & then
-    BrowseTree.setSelected(setState)(data)
+    //when
+    val result = shallowRender(component)
+
+    //then
+    findComponentProps(result, BrowseTreeNode).selected shouldBe true
   }
 
-  it should "replace existing selected item in state when setSelected" in {
-    //given
-    val data = BrowseTreeItemData("new item")
-    val state = BrowseTreeState(Some(BrowseTreeItemData("current item").key))
-    val newState = BrowseTreeState(Some(data.key))
-    val setState = mockFunction[BrowseTreeState => BrowseTreeState, Unit]
-    setState.expects(where { (f: BrowseTreeState => BrowseTreeState) => f(state) == newState })
-    BrowseTree.isSelected(state, data) shouldBe false
-    BrowseTree.isSelected(newState, data) shouldBe true
-
-    //when & then
-    BrowseTree.setSelected(setState)(data)
-  }
-
-  it should "return false if item is not expanded when isExpanded" in {
-    //given
-    val data = BrowseTreeItemData("test")
-    val state = BrowseTreeState()
-
-    //when & then
-    BrowseTree.isExpanded(state, data) shouldBe false
-  }
-
-  it should "return true if item is expanded when isExpanded" in {
-    //given
-    val data = BrowseTreeItemData("test")
-    val state = BrowseTreeState(expanded = Set(data.key))
-
-    //when & then
-    BrowseTree.isExpanded(state, data) shouldBe true
-  }
-
-  it should "put expanded item into state when toggleExpanded" in {
-    //given
-    val data = BrowseTreeItemData("test")
-    val state = BrowseTreeState()
-    val newState = BrowseTreeState(expanded = Set(data.key))
-    val setState = mockFunction[BrowseTreeState => BrowseTreeState, Unit]
-    setState.expects(where { (f: BrowseTreeState => BrowseTreeState) => f(state) == newState })
-    BrowseTree.isExpanded(state, data) shouldBe false
-    BrowseTree.isExpanded(newState, data) shouldBe true
-
-    //when & then
-    BrowseTree.toggleExpanded(setState)(data)
-  }
-
-  it should "remove expanded item from state when toggleExpanded" in {
-    //given
-    val data = BrowseTreeItemData("test")
-    val state = BrowseTreeState(expanded = Set(data.key))
-    val newState = BrowseTreeState()
-    val setState = mockFunction[BrowseTreeState => BrowseTreeState, Unit]
-    setState.expects(where { (f: BrowseTreeState => BrowseTreeState) => f(state) == newState })
-    BrowseTree.isExpanded(state, data) shouldBe true
-    BrowseTree.isExpanded(newState, data) shouldBe false
-
-    //when & then
-    BrowseTree.toggleExpanded(setState)(data)
-  }
-
-  it should "render the component" in {
+  it should "render child nodes" in {
     //given
     val topItem = BrowseTreeItemData("top item")
     val childItem = BrowseTreeItemData("child item")
@@ -109,18 +99,44 @@ class BrowseTreeSpec extends TestSpec {
     val component = <(BrowseTree())(^.wrapped := props)()
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
-      <div class={s"$browseTree"}>
-        {renderAsXml(BrowseTreeNode(), BrowseTreeNodeProps(topItem))}
-        {renderAsXml(BrowseTreeNode(), BrowseTreeNodeProps(topNode),
-          <(BrowseTreeNode())(^.wrapped := BrowseTreeNodeProps(childNode, level = 1))(
-            <(BrowseTreeNode())(^.wrapped := BrowseTreeNodeProps(childItem, level = 2))()
-          )
-        )}
-      </div>
-    )
+    assertDOMComponent(result, <.div(^.className := browseTree)(), { case List(topItemE, topNodeE) =>
+      assertComponent(topItemE, BrowseTreeNode(), { topItemProps: BrowseTreeNodeProps =>
+        inside(topItemProps) { case BrowseTreeNodeProps(data, level, selected, _, expanded, _) =>
+          data shouldBe topItem
+          level shouldBe 0
+          selected shouldBe false
+          expanded shouldBe false
+        }
+      })
+      assertComponent(topNodeE, BrowseTreeNode(), { topNodeProps: BrowseTreeNodeProps =>
+        inside(topNodeProps) { case BrowseTreeNodeProps(data, level, selected, _, expanded, _) =>
+          data shouldBe topNode
+          level shouldBe 0
+          selected shouldBe false
+          expanded shouldBe false
+        }
+      }, { case List(childNodeE) =>
+        assertComponent(childNodeE, BrowseTreeNode(), { childNodeProps: BrowseTreeNodeProps =>
+          inside(childNodeProps) { case BrowseTreeNodeProps(data, level, selected, _, expanded, _) =>
+            data shouldBe childNode
+            level shouldBe 1
+            selected shouldBe false
+            expanded shouldBe false
+          }
+        }, { case List(childItemE) =>
+          assertComponent(childItemE, BrowseTreeNode(), { childItemProps: BrowseTreeNodeProps =>
+            inside(childItemProps) { case BrowseTreeNodeProps(data, level, selected, _, expanded, _) =>
+              data shouldBe childItem
+              level shouldBe 2
+              selected shouldBe false
+              expanded shouldBe false
+            }
+          })
+        })
+      })
+    })
   }
 }

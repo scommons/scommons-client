@@ -12,10 +12,9 @@ case class BrowseTreeProps(roots: List[BrowseTreeData],
                            selectedItem: Option[BrowseTreeDataKey] = None,
                            onSelect: BrowseTreeData => Unit = _ => ())
 
-case class BrowseTreeState(selected: Option[BrowseTreeDataKey] = None, //TODO: remove (use selected item from props)
-                           expanded: Set[BrowseTreeDataKey] = Set.empty[BrowseTreeDataKey])
-
 object BrowseTree extends UiComponent[BrowseTreeProps] {
+
+  private case class BrowseTreeState(expanded: Set[BrowseTreeDataKey] = Set.empty[BrowseTreeDataKey])
 
   def apply(): ReactClass = reactClass
 
@@ -30,18 +29,14 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
         <(BrowseTreeNode())(^.wrapped := BrowseTreeNodeProps(
           data,
           level,
-          props.selectedItem.contains(data.key),//isSelected(self.state, data),
-          selectedData => {
-            if (!props.selectedItem.contains(selectedData.key)) {
-              props.onSelect(selectedData)
-            }
-          },
+          isSelected(props, data),
+          onSelect(props),
           isExpanded(self.state, data),
           toggleExpanded(self.setState)
         ))(data match {
           case _: BrowseTreeItemData => None
-          case data: BrowseTreeNodeData =>
-            createElements(data.children, level + 1)
+          case nodeData: BrowseTreeNodeData =>
+            createElements(nodeData.children, level + 1)
         })
       }
 
@@ -51,22 +46,22 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
     }
   )
 
-  private[tree] def isSelected(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
-    state.selected.contains(data.key)
+  private def isSelected(props: BrowseTreeProps, data: BrowseTreeData): Boolean = {
+    props.selectedItem.contains(data.key)
   }
 
-  private[tree] def setSelected(setState: (BrowseTreeState => BrowseTreeState) => Unit)
-                                     (data: BrowseTreeData): Unit = {
-
-    setState(_.copy(selected = Some(data.key)))
+  private def onSelect(props: BrowseTreeProps)(data: BrowseTreeData): Unit = {
+    if (!isSelected(props, data)) {
+      props.onSelect(data)
+    }
   }
 
-  private[tree] def isExpanded(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
+  private def isExpanded(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
     state.expanded.contains(data.key)
   }
 
-  private[tree] def toggleExpanded(setState: (BrowseTreeState => BrowseTreeState) => Unit)
-                                        (data: BrowseTreeData): Unit = {
+  private def toggleExpanded(setState: (BrowseTreeState => BrowseTreeState) => Unit)
+                            (data: BrowseTreeData): Unit = {
     setState { state =>
       val newExpanded =
         if (isExpanded(state, data)) state.expanded - data.key
