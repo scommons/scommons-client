@@ -5,7 +5,7 @@ import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
-import scommons.client.test.TestSpec
+import scommons.client.TestSpec
 import scommons.client.test.raw.MemoryRouter._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.Buttons

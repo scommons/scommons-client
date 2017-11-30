@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
+import scommons.client.TestSpec
 
 class ModalBodySpec extends TestSpec {
 

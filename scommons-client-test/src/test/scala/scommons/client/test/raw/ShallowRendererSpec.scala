@@ -2,9 +2,9 @@ package scommons.client.test.raw
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestUtilSpec
+import scommons.client.test.TestSpec
 
-class ShallowRendererSpec extends TestUtilSpec {
+class ShallowRendererSpec extends TestSpec {
 
   it should "test ShallowRenderer" in {
     //given

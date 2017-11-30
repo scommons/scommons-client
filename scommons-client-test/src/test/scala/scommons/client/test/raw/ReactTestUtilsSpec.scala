@@ -2,13 +2,13 @@ package scommons.client.test.raw
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestUtilSpec
+import scommons.client.test.TestSpec
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ReactTestUtilsSpec.TestProps
 
 import scala.scalajs.js.JavaScriptException
 
-class ReactTestUtilsSpec extends TestUtilSpec {
+class ReactTestUtilsSpec extends TestSpec {
 
   it should "test renderIntoDocument" in {
     //given

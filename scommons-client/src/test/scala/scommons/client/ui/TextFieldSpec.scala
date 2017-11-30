@@ -4,7 +4,7 @@ import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLInputElement
-import scommons.client.test.TestSpec
+import scommons.client.TestSpec
 import scommons.client.test.TestUtils._
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._

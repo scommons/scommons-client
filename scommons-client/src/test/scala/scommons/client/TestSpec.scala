@@ -1,10 +1,11 @@
-package scommons.client.test
+package scommons.client
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalamock.matchers.Matchers
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Inside}
+import scommons.client.test.ShallowRendererUtils
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
