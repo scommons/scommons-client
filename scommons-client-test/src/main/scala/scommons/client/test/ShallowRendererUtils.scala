@@ -6,6 +6,7 @@ import org.scalatest.Matchers
 import scommons.client.test.raw.ShallowRenderer
 import scommons.client.test.raw.ShallowRenderer._
 
+import scala.collection.mutable.ListBuffer
 import scala.scalajs.js
 
 trait ShallowRendererUtils extends Matchers {
@@ -20,26 +21,25 @@ trait ShallowRendererUtils extends Matchers {
 
   def getComponentProps[T](component: ComponentInstance): T = component.props.wrapped.asInstanceOf[T]
 
-  def findComponentWithType(component: ComponentInstance,
-                            componentClass: ReactClass): ComponentInstance = {
+  def findComponents(component: ComponentInstance,
+                     componentClass: ReactClass): List[ComponentInstance] = {
 
-    def search(components: List[ComponentInstance]): Option[ComponentInstance] = components match {
-      case Nil => None
+    def search(components: List[ComponentInstance],
+               result: ListBuffer[ComponentInstance]): Unit = components match {
+
+      case Nil =>
       case head :: tail =>
-        if (head.`type` == componentClass) Some(head)
-        else {
-          search(getComponentChildren(head)) match {
-            case None => search(tail)
-            case comp => comp
-          }
+        if (head.`type` == componentClass) {
+          result += head
         }
+
+        search(getComponentChildren(head), result)
+        search(tail, result)
     }
 
-    search(List(component)) match {
-      case Some(comp) => comp
-      case None =>
-        fail(s"Component with type: $componentClass not found")
-    }
+    val result = new ListBuffer[ComponentInstance]
+    search(List(component), result)
+    result.toList
   }
 
   def assertComponent[T](result: ComponentInstance,

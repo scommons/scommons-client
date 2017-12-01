@@ -20,7 +20,14 @@ trait TestSpec extends FlatSpec
   lazy val < : VirtualDOM.VirtualDOMElements = VirtualDOM.<
 
   def findComponentProps[T](renderedComp: ComponentInstance, searchComp: UiComponent[T]): T = {
-    getComponentProps[T](findComponentWithType(renderedComp, searchComp.reactClass))
+    findProps[T](renderedComp, searchComp).headOption match {
+      case Some(comp) => comp
+      case None => throw new IllegalStateException(s"UiComponent $searchComp not found")
+    }
+  }
+
+  def findProps[T](renderedComp: ComponentInstance, searchComp: UiComponent[T]): List[T] = {
+    findComponents(renderedComp, searchComp.reactClass).map(getComponentProps[T])
   }
 
   def renderIntoDocument(element: ReactElement): Instance = ReactTestUtils.renderIntoDocument(element)
