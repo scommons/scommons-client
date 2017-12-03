@@ -6,7 +6,7 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import scommons.client.ui._
 import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
-import scommons.client.ui.tree.{BrowseTreeData, BrowseTreeProps}
+import scommons.client.ui.tree.{BrowseTreeData, BrowseTreeNodeData, BrowseTreeProps}
 import scommons.client.util.ActionsData
 
 case class AppBrowseControllerProps(treeRoots: List[BrowseTreeData],
@@ -23,6 +23,9 @@ object AppBrowseController extends RouterProps {
 
     val selectedRoute = getSelectedRoute(props.routes, path)
     val selectedItem = selectedRoute.map(_._1)
+    val openedNodes = selectedRoute.map { case (itemKey, _) =>
+      getItemPath(props.treeRoots, itemKey.obj).map(_.key).toSet
+    }.getOrElse(Set.empty[BrowseTreeDataKey])
 
     def onSelectItem(data: BrowseTreeData): Unit = {
       props.routes.get(data.key).foreach { panel =>
@@ -38,7 +41,7 @@ object AppBrowseController extends RouterProps {
 
     <(AppBrowsePanel())(^.wrapped := AppBrowsePanelProps(
       ButtonsPanelProps(props.buttons, actions, group = true),
-      BrowseTreeProps(props.treeRoots, selectedItem, onSelect = onSelectItem)
+      BrowseTreeProps(props.treeRoots, selectedItem, onSelect = onSelectItem, openedNodes = openedNodes)
     ))(panelComp)
   }
 
@@ -47,6 +50,28 @@ object AppBrowseController extends RouterProps {
 
     routes.find { case (_, panelData) =>
       panelData.path == path
+    }
+  }
+
+  private[app] def getItemPath(roots: List[BrowseTreeData], item: BrowseTreeData): List[BrowseTreeData] = {
+    def loop(nodes: List[BrowseTreeData], path: List[BrowseTreeData]): Option[List[BrowseTreeData]] = nodes match {
+      case Nil => None
+      case head :: tail =>
+        if (head.key == item.key) Some(path)
+        else {
+          (head match {
+            case node: BrowseTreeNodeData => loop(node.children, head :: path)
+            case _ => None
+          }) match {
+            case None => loop (tail, path)
+            case result => result
+          }
+        }
+    }
+
+    loop(roots, Nil) match {
+      case None => Nil
+      case Some(path) => path.reverse
     }
   }
 }
