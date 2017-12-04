@@ -19,7 +19,7 @@ object AppBrowseController extends RouterProps {
 
   private lazy val reactClass = React.createClass[AppBrowseControllerProps, Unit] { self =>
     val props = self.props.wrapped
-    val path = self.props.`match`.path
+    val path = self.props.location.pathname
 
     val selectedRoute = getSelectedRoute(props.routes, path)
     val selectedItem = selectedRoute.map(_._1)

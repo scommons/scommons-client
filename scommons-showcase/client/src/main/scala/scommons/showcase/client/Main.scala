@@ -94,6 +94,9 @@ object Reducer {
     popupsItem.key -> AppBrowseData("/popups", ActionsData.empty, Some(PopupsDemo())),
     reposItem.key -> AppBrowseData("/repos",
       ActionsData(Set(Buttons.REFRESH.command, Buttons.ADD.command), _ => ()), Some(Repos())
+    ),
+    repoItem.key -> AppBrowseData("/repos/1",
+      ActionsData(Set(Buttons.REMOVE.command), _ => ()), Some(Repos())
     )
   )
 
