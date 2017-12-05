@@ -35,6 +35,7 @@ object ShowcaseServer extends BasicModule {
   }
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
+    Showcase.apiJVM,
     Showcase.client
   )
 

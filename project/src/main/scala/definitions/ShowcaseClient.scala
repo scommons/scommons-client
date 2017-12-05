@@ -33,7 +33,8 @@ object ShowcaseClient extends ScalaJsModule {
   }
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
-    Client.definition
+    Showcase.apiJS,
+    ScommonsClient.definition
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)

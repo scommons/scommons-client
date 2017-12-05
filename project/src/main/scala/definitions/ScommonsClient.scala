@@ -7,7 +7,7 @@ import sbt._
 
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
-object Client extends ScalaJsModule {
+object ScommonsClient extends ScalaJsModule {
 
   override val id: String = "scommons-client"
 
@@ -34,7 +34,8 @@ object Client extends ScalaJsModule {
   }
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
-    ClientTest.definition % "test"
+    ScommonsApi.js,
+    ScommonsClientTest.definition % "test"
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(

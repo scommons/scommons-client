@@ -5,15 +5,19 @@ import sbt._
 
 object TestLibs {
 
-  lazy val scalajsDom = Def.setting("org.scala-js" %%% "scalajs-dom" % "0.9.2")
-
-  lazy val scalaTest = Def.setting("org.scalatest" %%% "scalatest" % "3.0.0")
-
-  lazy val scalaXml = Def.setting("scala-xml" %%% "scala-xml" % "1.0.7-SNAPSHOT")
-
-  lazy val scalaMock = Def.setting("org.scalamock" %%% "scalamock-scalatest-support" % "3.6.0")
+  private val scalaTestVersion = "3.0.1"
 
   lazy val mockito = Def.setting("org.mockito" % "mockito-all" % "1.9.5")
 
   lazy val scalaTestPlusPlay = Def.setting("org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2")
+
+  // Scala.js dependencies
+
+  lazy val scalaTest = Def.setting("org.scalatest" %%% "scalatest" % scalaTestVersion)
+
+  lazy val scalajsDom = Def.setting("org.scala-js" %%% "scalajs-dom" % "0.9.2")
+
+  lazy val scalaXml = Def.setting("scala-xml" %%% "scala-xml" % "1.0.7-SNAPSHOT")
+
+  lazy val scalaMock = Def.setting("org.scalamock" %%% "scalamock-scalatest-support" % "3.6.0")
 }

@@ -5,7 +5,7 @@ import sbt._
 
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
-object ClientTest extends ScalaJsModule {
+object ScommonsClientTest extends ScalaJsModule {
 
   override val id: String = "scommons-client-test"
 

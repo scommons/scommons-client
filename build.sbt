@@ -5,17 +5,22 @@ lazy val scommons = (project in file("."))
   //.settings(Common.settings)
   //.configs(IntegrationTest)
   .aggregate(
+  `scommons-api-jvm`,
+  `scommons-api-js`,
   `scommons-client`,
   `scommons-client-test`,
   `scommons-showcase`
 )
 
-lazy val `scommons-client` = Client.definition
+lazy val `scommons-api-jvm` = ScommonsApi.jvm
+lazy val `scommons-api-js` = ScommonsApi.js
 
-lazy val `scommons-client-test` = ClientTest.definition
+lazy val `scommons-client` = ScommonsClient.definition
+
+lazy val `scommons-client-test` = ScommonsClientTest.definition
 
 lazy val `scommons-showcase` = Showcase.definition
-
+lazy val `scommons-showcase-api-jvm` = Showcase.apiJVM
+lazy val `scommons-showcase-api-js` = Showcase.apiJS
 lazy val `scommons-showcase-client` = Showcase.client
-
 lazy val `scommons-showcase-server` = Showcase.server
