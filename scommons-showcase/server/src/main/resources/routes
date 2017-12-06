@@ -8,3 +8,12 @@ GET     /scommons-showcase                          controllers.ShowcaseControll
 GET     /scommons-showcase/                         controllers.ShowcaseController.index
 GET     /scommons-showcase/index.html               controllers.ShowcaseController.index
 
+################################################################################
+# REST API
+#
+
+GET     /scommons-showcase/repos                    controllers.ShowcaseRepoController.getRepos
+POST    /scommons-showcase/repos                    controllers.ShowcaseRepoController.createRepo
+PUT     /scommons-showcase/repos                    controllers.ShowcaseRepoController.updateRepo
+DELETE  /scommons-showcase/repos/:id                controllers.ShowcaseRepoController.deleteRepo(id: Int)
+

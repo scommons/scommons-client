@@ -3,8 +3,8 @@ package controllers
 import play.twirl.api.StringInterpolation
 import play.api.mvc._
 
-class ShowcaseController(controllerComponents: ControllerComponents)
-  extends AbstractController(controllerComponents) {
+class ShowcaseController()(implicit components: ControllerComponents)
+  extends AbstractController(components) {
 
   val index: Action[AnyContent] = {
     val projectName = "scommons-showcase-client"
