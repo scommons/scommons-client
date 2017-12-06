@@ -1,9 +1,9 @@
 package controllers
 
-import app.Loader
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.{Application, ApplicationLoader, Environment}
+import play.api.Application
+import scaldi.play.ScaldiApplicationBuilder
 
 class ShowcaseControllerSpec extends PlaySpec
   with GuiceOneServerPerSuite
@@ -11,7 +11,7 @@ class ShowcaseControllerSpec extends PlaySpec
   with HtmlUnitFactory {
 
   implicit override lazy val app: Application =
-    (new Loader).load(ApplicationLoader.createContext(Environment.simple()))
+    new ScaldiApplicationBuilder().build()
 
 //  private lazy val root = s"http://localhost:$port/scommons-showcase"
 //

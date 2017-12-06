@@ -5,7 +5,8 @@ import com.typesafe.sbt.gzip.Import.gzip
 import com.typesafe.sbt.web.PathMapping
 import com.typesafe.sbt.web.SbtWeb.autoImport._
 import common.{Libs, TestLibs}
-import play.sbt.{PlayLayoutPlugin, PlayScala}
+import play.sbt.routes.RoutesKeys
+import play.sbt.{PlayImport, PlayLayoutPlugin, PlayScala}
 import sbt._
 import scoverage.ScoverageKeys.coverageExcludedPackages
 import webscalajs.WebScalaJS.autoImport._
@@ -24,7 +25,10 @@ object ShowcaseServer extends BasicModule {
     super.definition
       .enablePlugins(PlayScala, WebScalaJSBundlerPlugin)
       .disablePlugins(PlayLayoutPlugin)
+      .configs(IntegrationTest)
+      .settings(Defaults.itSettings: _*)
       .settings(
+        RoutesKeys.routesImport -= "controllers.Assets.Asset", //remove unused import warning from routes file
         coverageExcludedPackages := "<empty>;Reverse.*",
         scalaJSProjects := Seq(Showcase.client),
         pipelineStages in Assets := Seq(scalaJSPipeline),
@@ -40,15 +44,17 @@ object ShowcaseServer extends BasicModule {
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
+    PlayImport.guice,
     Libs.play.value,
     Libs.playJson.value,
+    Libs.scaldiPlay.value,
     Libs.slf4jApi.value,
     Libs.logback.value
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     TestLibs.scalaTestPlusPlay.value
-  ).map(_ % "test"))
+  ).map(_ % "it,test"))
 }
 
 object WebpackAssets {

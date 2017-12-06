@@ -10,6 +10,7 @@ object Libs {
 
   lazy val playJson = Def.setting("com.typesafe.play" %% "play-json" % playVer)
   lazy val play = Def.setting("com.typesafe.play" %% "play" % playVer)
+  lazy val scaldiPlay = Def.setting("org.scaldi" %% "scaldi-play" % "0.5.17")
 
   //lazy val scalaLogging = Def.setting("com.typesafe.scala-logging" %% "scala-logging" % "3.5.0")
   lazy val logback = Def.setting("ch.qos.logback" % "logback-classic" % "1.1.7")
