@@ -30,6 +30,11 @@ object ShowcaseApi {
       )
     ).jvmSettings(
       // Add JVM-specific settings here
+      libraryDependencies ++= Seq(
+        Libs.playWs.value,
+        Libs.playWsJson.value,
+        TestLibs.mockito.value % "test"
+      )
     ).jsSettings(
       //Opt-in @ScalaJSDefined by default
       scalacOptions += "-P:scalajs:sjsDefinedByDefault"
