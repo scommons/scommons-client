@@ -1,6 +1,5 @@
 package definitions
 
-import com.typesafe.sbt.web.SbtWeb
 import common.{Libs, TestLibs}
 import sbt.Keys._
 import sbt._
@@ -13,7 +12,6 @@ object ScommonsClient extends ScalaJsModule {
 
   override def definition: Project = {
     super.definition
-      .enablePlugins(SbtWeb)
       .settings(
         webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"),
 
