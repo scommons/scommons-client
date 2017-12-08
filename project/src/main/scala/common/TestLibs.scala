@@ -1,6 +1,7 @@
 package common
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import common.Libs.akkaVersion
 import sbt._
 
 object TestLibs {
@@ -10,6 +11,7 @@ object TestLibs {
   lazy val mockito = Def.setting("org.mockito" % "mockito-all" % "1.9.5")
 
   lazy val scalaTestPlusPlay = Def.setting("org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2")
+  lazy val akkaStreamTestKit = Def.setting("com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion)
 
   // Scala.js dependencies
 

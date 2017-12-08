@@ -32,7 +32,6 @@ object ShowcaseApi {
       // Add JVM-specific settings here
       libraryDependencies ++= Seq(
         Libs.playWs.value,
-        Libs.playWsJson.value,
         TestLibs.mockito.value % "test"
       )
     ).jsSettings(

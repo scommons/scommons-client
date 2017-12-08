@@ -39,8 +39,7 @@ object ShowcaseServer extends BasicModule {
   }
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
-    Showcase.apiJVM,
-    Showcase.client
+    Showcase.apiJVM
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
@@ -53,7 +52,8 @@ object ShowcaseServer extends BasicModule {
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    TestLibs.scalaTestPlusPlay.value
+    TestLibs.scalaTestPlusPlay.value,
+    TestLibs.akkaStreamTestKit.value
   ).map(_ % "it,test"))
 }
 

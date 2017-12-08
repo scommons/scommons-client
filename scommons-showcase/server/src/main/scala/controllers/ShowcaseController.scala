@@ -6,7 +6,7 @@ import play.api.mvc._
 class ShowcaseController()(implicit components: ControllerComponents)
   extends AbstractController(components) {
 
-  val index: Action[AnyContent] = {
+  lazy val index: Action[AnyContent] = {
     val projectName = "scommons-showcase-client"
     val mainScript = scriptUrl(projectName, ".js")
     val loaderScript = scriptUrl(projectName, "-loader.js")

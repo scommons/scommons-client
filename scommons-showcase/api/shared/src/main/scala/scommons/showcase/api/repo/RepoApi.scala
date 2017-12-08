@@ -8,6 +8,8 @@ trait RepoApi {
 
   def getRepos: Future[RepoListResp]
 
+  def getRepo(id: Int): Future[RepoResp]
+
   def createRepo(data: RepoData): Future[RepoResp]
 
   def updateRepo(data: RepoData): Future[RepoResp]
