@@ -36,7 +36,11 @@ object ShowcaseApi {
       )
     ).jsSettings(
       //Opt-in @ScalaJSDefined by default
-      scalacOptions += "-P:scalajs:sjsDefinedByDefault"
+      scalacOptions += "-P:scalajs:sjsDefinedByDefault",
+      libraryDependencies ++= Seq(
+        Libs.scalajsDom.value,
+        TestLibs.scalaMock.value % "test"
+      )
     )
 
   lazy val jvm: Project = showcaseApi.jvm

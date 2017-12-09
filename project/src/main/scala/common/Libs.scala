@@ -33,4 +33,6 @@ object Libs {
   lazy val sjsReactJsReduxDevTools = Def.setting("io.github.shogowada" %%% "scalajs-reactjs-redux-devtools" % sjsReactJsVer)
 
   lazy val playJsonJs = Def.setting("com.typesafe.play" %%% "play-json" % playVer)
+
+  lazy val scalajsDom = Def.setting("org.scala-js" %%% "scalajs-dom" % "0.9.2")
 }

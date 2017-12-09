@@ -1,5 +1,6 @@
 package scommons.client.util
 
+//TODO: migrate to use org.scalajs.dom.ext.KeyCode
 object KeyCodes {
   val KEY_ALT = 18
   val KEY_BACKSPACE = 8
