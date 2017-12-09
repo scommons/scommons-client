@@ -4,8 +4,8 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, KeyboardSyntheticEvent}
+import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.raw.HTMLInputElement
-import scommons.client.util.KeyCodes
 
 case class TextFieldProps(text: String,
                           onChange: (String) => Unit,
@@ -68,7 +68,7 @@ object TextField extends UiComponent[TextFieldProps] {
           props.onChange(value)
         },
         ^.onKeyDown := { e: KeyboardSyntheticEvent =>
-          if (e.keyCode == KeyCodes.KEY_ENTER) {
+          if (e.keyCode == KeyCode.Enter) {
             props.onEnter()
           }
         }

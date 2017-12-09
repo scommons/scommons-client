@@ -36,7 +36,7 @@ object WithAutoHide extends UiComponent[WithAutoHideProps] {
         self.props.wrapped.onHide
       )
       dom.document.addEventListener("mouseup", autoHideHandle)
-      dom.document.addEventListener("keyup", autoHideHandle)
+      dom.document.addEventListener("keydown", autoHideHandle)
 
       self.setState(_.copy(autoHideHandle = Some(autoHideHandle)))
     },
@@ -45,7 +45,7 @@ object WithAutoHide extends UiComponent[WithAutoHideProps] {
         case None =>
         case Some(autoHideHandle) =>
           dom.document.removeEventListener("mouseup", autoHideHandle)
-          dom.document.removeEventListener("keyup", autoHideHandle)
+          dom.document.removeEventListener("keydown", autoHideHandle)
           self.setState(_.copy(autoHideHandle = None))
       }
     },

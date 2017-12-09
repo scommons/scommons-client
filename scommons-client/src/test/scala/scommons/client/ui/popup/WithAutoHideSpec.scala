@@ -44,7 +44,7 @@ class WithAutoHideSpec extends TestSpec {
     document.dispatchEvent(createDomEvent[MouseEvent]("mouseup"))
   }
 
-  it should "call onHide when triggered outside content element on keyUp" in {
+  it should "call onHide when triggered outside content element on keyDown" in {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
@@ -55,13 +55,13 @@ class WithAutoHideSpec extends TestSpec {
     onHide.expects()
 
     //when
-    document.dispatchEvent(createDomEvent[KeyboardEvent]("keyup"))
+    document.dispatchEvent(createDomEvent[KeyboardEvent]("keydown"))
 
     //cleanup
     unmountComponentAtNode(findDOMNode(comp).parentNode) shouldBe true
   }
 
-  it should "not call onHide when unmounted on keyUp" in {
+  it should "not call onHide when unmounted on keyDown" in {
     //given
     val onHide = mockFunction[Unit]
     val comp = renderIntoDocument(
@@ -73,7 +73,7 @@ class WithAutoHideSpec extends TestSpec {
     onHide.expects().never()
 
     //when
-    document.dispatchEvent(createDomEvent[KeyboardEvent]("keyup"))
+    document.dispatchEvent(createDomEvent[KeyboardEvent]("keydown"))
   }
 
   it should "call onHide when event target is outside autoHide element" in {

@@ -6,6 +6,8 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
 import play.api.libs.json.Json
+import scommons.client.task.AbstractTask.AbstractTaskKey
+import scommons.client.task.{FutureTask, TaskManager, TaskManagerProps}
 import scommons.client.ui._
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup._
@@ -13,16 +15,13 @@ import scommons.showcase.api.ShowcaseApiJsClient
 import scommons.showcase.api.repo.RepoData
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
 
 object ApiDemo {
 
   private case class ApiDemoState(showInput: Boolean = false,
                                   showOk: Boolean = false,
                                   okMessage: String = "",
-                                  error: String = "",
-                                  errorDetails: Option[String] = None,
-                                  showError: Boolean = false)
+                                  startTask: Option[AbstractTaskKey] = None)
 
   def apply(): ReactClass = reactClass
 
@@ -59,13 +58,8 @@ object ApiDemo {
           }
         ))(),
 
-        <(ErrorPopup())(^.wrapped := ErrorPopupProps(
-          self.state.showError,
-          self.state.error,
-          details = self.state.errorDetails,
-          onClose = { () =>
-            self.setState(_.copy(showError = false))
-          }
+        <(TaskManager())(^.wrapped := TaskManagerProps(
+          self.state.startTask
         ))()
       )
     }
@@ -78,14 +72,13 @@ object ApiDemo {
     }
 
     val client = new ShowcaseApiJsClient(baseUrl)
-    client.createRepo(RepoData(None, name)).onComplete {
-      case Failure(e) =>
-        val details = Some(ErrorPopup.printStackTrace(e))
-        self.setState(_.copy(error = "Failed to create repo", errorDetails = details, showError = true))
-      case Success(data) =>
-        val json = Json.prettyPrint(Json.toJson(data))
-        val msg = s"Received successful response:\n\n$json"
-        self.setState(_.copy(okMessage = msg, showOk = true))
-    }
+
+    val task = FutureTask("Creating repo", client.createRepo(RepoData(None, name)).map { resp =>
+      val json = Json.prettyPrint(Json.toJson(resp))
+      val msg = s"Received successful response:\n\n$json"
+      self.setState(_.copy(startTask = None, okMessage = msg, showOk = true))
+    })
+
+    self.setState(_.copy(startTask = Some(task.key)))
   }
 }

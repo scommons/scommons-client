@@ -3,12 +3,12 @@ package scommons.client.ui
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom.document
+import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.raw.HTMLInputElement
 import scommons.client.TestSpec
 import scommons.client.test.TestUtils._
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.util.KeyCodes
 
 import scala.scalajs.js
 
@@ -41,7 +41,7 @@ class TextFieldSpec extends TestSpec {
     onEnter.expects()
 
     //when
-    ReactTestUtils.Simulate.keyDown(inputElem, js.Dynamic.literal(keyCode = KeyCodes.KEY_ENTER))
+    ReactTestUtils.Simulate.keyDown(inputElem, js.Dynamic.literal(keyCode = KeyCode.Enter))
   }
 
   it should "not call onEnter function when keyCode is other than Enter" in {
@@ -56,7 +56,7 @@ class TextFieldSpec extends TestSpec {
     onEnter.expects().never()
 
     //when
-    ReactTestUtils.Simulate.keyDown(inputElem, js.Dynamic.literal(keyCode = KeyCodes.KEY_UP))
+    ReactTestUtils.Simulate.keyDown(inputElem, js.Dynamic.literal(keyCode = KeyCode.Up))
   }
 
   it should "render correct props" in {
