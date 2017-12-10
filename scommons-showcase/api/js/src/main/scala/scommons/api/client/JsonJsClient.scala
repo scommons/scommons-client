@@ -74,11 +74,11 @@ abstract class JsonJsClient(baseUrl: String,
                               timeout: FiniteDuration
                              ): Future[dom.XMLHttpRequest] = {
 
-    val (data: String, headers) = jsonBody match {
+    val (data, headers) = jsonBody match {
       case None =>
-        (null, Map.empty[String, String])
-      case Some(body) =>
-        (body, Map("Content-Type" -> "application/json"))
+        (None, Map.empty[String, String])
+      case json =>
+        (json, Map("Content-Type" -> "application/json"))
     }
 
     val req = new dom.XMLHttpRequest()
@@ -112,8 +112,10 @@ abstract class JsonJsClient(baseUrl: String,
 
     headers.foreach(x => req.setRequestHeader(x._1, x._2))
 
-    if (data == null) req.send()
-    else req.send(data)
+    data match {
+      case None => req.send()
+      case Some(body) => req.send(body)
+    }
 
     promise.future
   }

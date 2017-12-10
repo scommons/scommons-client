@@ -11,6 +11,7 @@ import scommons.client.task.{FutureTask, TaskManager, TaskManagerProps}
 import scommons.client.ui._
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup._
+import scommons.client.util.ActionsData
 import scommons.showcase.api.ShowcaseApiJsClient
 import scommons.showcase.api.repo.RepoData
 
@@ -29,12 +30,24 @@ object ApiDemo {
     getInitialState = { _ => ApiDemoState() },
     render = { self =>
       <.div()(
-        <.h2()("API"),
+        <.h2()("API Calls"),
         <.hr()(),
         <.p()(
-          <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Create Repo", primary = true), { () =>
-            self.setState(_.copy(showInput = true))
-          }))(),
+          <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
+            List(
+              SimpleButtonData("get", "GET", primary = true),
+              SimpleButtonData("post", "POST", primary = true),
+              SimpleButtonData("timedout", "Timedout", primary = true),
+              SimpleButtonData("failed", "Failed", primary = true)
+            ),
+            ActionsData(Set("get", "post", "timedout", "failed"), {
+              case "get" => callGetRepos(self)
+              case "post" => self.setState(_.copy(showInput = true))
+              case "timedout" => callTimedout(self)
+              case "failed" => callFailed(self)
+            })
+          ))(),
+
           <(InputPopup())(^.wrapped := InputPopupProps(
             self.state.showInput,
             "Enter repo name:",
@@ -65,19 +78,41 @@ object ApiDemo {
     }
   )
 
-  private def createRepo(self: Self[Unit, ApiDemoState], name: String): Unit = {
-    val baseUrl = {
-      val loc = dom.window.location
-      s"${loc.protocol}//${loc.host}/scommons-showcase"
-    }
+  private val baseUrl = {
+    val loc = dom.window.location
+    s"${loc.protocol}//${loc.host}/scommons-showcase"
+  }
 
-    val client = new ShowcaseApiJsClient(baseUrl)
+  private val client = new ShowcaseApiJsClient(baseUrl)
 
-    val task = FutureTask("Creating repo", client.createRepo(RepoData(None, name)).map { resp =>
+  private def callGetRepos(self: Self[Unit, ApiDemoState]): Unit = {
+    val task = FutureTask("Fetching Repos", client.getRepos.map { resp =>
       val json = Json.prettyPrint(Json.toJson(resp))
       val msg = s"Received successful response:\n\n$json"
       self.setState(_.copy(startTask = None, okMessage = msg, showOk = true))
     })
+
+    self.setState(_.copy(startTask = Some(task.key)))
+  }
+
+  private def createRepo(self: Self[Unit, ApiDemoState], name: String): Unit = {
+    val task = FutureTask("Creating Repo", client.createRepo(RepoData(None, name)).map { resp =>
+      val json = Json.prettyPrint(Json.toJson(resp))
+      val msg = s"Received successful response:\n\n$json"
+      self.setState(_.copy(startTask = None, okMessage = msg, showOk = true))
+    })
+
+    self.setState(_.copy(startTask = Some(task.key)))
+  }
+
+  private def callTimedout(self: Self[Unit, ApiDemoState]): Unit = {
+    val task = FutureTask("Calling timedout endpoint", client.timedoutExample())
+
+    self.setState(_.copy(startTask = Some(task.key)))
+  }
+
+  private def callFailed(self: Self[Unit, ApiDemoState]): Unit = {
+    val task = FutureTask("Calling failed endpoint", client.failedExample())
 
     self.setState(_.copy(startTask = Some(task.key)))
   }

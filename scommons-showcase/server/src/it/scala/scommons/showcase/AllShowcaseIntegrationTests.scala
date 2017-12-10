@@ -10,7 +10,8 @@ import scaldi.play.ScaldiApplicationBuilder
 import scommons.showcase.api.ShowcaseApiWsClient
 
 class AllShowcaseIntegrationTests extends Suites(
-  new RepoApiIntegrationSpec
+  new RepoApiIntegrationSpec,
+  new FailingApiIntegrationSpec
 ) with TestSuite
   with GuiceOneServerPerSuite {
 

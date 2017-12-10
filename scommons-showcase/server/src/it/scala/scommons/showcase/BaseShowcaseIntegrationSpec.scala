@@ -6,10 +6,11 @@ import org.scalatest._
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.ConfiguredServer
-import scommons.api.ApiStatus
+import scommons.api.{ApiStatus, StatusResponse}
 import scommons.showcase.api.ShowcaseApiWsClient
 import scommons.showcase.api.repo._
 
+import scala.concurrent.Future
 import scala.reflect.ClassTag
 
 trait BaseShowcaseIntegrationSpec extends FlatSpec
@@ -74,5 +75,16 @@ trait BaseShowcaseIntegrationSpec extends FlatSpec
   def callRepoDelete(id: Int): ApiStatus = {
     val resp = apiClient.deleteRepo(id).futureValue
     resp.status
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // failing
+
+  def callFailingTimedout(): Future[StatusResponse] = {
+    apiClient.timedoutExample()
+  }
+
+  def callFailingFailed(): Future[StatusResponse] = {
+    apiClient.failedExample()
   }
 }

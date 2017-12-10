@@ -18,3 +18,6 @@ POST    /scommons-showcase/repos                    controllers.RepoController.c
 PUT     /scommons-showcase/repos                    controllers.RepoController.updateRepo
 DELETE  /scommons-showcase/repos/:id                controllers.RepoController.deleteRepo(id: Int)
 
+GET     /scommons-showcase/failing/timedout         controllers.FailingController.timedoutExample
+GET     /scommons-showcase/failing/failed           controllers.FailingController.failedExample
+

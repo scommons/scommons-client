@@ -3,10 +3,14 @@ package scommons.client.task
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.popup.{LoadingPopup, LoadingPopupProps, StatusPopup, StatusPopupProps}
+import scommons.client.ui.popup._
 
 case class TaskManagerUiProps(showLoading: Boolean,
-                              statusMessage: String)
+                              statusMessage: String,
+                              showError: Boolean,
+                              error: String,
+                              errorDetails: Option[String],
+                              onCloseErrorPopup: () => Unit)
 
 object TaskManagerUi {
 
@@ -34,7 +38,13 @@ object TaskManagerUi {
         <(LoadingPopup())(^.wrapped := LoadingPopupProps(props.showLoading))(),
         <(StatusPopup())(^.wrapped := StatusPopupProps(props.statusMessage, self.state.showStatus, { () =>
           self.setState(_.copy(showStatus = false))
-        }))()
+        }))(),
+        <(ErrorPopup())(^.wrapped := ErrorPopupProps(
+          props.showError,
+          props.error,
+          details = props.errorDetails,
+          onClose = props.onCloseErrorPopup
+        ))()
       )
     }
   )
