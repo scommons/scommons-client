@@ -1,4 +1,4 @@
-package scommons.showcase.client
+package scommons.showcase.client.demo
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
