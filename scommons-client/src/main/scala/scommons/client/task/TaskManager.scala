@@ -18,55 +18,54 @@ case class TaskManagerProps(startTask: Option[AbstractTaskKey])
 object TaskManager {
 
   private case class TaskManagerState(taskCount: Int = 0,
-                                      statusMessage: String = "",
-                                      showError: Boolean = false,
-                                      error: String = "",
+                                      status: Option[String] = None,
+                                      error: Option[String] = None,
                                       errorDetails: Option[String] = None)
 
   def apply(): ReactClass = reactClass
 
   private lazy val reactClass = React.createClass[TaskManagerProps, TaskManagerState](
     getInitialState = { self =>
-      self.props.wrapped.startTask.map { taskKey =>
-        onTaskStart(self, taskKey.obj)
-
-        TaskManagerState(1, taskKey.obj.message + "...")
-      }.getOrElse {
-        TaskManagerState()
+      self.props.wrapped.startTask.foldLeft(TaskManagerState()) { (currState, taskKey) =>
+        onTaskStart(self, currState, taskKey.obj)
       }
     },
     componentWillReceiveProps = { (self, nextProps) =>
       val props = nextProps.wrapped
       if (self.props.wrapped != props) {
         props.startTask.foreach { taskKey =>
-          val currState = self.state
-          val statusMessage =
-            if (currState.taskCount == 0) taskKey.obj.message + "..."
-            else currState.statusMessage
-
-          onTaskStart(self, taskKey.obj)
-          self.setState(_.copy(taskCount = currState.taskCount + 1, statusMessage = statusMessage))
+          self.setState(onTaskStart(self, self.state, taskKey.obj))
         }
       }
     },
     render = { self =>
       <(TaskManagerUi())(^.wrapped := TaskManagerUiProps(
         self.state.taskCount > 0,
-        self.state.statusMessage,
-        self.state.showError,
+        self.state.status,
+        onHideStatus = { () =>
+          self.setState(_.copy(status = None))
+        },
         self.state.error,
         self.state.errorDetails,
         onCloseErrorPopup = { () =>
-          self.setState(_.copy(showError = false, error = "", errorDetails = None))
+          self.setState(_.copy(error = None, errorDetails = None))
         }
       ))()
     }
   )
 
-  private def onTaskStart(self: Self[TaskManagerProps, TaskManagerState], task: AbstractTask): Unit = {
+  private def onTaskStart(self: Self[TaskManagerProps, TaskManagerState],
+                          currState: TaskManagerState,
+                          task: AbstractTask): TaskManagerState = {
+
     task.onComplete { value: Try[_] =>
       onTaskFinish(self, task, value)
     }
+
+    currState.copy(
+      taskCount = currState.taskCount + 1,
+      status = Some(task.message + "...")
+    )
   }
 
   private def onTaskFinish(self: Self[TaskManagerProps, TaskManagerState],
@@ -74,26 +73,22 @@ object TaskManager {
                            value: Try[_]): Unit = {
 
     val durationMillis = System.currentTimeMillis() - task.startTime
-    val currState = self.state
-    val statusMessage =
-      if (currState.taskCount == 1) task.message + s"...Done ${(durationMillis/10.0)/100} sec."
-      else currState.statusMessage
+    val statusMessage = task.message + s"...Done ${(durationMillis/10.0)/100} sec."
 
-    val (showError, error, errorDetails) = value match {
+    val (error, errorDetails) = value match {
       case Success(result) =>
         result match {
           case res: ApiResponse if res.status.nonSuccessful =>
-            (true, res.status.error.getOrElse("Non-successful response"), res.status.details)
+            (Some(res.status.error.getOrElse("Non-successful response")), res.status.details)
           case _ =>
-            (false, "", None)
+            (None, None)
         }
-      case Failure(e) => (true, e.toString, Some(ErrorPopup.printStackTrace(e)))
+      case Failure(e) => (Some(e.toString), Some(ErrorPopup.printStackTrace(e)))
     }
 
     self.setState(_.copy(
-      taskCount = currState.taskCount - 1,
-      statusMessage = statusMessage,
-      showError = showError,
+      taskCount = self.state.taskCount - 1,
+      status = Some(statusMessage),
       error = error,
       errorDetails = errorDetails
     ))

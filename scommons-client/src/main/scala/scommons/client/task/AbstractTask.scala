@@ -11,9 +11,9 @@ trait AbstractTask {
 
   lazy val key: AbstractTaskKey = Identity(this)
 
-  def message: String
+  val startTime: Long = System.currentTimeMillis()
 
-  def startTime: Long
+  def message: String
 
   def onComplete(f: Try[_] => Unit): Unit
 }
@@ -24,8 +24,6 @@ object AbstractTask {
 }
 
 case class FutureTask[T](message: String, future: Future[T]) extends AbstractTask {
-
-  val startTime: Long = System.currentTimeMillis()
 
   def onComplete(f: (Try[_]) => Unit): Unit = future.onComplete(f)
 }
