@@ -23,7 +23,7 @@ object AbstractTask {
   type AbstractTaskKey = Identity[AbstractTask]
 }
 
-case class FutureTask(message: String, future: Future[_]) extends AbstractTask {
+case class FutureTask[T](message: String, future: Future[T]) extends AbstractTask {
 
   val startTime: Long = System.currentTimeMillis()
 

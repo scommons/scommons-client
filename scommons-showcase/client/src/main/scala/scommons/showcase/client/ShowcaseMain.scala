@@ -10,6 +10,7 @@ import io.github.shogowada.scalajs.reactjs.redux.{ReactRedux, Redux}
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import org.scalajs.dom
 import scommons.client.app._
+import scommons.client.task.{TaskManager, TaskManagerProps}
 import scommons.client.ui.Buttons
 
 import scala.scalajs.js.JSApp
@@ -40,7 +41,8 @@ object ShowcaseMain extends JSApp {
           <(AppMainPanel())(^.wrapped := appMainPanelProps)(
             <.Switch()(
               routes
-            )
+            ),
+            <(TaskController())()()
           )
         )
       ),
@@ -65,4 +67,18 @@ object RouteController {
       }
     }
   )(AppBrowseController())
+}
+
+object TaskController {
+
+  def apply(): ReactClass = reactClass
+
+  private lazy val reactClass = ReactRedux.connectAdvanced(
+    (_: Dispatch) => {
+
+      (state: ShowcaseState, _: Props[Unit]) => {
+        TaskManagerProps(state.currentTask)
+      }
+    }
+  )(TaskManager())
 }

@@ -1,32 +1,60 @@
 package scommons.showcase.client.demo
 
 import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.React.Self
+import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import io.github.shogowada.scalajs.reactjs.redux.ReactRedux
+import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import org.scalajs.dom
 import play.api.libs.json.Json
-import scommons.client.task.AbstractTask.AbstractTaskKey
-import scommons.client.task.{FutureTask, TaskManager, TaskManagerProps}
+import scommons.api.StatusResponse
+import scommons.client.task.FutureTask
 import scommons.client.ui._
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup._
 import scommons.client.util.ActionsData
 import scommons.showcase.api.ShowcaseApiJsClient
-import scommons.showcase.api.repo.RepoData
+import scommons.showcase.api.repo.{RepoData, RepoListResp, RepoResp}
+import scommons.showcase.client.ShowcaseState
+import scommons.showcase.client.action.{CreateRepo, FailingApiAction, FetchRepos}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+
+object ApiDemoController {
+
+  def apply(): ReactClass = reactClass
+
+  private lazy val reactClass = ReactRedux.connectAdvanced(
+    (dispatch: Dispatch) => {
+      val onFetchRepos = (task: FutureTask[RepoListResp]) => dispatch(FetchRepos(task))
+      val onCreateRepo = (task: FutureTask[RepoResp]) => dispatch(CreateRepo(task))
+      val onFailingTask = (task: FutureTask[StatusResponse]) => dispatch(FailingApiAction(task))
+
+      (_: ShowcaseState, _: Props[Unit]) => {
+        ApiDemoProps(
+          onFetchRepos = onFetchRepos,
+          onCreateRepo = onCreateRepo,
+          onFailingTask = onFailingTask
+        )
+      }
+    }
+  )(ApiDemo())
+}
+
+case class ApiDemoProps(onFetchRepos: FutureTask[RepoListResp] => _,
+                        onCreateRepo: FutureTask[RepoResp] => _,
+                        onFailingTask: FutureTask[StatusResponse] => _)
 
 object ApiDemo {
 
   private case class ApiDemoState(showInput: Boolean = false,
                                   showOk: Boolean = false,
-                                  okMessage: String = "",
-                                  startTask: Option[AbstractTaskKey] = None)
+                                  okMessage: String = "")
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[Unit, ApiDemoState](
+  private lazy val reactClass = React.createClass[ApiDemoProps, ApiDemoState](
     getInitialState = { _ => ApiDemoState() },
     render = { self =>
       <.div()(
@@ -69,10 +97,6 @@ object ApiDemo {
           onClose = { () =>
             self.setState(_.copy(showOk = false))
           }
-        ))(),
-
-        <(TaskManager())(^.wrapped := TaskManagerProps(
-          self.state.startTask
         ))()
       )
     }
@@ -85,35 +109,41 @@ object ApiDemo {
 
   private val client = new ShowcaseApiJsClient(baseUrl)
 
-  private def callGetRepos(self: Self[Unit, ApiDemoState]): Unit = {
-    val task = FutureTask("Fetching Repos", client.getRepos.map { resp =>
+  private def callGetRepos(self: Self[ApiDemoProps, ApiDemoState]): Unit = {
+    val task = FutureTask("Fetching Repos", client.getRepos)
+    task.future.map { resp =>
       val json = Json.prettyPrint(Json.toJson(resp))
       val msg = s"Received successful response:\n\n$json"
-      self.setState(_.copy(startTask = None, okMessage = msg, showOk = true))
-    })
 
-    self.setState(_.copy(startTask = Some(task.key)))
+      self.setState(_.copy(okMessage = msg, showOk = true))
+    }
+
+    self.props.wrapped.onFetchRepos(task)
   }
 
-  private def createRepo(self: Self[Unit, ApiDemoState], name: String): Unit = {
-    val task = FutureTask("Creating Repo", client.createRepo(RepoData(None, name)).map { resp =>
-      val json = Json.prettyPrint(Json.toJson(resp))
-      val msg = s"Received successful response:\n\n$json"
-      self.setState(_.copy(startTask = None, okMessage = msg, showOk = true))
-    })
+  private def createRepo(self: Self[ApiDemoProps, ApiDemoState], name: String): Unit = {
+    val task = FutureTask("Creating Repo", client.createRepo(RepoData(None, name)))
+    task.future.foreach { resp =>
+      if (resp.status.successful) {
+        val json = Json.prettyPrint(Json.toJson(resp))
+        val msg = s"Received successful response:\n\n$json"
 
-    self.setState(_.copy(startTask = Some(task.key)))
+        self.setState(_.copy(okMessage = msg, showOk = true))
+      }
+    }
+
+    self.props.wrapped.onCreateRepo(task)
   }
 
-  private def callTimedout(self: Self[Unit, ApiDemoState]): Unit = {
+  private def callTimedout(self: Self[ApiDemoProps, ApiDemoState]): Unit = {
     val task = FutureTask("Calling timedout endpoint", client.timedoutExample())
 
-    self.setState(_.copy(startTask = Some(task.key)))
+    self.props.wrapped.onFailingTask(task)
   }
 
-  private def callFailed(self: Self[Unit, ApiDemoState]): Unit = {
+  private def callFailed(self: Self[ApiDemoProps, ApiDemoState]): Unit = {
     val task = FutureTask("Calling failed endpoint", client.failedExample())
 
-    self.setState(_.copy(startTask = Some(task.key)))
+    self.props.wrapped.onFailingTask(task)
   }
 }

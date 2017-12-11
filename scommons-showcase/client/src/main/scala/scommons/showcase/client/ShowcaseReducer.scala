@@ -1,14 +1,17 @@
 package scommons.showcase.client
 
 import scommons.client.app.AppBrowseData
+import scommons.client.task.AbstractTask.AbstractTaskKey
 import scommons.client.ui.Buttons
 import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 import scommons.client.ui.tree.{BrowseTreeData, BrowseTreeItemData, BrowseTreeNodeData}
 import scommons.client.util.ActionsData
+import scommons.showcase.client.action.TaskAction
 import scommons.showcase.client.demo._
 
 case class ShowcaseState(roots: List[BrowseTreeData],
-                         routes: Map[BrowseTreeDataKey, AppBrowseData])
+                         routes: Map[BrowseTreeDataKey, AppBrowseData],
+                         currentTask: Option[AbstractTaskKey])
 
 object ShowcaseReducer {
 
@@ -29,7 +32,7 @@ object ShowcaseReducer {
     htmlItem.key -> AppBrowseData("/html", ActionsData.empty, Some(HTMLDemo())),
     buttonsItem.key -> AppBrowseData("/buttons", ActionsData.empty, Some(ButtonsDemo())),
     popupsItem.key -> AppBrowseData("/popups", ActionsData.empty, Some(PopupsDemo())),
-    apiItem.key -> AppBrowseData("/api", ActionsData.empty, Some(ApiDemo())),
+    apiItem.key -> AppBrowseData("/api", ActionsData.empty, Some(ApiDemoController())),
     reposItem.key -> AppBrowseData("/repos",
         ActionsData(Set(Buttons.REFRESH.command, Buttons.ADD.command), _ => ()), Some(ReposDemo())
     ),
@@ -41,7 +44,8 @@ object ShowcaseReducer {
   val reduce: (Option[ShowcaseState], Any) => ShowcaseState = (maybeState, action) =>
     ShowcaseState(
       roots = rootsReducer(maybeState.map(_.roots), action),
-      routes = routesReducer(maybeState.map(_.routes), action)
+      routes = routesReducer(maybeState.map(_.routes), action),
+      currentTask = currentTaskReducer(maybeState.flatMap(_.currentTask), action)
     )
 
   private def rootsReducer(roots: Option[List[BrowseTreeData]],
@@ -54,5 +58,12 @@ object ShowcaseReducer {
                             action: Any): Map[BrowseTreeDataKey, AppBrowseData] = action match {
 
     case _ => routes.getOrElse(defaultRoutes)
+  }
+
+  private def currentTaskReducer(currentTask: Option[AbstractTaskKey],
+                                 action: Any): Option[AbstractTaskKey] = action match {
+
+    case a: TaskAction => Some(a.task.key)
+    case _ => None
   }
 }
