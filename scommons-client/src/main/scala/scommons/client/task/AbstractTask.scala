@@ -3,8 +3,8 @@ package scommons.client.task
 import scommons.client.task.AbstractTask.AbstractTaskKey
 import scommons.client.util.Identity
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.util.Try
 
 trait AbstractTask {

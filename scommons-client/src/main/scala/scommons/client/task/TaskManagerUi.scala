@@ -3,6 +3,7 @@ package scommons.client.task
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import scommons.client.ui.UiComponent
 import scommons.client.ui.popup._
 
 case class TaskManagerUiProps(showLoading: Boolean,
@@ -12,11 +13,11 @@ case class TaskManagerUiProps(showLoading: Boolean,
                               errorDetails: Option[String],
                               onCloseErrorPopup: () => Unit)
 
-object TaskManagerUi {
+object TaskManagerUi extends UiComponent[TaskManagerUiProps] {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[TaskManagerUiProps, Unit] { self =>
+  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
     val showStatus = props.status.isDefined
     val statusMessage = props.status.getOrElse("")

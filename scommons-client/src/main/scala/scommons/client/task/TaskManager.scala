@@ -6,6 +6,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.api.ApiResponse
 import scommons.client.task.AbstractTask.AbstractTaskKey
+import scommons.client.ui.UiComponent
 import scommons.client.ui.popup.ErrorPopup
 
 import scala.util.{Failure, Success, Try}
@@ -15,7 +16,7 @@ case class TaskManagerProps(startTask: Option[AbstractTaskKey])
 /**
   * Controls running tasks.
   */
-object TaskManager {
+object TaskManager extends UiComponent[TaskManagerProps] {
 
   private case class TaskManagerState(taskCount: Int = 0,
                                       status: Option[String] = None,
@@ -24,7 +25,7 @@ object TaskManager {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[TaskManagerProps, TaskManagerState](
+  lazy val reactClass: ReactClass = React.createClass[PropsType, TaskManagerState](
     getInitialState = { self =>
       self.props.wrapped.startTask.foldLeft(TaskManagerState()) { (currState, taskKey) =>
         onTaskStart(self, currState, taskKey.obj)

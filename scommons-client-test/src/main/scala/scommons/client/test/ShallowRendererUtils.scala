@@ -2,7 +2,7 @@ package scommons.client.test
 
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.statictags.Element
-import org.scalatest.Matchers
+import org.scalatest.{Assertion, Matchers, Succeeded}
 import scommons.client.test.raw.ShallowRenderer
 import scommons.client.test.raw.ShallowRenderer._
 
@@ -11,7 +11,7 @@ import scala.scalajs.js
 
 trait ShallowRendererUtils extends Matchers {
 
-  private val expectNoChildren: List[ComponentInstance] => Unit = { children =>
+  private val expectNoChildren: List[ComponentInstance] => Assertion = { children =>
     children shouldBe Nil
   }
 
@@ -44,8 +44,8 @@ trait ShallowRendererUtils extends Matchers {
 
   def assertComponent[T](result: ComponentInstance,
                          expectedClass: ReactClass,
-                         assertProps: T => Unit,
-                         assertChildren: List[ComponentInstance] => Unit = expectNoChildren): Unit = {
+                         assertProps: T => Assertion = (_: T) => Succeeded,
+                         assertChildren: List[ComponentInstance] => Assertion = expectNoChildren): Assertion = {
 
     result.`type` shouldBe expectedClass
 
@@ -55,7 +55,7 @@ trait ShallowRendererUtils extends Matchers {
 
   def assertDOMComponent(result: ComponentInstance,
                          expectedElement: Element,
-                         assertChildren: List[ComponentInstance] => Unit = expectNoChildren): Unit = {
+                         assertChildren: List[ComponentInstance] => Assertion = expectNoChildren): Assertion = {
 
     result.`type` shouldBe expectedElement.name
 

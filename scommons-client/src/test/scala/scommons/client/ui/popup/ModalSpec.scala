@@ -1,6 +1,7 @@
 package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import org.scalatest.Assertion
 import scommons.client.TestSpec
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.Buttons
@@ -55,7 +56,7 @@ class ModalSpec extends TestSpec {
         props.onOpen
       )
     }, { case List(body, footer) =>
-      assertComponent(body, ModalBody(), { _: Unit => () }, { case List(child) =>
+      assertComponent(body, ModalBody(), assertChildren = { case List(child) =>
         assertDOMComponent(child, <.p()("some children"))
       })
       assertComponent(footer, ModalFooter(), { footerProps: ModalFooterProps =>
@@ -64,7 +65,7 @@ class ModalSpec extends TestSpec {
     })
   }
 
-  private def assertModal(result: ComponentInstance, props: ModalProps): Unit = {
+  private def assertModal(result: ComponentInstance, props: ModalProps): Assertion = {
     assertComponent(result, Popup(), { popupProps: PopupProps =>
       popupProps shouldBe PopupProps(
         props.show,
@@ -76,7 +77,7 @@ class ModalSpec extends TestSpec {
       assertComponent(header, ModalHeader(), { headerProps: ModalHeaderProps =>
         headerProps shouldBe ModalHeaderProps(props.header.get, props.onClose, closable = props.closable)
       })
-      assertComponent(body, ModalBody(), { _: Unit => () }, { case List(child) =>
+      assertComponent(body, ModalBody(), assertChildren = { case List(child) =>
         assertDOMComponent(child, <.p()("some children"))
       })
       assertComponent(footer, ModalFooter(), { footerProps: ModalFooterProps =>
