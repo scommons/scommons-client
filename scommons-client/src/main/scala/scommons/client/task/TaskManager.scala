@@ -65,7 +65,7 @@ object TaskManager extends UiComponent[TaskManagerProps] {
 
     currState.copy(
       taskCount = currState.taskCount + 1,
-      status = Some(task.message + "...")
+      status = Some(s"${task.message}...")
     )
   }
 
@@ -74,7 +74,7 @@ object TaskManager extends UiComponent[TaskManagerProps] {
                            value: Try[_]): Unit = {
 
     val durationMillis = System.currentTimeMillis() - task.startTime
-    val statusMessage = task.message + s"...Done ${(durationMillis/10.0)/100} sec."
+    val statusMessage = s"${task.message}...Done ${formatDuration(durationMillis)} sec."
 
     val (error, errorDetails) = value match {
       case Success(result) =>
@@ -93,5 +93,9 @@ object TaskManager extends UiComponent[TaskManagerProps] {
       error = error,
       errorDetails = errorDetails
     ))
+  }
+
+  private[task] def formatDuration(durationMillis: Long): String = {
+    "%.3f".format(durationMillis / 1000.0)
   }
 }
