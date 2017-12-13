@@ -24,13 +24,17 @@ object ScommonsApi {
       ),
       libraryDependencies ++= Seq(
         Libs.playJsonJs.value,
-        TestLibs.scalaTest.value % "test"
+        TestLibs.scalaTest.value % "test",
+        TestLibs.scalaMock.value % "test"
       )
     ).jvmSettings(
       // Add JVM-specific settings here
     ).jsSettings(
       //Opt-in @ScalaJSDefined by default
-      scalacOptions += "-P:scalajs:sjsDefinedByDefault"
+      scalacOptions += "-P:scalajs:sjsDefinedByDefault",
+      libraryDependencies ++= Seq(
+        Libs.scalajsDom.value
+      )
     )
 
   lazy val jvm: Project = scommonsApi.jvm

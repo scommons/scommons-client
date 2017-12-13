@@ -11,7 +11,7 @@ class FailingApiIntegrationSpec extends BaseShowcaseIntegrationSpec {
 
     //then
     eventually {
-      futureResult.value.get.failed.get.getMessage should include ("Request timeout")
+      futureResult.value.get.failed.get.getMessage should include ("Request timed out, unable to get timely response")
     }
   }
 

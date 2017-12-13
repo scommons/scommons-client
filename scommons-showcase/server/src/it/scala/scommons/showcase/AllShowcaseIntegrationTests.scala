@@ -7,7 +7,8 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import scaldi.Module
 import scaldi.play.ScaldiApplicationBuilder
-import scommons.showcase.api.ShowcaseApiWsClient
+import scommons.api.http.WsApiHttpClient
+import scommons.showcase.api.ShowcaseApiClient
 
 class AllShowcaseIntegrationTests extends Suites(
   new RepoApiIntegrationSpec,
@@ -24,11 +25,11 @@ class AllShowcaseIntegrationTests extends Suites(
     val showcaseApiUrl = s"http://localhost:$port/scommons-showcase"
     println(s"showcaseApiUrl: $showcaseApiUrl")
 
-    val apiClient = new ShowcaseApiWsClient(showcaseApiUrl)(ActorSystem("ShowcaseApiWsClient"))
+    val apiClient = new ShowcaseApiClient(new WsApiHttpClient(showcaseApiUrl)(ActorSystem("ShowcaseApiWsClient")))
 
     new ScaldiApplicationBuilder(modules = List(new Module {
       //test-only
-      bind[ShowcaseApiWsClient] to apiClient
+      bind[ShowcaseApiClient] to apiClient
     })).configure(
       // custom configuration
       //"quill.db.port" -> postgresPort

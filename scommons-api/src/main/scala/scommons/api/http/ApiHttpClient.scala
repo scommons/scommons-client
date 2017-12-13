@@ -1,16 +1,13 @@
-package scommons.api.client
+package scommons.api.http
 
-import org.scalajs.dom
 import play.api.libs.json._
-import scommons.api.client.JsonJsClient._
+import scommons.api.http.ApiHttpClient._
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
-import scala.concurrent.{Future, Promise}
-import scala.scalajs.js
 
-abstract class JsonJsClient(baseUrl: String,
-                            defaultTimeout: FiniteDuration = 30.seconds) {
+abstract class ApiHttpClient(baseUrl: String,
+                             defaultTimeout: FiniteDuration = 30.seconds)(implicit ec: ExecutionContext) {
 
   def execGet[R](url: String,
                  params: List[(String, String)] = Nil,
@@ -67,82 +64,37 @@ abstract class JsonJsClient(baseUrl: String,
     ).map(parseResponse(targetUrl, _))
   }
 
-  private[client] def execute(method: String,
+  protected[http] def execute(method: String,
                               targetUrl: String,
                               params: List[(String, String)],
                               jsonBody: Option[String],
                               timeout: FiniteDuration
-                             ): Future[dom.XMLHttpRequest] = {
+                             ): Future[Option[ApiHttpResponse]]
 
-    val (data, headers) = jsonBody match {
-      case None =>
-        (None, Map.empty[String, String])
-      case json =>
-        (json, Map("Content-Type" -> "application/json"))
-    }
+  private[http] def parseResponse[R](url: String, response: Option[ApiHttpResponse])
+                                    (implicit jsonReads: Reads[R]): R = response match {
 
-    val req = new dom.XMLHttpRequest()
-    val promise = Promise[dom.XMLHttpRequest]()
-
-    req.onreadystatechange = { (_: dom.Event) =>
-      if (req.readyState == 4) {
-        promise.success(req)
-      }
-    }
-
-    def enc(p: String) = js.URIUtils.encodeURIComponent(p)
-
-    def uri(url: String): String = {
-      val queryString = params.foldLeft(Map.empty[String, Seq[String]]) {
-        case (m, (k, v)) => m + (k -> (v +: m.getOrElse(k, Nil)))
-      }
-
-      if (queryString.isEmpty) url
-      else {
-        val qs = (for {
-          (n, vs) <- queryString
-          v <- vs
-        } yield s"${enc(n)}=${enc(v)}").mkString("&")
-        s"$url?$qs"
-      }
-    }
-
-    req.open(method, uri(targetUrl))
-    req.timeout = timeout.toMillis.toInt
-
-    headers.foreach(x => req.setRequestHeader(x._1, x._2))
-
-    data match {
-      case None => req.send()
-      case Some(body) => req.send(body)
-    }
-
-    promise.future
-  }
-
-  private[client] def parseResponse[R](url: String, response: dom.XMLHttpRequest)
-                                      (implicit jsonReads: Reads[R]): R = response match {
-
-    case res if res.status == 0 =>
+    case None =>
       throw new Exception(
         s"""Request timed out, unable to get timely response for:
-           |url: $url""".stripMargin)
+           |$url""".stripMargin)
 
-    case res if res.status <= 299 =>
-      val body = res.responseText
+    case Some(res) if res.status <= 299 =>
+      val body = res.body
       Json.parse(body).validate[R] match {
         case JsSuccess(data, _) => data
         case JsError(error) =>
-          throw new Exception(
+          val err =
             s"""Error parsing http response:
                |url: $url
                |status: ${res.status}
                |error: $error
-               |body: $body""".stripMargin)
+               |body: $body""".stripMargin
+          throw new Exception(err)
       }
 
-    case other =>
-      val body = other.responseText
+    case Some(other) =>
+      val body = other.body
       val maybeData =
         if (body.trim.startsWith("{")) {
           Json.parse(body).validate[R] match {
@@ -164,18 +116,16 @@ abstract class JsonJsClient(baseUrl: String,
   }
 }
 
-object JsonJsClient {
+object ApiHttpClient {
 
   def queryParams(params: (String, Option[_])*): List[(String, String)] = params.collect {
     case (p, Some(v)) => (p, v.toString)
   }.toList
 
-  private[client] def getTargetUrl(baseUrl: String, url: String): String = {
+  private[http] def getTargetUrl(baseUrl: String, url: String): String = {
     val normalizedUrl =
-      if (url.startsWith("/"))
-        url.substring(1)
-      else
-        url
+      if (url.startsWith("/")) url.substring(1)
+      else url
 
     if (baseUrl.endsWith("/"))
       s"$baseUrl$normalizedUrl"

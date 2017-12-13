@@ -7,7 +7,7 @@ import org.scalatest.concurrent.{Eventually, ScalaFutures}
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.ConfiguredServer
 import scommons.api.{ApiStatus, StatusResponse}
-import scommons.showcase.api.ShowcaseApiWsClient
+import scommons.showcase.api.ShowcaseApiClient
 import scommons.showcase.api.repo._
 
 import scala.concurrent.Future
@@ -25,7 +25,7 @@ trait BaseShowcaseIntegrationSpec extends FlatSpec
 
   private def inject[T: ClassTag]: T = app.injector.instanceOf[T]
 
-  private lazy val apiClient = inject[ShowcaseApiWsClient]
+  private lazy val apiClient = inject[ShowcaseApiClient]
 
   ////////////////////////////////////////////////////////////////////////////////////////
   // repos

@@ -9,12 +9,13 @@ import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import org.scalajs.dom
 import play.api.libs.json.Json
 import scommons.api.StatusResponse
+import scommons.api.http.JsApiHttpClient
 import scommons.client.task.FutureTask
 import scommons.client.ui._
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup._
 import scommons.client.util.ActionsData
-import scommons.showcase.api.ShowcaseApiJsClient
+import scommons.showcase.api.ShowcaseApiClient
 import scommons.showcase.api.repo.{RepoData, RepoListResp, RepoResp}
 import scommons.showcase.client.ShowcaseState
 import scommons.showcase.client.action.{CreateRepo, FailingApiAction, FetchRepos}
@@ -107,7 +108,7 @@ object ApiDemo {
     s"${loc.protocol}//${loc.host}/scommons-showcase"
   }
 
-  private val client = new ShowcaseApiJsClient(baseUrl)
+  private val client = new ShowcaseApiClient(new JsApiHttpClient(baseUrl))
 
   private def callGetRepos(self: Self[ApiDemoProps, ApiDemoState]): Unit = {
     val task = FutureTask("Fetching Repos", client.getRepos)
