@@ -1,10 +1,11 @@
-package scommons.api.http
+package scommons.api.http.js
 
 import org.scalajs.dom
 import org.scalamock.scalatest.AsyncMockFactory
 import org.scalatest.{AsyncFlatSpec, Matchers}
-import scommons.api.http.JsApiHttpClient.getFullUrl
-import scommons.api.http.JsApiHttpClientSpec.MockXMLHttpRequest
+import scommons.api.http.ApiHttpResponse
+import scommons.api.http.js.JsApiHttpClient.getFullUrl
+import scommons.api.http.js.JsApiHttpClientSpec.MockXMLHttpRequest
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
@@ -21,9 +22,9 @@ class JsApiHttpClientSpec extends AsyncFlatSpec
 
   private class TestJsClient(req: MockXMLHttpRequest, resp: MockXMLHttpRequest) extends JsApiHttpClient(baseUrl) {
 
-    override private[http] def createRequest(): dom.XMLHttpRequest = req.asInstanceOf[dom.XMLHttpRequest]
+    override private[js] def createRequest(): dom.XMLHttpRequest = req.asInstanceOf[dom.XMLHttpRequest]
 
-    override private[http] def execute(req: dom.XMLHttpRequest, body: Option[String]): Future[dom.XMLHttpRequest] = {
+    override private[js] def execute(req: dom.XMLHttpRequest, body: Option[String]): Future[dom.XMLHttpRequest] = {
       Future.successful(resp.asInstanceOf[dom.XMLHttpRequest])
     }
   }

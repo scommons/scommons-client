@@ -1,7 +1,7 @@
-package scommons.api.http
+package scommons.api.http.js
 
 import org.scalajs.dom
-import scommons.api.http.JsApiHttpClient.getFullUrl
+import scommons.api.http.{ApiHttpClient, ApiHttpResponse}
 
 import scala.concurrent.duration._
 import scala.concurrent.{Future, Promise}
@@ -11,14 +11,14 @@ import scala.scalajs.js
 class JsApiHttpClient(baseUrl: String, defaultTimeout: FiniteDuration = 30.seconds)
   extends ApiHttpClient(baseUrl, defaultTimeout) {
 
-  protected[http] def execute(method: String,
-                              targetUrl: String,
-                              params: List[(String, String)],
-                              jsonBody: Option[String],
-                              timeout: FiniteDuration): Future[Option[ApiHttpResponse]] = {
+  protected[js] def execute(method: String,
+                            targetUrl: String,
+                            params: List[(String, String)],
+                            jsonBody: Option[String],
+                            timeout: FiniteDuration): Future[Option[ApiHttpResponse]] = {
 
     val req = createRequest()
-    req.open(method, getFullUrl(targetUrl, params))
+    req.open(method, JsApiHttpClient.getFullUrl(targetUrl, params))
     req.timeout = timeout.toMillis.toInt
 
     val headers =
@@ -33,9 +33,9 @@ class JsApiHttpClient(baseUrl: String, defaultTimeout: FiniteDuration = 30.secon
     }
   }
 
-  private[http] def createRequest(): dom.XMLHttpRequest = new dom.XMLHttpRequest()
+  private[js] def createRequest(): dom.XMLHttpRequest = new dom.XMLHttpRequest()
 
-  private[http] def execute(req: dom.XMLHttpRequest, body: Option[String]): Future[dom.XMLHttpRequest] = {
+  private[js] def execute(req: dom.XMLHttpRequest, body: Option[String]): Future[dom.XMLHttpRequest] = {
     val promise = Promise[dom.XMLHttpRequest]()
 
     req.onreadystatechange = { (_: dom.Event) =>
@@ -55,7 +55,7 @@ class JsApiHttpClient(baseUrl: String, defaultTimeout: FiniteDuration = 30.secon
 
 object JsApiHttpClient {
 
-  private[http] def getFullUrl(url: String, params: List[(String, String)]): String = {
+  private[js] def getFullUrl(url: String, params: List[(String, String)]): String = {
 
     def enc(p: String) = js.URIUtils.encodeURIComponent(p)
 
@@ -68,7 +68,10 @@ object JsApiHttpClient {
       val qs = (for {
         (n, vs) <- queryString
         v <- vs
-      } yield s"${enc(n)}=${enc(v)}").mkString("&")
+      } yield {
+        s"${enc(n)}=${enc(v)}"
+      }).mkString("&")
+
       s"$url?$qs"
     }
   }

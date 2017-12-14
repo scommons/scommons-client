@@ -9,7 +9,7 @@ import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import org.scalajs.dom
 import play.api.libs.json.Json
 import scommons.api.StatusResponse
-import scommons.api.http.JsApiHttpClient
+import scommons.api.http.js.JsApiHttpClient
 import scommons.client.task.FutureTask
 import scommons.client.ui._
 import scommons.client.ui.icon.IconCss

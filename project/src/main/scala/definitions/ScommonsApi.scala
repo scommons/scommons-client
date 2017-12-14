@@ -13,14 +13,15 @@ object ScommonsApi {
 
   def base: File = file(id)
 
-  lazy val scommonsApi: CrossProject = crossProject.crossType(CrossType.Pure).in(base)
+  lazy val scommonsApi: CrossProject = crossProject.in(base)
     .settings(Common.settings: _*)
     .settings(
       sources in(Compile, doc) := Seq.empty,
       publishArtifact in(Compile, packageDoc) := false,
       ideaExcludeFolders ++= List(
-        s"$base/.jvm/target",
-        s"$base/.js/target"
+        s"$base/jvm/target",
+        s"$base/js/target",
+        s"$base/shared/target"
       ),
       libraryDependencies ++= Seq(
         Libs.playJsonJs.value,

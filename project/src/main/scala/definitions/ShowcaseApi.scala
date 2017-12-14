@@ -1,6 +1,6 @@
 package definitions
 
-import common.{Common, Libs, TestLibs}
+import common.Common
 import org.sbtidea.SbtIdeaPlugin.ideaExcludeFolders
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.cross.CrossProject
@@ -13,30 +13,21 @@ object ShowcaseApi {
 
   def base: File = file(s"${Showcase.id}/api")
 
-  private lazy val showcaseApi: CrossProject = crossProject.in(base)
+  private lazy val showcaseApi: CrossProject = crossProject.crossType(CrossType.Pure).in(base)
     .dependsOn(ScommonsApi.scommonsApi)
     .settings(Common.settings: _*)
     .settings(
       sources in(Compile, doc) := Seq.empty,
       publishArtifact in(Compile, packageDoc) := false,
       ideaExcludeFolders ++= List(
-        s"$base/jvm/target",
-        s"$base/js/target",
-        s"$base/shared/target"
-      ),
-      libraryDependencies ++= Seq(
-        Libs.playJsonJs.value,
-        TestLibs.scalaTestJs.value % "test"
+        s"$base/.jvm/target",
+        s"$base/.js/target"
       )
     ).jvmSettings(
       // Add JVM-specific settings here
     ).jsSettings(
       //Opt-in @ScalaJSDefined by default
-      scalacOptions += "-P:scalajs:sjsDefinedByDefault",
-      libraryDependencies ++= Seq(
-        Libs.scalajsDom.value,
-        TestLibs.scalaMockJs.value % "test"
-      )
+      scalacOptions += "-P:scalajs:sjsDefinedByDefault"
     )
 
   lazy val jvm: Project = showcaseApi.jvm
