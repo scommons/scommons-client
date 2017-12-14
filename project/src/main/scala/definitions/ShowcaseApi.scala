@@ -26,20 +26,16 @@ object ShowcaseApi {
       ),
       libraryDependencies ++= Seq(
         Libs.playJsonJs.value,
-        TestLibs.scalaTest.value % "test"
+        TestLibs.scalaTestJs.value % "test"
       )
     ).jvmSettings(
       // Add JVM-specific settings here
-      libraryDependencies ++= Seq(
-        Libs.playWs.value,
-        TestLibs.mockito.value % "test"
-      )
     ).jsSettings(
       //Opt-in @ScalaJSDefined by default
       scalacOptions += "-P:scalajs:sjsDefinedByDefault",
       libraryDependencies ++= Seq(
         Libs.scalajsDom.value,
-        TestLibs.scalaMock.value % "test"
+        TestLibs.scalaMockJs.value % "test"
       )
     )
 

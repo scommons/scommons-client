@@ -45,6 +45,6 @@ object ScommonsClient extends ScalaJsModule {
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    TestLibs.scalaMock.value
+    TestLibs.scalaMockJs.value
   ).map(_ % "test"))
 }

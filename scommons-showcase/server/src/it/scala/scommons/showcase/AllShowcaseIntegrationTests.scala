@@ -7,7 +7,7 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import scaldi.Module
 import scaldi.play.ScaldiApplicationBuilder
-import scommons.api.http.WsApiHttpClient
+import scommons.api.http.ws.WsApiHttpClient
 import scommons.showcase.api.ShowcaseApiClient
 
 class AllShowcaseIntegrationTests extends Suites(

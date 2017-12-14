@@ -39,13 +39,13 @@ object ShowcaseServer extends BasicModule {
   }
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
+    ScommonsPlayWsApiClient.definition,
     Showcase.apiJVM
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     PlayImport.guice,
     Libs.play.value,
-    Libs.playJson.value,
     Libs.scaldiPlay.value,
     Libs.slf4jApi.value,
     Libs.logback.value

@@ -23,12 +23,12 @@ class ApiHttpClientSpec extends AsyncFlatSpec
     (String, String, List[(String, String)], Option[String], FiniteDuration) => Future[Option[ApiHttpResponse]]
 
   private class TestHttpClient(exec: HttpExecute) extends ApiHttpClient(baseUrl, defaultTimeout) {
-    protected[http] def execute(method: String,
-                                targetUrl: String,
-                                params: List[(String, String)],
-                                jsonBody: Option[String],
-                                timeout: FiniteDuration
-                               ): Future[Option[ApiHttpResponse]] = {
+    protected def execute(method: String,
+                          targetUrl: String,
+                          params: List[(String, String)],
+                          jsonBody: Option[String],
+                          timeout: FiniteDuration
+                         ): Future[Option[ApiHttpResponse]] = {
 
       exec(method, targetUrl, params, jsonBody, timeout)
     }

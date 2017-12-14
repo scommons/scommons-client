@@ -1,4 +1,4 @@
-package scommons.api.http
+package scommons.api.http.ws
 
 import java.util.concurrent.TimeoutException
 
@@ -7,7 +7,7 @@ import akka.stream.ActorMaterializer
 import akka.util.ByteString
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
 import play.api.libs.ws.{BodyWritable, InMemoryBody, StandaloneWSRequest, StandaloneWSResponse}
-import scommons.api.http.WsApiHttpClient._
+import scommons.api.http.{ApiHttpClient, ApiHttpResponse}
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
@@ -20,22 +20,22 @@ class WsApiHttpClient(baseUrl: String,
   private implicit val ec: ExecutionContext = system.dispatcher
   private implicit val materializer = ActorMaterializer()
 
-  private[http] val ws = StandaloneAhcWSClient()
+  private[ws] val ws = StandaloneAhcWSClient()
 
   system.registerOnTermination {
     ws.close()
   }
 
-  protected[http] def execute(method: String,
-                              targetUrl: String,
-                              params: List[(String, String)],
-                              jsonBody: Option[String],
-                              timeout: FiniteDuration): Future[Option[ApiHttpResponse]] = {
+  protected[ws] def execute(method: String,
+                            targetUrl: String,
+                            params: List[(String, String)],
+                            jsonBody: Option[String],
+                            timeout: FiniteDuration): Future[Option[ApiHttpResponse]] = {
 
     val req: StandaloneWSRequest = jsonBody match {
       case None => ws.url(targetUrl)
       case Some(body) => ws.url(targetUrl)
-        .withBody(body)(writeableOfJsonString)
+        .withBody(body)(WsApiHttpClient.writeableOfJsonString)
     }
 
     execute(req.withMethod(method)
@@ -49,7 +49,7 @@ class WsApiHttpClient(baseUrl: String,
     }
   }
 
-  private[http] def execute(req: StandaloneWSRequest): Future[StandaloneWSResponse] = {
+  private[ws] def execute(req: StandaloneWSRequest): Future[StandaloneWSResponse] = {
     req.execute()
   }
 }

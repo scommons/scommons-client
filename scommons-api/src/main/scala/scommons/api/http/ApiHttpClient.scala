@@ -64,12 +64,12 @@ abstract class ApiHttpClient(baseUrl: String,
     ).map(parseResponse(targetUrl, _))
   }
 
-  protected[http] def execute(method: String,
-                              targetUrl: String,
-                              params: List[(String, String)],
-                              jsonBody: Option[String],
-                              timeout: FiniteDuration
-                             ): Future[Option[ApiHttpResponse]]
+  protected def execute(method: String,
+                        targetUrl: String,
+                        params: List[(String, String)],
+                        jsonBody: Option[String],
+                        timeout: FiniteDuration
+                       ): Future[Option[ApiHttpResponse]]
 
   private[http] def parseResponse[R](url: String, response: Option[ApiHttpResponse])
                                     (implicit jsonReads: Reads[R]): R = response match {

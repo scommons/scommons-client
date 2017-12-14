@@ -1,4 +1,4 @@
-package scommons.api.http
+package scommons.api.http.ws
 
 import java.util.concurrent.TimeoutException
 
@@ -13,9 +13,10 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, FlatSpec, Matchers}
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
 import play.api.libs.ws.{EmptyBody, InMemoryBody, StandaloneWSRequest, StandaloneWSResponse}
+import scommons.api.http.ApiHttpResponse
 
 import scala.concurrent.Future
-import scala.concurrent.duration.{FiniteDuration, _}
+import scala.concurrent.duration._
 
 class WsApiHttpClientSpec extends FlatSpec
   with Matchers
@@ -34,9 +35,9 @@ class WsApiHttpClientSpec extends FlatSpec
 
   private class TestWsClient extends WsApiHttpClient(baseUrl) {
 
-    override private[http] val ws = spy(StandaloneAhcWSClient())
+    override private[ws] val ws = spy(StandaloneAhcWSClient())
 
-    override private[http] def execute(req: StandaloneWSRequest): Future[StandaloneWSResponse] = {
+    override private[ws] def execute(req: StandaloneWSRequest): Future[StandaloneWSResponse] = {
       Future.successful(response)
     }
   }

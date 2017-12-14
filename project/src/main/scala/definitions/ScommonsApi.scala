@@ -24,8 +24,8 @@ object ScommonsApi {
       ),
       libraryDependencies ++= Seq(
         Libs.playJsonJs.value,
-        TestLibs.scalaTest.value % "test",
-        TestLibs.scalaMock.value % "test"
+        TestLibs.scalaTestJs.value % "test",
+        TestLibs.scalaMockJs.value % "test"
       )
     ).jvmSettings(
       // Add JVM-specific settings here
