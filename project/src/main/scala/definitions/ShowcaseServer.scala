@@ -40,7 +40,8 @@ object ShowcaseServer extends BasicModule {
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
     ScommonsPlayWsApiClient.definition,
-    Showcase.apiJVM
+    Showcase.apiJVM,
+    ScommonsPlay.definition
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
