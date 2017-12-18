@@ -15,48 +15,47 @@ abstract class BaseApiController(components: ControllerComponents) extends Abstr
 
   protected val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  protected def apiNoBodyAction[R <: ApiResponse](block: => Future[R])
-                                                 (implicit
-                                                  writes: Writes[R],
-                                                  ec: ExecutionContext
-                                                 ): Action[AnyContent] = {
-    anyAction { _ =>
+  def apiNoBodyAction[R <: ApiResponse](block: => Future[R])
+                                       (implicit
+                                        writes: Writes[R],
+                                        ec: ExecutionContext
+                                       ): Action[AnyContent] = {
+
+    anyAction(actionAsync[AnyContent](_, { _ =>
       block.map { resp =>
         Ok(Json.toJson(resp))
       }
-    }
+    }))
   }
 
-  protected def apiAction[T, R <: ApiResponse](block: T => Future[R])
-                                              (implicit
-                                               reads: Reads[T],
-                                               writes: Writes[R],
-                                               ec: ExecutionContext
-                                              ): Action[JsValue] = {
-    jsonAction { request =>
+  def apiAction[T, R <: ApiResponse](block: T => Future[R])
+                                    (implicit
+                                     reads: Reads[T],
+                                     writes: Writes[R],
+                                     ec: ExecutionContext
+                                    ): Action[JsValue] = {
+
+    jsonAction(actionAsync[JsValue](_, { request =>
       parseJsonRequest[T](request, { data =>
         block(data).map { resp =>
           Ok(Json.toJson(resp))
         }
       })
-    }
+    }))
   }
 
-  private def anyAction(block: Request[AnyContent] => Future[Result])
-                       (implicit ec: ExecutionContext): Action[AnyContent] = {
-
-    Action.async(actionAsync[AnyContent, Request[AnyContent]](_, block))
+  private[controllers] def anyAction(block: Request[AnyContent] => Future[Result]): Action[AnyContent] = {
+    Action.async(block)
   }
 
-  private def jsonAction(block: Request[JsValue] => Future[Result])
-                        (implicit ec: ExecutionContext): Action[JsValue] = {
-
-    Action.async(parse.json)(actionAsync[JsValue, Request[JsValue]](_, block))
+  private[controllers] def jsonAction(block: Request[JsValue] => Future[Result]): Action[JsValue] = {
+    Action.async(parse.json)(block)
   }
 
-  protected def parseJsonRequest[T](request: Request[JsValue],
-                                    block: T => Future[Result]
-                                   )(implicit reads: Reads[T]): Future[Result] = {
+  def parseJsonRequest[T](request: Request[JsValue],
+                          block: T => Future[Result]
+                         )(implicit reads: Reads[T]): Future[Result] = {
+
     request.body.validate[T].fold(
       errors =>
         Future.successful(BadRequest(Json.toJson(StatusResponse(ApiStatus(400,
@@ -66,10 +65,9 @@ abstract class BaseApiController(components: ControllerComponents) extends Abstr
     )
   }
 
-  protected def actionAsync[T, Q <: Request[T]](request: Q,
-                                                block: Q => Future[Result])
-                                               (implicit ec: ExecutionContext
-                                               ): Future[Result] = {
+  def actionAsync[T](request: Request[T],
+                     block: Request[T] => Future[Result])
+                    (implicit ec: ExecutionContext): Future[Result] = {
 
     val futureResult = try {
       block(request)
@@ -85,7 +83,7 @@ abstract class BaseApiController(components: ControllerComponents) extends Abstr
     }
   }
 
-  protected def handleError(error: String, request: Request[_], t: Throwable): Result = t match {
+  def handleError(error: String, request: Request[_], t: Throwable): Result = t match {
     case e: NotFoundStatusException => NotFound(Json.toJson(StatusResponse(e.status)))
     case e: ConflictStatusException => Conflict(Json.toJson(StatusResponse(e.status)))
     case e: BadRequestStatusException => BadRequest(Json.toJson(StatusResponse(e.status)))
