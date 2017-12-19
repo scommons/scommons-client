@@ -12,11 +12,14 @@ object ScommonsPlay extends BasicModule {
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    Libs.play.value
+    Libs.play.value,
+    Libs.swaggerPlay.value,
+    Libs.swaggerAnnotations.value,
+    Libs.swaggerUi.value
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    TestLibs.scalaTest.value,
+    TestLibs.scalaTestPlusPlay.value,
     TestLibs.mockito.value
   ).map(_ % "test"))
 }

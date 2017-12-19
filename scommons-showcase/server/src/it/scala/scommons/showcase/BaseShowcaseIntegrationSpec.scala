@@ -6,6 +6,7 @@ import org.scalatest._
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.ConfiguredServer
+import play.api.libs.ws.WSClient
 import scommons.api.{ApiStatus, StatusResponse}
 import scommons.showcase.api.ShowcaseApiClient
 import scommons.showcase.api.repo._
@@ -24,6 +25,8 @@ trait BaseShowcaseIntegrationSpec extends FlatSpec
   implicit val defaultPatience = PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
 
   private def inject[T: ClassTag]: T = app.injector.instanceOf[T]
+
+  implicit lazy val wsClient: WSClient = inject[WSClient]
 
   private lazy val apiClient = inject[ShowcaseApiClient]
 

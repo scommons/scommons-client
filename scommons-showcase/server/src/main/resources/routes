@@ -9,6 +9,11 @@ GET     /scommons-showcase/                         controllers.ShowcaseControll
 GET     /scommons-showcase/index.html               controllers.ShowcaseController.index
 
 ################################################################################
+# swagger
+GET     /scommons-showcase/api-docs                 controllers.ApiHelpController.getResources
+GET     /scommons-showcase/swagger.html             scommons.play.controllers.CommonSwaggerController.swaggerUi(prefix = "/scommons-showcase")
+
+################################################################################
 # REST API
 #
 

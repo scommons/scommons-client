@@ -1,5 +1,6 @@
 package controllers
 
+import io.swagger.annotations._
 import play.api.libs.json.JsValue
 import play.api.mvc._
 import scommons.api.StatusResponse
@@ -15,35 +16,54 @@ import scala.concurrent.ExecutionContext
   *
   * It's main responsibility is conversion between raw HTTP data and API data.
   */
+@Api(tags = Array("repos"))
 class RepoController(repoApi: RepoApi)
                     (implicit components: ControllerComponents, ec: ExecutionContext)
   extends BaseApiController(components) {
 
+  @ApiOperation(value = "Returns repos list",
+    response = classOf[RepoListResp])
   def getRepos: Action[AnyContent] = {
     apiNoBodyAction[RepoListResp] {
       repoApi.getRepos
     }
   }
 
-  def getRepo(id: Int): Action[AnyContent] = {
+  @ApiOperation(value = "Returns repo by id",
+    response = classOf[RepoResp])
+  def getRepo(@ApiParam("repo id") id: Int): Action[AnyContent] = {
     apiNoBodyAction[RepoResp] {
       repoApi.getRepo(id)
     }
   }
 
+  @ApiOperation(value = "Creates repo",
+    response = classOf[RepoResp])
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "body", paramType = "body", required = true,
+      dataType = "scommons.showcase.api.repo.RepoData")
+  ))
   def createRepo(): Action[JsValue] = {
     apiAction[RepoData, RepoResp] { data =>
       repoApi.createRepo(data)
     }
   }
 
+  @ApiOperation(value = "Updates repo",
+    response = classOf[RepoResp])
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "body", paramType = "body", required = true,
+      dataType = "scommons.showcase.api.repo.RepoData")
+  ))
   def updateRepo(): Action[JsValue] = {
     apiAction[RepoData, RepoResp] { data =>
       repoApi.updateRepo(data)
     }
   }
 
-  def deleteRepo(id: Int): Action[AnyContent] = {
+  @ApiOperation(value = "Deletes repo by id",
+    response = classOf[StatusResponse])
+  def deleteRepo(@ApiParam("repo id") id: Int): Action[AnyContent] = {
     apiNoBodyAction[StatusResponse] {
       repoApi.deleteRepo(id)
     }

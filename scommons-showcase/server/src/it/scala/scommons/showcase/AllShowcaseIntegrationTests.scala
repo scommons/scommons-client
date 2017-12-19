@@ -11,6 +11,7 @@ import scommons.api.http.ws.WsApiHttpClient
 import scommons.showcase.api.ShowcaseApiClient
 
 class AllShowcaseIntegrationTests extends Suites(
+  new SwaggerApiIntegrationSpec,
   new RepoApiIntegrationSpec,
   new FailingApiIntegrationSpec
 ) with TestSuite

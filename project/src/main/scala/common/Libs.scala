@@ -24,6 +24,10 @@ object Libs {
   lazy val log4jToSlf4j = Def.setting("org.apache.logging.log4j" % "log4j-to-slf4j" % "2.2")
   lazy val jclOverSlf4j = Def.setting("org.slf4j" % "jcl-over-slf4j" % "1.7.12")
 
+  lazy val swaggerPlay = Def.setting("io.swagger" %% "swagger-play2" % "1.6.0")
+  lazy val swaggerAnnotations = Def.setting("io.swagger" % "swagger-annotations" % "1.5.16")
+  lazy val swaggerUi = Def.setting("org.webjars" % "swagger-ui" % "2.2.2")
+
   // Scala.js dependencies
 
   lazy val sjsReactJs = Def.setting("io.github.shogowada" %%% "scalajs-reactjs" % sjsReactJsVer)
