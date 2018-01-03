@@ -66,11 +66,22 @@ trait ShallowRendererUtils extends Matchers {
       }
     }
 
+    val children = getComponentChildren(result)
+
     expectedElement.flattenedContents match {
-      case Seq(expectedChild) =>
-        result.props.children shouldBe expectedChild
-      case _ =>
-        assertChildren(getComponentChildren(result))
+      case expectedChildren if expectedChildren.nonEmpty =>
+        children.size shouldBe expectedChildren.size
+
+        for (i <- expectedChildren.indices) {
+          val child = children(i)
+          expectedChildren(i) match {
+            case expected: Element => assertDOMComponent(child, expected)
+            case expected => child shouldBe expected
+          }
+        }
+
+        Succeeded
+      case _ => assertChildren(children)
     }
   }
 

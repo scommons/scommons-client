@@ -1,11 +1,9 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.React._
-import org.scalatest.{FlatSpec, Matchers}
-import scommons.client.test.TestUtils._
-import scommons.client.test.raw.ReactTestUtils._
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import scommons.client.TestSpec
 
-class AppFooterSpec extends FlatSpec with Matchers {
+class AppFooterSpec extends TestSpec {
 
   it should "render the component" in {
     //given
@@ -13,27 +11,23 @@ class AppFooterSpec extends FlatSpec with Matchers {
       "test copyright",
       "test version"
     )
-    val component = createElement(AppFooter.reactClass, wrap(props))
+    val component = <(AppFooter())(^.wrapped := props)()
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    result.props.wrapped shouldBe props
-
-    assertDOMElement(findReactElement(result),
-      <div>
-        <hr/>
-        <footer>
-          <p class="text-center">
-            <span>
-              {s"${props.copyright}"}
-            </span>{" "}<small>
-            {s"${props.version}"}
-          </small>
-          </p>
-        </footer>
-      </div>
+    assertDOMComponent(result,
+      <.div()(
+        <.hr.empty,
+        <.footer()(
+          <.p(^.className := "text-center")(
+            <.span()(props.copyright),
+            " ",
+            <.small()(props.version)
+          )
+        )
+      )
     )
   }
 }
