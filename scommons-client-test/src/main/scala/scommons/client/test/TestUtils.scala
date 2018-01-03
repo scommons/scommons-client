@@ -1,11 +1,8 @@
 package scommons.client.test
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalajs.dom._
 import org.scalatest.Matchers
-import scommons.client.test.raw.{ReactTestUtils, TestReactDOM}
+import scommons.client.test.raw.TestReactDOM
 
 import scala.scalajs.js
 
@@ -19,42 +16,42 @@ object TestUtils extends Matchers {
 
   private def asElement(node: Node): Element = node.asInstanceOf[Element]
 
-  def renderAsXml(reactClass: ReactClass, props: Any, children: ReactElement*): xml.Elem = {
-    domElement2XmlElem(findReactElement(ReactTestUtils.renderIntoDocument(
-      React.createElement(reactClass, React.wrap(props), children: _*)
-    )))
-  }
-
-  def domElement2XmlElem(node: Element): xml.Elem = {
-    convertElement(node)
-  }
-
-  private def convertElement(node: Node): xml.Elem = {
-    val label = node.nodeName.toLowerCase
-
-    val attrs = convertAttributes(getAttributes(node))
-    val children = convertChildElements(getChildNodes(node))
-
-    xml.Elem(null, label, attrs, xml.TopScope, minimizeEmpty = false, children: _*)
-  }
-
-  private def convertChildElements(childList: List[Node]): List[xml.Node] = childList.map { node =>
-    val label = node.nodeName.toLowerCase
-
-    if (label == "#text") xml.Text(node.textContent)
-    else convertElement(node)
-  }
-
-  private def convertAttributes(attrs: List[(String, String)]): xml.MetaData = {
-    @annotation.tailrec
-    def loop(attrs: List[(String, String)], next: xml.MetaData): xml.MetaData = attrs match {
-      case Nil => next
-      case head :: tail =>
-        loop(tail, xml.Attribute(None, head._1, xml.Text(head._2), next))
-    }
-
-    loop(attrs, xml.Null)
-  }
+//  def renderAsXml(reactClass: ReactClass, props: Any, children: ReactElement*): xml.Elem = {
+//    domElement2XmlElem(findReactElement(ReactTestUtils.renderIntoDocument(
+//      React.createElement(reactClass, React.wrap(props), children: _*)
+//    )))
+//  }
+//
+//  def domElement2XmlElem(node: Element): xml.Elem = {
+//    convertElement(node)
+//  }
+//
+//  private def convertElement(node: Node): xml.Elem = {
+//    val label = node.nodeName.toLowerCase
+//
+//    val attrs = convertAttributes(getAttributes(node))
+//    val children = convertChildElements(getChildNodes(node))
+//
+//    xml.Elem(null, label, attrs, xml.TopScope, minimizeEmpty = false, children: _*)
+//  }
+//
+//  private def convertChildElements(childList: List[Node]): List[xml.Node] = childList.map { node =>
+//    val label = node.nodeName.toLowerCase
+//
+//    if (label == "#text") xml.Text(node.textContent)
+//    else convertElement(node)
+//  }
+//
+//  private def convertAttributes(attrs: List[(String, String)]): xml.MetaData = {
+//    @annotation.tailrec
+//    def loop(attrs: List[(String, String)], next: xml.MetaData): xml.MetaData = attrs match {
+//      case Nil => next
+//      case head :: tail =>
+//        loop(tail, xml.Attribute(None, head._1, xml.Text(head._2), next))
+//    }
+//
+//    loop(attrs, xml.Null)
+//  }
 
   def assertDOMElement(result: Element, expected: xml.Elem): Unit = {
     assertElement(TestDOMPath(result, result), xml.Utility.trim(expected))

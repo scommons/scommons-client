@@ -2,8 +2,8 @@ package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.TestSpec
-import scommons.client.test.TestUtils._
 import scommons.client.test.raw.ReactTestUtils._
+import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.ButtonImagesCss._
 import scommons.client.util.ActionsData
 
@@ -25,7 +25,7 @@ class ButtonsPanelSpec extends TestSpec {
     Simulate.click(button)
   }
 
-  it should "render and pass correct props to the children" in {
+  it should "render buttons panel with custom class" in {
     //given
     val b1 = SimpleButtonData("accept", "test button 1")
     val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
@@ -40,7 +40,51 @@ class ButtonsPanelSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := props.className.get)(), { case List(simpleBtn, imageBtn) =>
+    assertButtonsPanel(result, props.className.get, group = false, b1, b2)
+  }
+
+  it should "render buttons toolbar" in {
+    //given
+    val b1 = SimpleButtonData("accept", "test button 1")
+    val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
+    val props = ButtonsPanelProps(
+      List(b1, b2),
+      ActionsData(Set(b1.command), _ => (), Some(b1.command))
+    )
+    val component = <(ButtonsPanel())(^.wrapped := props)()
+
+    //when
+    val result: ComponentInstance = shallowRender(component)
+
+    //then
+    assertButtonsPanel(result, "btn-toolbar", group = false, b1, b2)
+  }
+
+  it should "render buttons group" in {
+    //given
+    val b1 = SimpleButtonData("accept", "test button 1")
+    val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
+    val props = ButtonsPanelProps(
+      List(b1, b2),
+      ActionsData(Set(b1.command), _ => (), Some(b1.command)),
+      group = true
+    )
+    val component = <(ButtonsPanel())(^.wrapped := props)()
+
+    //when
+    val result: ComponentInstance = shallowRender(component)
+
+    //then
+    assertButtonsPanel(result, "btn-group", group = true, b1, b2)
+  }
+
+  private def assertButtonsPanel(result: ComponentInstance,
+                                 className: String,
+                                 group: Boolean,
+                                 b1: SimpleButtonData,
+                                 b2: ImageButtonData): Unit = {
+
+    assertDOMComponent(result, <.div(^.className := className)(), { case List(simpleBtn, imageBtn) =>
       assertComponent(simpleBtn, SimpleButton(), { simpleBtnProps: SimpleButtonProps =>
         inside(simpleBtnProps) { case SimpleButtonProps(data, _, disabled, requestFocus) =>
           data shouldBe b1
@@ -52,52 +96,10 @@ class ButtonsPanelSpec extends TestSpec {
         inside(imageBtnProps) { case ImageButtonProps(data, _, disabled, showTextAsTitle, requestFocus) =>
           data shouldBe b2
           disabled shouldBe true
-          showTextAsTitle shouldBe false
+          showTextAsTitle shouldBe group
           requestFocus shouldBe false
         }
       })
     })
-  }
-
-  it should "render buttons toolbar in the DOM" in {
-    //given
-    val b1 = ImageButtonData("accept", accept, acceptDisabled, "test button 1")
-    val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
-    val group = false
-    val component = <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
-      List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = group
-    ))()
-
-    //when
-    val result = renderIntoDocument(component)
-
-    //then
-    assertDOMElement(findReactElement(result),
-      <div class="btn-toolbar">
-        {renderAsXml(ImageButton(), ImageButtonProps(b1, () => (), showTextAsTitle = group))}
-        {renderAsXml(ImageButton(), ImageButtonProps(b2, () => (), showTextAsTitle = group, disabled = true))}
-      </div>
-    )
-  }
-
-  it should "render buttons group in the DOM" in {
-    //given
-    val b1 = ImageButtonData("accept", accept, acceptDisabled, "test button 1")
-    val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
-    val group = true
-    val component = <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
-      List(b1, b2), ActionsData(Set(b1.command), _ => ()), group = group
-    ))()
-
-    //when
-    val result = renderIntoDocument(component)
-
-    //then
-    assertDOMElement(findReactElement(result),
-      <div class="btn-group">
-        {renderAsXml(ImageButton(), ImageButtonProps(b1, () => (), showTextAsTitle = group))}
-        {renderAsXml(ImageButton(), ImageButtonProps(b2, () => (), showTextAsTitle = group, disabled = true))}
-      </div>
-    )
   }
 }

@@ -2,7 +2,6 @@ package scommons.client.app
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.TestSpec
-import scommons.client.test.TestUtils._
 import scommons.client.ui.tree.{BrowseTree, BrowseTreeItemData, BrowseTreeNodeData, BrowseTreeProps}
 import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
 import scommons.client.util.ActionsData
@@ -25,25 +24,25 @@ class AppBrowsePanelSpec extends TestSpec {
     )
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
-      <div class="row-fluid">
-        <div class="span4">
-          <div class="well sidebar-nav">
-            <div class={AppBrowsePanelCss.sidebarBp}>
-              {renderAsXml(ButtonsPanel(), buttonsPanelProps)}
-            </div>
-            {renderAsXml(BrowseTree(), browseTreeProps)}
-          </div>
-        </div>
-        <div class="span8">
-          <div>
-            Some child element
-          </div>
-        </div>
-      </div>
-    )
+    assertDOMComponent(result, <.div(^.className := "row-fluid")(), { case List(span4, span8) =>
+      assertDOMComponent(span4, <.div(^.className := "span4")(), { case List(sidebar) =>
+        assertDOMComponent(sidebar, <.div(^.className := "well sidebar-nav")(), { case List(sidebarBp, tree) =>
+          assertDOMComponent(sidebarBp, <.div(^.className := AppBrowsePanelCss.sidebarBp)(), { case List(bp) =>
+            assertComponent(bp, ButtonsPanel(), { bpProps: ButtonsPanelProps =>
+              bpProps shouldBe buttonsPanelProps
+            })
+          })
+          assertComponent(tree, BrowseTree(), { treeProps: BrowseTreeProps =>
+            treeProps shouldBe browseTreeProps
+          })
+        })
+      })
+      assertDOMComponent(span8, <.div(^.className := "span8")(), { case List(children) =>
+        assertDOMComponent(children, <.div()("Some child element"))
+      })
+    })
   }
 }
