@@ -32,14 +32,14 @@ class ImageButtonSpec extends TestSpec {
     val component = <(ImageButton())(^.wrapped := ImageButtonProps(data, () => ()))()
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
-      <button type= "button" class="btn">
-        <img class={s"${data.image}"} src=""/>
-        <span style="padding-left: 3px; vertical-align: middle;">{data.text}</span>
-      </button>
+    assertDOMComponent(result,
+      <.button(^.`type` := "button", ^.className := "btn")(
+        <.img(^.className := s"${data.image}", ^.src := "")(),
+        <.span(^.style := Map("paddingLeft" -> "3px", "verticalAlign" -> "middle"))(data.text)
+      )
     )
   }
 
@@ -49,13 +49,13 @@ class ImageButtonSpec extends TestSpec {
     val component = <(ImageButton())(^.wrapped := ImageButtonProps(data, () => (), showTextAsTitle = true))()
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
-      <button type= "button" class="btn" title={s"${data.text}"}>
-        <img class={s"${data.image}"} src=""/>
-      </button>
+    assertDOMComponent(result,
+      <.button(^.`type` := "button", ^.className := "btn", ^.title := s"${data.text}")(
+        <.img(^.className := s"${data.image}", ^.src := "")()
+      )
     )
   }
 
@@ -65,14 +65,14 @@ class ImageButtonSpec extends TestSpec {
     val component = <(ImageButton())(^.wrapped := ImageButtonProps(data, () => (), disabled = true))()
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
-      <button type= "button" class="btn" disabled="">
-        <img class={s"${data.disabledImage}"} src=""/>
-        <span style="padding-left: 3px; vertical-align: middle;">{data.text}</span>
-      </button>
+    assertDOMComponent(result,
+      <.button(^.`type` := "button", ^.className := "btn", ^.disabled := true)(
+        <.img(^.className := s"${data.disabledImage}", ^.src := "")(),
+        <.span(^.style := Map("paddingLeft" -> "3px", "verticalAlign" -> "middle"))(data.text)
+      )
     )
   }
 
@@ -82,14 +82,31 @@ class ImageButtonSpec extends TestSpec {
     val component = <(ImageButton())(^.wrapped := ImageButtonProps(data, () => ()))()
 
     //when
+    val result = shallowRender(component)
+
+    //then
+    assertDOMComponent(result,
+      <.button(^.`type` := "button", ^.className := "btn btn-primary")(
+        <.img(^.className := s"${data.image}", ^.src := "")(),
+        <.span(^.style := Map("paddingLeft" -> "3px", "verticalAlign" -> "middle"))(data.text)
+      )
+    )
+  }
+
+  it should "render button in the DOM" in {
+    //given
+    val data = ImageButtonData("accept", accept, acceptDisabled, "button with text")
+    val component = <(ImageButton())(^.wrapped := ImageButtonProps(data, () => ()))()
+
+    //when
     val result = renderIntoDocument(component)
 
     //then
     assertDOMElement(findReactElement(result),
-      <button type= "button" class="btn btn-primary">
-        <img class={s"${data.image}"} src=""/>
-        <span style="padding-left: 3px; vertical-align: middle;">{data.text}</span>
-      </button>
+      <.button(^.`type` := "button", ^("class") := "btn")(
+        <.img(^("class") := s"${data.image}", ^.src := "")(),
+        <.span(^("style") := "padding-left: 3px; vertical-align: middle;")(data.text)
+      )
     )
   }
 

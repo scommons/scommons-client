@@ -60,9 +60,14 @@ trait ShallowRendererUtils extends Matchers {
     result.`type` shouldBe expectedElement.name
 
     for (attr <- expectedElement.flattenedAttributes) {
-      result.props.selectDynamic(attr.name).asInstanceOf[Any] match {
-        case resultValue: String => resultValue shouldBe attr.valueToString
-        case resultValue => resultValue shouldBe attr.value
+      val resultValue = result.props.selectDynamic(attr.name).asInstanceOf[Any]
+      attr.value match {
+        case attrValue: Map[_, _] =>
+          resultValue.asInstanceOf[js.Dictionary[String]].toMap shouldBe attrValue
+        case _ if resultValue.isInstanceOf[String] =>
+          resultValue.toString.trim shouldBe attr.valueToString
+        case _ =>
+          resultValue shouldBe attr.value
       }
     }
 
