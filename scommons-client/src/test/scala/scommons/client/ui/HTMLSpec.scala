@@ -46,12 +46,12 @@ class HTMLSpec extends TestSpec {
 
     //then
     assertDOMElement(findReactElement(result),
-      <div style="white-space: nowrap;">
-        Test
-        <p>html</p>
-        <br/>
-        text
-      </div>
+      <.div(^("style") := "white-space: nowrap;")(
+        "Test",
+        <.p()("html"),
+        <.br.empty,
+        "text"
+      )
     )
   }
 

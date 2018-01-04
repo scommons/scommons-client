@@ -1,5 +1,7 @@
 package scommons.client.test
 
+import io.github.shogowada.statictags
+import org.scalajs.dom
 import org.scalajs.dom._
 import org.scalatest.Matchers
 import scommons.client.test.raw.TestReactDOM
@@ -12,9 +14,9 @@ object TestUtils extends Matchers {
     js.Dynamic.newInstance(tag.constructor)(args: _*).asInstanceOf[T]
   }
 
-  def findReactElement(component: js.Any): Element = asElement(TestReactDOM.findDOMNode(component))
+  def findReactElement(component: js.Any): dom.Element = asElement(TestReactDOM.findDOMNode(component))
 
-  private def asElement(node: Node): Element = node.asInstanceOf[Element]
+  private def asElement(node: Node): dom.Element = node.asInstanceOf[dom.Element]
 
 //  def renderAsXml(reactClass: ReactClass, props: Any, children: ReactElement*): xml.Elem = {
 //    domElement2XmlElem(findReactElement(ReactTestUtils.renderIntoDocument(
@@ -22,7 +24,7 @@ object TestUtils extends Matchers {
 //    )))
 //  }
 //
-//  def domElement2XmlElem(node: Element): xml.Elem = {
+//  def domElement2XmlElem(node: dom.Element): xml.Elem = {
 //    convertElement(node)
 //  }
 //
@@ -53,21 +55,67 @@ object TestUtils extends Matchers {
 //    loop(attrs, xml.Null)
 //  }
 
-  def assertDOMElement(result: Element, expected: xml.Elem): Unit = {
+  def assertDOMElement(result: dom.Element, expected: xml.Elem): Unit = {
     assertElement(TestDOMPath(result, result), xml.Utility.trim(expected))
   }
 
   private def assertElement(path: TestDOMPath, expected: xml.Node): Unit = {
+    def normalizeXmlNodeName(label: String): String = {
+      if (label == "#pcdata") "#text"
+      else label
+    }
+
     val node = path.currNode
     val label = normalizeXmlNodeName(expected.label.toLowerCase)
     node.nodeName.toLowerCase shouldBe label
 
-    if (label == "#text") assertTextContent(path, expected)
+    if (label == "#text") assertTextContent(path, expected.text)
     else {
       assertAttributes(path, getAttributes(node).toMap, expected.attributes.asAttrMap)
 
-      assertChildNodes(path, getChildNodes(node), expected.child.toList)
+      val nodes = expected.child.toList
+      assertChildNodes(
+        path,
+        getChildNodes(node),
+        nodes.map(n => normalizeXmlNodeName(n.label.toLowerCase)),
+        assertElement = { (path: TestDOMPath, index: Int) =>
+          assertElement(path, nodes(index))
+        }
+      )
     }
+  }
+
+  def assertDOMElement(result: dom.Element, expected: statictags.Element): Unit = {
+    assertElement(TestDOMPath(result, result), expected)
+  }
+
+  private def assertElement(path: TestDOMPath, expected: statictags.Element): Unit = {
+    val node = path.currNode
+    node.nodeName.toLowerCase shouldBe expected.name.toLowerCase
+
+    assertAttributes(
+      path,
+      getAttributes(node).toMap,
+      expected.flattenedAttributes.map(a => (a.name, a.valueToString)).toMap
+    )
+
+    val nodes = expected.flattenedContents.toList
+    assertChildNodes(
+      path,
+      getChildNodes(node),
+      nodes.map {
+        case node: statictags.Element => node.name.toLowerCase
+        case _ => "#text"
+      },
+      assertElement = { (path: TestDOMPath, index: Int) =>
+        nodes(index) match {
+          case node: statictags.Element =>
+            assertElement(path, node)
+          case textNode =>
+            assertTextContent(path, textNode.toString)
+        }
+      }
+    )
   }
 
   private def assertClasses(path: TestDOMPath,
@@ -136,12 +184,12 @@ object TestUtils extends Matchers {
 
   private def assertChildNodes(path: TestDOMPath,
                                childList: List[Node],
-                               expected: List[xml.Node]): Unit = {
+                               expectedTags: List[String],
+                               assertElement: (TestDOMPath, Int) => Unit): Unit = {
 
     val result = childList.filter(_.nodeName != "#comment")
 
     val resultTags = result.map(_.nodeName.toLowerCase)
-    val expectedTags = expected.map(n => normalizeXmlNodeName(n.label.toLowerCase))
     if (resultTags != expectedTags) {
       fail(
         s"""$path  <-- child tags don't match
@@ -152,17 +200,13 @@ object TestUtils extends Matchers {
            |""".stripMargin)
     }
 
-    for (i <- expected.indices) {
-      val resultNode = result(i)
-      val expectedNode = expected(i)
-
-      assertElement(path.at(asElement(resultNode)), expectedNode)
+    for (i <- result.indices) {
+      assertElement(path.at(asElement(result(i))), i)
     }
   }
 
-  private def assertTextContent(path: TestDOMPath, expected: xml.Node): Unit = {
+  private def assertTextContent(path: TestDOMPath, expectedText: String): Unit = {
     val resultText = path.currNode.textContent
-    val expectedText = expected.text
 
     if (resultText != expectedText) {
       fail(
@@ -203,8 +247,4 @@ object TestUtils extends Matchers {
       result
     }
   }
-
-  private def normalizeXmlNodeName(label: String): String =
-    if (label == "#pcdata") "#text"
-    else label
 }
