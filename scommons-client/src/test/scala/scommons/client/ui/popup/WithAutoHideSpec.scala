@@ -120,9 +120,9 @@ class WithAutoHideSpec extends TestSpec {
 
     //then
     assertDOMElement(findReactElement(result),
-      <div>
-        <p>{content}</p>
-      </div>
+      <.div()(
+        <.p()(content)
+      )
     )
 
     //cleanup

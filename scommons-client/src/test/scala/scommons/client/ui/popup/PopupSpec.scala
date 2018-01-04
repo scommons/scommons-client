@@ -99,13 +99,11 @@ class PopupSpec extends TestSpec {
     //then
     val modal = findRenderedComponentWithType(result, NativeReactModal).portal
     assertDOMElement(findReactElement(modal),
-      <div class={s"ReactModal__Overlay ReactModal__Overlay--after-open ${props.overlayClass}"}>
-        <div class={s"ReactModal__Content ReactModal__Content--after-open ${props.popupClass}"} tabindex="-1">
-          <p>
-            {"some children"}
-          </p>
-        </div>
-      </div>
+      <.div(^("class") := s"ReactModal__Overlay ReactModal__Overlay--after-open ${props.overlayClass}")(
+        <.div(^("class") := s"ReactModal__Content ReactModal__Content--after-open ${props.popupClass}", ^.tabindex := -1)(
+          <.p()("some children")
+        )
+      )
     )
 
     //cleanup
