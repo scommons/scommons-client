@@ -68,15 +68,15 @@ class BrowseTreeNodeSpec extends TestSpec {
     val component = treeNode(nodeProps(data, 0))
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
-      <div class={s"$browseTreeItem $browseTreeTopItem"}>
-        <div class={s"$browseTreeItem $browseTreeTopItemImageValue"}>
-          <div class={browseTreeItemValue}>{data.text}</div>
-        </div>
-      </div>
+    assertDOMComponent(result,
+      <.div(^.className := s"$browseTreeItem $browseTreeTopItem")(
+        <.div(^.className := s"$browseTreeItem $browseTreeTopItemImageValue")(
+          <.div(^.className := browseTreeItemValue)(data.text)
+        )
+      )
     )
   }
 
@@ -86,15 +86,15 @@ class BrowseTreeNodeSpec extends TestSpec {
     val component = treeNode(nodeProps(data, 1, selected = true))
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
-      <div class={s"$browseTreeItem $browseTreeSelectedItem"} style="padding-left: 16px;">
-        <div class={s"$browseTreeItem"}>
-          <div class={browseTreeItemValue}>{data.text}</div>
-        </div>
-      </div>
+    assertDOMComponent(result,
+      <.div(^.className := s"$browseTreeItem $browseTreeSelectedItem", ^.style := Map("paddingLeft" -> "16px"))(
+        <.div(^.className := s"$browseTreeItem")(
+          <.div(^.className := browseTreeItemValue)(data.text)
+        )
+      )
     )
   }
 
@@ -104,18 +104,18 @@ class BrowseTreeNodeSpec extends TestSpec {
     val component = treeNode(nodeProps(data, 1))
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
-      <div class={s"$browseTreeItem"} style="padding-left: 16px;">
-        <div class={s"$browseTreeItem"}>
-          <div class={browseTreeItemValue}>
-            <img class={s"${data.image.get}"} src=""/>
-            <span style="padding-left: 3px;">{data.text}</span>
-          </div>
-        </div>
-      </div>
+    assertDOMComponent(result,
+      <.div(^.className := s"$browseTreeItem", ^.style := Map("paddingLeft" -> "16px"))(
+        <.div(^.className := s"$browseTreeItem")(
+          <.div(^.className := browseTreeItemValue)(
+            <.img(^.className := s"${data.image.get}", ^.src := "")(),
+            <.span(^.style := Map("paddingLeft" -> "3px"))(data.text)
+          )
+        )
+      )
     )
   }
 
@@ -125,21 +125,21 @@ class BrowseTreeNodeSpec extends TestSpec {
     val component = treeNode(nodeProps(data, 0))
 
     //when
-    val result = renderIntoDocument(component)
+    val result = shallowRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
-      <div>
-        <div class={s"$browseTreeItem $browseTreeTopItem"}>
-          <div class={s"$browseTreeItem $browseTreeNode $browseTreeTopItemImageValue"}>
-            <div class={s"$browseTreeNodeIcon"}>
-              <div class={browseTreeClosedArrow}/>
-            </div>
-            <div class={browseTreeNodeValue}>{data.text}</div>
-          </div>
-        </div>
-        <div style="display: none;"/>
-      </div>
+    assertDOMComponent(result,
+      <.div()(
+        <.div(^.className := s"$browseTreeItem $browseTreeTopItem")(
+          <.div(^.className := s"$browseTreeItem $browseTreeNode $browseTreeTopItemImageValue")(
+            <.div(^.className := s"$browseTreeNodeIcon")(
+              <.div(^.className := browseTreeClosedArrow)()
+            ),
+            <.div(^.className := browseTreeNodeValue)(data.text)
+          )
+        ),
+        <.div(^.style := Map("display" -> "none"))()
+      )
     )
   }
 
@@ -156,23 +156,23 @@ class BrowseTreeNodeSpec extends TestSpec {
 
     //then
     assertDOMElement(findReactElement(result),
-      <div>
-        <div class={s"$browseTreeItem"} style="padding-left: 16px;">
-          <div class={s"$browseTreeItem $browseTreeNode"}>
-            <div class={s"$browseTreeNodeIcon"}>
-              <div class={browseTreeClosedArrow}/>
-            </div>
-            <div class={browseTreeNodeValue}>{data.text}</div>
-          </div>
-        </div>
-        <div style="display: none;">
-          <div class={s"$browseTreeItem"} style="padding-left: 32px;">
-            <div class={s"$browseTreeItem"}>
-              <div class={browseTreeItemValue}>{child.text}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <.div()(
+        <.div(^("class") := s"$browseTreeItem", ^("style") := "padding-left: 16px;")(
+          <.div(^("class") := s"$browseTreeItem $browseTreeNode")(
+            <.div(^("class") := s"$browseTreeNodeIcon")(
+              <.div(^("class") := browseTreeClosedArrow)()
+            ),
+            <.div(^("class") := browseTreeNodeValue)(data.text)
+          )
+        ),
+        <.div(^("style") := "display: none;")(
+          <.div(^("class") := s"$browseTreeItem", ^("style") := "padding-left: 32px;")(
+            <.div(^("class") := s"$browseTreeItem")(
+              <.div(^("class") := browseTreeItemValue)(child.text)
+            )
+          )
+        )
+      )
     )
   }
 
@@ -189,23 +189,23 @@ class BrowseTreeNodeSpec extends TestSpec {
 
     //then
     assertDOMElement(findReactElement(result),
-      <div>
-        <div class={s"$browseTreeItem"} style="padding-left: 16px;">
-          <div class={s"$browseTreeItem $browseTreeNode"}>
-            <div class={s"$browseTreeNodeIcon"}>
-              <div class={browseTreeOpenArrow}/>
-            </div>
-            <div class={browseTreeNodeValue}>{data.text}</div>
-          </div>
-        </div>
-        <div>
-          <div class={s"$browseTreeItem"} style="padding-left: 32px;">
-            <div class={s"$browseTreeItem"}>
-              <div class={browseTreeItemValue}>{child.text}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <.div()(
+        <.div(^("class") := s"$browseTreeItem", ^("style") := "padding-left: 16px;")(
+          <.div(^("class") := s"$browseTreeItem $browseTreeNode")(
+            <.div(^("class") := s"$browseTreeNodeIcon")(
+              <.div(^("class") := browseTreeOpenArrow)()
+            ),
+            <.div(^("class") := browseTreeNodeValue)(data.text)
+          )
+        ),
+        <.div()(
+          <.div(^("class") := s"$browseTreeItem", ^("style") := "padding-left: 32px;")(
+            <.div(^("class") := s"$browseTreeItem")(
+              <.div(^("class") := browseTreeItemValue)(child.text)
+            )
+          )
+        )
+      )
     )
   }
 

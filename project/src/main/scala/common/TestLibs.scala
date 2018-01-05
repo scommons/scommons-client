@@ -21,6 +21,4 @@ object TestLibs {
 
   lazy val scalaTestJs = Def.setting("org.scalatest" %%% "scalatest" % scalaTestVersion)
   lazy val scalaMockJs = Def.setting("org.scalamock" %%% "scalamock-scalatest-support" % scalaMockVersion)
-
-  lazy val scalaXmlJs = Def.setting("scala-xml" %%% "scala-xml" % "1.0.7-SNAPSHOT")
 }

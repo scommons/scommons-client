@@ -24,8 +24,7 @@ object ScommonsClientTest extends ScalaJsModule {
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     Libs.sjsReactJs.value,
     Libs.scalajsDom.value,
-    TestLibs.scalaTestJs.value,
-    TestLibs.scalaXmlJs.value
+    TestLibs.scalaTestJs.value
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)

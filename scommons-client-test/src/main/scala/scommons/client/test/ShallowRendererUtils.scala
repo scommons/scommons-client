@@ -1,7 +1,7 @@
 package scommons.client.test
 
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.statictags.Element
+import io.github.shogowada.statictags.{AttributeValueType, Element}
 import org.scalatest.{Assertion, Matchers, Succeeded}
 import scommons.client.test.raw.ShallowRenderer
 import scommons.client.test.raw.ShallowRenderer._
@@ -57,6 +57,8 @@ trait ShallowRendererUtils extends Matchers {
                          expectedElement: Element,
                          assertChildren: List[ComponentInstance] => Assertion = expectNoChildren): Assertion = {
 
+    def normalize(classes: String) = classes.split(' ').map(_.trim).filter(_.nonEmpty)
+
     result.`type` shouldBe expectedElement.name
 
     for (attr <- expectedElement.flattenedAttributes) {
@@ -64,8 +66,10 @@ trait ShallowRendererUtils extends Matchers {
       attr.value match {
         case attrValue: Map[_, _] =>
           resultValue.asInstanceOf[js.Dictionary[String]].toMap shouldBe attrValue
+        case _ if attr.valueType == AttributeValueType.SPACE_SEPARATED =>
+          normalize(resultValue.toString).toSet shouldBe normalize(attr.valueToString).toSet
         case _ if resultValue.isInstanceOf[String] =>
-          resultValue.toString.trim shouldBe attr.valueToString
+          resultValue shouldBe attr.valueToString
         case _ =>
           resultValue shouldBe attr.value
       }
