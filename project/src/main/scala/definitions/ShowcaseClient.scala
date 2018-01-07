@@ -23,6 +23,20 @@ object ShowcaseClient extends ScalaJsModule {
         scalaJSUseMainModuleInitializer := true,
         webpackBundlingMode := BundlingMode.LibraryOnly(),
 
+        npmUpdate in Compile := {
+          copyWebpackResources(
+            (npmUpdate in Compile).value,
+            (fullClasspath in Compile).value
+          )
+        },
+
+        npmUpdate in Test := {
+          copyWebpackResources(
+            (npmUpdate in Test).value,
+            (fullClasspath in Test).value
+          )
+        },
+
         //dev
         webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config.js"),
         //production
@@ -40,4 +54,11 @@ object ShowcaseClient extends ScalaJsModule {
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)
+
+
+  private def copyWebpackResources(targetDir: File, cp: Def.Classpath): File = {
+    ResourcesHelper.extractFromClasspath(targetDir, cp,
+      "*.css" || "*.ico" || "*.png" || "*.jpg" || "*.jpeg" || "*.gif")
+    targetDir
+  }
 }

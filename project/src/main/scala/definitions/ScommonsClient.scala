@@ -15,6 +15,20 @@ object ScommonsClient extends ScalaJsModule {
       .settings(
         webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"),
 
+        npmUpdate in Compile := {
+          copyWebpackResources(
+            (npmUpdate in Compile).value,
+            (fullClasspath in Compile).value
+          )
+        },
+
+        npmUpdate in Test := {
+          copyWebpackResources(
+            (npmUpdate in Test).value,
+            (fullClasspath in Test).value
+          )
+        },
+
         npmDependencies in Compile ++= Seq(
           "react-modal" -> "3.1.2"
         ),
@@ -47,4 +61,10 @@ object ScommonsClient extends ScalaJsModule {
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     TestLibs.scalaMockJs.value
   ).map(_ % "test"))
+
+  private def copyWebpackResources(targetDir: File, cp: Def.Classpath): File = {
+    ResourcesHelper.extractFromClasspath(targetDir, cp,
+      "*.css" || "*.ico" || "*.png" || "*.jpg" || "*.jpeg" || "*.gif")
+    targetDir
+  }
 }
