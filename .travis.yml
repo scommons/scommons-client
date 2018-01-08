@@ -7,7 +7,7 @@ jdk:
 env:
   global:
   - TRAVIS_NODE_VERSION="8"
-  - TRAVIS_SBT_VERSION="0.13.15"
+  - TRAVIS_SBT_VERSION="0.13.16"
 
 before_install:
   - nvm install 6
@@ -15,7 +15,7 @@ before_install:
   - node --version
 
 script:
-  - sbt -no-colors clean test it:test
+  - sbt clean test it:test
 
 cache:
   directories:

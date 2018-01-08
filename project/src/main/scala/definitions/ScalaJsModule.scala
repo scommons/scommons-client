@@ -7,6 +7,7 @@ import sbt.Keys._
 import sbt._
 
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
 trait ScalaJsModule extends BasicModule {
 
@@ -18,6 +19,7 @@ trait ScalaJsModule extends BasicModule {
         //Opt-in @ScalaJSDefined by default
         scalacOptions += "-P:scalajs:sjsDefinedByDefault",
         requiresDOM in Test := true,
+        version in webpack := "1.14.0", //TODO: migrate to default (latest version)
         emitSourceMaps := false,
         ideaExcludeFolders ++= List(
           s"$id/build",

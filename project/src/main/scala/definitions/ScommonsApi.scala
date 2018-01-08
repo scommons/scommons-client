@@ -7,6 +7,8 @@ import org.scalajs.sbtplugin.cross.CrossProject
 import sbt.Keys._
 import sbt._
 
+import scoverage.ScoverageKeys._
+
 object ScommonsApi {
 
   val id: String = "scommons-api"
@@ -31,6 +33,9 @@ object ScommonsApi {
     ).jvmSettings(
       // Add JVM-specific settings here
     ).jsSettings(
+      // disable scoverage, until the following issue is fixed:
+      //   https://github.com/scoverage/scalac-scoverage-plugin/issues/196
+      coverageEnabled := false,
       //Opt-in @ScalaJSDefined by default
       scalacOptions += "-P:scalajs:sjsDefinedByDefault",
       libraryDependencies ++= Seq(
