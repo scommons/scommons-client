@@ -16,11 +16,13 @@ import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup._
 import scommons.client.util.ActionsData
 import scommons.showcase.api.ShowcaseApiClient
-import scommons.showcase.api.repo.{RepoData, RepoListResp, RepoResp}
+import scommons.showcase.api.failing.FailingApi
+import scommons.showcase.api.repo.{RepoApi, RepoData, RepoListResp, RepoResp}
 import scommons.showcase.client.ShowcaseState
 import scommons.showcase.client.action.{CreateRepo, FailingApiAction, FetchRepos}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.scalajs.js
 
 object ApiDemoController {
 
@@ -108,7 +110,16 @@ object ApiDemo {
     s"${loc.protocol}//${loc.host}/scommons-showcase"
   }
 
-  private val client = new ShowcaseApiClient(new JsApiHttpClient(baseUrl))
+  private val client: RepoApi with FailingApi = {
+    import js.Dynamic.{global => g}
+    if (js.typeOf(g.scommons_showcase_config) == "object"
+      && !js.isUndefined(g.scommons_showcase_config.stubApi)) {
+      new ApiStubClient
+    }
+    else {
+      new ShowcaseApiClient(new JsApiHttpClient(baseUrl))
+    }
+  }
 
   private def callGetRepos(self: Self[ApiDemoProps, ApiDemoState]): Unit = {
     val task = FutureTask("Fetching Repos", client.getRepos)
