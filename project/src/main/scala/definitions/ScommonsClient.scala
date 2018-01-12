@@ -13,6 +13,8 @@ object ScommonsClient extends ScalaJsModule {
   override def definition: Project = {
     super.definition
       .settings(
+        description := "Common Scala.js, React.js web-client utilities and components",
+
         webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"),
 
         npmUpdate in Compile := {

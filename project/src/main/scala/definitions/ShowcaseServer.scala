@@ -7,6 +7,7 @@ import com.typesafe.sbt.web.SbtWeb.autoImport._
 import common.{Libs, TestLibs}
 import play.sbt.routes.RoutesKeys
 import play.sbt.{PlayImport, PlayLayoutPlugin, PlayScala}
+import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys.coverageExcludedPackages
 import webscalajs.WebScalaJS.autoImport._
@@ -27,6 +28,11 @@ object ShowcaseServer extends BasicModule {
       .disablePlugins(PlayLayoutPlugin)
       .configs(IntegrationTest)
       .settings(Defaults.itSettings: _*)
+      .settings(
+        skip in publish := true,
+        publish := (),
+        publishM2 := ()
+      )
       .settings(
         RoutesKeys.routesImport -= "controllers.Assets.Asset", //remove unused import warning from routes file
         coverageExcludedPackages := "<empty>;Reverse.*",

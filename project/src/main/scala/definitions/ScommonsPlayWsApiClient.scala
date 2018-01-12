@@ -1,11 +1,19 @@
 package definitions
 
 import common.{Libs, TestLibs}
+import sbt.Keys._
 import sbt._
 
 object ScommonsPlayWsApiClient extends BasicModule {
 
   override val id: String = "scommons-play-ws-api-client"
+
+  override def definition: Project = {
+    super.definition
+      .settings(
+        description := "Common Scala play-ws ApiHttpClient implementation"
+      )
+  }
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
     ScommonsApi.jvm

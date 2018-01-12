@@ -12,8 +12,6 @@ trait BasicModule extends ProjectDef {
     .settings(Common.settings: _*)
     .settings(
       libraryDependencies ++= (runtimeDependencies.value ++ testDependencies.value),
-      sources in(Compile, doc) := Seq.empty,
-      publishArtifact in(Compile, packageDoc) := false,
       ideaExcludeFolders ++= List(
         s"$base/target"
       )

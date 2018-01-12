@@ -1,11 +1,19 @@
 package definitions
 
 import common.{Libs, TestLibs}
+import sbt.Keys._
 import sbt._
 
 object ScommonsPlay extends BasicModule {
 
   override val id: String = "scommons-play"
+
+  override def definition: Project = {
+    super.definition
+      .settings(
+        description := "Common Scala Play! utilities and components"
+      )
+  }
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
     ScommonsApi.jvm

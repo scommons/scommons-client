@@ -13,12 +13,15 @@ object ShowcaseApi {
 
   def base: File = file(s"${Showcase.id}/api")
 
-  private lazy val showcaseApi: CrossProject = crossProject.crossType(CrossType.Pure).in(base)
-    .dependsOn(ScommonsApi.scommonsApi)
+  private lazy val `scommons-showcase-api`: CrossProject = crossProject.crossType(CrossType.Pure).in(base)
+    .dependsOn(ScommonsApi.`scommons-api`)
     .settings(Common.settings: _*)
     .settings(
-      sources in(Compile, doc) := Seq.empty,
-      publishArtifact in(Compile, packageDoc) := false,
+      skip in publish := true,
+      publish := (),
+      publishM2 := ()
+    )
+    .settings(
       ideaExcludeFolders ++= List(
         s"$base/.jvm/target",
         s"$base/.js/target"
@@ -30,7 +33,7 @@ object ShowcaseApi {
       scalacOptions += "-P:scalajs:sjsDefinedByDefault"
     )
 
-  lazy val jvm: Project = showcaseApi.jvm
+  lazy val jvm: Project = `scommons-showcase-api`.jvm
 
-  lazy val js: Project = showcaseApi.js
+  lazy val js: Project = `scommons-showcase-api`.js
 }

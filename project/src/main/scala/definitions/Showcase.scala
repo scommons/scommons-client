@@ -1,5 +1,7 @@
 package definitions
 
+import common.Common
+import sbt.Keys._
 import sbt._
 
 object Showcase {
@@ -14,6 +16,12 @@ object Showcase {
   lazy val server: Project = ShowcaseServer.definition
 
   lazy val definition: Project = Project(id = id, base = file(id))
+    .settings(Common.settings)
+    .settings(
+      skip in publish := true,
+      publish := (),
+      publishM2 := ()
+    )
     .aggregate(
       apiJVM,
       apiJS,

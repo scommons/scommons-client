@@ -1,9 +1,13 @@
-//import common.Common
+import common.Common
 import definitions._
 
 lazy val scommons = (project in file("."))
-  //.settings(Common.settings)
-  //.configs(IntegrationTest)
+  .settings(Common.settings)
+  .settings(
+    skip in publish := true,
+    publish := (),
+    publishM2 := ()
+  )
   .aggregate(
   `scommons-api-jvm`,
   `scommons-api-js`,

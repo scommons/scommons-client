@@ -20,6 +20,11 @@ object ShowcaseClient extends ScalaJsModule {
     super.definition
       .enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb, SbtWeb)
       .settings(
+        skip in publish := true,
+        publish := (),
+        publishM2 := ()
+      )
+      .settings(
         scalaJSUseMainModuleInitializer := true,
         webpackBundlingMode := BundlingMode.LibraryOnly(),
 

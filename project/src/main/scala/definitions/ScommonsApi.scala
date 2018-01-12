@@ -15,11 +15,11 @@ object ScommonsApi {
 
   def base: File = file(id)
 
-  lazy val scommonsApi: CrossProject = crossProject.in(base)
+  lazy val `scommons-api`: CrossProject = crossProject.in(base)
     .settings(Common.settings: _*)
     .settings(
-      sources in(Compile, doc) := Seq.empty,
-      publishArtifact in(Compile, packageDoc) := false,
+      description := "Common Scala/Scala.js REST API protocol definitions",
+
       ideaExcludeFolders ++= List(
         s"$base/jvm/target",
         s"$base/js/target",
@@ -43,7 +43,7 @@ object ScommonsApi {
       )
     )
 
-  lazy val jvm: Project = scommonsApi.jvm
+  lazy val jvm: Project = `scommons-api`.jvm
 
-  lazy val js: Project = scommonsApi.js
+  lazy val js: Project = `scommons-api`.js
 }
