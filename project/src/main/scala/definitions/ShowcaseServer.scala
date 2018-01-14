@@ -35,7 +35,8 @@ object ShowcaseServer extends BasicModule {
       )
       .settings(
         RoutesKeys.routesImport -= "controllers.Assets.Asset", //remove unused import warning from routes file
-        coverageExcludedPackages := "<empty>;Reverse.*",
+        coverageExcludedPackages := "<empty>;Reverse.*;router.*",
+
         scalaJSProjects := Seq(Showcase.client),
         pipelineStages in Assets := Seq(scalaJSPipeline),
         pipelineStages := Seq(digest, gzip),

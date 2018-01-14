@@ -3,6 +3,7 @@ package definitions
 import common.{Libs, TestLibs}
 import sbt.Keys._
 import sbt._
+import scoverage.ScoverageKeys.coverageExcludedPackages
 
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
@@ -14,6 +15,7 @@ object ScommonsClientTest extends ScalaJsModule {
     super.definition
       .settings(
         description := "Common Scala.js, React.js testing utilities and components",
+        coverageExcludedPackages := "scommons.client.test.raw",
 
         npmDependencies in Compile ++= Seq(
           "react-addons-test-utils" -> "15.6.0",

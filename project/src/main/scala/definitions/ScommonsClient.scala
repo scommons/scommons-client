@@ -3,6 +3,7 @@ package definitions
 import common.{Libs, TestLibs}
 import sbt.Keys._
 import sbt._
+import scoverage.ScoverageKeys.coverageExcludedPackages
 
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
@@ -14,6 +15,7 @@ object ScommonsClient extends ScalaJsModule {
     super.definition
       .settings(
         description := "Common Scala.js, React.js web-client utilities and components",
+        coverageExcludedPackages := ".*Css;scommons.react.modal",
 
         webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"),
 

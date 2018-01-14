@@ -29,7 +29,6 @@ object Common {
     ),
     //when run tests with coverage: "sbt clean coverage test it:test coverageReport && sbt coverageAggregate"
     coverageMinimum := 80,
-    coverageExcludedPackages := "scommons.client.test.raw",
 
     //use patched versions by now, to make scoverage work with scalajs-bundler
     libraryDependencies ++= {
