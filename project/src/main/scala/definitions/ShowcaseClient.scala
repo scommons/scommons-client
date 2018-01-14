@@ -2,8 +2,9 @@ package definitions
 
 import com.typesafe.sbt.web.SbtWeb
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-import sbt._
 import sbt.Keys._
+import sbt._
+import scoverage.ScoverageKeys._
 import webscalajs.ScalaJSWeb
 
 import scalajsbundler.BundlingMode
@@ -25,6 +26,8 @@ object ShowcaseClient extends ScalaJsModule {
         publishM2 := ()
       )
       .settings(
+        coverageEnabled := false,
+
         scalaJSUseMainModuleInitializer := true,
         webpackBundlingMode := BundlingMode.LibraryOnly(),
 
