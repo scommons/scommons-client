@@ -8,14 +8,18 @@ lazy val scommons = (project in file("."))
     publish := (),
     publishM2 := ()
   )
+  .settings(
+    ideaExcludeFolders ++= List(
+      s"docs/_site"
+    )
+  )
   .aggregate(
   `scommons-api-jvm`,
   `scommons-api-js`,
   `scommons-client`,
   `scommons-client-test`,
   `scommons-play-ws-api-client`,
-  `scommons-play`,
-  `scommons-showcase`
+  `scommons-play`
 )
 
 lazy val `scommons-api-jvm` = ScommonsApi.jvm
@@ -26,9 +30,3 @@ lazy val `scommons-client-test` = ScommonsClientTest.definition
 
 lazy val `scommons-play-ws-api-client` = ScommonsPlayWsApiClient.definition
 lazy val `scommons-play` = ScommonsPlay.definition
-
-lazy val `scommons-showcase` = Showcase.definition
-lazy val `scommons-showcase-api-jvm` = Showcase.apiJVM
-lazy val `scommons-showcase-api-js` = Showcase.apiJS
-lazy val `scommons-showcase-client` = Showcase.client
-lazy val `scommons-showcase-server` = Showcase.server
