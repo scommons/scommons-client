@@ -11,6 +11,7 @@ import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
+import org.slf4j.Logger
 import play.api.libs.json.Json.toJson
 import play.api.libs.json.{Format, JsValue, Json}
 import play.api.mvc._
@@ -30,14 +31,22 @@ class BaseApiControllerSpec extends FlatSpec
 
   implicit val defaultPatience = PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
 
-  private implicit val system = ActorSystem("BaseApiControllerSpec")
+  private implicit val system = ActorSystem(getClass.getSimpleName)
   private implicit val mat = ActorMaterializer(ActorMaterializerSettings(system))
 
-  private class TestApiController extends BaseApiController(null)
+  private val mockLogger = mock[Logger]
+
+  private class TestApiController extends BaseApiController(null) {
+    override protected val logger: Logger = mockLogger
+  }
   private val controller = spy(new TestApiController)
 
   override protected def beforeEach(): Unit = {
-    reset(controller)
+    reset(controller, mockLogger)
+  }
+
+  override protected def afterEach(): Unit = {
+    verifyNoMoreInteractions(mockLogger)
   }
 
   override protected def afterAll(): Unit = {
@@ -140,6 +149,8 @@ class BaseApiControllerSpec extends FlatSpec
 
     //then
     assertResult(result, 400, toJson(StatusResponse(ApiStatus(400, "test exception"))))
+
+    verifyZeroInteractions(mockLogger)
   }
 
   it should "fail with 500 status if IllegalArgumentException during request processing" in {
@@ -157,6 +168,8 @@ class BaseApiControllerSpec extends FlatSpec
     //then
     assertResult(result, 500, toJson(StatusResponse(ApiStatus(500, "Error while processing request",
       s"Request: $request\n\nError: ${stackTrace(e)}"))))
+
+    verify(mockLogger).error(s"Error while processing request: $request", e)
   }
 
   it should "fail with 500 status if Exception during request handling" in {
@@ -174,6 +187,8 @@ class BaseApiControllerSpec extends FlatSpec
     //then
     assertResult(result, 500, toJson(StatusResponse(ApiStatus(500, "Failed to handle request",
       s"Request: $request\n\nError: ${stackTrace(e)}"))))
+
+    verify(mockLogger).error(s"Failed to handle request: $request", e)
   }
 
   "handleError" should "fail with 404 status if NotFoundStatusException" in {
@@ -239,6 +254,8 @@ class BaseApiControllerSpec extends FlatSpec
     //then
     assertResult(result, 500, toJson(StatusResponse(ApiStatus(500, "Error during test",
       s"Request: $request\n\nError: ${stackTrace(e)}"))))
+
+    verify(mockLogger).error(s"Error during test: $request", e)
   }
 
   private def assertResult(result: Result, expectedStatus: Int, expectedBody: JsValue): Assertion = {
