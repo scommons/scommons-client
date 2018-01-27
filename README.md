@@ -1,6 +1,7 @@
 
 [![Build Status](https://travis-ci.org/scommons/scommons.svg?branch=master)](https://travis-ci.org/scommons/scommons)
 [![Coverage Status](https://coveralls.io/repos/github/scommons/scommons/badge.svg?branch=master)](https://coveralls.io/github/scommons/scommons?branch=master)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org)
 
 ## Scala Commons
 Scala and Scala.js common utilities and components.

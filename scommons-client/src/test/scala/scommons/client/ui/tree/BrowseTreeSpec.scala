@@ -55,6 +55,24 @@ class BrowseTreeSpec extends TestSpec {
     findComponentProps(updatedComp, BrowseTreeNode).expanded shouldBe true
   }
 
+  it should "collapse initially opened node when onExpand" in {
+    //given
+    val data = BrowseTreeItemData("test")
+    val props = BrowseTreeProps(List(data), initiallyOpenedNodes = Set(data.key))
+    val renderer = createRenderer()
+    renderer.render(<(BrowseTree())(^.wrapped := props)())
+    val comp = renderer.getRenderOutput()
+    val nodeProps = findComponentProps(comp, BrowseTreeNode)
+    nodeProps.expanded shouldBe true
+
+    //when
+    nodeProps.onExpand(data)
+
+    //then
+    val updatedComp = renderer.getRenderOutput()
+    findComponentProps(updatedComp, BrowseTreeNode).expanded shouldBe false
+  }
+
   it should "collapse node when onExpand again" in {
     //given
     val data = BrowseTreeItemData("test")
@@ -100,6 +118,25 @@ class BrowseTreeSpec extends TestSpec {
 
     //then
     findComponentProps(result, BrowseTreeNode).expanded shouldBe true
+  }
+
+  it should "render initially opened node" in {
+    //given
+    val node1 = BrowseTreeNodeData("node 1")
+    val node2 = BrowseTreeNodeData("node 2")
+    val props = BrowseTreeProps(List(node1, node2),
+      openedNodes = Set(node1.key),
+      initiallyOpenedNodes = Set(node2.key))
+    val component = <(BrowseTree())(^.wrapped := props)()
+
+    //when
+    val result = shallowRender(component)
+
+    //then
+    findProps(result, BrowseTreeNode).map(n => (n.data.key, n.expanded)) shouldBe List(
+      (node1.key, true),
+      (node2.key, true)
+    )
   }
 
   it should "render opened node when componentWillReceiveProps" in {

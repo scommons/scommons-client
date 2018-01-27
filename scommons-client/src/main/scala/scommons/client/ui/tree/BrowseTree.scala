@@ -12,7 +12,8 @@ import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 case class BrowseTreeProps(roots: List[BrowseTreeData],
                            selectedItem: Option[BrowseTreeDataKey] = None,
                            onSelect: BrowseTreeData => Unit = _ => (),
-                           openedNodes: Set[BrowseTreeDataKey] = Set.empty[BrowseTreeDataKey])
+                           openedNodes: Set[BrowseTreeDataKey] = Set.empty,
+                           initiallyOpenedNodes: Set[BrowseTreeDataKey] = Set.empty)
 
 object BrowseTree extends UiComponent[BrowseTreeProps] {
 
@@ -22,7 +23,8 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
 
   lazy val reactClass: ReactClass = React.createClass[PropsType, BrowseTreeState](
     getInitialState = { self =>
-      BrowseTreeState(self.props.wrapped.openedNodes)
+      val props = self.props.wrapped
+      BrowseTreeState(props.initiallyOpenedNodes ++ props.openedNodes)
     },
     componentWillReceiveProps = { (self, nextProps) =>
       val props = nextProps.wrapped

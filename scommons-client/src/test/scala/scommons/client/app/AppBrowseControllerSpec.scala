@@ -18,7 +18,8 @@ class AppBrowseControllerSpec extends TestSpec {
   private val buttons = List(Buttons.ADD, Buttons.REMOVE)
   private val childItem = BrowseTreeItemData("child item")
   private val topNode = BrowseTreeNodeData("top node", List(childItem))
-  private val treeRoots = List(topNode)
+  private val openedTopNode = BrowseTreeNodeData("initially opened top node")
+  private val treeRoots = List(topNode, openedTopNode)
 
   private val childItemComp = React.createClass[Unit, Unit] { _ =>
     <.p()("childItemComp")
@@ -28,10 +29,13 @@ class AppBrowseControllerSpec extends TestSpec {
   }
   private val childItemPath = "/child-item"
   private val topNodePath = "/top-node"
-  val routes = Map(
+  private val openedTopNodePath = "/opened-top-node"
+  private val routes = Map(
     childItem.key -> AppBrowseData(childItemPath, ActionsData(Set(Buttons.ADD.command), _ => ()), Some(childItemComp)),
-    topNode.key -> AppBrowseData(topNodePath, ActionsData(Set(Buttons.REMOVE.command), _ => ()), Some(topNodeComp))
+    topNode.key -> AppBrowseData(topNodePath, ActionsData(Set(Buttons.REMOVE.command), _ => ()), Some(topNodeComp)),
+    openedTopNode.key -> AppBrowseData(openedTopNodePath, ActionsData(Set(Buttons.ADD.command), _ => ()), None)
   )
+  private val initiallyOpenedNodes = Set(openedTopNode.key)
 
   it should "render component with default (root) path" in {
     //given
@@ -105,7 +109,7 @@ class AppBrowseControllerSpec extends TestSpec {
   }
 
   private def createAppBrowseController(targetPath: String): ReactElement = {
-    val props = AppBrowseControllerProps(treeRoots, routes, buttons)
+    val props = AppBrowseControllerProps(treeRoots, routes, buttons, initiallyOpenedNodes)
 
     <.MemoryRouter(^.initialEntries := List(targetPath))(
       <.Switch()(
@@ -121,7 +125,7 @@ class AppBrowseControllerSpec extends TestSpec {
   private def assertRenderedProps(result: Instance,
                                   expectedActions: ActionsData,
                                   expectedSelectedItem: Option[BrowseTreeDataKey],
-                                  expectedOpenedNodes: Set[BrowseTreeDataKey] = Set.empty[BrowseTreeDataKey]): Unit = {
+                                  expectedOpenedNodes: Set[BrowseTreeDataKey] = Set.empty): Unit = {
 
     val browsePanelProps = findRenderedComponentProps(result, AppBrowsePanel)
     val buttonsProps = browsePanelProps.buttonsProps
@@ -133,5 +137,6 @@ class AppBrowseControllerSpec extends TestSpec {
     treeProps.roots shouldBe treeRoots
     treeProps.selectedItem shouldBe expectedSelectedItem
     treeProps.openedNodes shouldBe expectedOpenedNodes
+    treeProps.initiallyOpenedNodes shouldBe initiallyOpenedNodes
   }
 }

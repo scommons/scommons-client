@@ -10,7 +10,8 @@ lazy val scommons = (project in file("."))
   )
   .settings(
     ideaExcludeFolders ++= List(
-      s"docs/_site"
+      "docs/_site",
+      "target"
     )
   )
   .aggregate(

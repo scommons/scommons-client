@@ -11,7 +11,8 @@ import scommons.client.util.ActionsData
 
 case class AppBrowseControllerProps(treeRoots: List[BrowseTreeData],
                                     routes: Map[BrowseTreeDataKey, AppBrowseData],
-                                    buttons: List[ButtonData])
+                                    buttons: List[ButtonData],
+                                    initiallyOpenedNodes: Set[BrowseTreeDataKey] = Set.empty)
 
 object AppBrowseController extends RouterProps {
 
@@ -41,7 +42,8 @@ object AppBrowseController extends RouterProps {
 
     <(AppBrowsePanel())(^.wrapped := AppBrowsePanelProps(
       ButtonsPanelProps(props.buttons, actions, group = true),
-      BrowseTreeProps(props.treeRoots, selectedItem, onSelect = onSelectItem, openedNodes = openedNodes)
+      BrowseTreeProps(props.treeRoots, selectedItem, onSelect = onSelectItem,
+        openedNodes = openedNodes, initiallyOpenedNodes = props.initiallyOpenedNodes)
     ))(panelComp)
   }
 
