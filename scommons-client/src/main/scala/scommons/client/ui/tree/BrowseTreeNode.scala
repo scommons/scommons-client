@@ -25,8 +25,8 @@ object BrowseTreeNode extends UiComponent[BrowseTreeNodeProps] {
     val props = self.props.wrapped
 
     val (itemText, itemImage, isNode) = props.data match {
-      case BrowseTreeItemData(text, image) => (text, image, false)
-      case BrowseTreeNodeData(text, image, _) => (text, image, true)
+      case BrowseTreeItemData(text, _, image, _, _) => (text, image, false)
+      case BrowseTreeNodeData(text, _, image, _, _, _) => (text, image, true)
     }
 
     val topItemClass = if (props.level == 0) browseTreeTopItem else ""

@@ -9,9 +9,8 @@ import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 import scommons.client.ui.tree.{BrowseTreeData, BrowseTreeNodeData, BrowseTreeProps}
 import scommons.client.util.ActionsData
 
-case class AppBrowseControllerProps(treeRoots: List[BrowseTreeData],
-                                    routes: Map[BrowseTreeDataKey, AppBrowseData],
-                                    buttons: List[ButtonData],
+case class AppBrowseControllerProps(buttons: List[ButtonData],
+                                    treeRoots: List[BrowseTreeData],
                                     initiallyOpenedNodes: Set[BrowseTreeDataKey] = Set.empty)
 
 object AppBrowseController extends RouterProps {
@@ -22,21 +21,19 @@ object AppBrowseController extends RouterProps {
     val props = self.props.wrapped
     val path = self.props.location.pathname
 
-    val selectedRoute = getSelectedRoute(props.routes, path)
-    val selectedItem = selectedRoute.map(_._1)
-    val openedNodes = selectedRoute.map { case (itemKey, _) =>
-      getItemPath(props.treeRoots, itemKey.obj).map(_.key).toSet
+    val selectedRoute = findItemAndPath(props.treeRoots, path)
+    val selectedItem = selectedRoute.map(_._1.key)
+    val openedNodes = selectedRoute.map { case (_, itemPath) =>
+      itemPath.map(_.key).toSet
     }.getOrElse(Set.empty[BrowseTreeDataKey])
 
     def onSelectItem(data: BrowseTreeData): Unit = {
-      props.routes.get(data.key).foreach { panel =>
-        self.props.history.push(panel.path)
-      }
+      self.props.history.push(data.path)
     }
 
-    val actions = selectedRoute.map(_._2.actions).getOrElse(ActionsData.empty)
+    val actions = selectedRoute.map(_._1.actions).getOrElse(ActionsData.empty)
 
-    val panelComp = selectedRoute.flatMap(_._2.reactClass).map { reactClass =>
+    val panelComp = selectedRoute.flatMap(_._1.reactClass).map { reactClass =>
       <(WithRouter(reactClass))()()
     }
 
@@ -47,33 +44,27 @@ object AppBrowseController extends RouterProps {
     ))(panelComp)
   }
 
-  private def getSelectedRoute(routes: Map[BrowseTreeDataKey, AppBrowseData],
-                               path: String): Option[(BrowseTreeDataKey, AppBrowseData)] = {
+  private[app] def findItemAndPath(roots: List[BrowseTreeData],
+                                   path: String): Option[(BrowseTreeData, List[BrowseTreeData])] = {
 
-    routes.find { case (_, panelData) =>
-      panelData.path == path
-    }
-  }
-
-  private[app] def getItemPath(roots: List[BrowseTreeData], item: BrowseTreeData): List[BrowseTreeData] = {
-    def loop(nodes: List[BrowseTreeData], path: List[BrowseTreeData]): Option[List[BrowseTreeData]] = nodes match {
-      case Nil => None
+    def loop(nodes: List[BrowseTreeData], itemPath: List[BrowseTreeData]): List[BrowseTreeData] = nodes match {
+      case Nil => Nil
       case head :: tail =>
-        if (head.key == item.key) Some(path)
+        if (head.path == path) head :: itemPath
         else {
           (head match {
-            case node: BrowseTreeNodeData => loop(node.children, head :: path)
-            case _ => None
+            case node: BrowseTreeNodeData => loop(node.children, head :: itemPath)
+            case _ => Nil
           }) match {
-            case None => loop (tail, path)
+            case Nil => loop(tail, itemPath)
             case result => result
           }
         }
     }
 
     loop(roots, Nil) match {
-      case None => Nil
-      case Some(path) => path.reverse
+      case head :: tail => Some(head -> tail.reverse)
+      case _ => None
     }
   }
 }

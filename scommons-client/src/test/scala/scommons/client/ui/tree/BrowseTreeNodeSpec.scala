@@ -19,7 +19,7 @@ class BrowseTreeNodeSpec extends TestSpec {
   it should "call onSelect when click on item div" in {
     //given
     val onSelect = mockFunction[BrowseTreeData, Unit]
-    val data = BrowseTreeItemData("selected item")
+    val data = BrowseTreeItemData("selected item", "/selected-item")
     val comp = renderIntoDocument(treeNode(nodeProps(data, 0, selected = true, onSelect = onSelect)))
     val itemDiv = findRenderedDOMComponentWithClass(comp, s"$browseTreeItem $browseTreeSelectedItem")
 
@@ -33,7 +33,7 @@ class BrowseTreeNodeSpec extends TestSpec {
   it should "call onExpand when click on node arrow" in {
     //given
     val onExpand = mockFunction[BrowseTreeData, Unit]
-    val data = BrowseTreeNodeData("top empty node", Nil)
+    val data = BrowseTreeNodeData("top empty node", "/top-empty-node")
     val comp = renderIntoDocument(treeNode(nodeProps(data, 0, onExpand = onExpand)))
     val arrowDiv = findRenderedDOMComponentWithClass(comp, s"$browseTreeNodeIcon")
 
@@ -47,7 +47,7 @@ class BrowseTreeNodeSpec extends TestSpec {
   it should "call stopPropagation on click event" in {
     //given
     val onExpand = mockFunction[BrowseTreeData, Unit]
-    val props = nodeProps(BrowseTreeNodeData("test"), 0, onExpand = onExpand)
+    val props = nodeProps(BrowseTreeNodeData("test", "/test"), 0, onExpand = onExpand)
     val self = mock[Self[BrowseTreeNodeProps, Unit]]
     val selfProps = mock[Props[BrowseTreeNodeProps]]
     val event = mock[MouseSyntheticEventMock]
@@ -64,7 +64,7 @@ class BrowseTreeNodeSpec extends TestSpec {
 
   it should "render top item" in {
     //given
-    val data = BrowseTreeItemData("top item")
+    val data = BrowseTreeItemData("top item", "/top-item")
     val component = treeNode(nodeProps(data, 0))
 
     //when
@@ -82,7 +82,7 @@ class BrowseTreeNodeSpec extends TestSpec {
 
   it should "render selected item" in {
     //given
-    val data = BrowseTreeItemData("selected item")
+    val data = BrowseTreeItemData("selected item", "/selected-item")
     val component = treeNode(nodeProps(data, 1, selected = true))
 
     //when
@@ -100,7 +100,7 @@ class BrowseTreeNodeSpec extends TestSpec {
 
   it should "render item with image" in {
     //given
-    val data = BrowseTreeItemData("item with image", Some(Buttons.ADD.image))
+    val data = BrowseTreeItemData("item with image", "/item-with-image", Some(Buttons.ADD.image))
     val component = treeNode(nodeProps(data, 1))
 
     //when
@@ -121,7 +121,7 @@ class BrowseTreeNodeSpec extends TestSpec {
 
   it should "render top empty node" in {
     //given
-    val data = BrowseTreeNodeData("top empty node", Nil)
+    val data = BrowseTreeNodeData("top empty node", "/top-empty-node")
     val component = treeNode(nodeProps(data, 0))
 
     //when
@@ -145,8 +145,8 @@ class BrowseTreeNodeSpec extends TestSpec {
 
   it should "render non-empty node" in {
     //given
-    val child = BrowseTreeItemData("child item")
-    val data = BrowseTreeNodeData("non-empty node")
+    val child = BrowseTreeItemData("child item", "/child-item")
+    val data = BrowseTreeNodeData("non-empty node", "/non-empty-node")
     val component = treeNode(nodeProps(data, 1), List(
       treeNode(nodeProps(child, 2))
     ))
@@ -178,8 +178,8 @@ class BrowseTreeNodeSpec extends TestSpec {
 
   it should "render expanded non-empty node" in {
     //given
-    val child = BrowseTreeItemData("child item")
-    val data = BrowseTreeNodeData("expanded non-empty node")
+    val child = BrowseTreeItemData("child item", "/child-item")
+    val data = BrowseTreeNodeData("expanded non-empty node", "/expanded-non-empty-node")
     val component = treeNode(nodeProps(data, 1, expanded = true), List(
       treeNode(nodeProps(child, 2))
     ))

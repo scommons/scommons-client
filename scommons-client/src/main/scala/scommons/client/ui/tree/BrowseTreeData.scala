@@ -1,32 +1,49 @@
 package scommons.client.ui.tree
 
+import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.tree.BrowseTreeData._
-import scommons.client.util.Identity
+import scommons.client.util.{ActionsData, Identity}
 
 sealed trait BrowseTreeData {
 
   lazy val key: BrowseTreeDataKey = Identity(this)
+
+  def path: String
+
+  def actions: ActionsData
+
+  def reactClass: Option[ReactClass]
 }
 
 object BrowseTreeData {
 
   type BrowseTreeDataKey = Identity[BrowseTreeData]
+
+  def flattenNodes(roots: List[BrowseTreeData]): List[BrowseTreeData] = {
+    def loop(nodes: List[BrowseTreeData], result: List[BrowseTreeData]): List[BrowseTreeData] = nodes match {
+      case Nil => result
+      case head :: tail =>
+        val newResult = head :: result
+
+        loop(tail, head match {
+          case node: BrowseTreeNodeData => loop(node.children, newResult)
+          case _ => newResult
+        })
+    }
+
+    loop(roots, Nil)
+  }
 }
 
 case class BrowseTreeItemData(text: String,
-                              image: Option[String]) extends BrowseTreeData
-
-object BrowseTreeItemData {
-
-  def apply(text: String): BrowseTreeItemData = BrowseTreeItemData(text, None)
-}
+                              path: String,
+                              image: Option[String] = None,
+                              actions: ActionsData = ActionsData.empty,
+                              reactClass: Option[ReactClass] = None) extends BrowseTreeData
 
 case class BrowseTreeNodeData(text: String,
-                              image: Option[String],
-                              children: List[BrowseTreeData]) extends BrowseTreeData
-
-object BrowseTreeNodeData {
-
-  def apply(text: String, children: List[BrowseTreeData] = Nil): BrowseTreeNodeData =
-    BrowseTreeNodeData(text, None, children)
-}
+                              path: String,
+                              image: Option[String] = None,
+                              actions: ActionsData = ActionsData.empty,
+                              reactClass: Option[ReactClass] = None,
+                              children: List[BrowseTreeData] = Nil) extends BrowseTreeData

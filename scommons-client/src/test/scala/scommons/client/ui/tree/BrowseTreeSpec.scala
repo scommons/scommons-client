@@ -9,7 +9,7 @@ class BrowseTreeSpec extends TestSpec {
   it should "call onSelect function when select new item" in {
     //given
     val onSelect = mockFunction[BrowseTreeData, Unit]
-    val data = BrowseTreeItemData("test")
+    val data = BrowseTreeItemData("test", "/test")
     val props = BrowseTreeProps(List(data), onSelect = onSelect)
     val comp = shallowRender(<(BrowseTree())(^.wrapped := props)())
     val nodeProps = findComponentProps(comp, BrowseTreeNode)
@@ -24,7 +24,7 @@ class BrowseTreeSpec extends TestSpec {
   it should "not call onSelect function when select the same item" in {
     //given
     val onSelect = mockFunction[BrowseTreeData, Unit]
-    val data = BrowseTreeItemData("test")
+    val data = BrowseTreeItemData("test", "/test")
     val props = BrowseTreeProps(List(data), selectedItem = Some(data.key), onSelect = onSelect)
     val comp = shallowRender(<(BrowseTree())(^.wrapped := props)())
     val nodeProps = findComponentProps(comp, BrowseTreeNode)
@@ -39,7 +39,7 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "expand node when onExpand" in {
     //given
-    val data = BrowseTreeItemData("test")
+    val data = BrowseTreeItemData("test", "/test")
     val props = BrowseTreeProps(List(data))
     val renderer = createRenderer()
     renderer.render(<(BrowseTree())(^.wrapped := props)())
@@ -57,7 +57,7 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "collapse initially opened node when onExpand" in {
     //given
-    val data = BrowseTreeItemData("test")
+    val data = BrowseTreeItemData("test", "/test")
     val props = BrowseTreeProps(List(data), initiallyOpenedNodes = Set(data.key))
     val renderer = createRenderer()
     renderer.render(<(BrowseTree())(^.wrapped := props)())
@@ -75,7 +75,7 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "collapse node when onExpand again" in {
     //given
-    val data = BrowseTreeItemData("test")
+    val data = BrowseTreeItemData("test", "/test")
     val props = BrowseTreeProps(List(data))
     val renderer = createRenderer()
     renderer.render(<(BrowseTree())(^.wrapped := props)())
@@ -96,7 +96,7 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "render selected node" in {
     //given
-    val data = BrowseTreeItemData("test")
+    val data = BrowseTreeItemData("test", "/test")
     val props = BrowseTreeProps(List(data), selectedItem = Some(data.key))
     val component = <(BrowseTree())(^.wrapped := props)()
 
@@ -109,7 +109,7 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "render opened node" in {
     //given
-    val node = BrowseTreeNodeData("test")
+    val node = BrowseTreeNodeData("test", "/test")
     val props = BrowseTreeProps(List(node), openedNodes = Set(node.key))
     val component = <(BrowseTree())(^.wrapped := props)()
 
@@ -122,8 +122,8 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "render initially opened node" in {
     //given
-    val node1 = BrowseTreeNodeData("node 1")
-    val node2 = BrowseTreeNodeData("node 2")
+    val node1 = BrowseTreeNodeData("node 1", "/node-1")
+    val node2 = BrowseTreeNodeData("node 2", "/node-2")
     val props = BrowseTreeProps(List(node1, node2),
       openedNodes = Set(node1.key),
       initiallyOpenedNodes = Set(node2.key))
@@ -141,13 +141,13 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "render opened node when componentWillReceiveProps" in {
     //given
-    val node1 = BrowseTreeNodeData("node 1")
+    val node1 = BrowseTreeNodeData("node 1", "/node-1")
     val prevProps = BrowseTreeProps(List(node1), openedNodes = Set(node1.key))
     val renderer = createRenderer()
     renderer.render(<(BrowseTree())(^.wrapped := prevProps)())
     val comp = renderer.getRenderOutput()
     findComponentProps(comp, BrowseTreeNode).expanded shouldBe true
-    val node2 = BrowseTreeNodeData("node 2")
+    val node2 = BrowseTreeNodeData("node 2", "/node-2")
     val props = BrowseTreeProps(List(node1, node2), openedNodes = Set(node2.key))
 
     //when
@@ -163,11 +163,11 @@ class BrowseTreeSpec extends TestSpec {
   it should "not render opened node when it was removed" in {
     //given
     val renderer = createRenderer()
-    val node1 = BrowseTreeNodeData("node 1")
+    val node1 = BrowseTreeNodeData("node 1", "/node-1")
     val props = BrowseTreeProps(List(node1), openedNodes = Set(node1.key))
     renderer.render(<(BrowseTree())(^.wrapped := props)())
     findComponentProps(renderer.getRenderOutput(), BrowseTreeNode).expanded shouldBe true
-    val node2 = BrowseTreeNodeData("node 2")
+    val node2 = BrowseTreeNodeData("node 2", "/node-2")
     val propsV2 = BrowseTreeProps(List(node2), openedNodes = Set(node2.key))
     renderer.render(<(BrowseTree())(^.wrapped := propsV2)())
     findComponentProps(renderer.getRenderOutput(), BrowseTreeNode).expanded shouldBe true
@@ -185,10 +185,10 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "render child nodes" in {
     //given
-    val topItem = BrowseTreeItemData("top item")
-    val childItem = BrowseTreeItemData("child item")
-    val childNode = BrowseTreeNodeData("child node", List(childItem))
-    val topNode = BrowseTreeNodeData("top node", List(childNode))
+    val topItem = BrowseTreeItemData("top item", "/top-item")
+    val childItem = BrowseTreeItemData("child item", "/child-item")
+    val childNode = BrowseTreeNodeData("child node", "/child-node", children = List(childItem))
+    val topNode = BrowseTreeNodeData("top node", "/top-node", children = List(childNode))
     val props = BrowseTreeProps(List(topItem, topNode), openedNodes = Set(topNode.key, childNode.key))
     val component = <(BrowseTree())(^.wrapped := props)()
 
@@ -236,15 +236,15 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "return all nodes keys when getAllKeys" in {
     //given
-    val item1 = BrowseTreeItemData("item1")
-    val item2 = BrowseTreeItemData("item2")
-    val item3 = BrowseTreeItemData("item3")
-    val item4 = BrowseTreeItemData("item4")
-    val node2 = BrowseTreeNodeData("node2")
-    val node4 = BrowseTreeNodeData("node4")
-    val node3 = BrowseTreeNodeData("node3", List(item4, node4))
-    val node1 = BrowseTreeNodeData("node1", List(item3, node2, node3))
-    val item5 = BrowseTreeItemData("item5")
+    val item1 = BrowseTreeItemData("item1", "/item1")
+    val item2 = BrowseTreeItemData("item2", "/item2")
+    val item3 = BrowseTreeItemData("item3", "/item3")
+    val item4 = BrowseTreeItemData("item4", "/item4")
+    val node2 = BrowseTreeNodeData("node2", "/node2")
+    val node4 = BrowseTreeNodeData("node4", "/node4")
+    val node3 = BrowseTreeNodeData("node3", "/node3", children = List(item4, node4))
+    val node1 = BrowseTreeNodeData("node1", "/node1", children = List(item3, node2, node3))
+    val item5 = BrowseTreeItemData("item5", "/item5")
     val roots = List(item1, item2, node1, item5)
 
     //when

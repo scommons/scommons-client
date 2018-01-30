@@ -14,8 +14,8 @@ class AppBrowsePanelSpec extends TestSpec {
     val b2 = Buttons.REMOVE
     val buttonsPanelProps = ButtonsPanelProps(List(b1, b2), ActionsData(Set(b1.command), _ => ()))
 
-    val childItem = BrowseTreeItemData("child item")
-    val topNode = BrowseTreeNodeData("top node", List(childItem))
+    val childItem = BrowseTreeItemData("child item", "/child-item")
+    val topNode = BrowseTreeNodeData("top node", "/top-node", children = List(childItem))
     val browseTreeProps = BrowseTreeProps(List(topNode))
 
     val props = AppBrowsePanelProps(buttonsPanelProps, browseTreeProps)
