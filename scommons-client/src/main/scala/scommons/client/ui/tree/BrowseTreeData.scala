@@ -1,14 +1,11 @@
 package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.tree.BrowseTreeData._
-import scommons.client.util.{ActionsData, Identity}
+import scommons.client.util.{ActionsData, BrowsePath}
 
 sealed trait BrowseTreeData {
 
-  lazy val key: BrowseTreeDataKey = Identity(this)
-
-  def path: String
+  def path: BrowsePath
 
   def actions: ActionsData
 
@@ -16,8 +13,6 @@ sealed trait BrowseTreeData {
 }
 
 object BrowseTreeData {
-
-  type BrowseTreeDataKey = Identity[BrowseTreeData]
 
   def flattenNodes(roots: List[BrowseTreeData]): List[BrowseTreeData] = {
     def loop(nodes: List[BrowseTreeData], result: List[BrowseTreeData]): List[BrowseTreeData] = nodes match {
@@ -36,13 +31,13 @@ object BrowseTreeData {
 }
 
 case class BrowseTreeItemData(text: String,
-                              path: String,
+                              path: BrowsePath,
                               image: Option[String] = None,
                               actions: ActionsData = ActionsData.empty,
                               reactClass: Option[ReactClass] = None) extends BrowseTreeData
 
 case class BrowseTreeNodeData(text: String,
-                              path: String,
+                              path: BrowsePath,
                               image: Option[String] = None,
                               actions: ActionsData = ActionsData.empty,
                               reactClass: Option[ReactClass] = None,

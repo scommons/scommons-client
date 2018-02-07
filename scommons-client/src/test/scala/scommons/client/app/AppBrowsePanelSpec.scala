@@ -2,9 +2,9 @@ package scommons.client.app
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.TestSpec
-import scommons.client.ui.tree.{BrowseTree, BrowseTreeItemData, BrowseTreeNodeData, BrowseTreeProps}
+import scommons.client.ui.tree._
 import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
-import scommons.client.util.ActionsData
+import scommons.client.util.{ActionsData, BrowsePath}
 
 class AppBrowsePanelSpec extends TestSpec {
 
@@ -14,8 +14,8 @@ class AppBrowsePanelSpec extends TestSpec {
     val b2 = Buttons.REMOVE
     val buttonsPanelProps = ButtonsPanelProps(List(b1, b2), ActionsData(Set(b1.command), _ => ()))
 
-    val childItem = BrowseTreeItemData("child item", "/child-item")
-    val topNode = BrowseTreeNodeData("top node", "/top-node", children = List(childItem))
+    val childItem = BrowseTreeItemData("child item", BrowsePath("/child-item"))
+    val topNode = BrowseTreeNodeData("top node", BrowsePath("/top-node"), children = List(childItem))
     val browseTreeProps = BrowseTreeProps(List(topNode))
 
     val props = AppBrowsePanelProps(buttonsPanelProps, browseTreeProps)

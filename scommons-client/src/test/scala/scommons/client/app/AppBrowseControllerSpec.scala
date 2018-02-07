@@ -8,9 +8,8 @@ import scommons.client.app.AppBrowseController.findItemAndPath
 import scommons.client.test.raw.MemoryRouter._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.Buttons
-import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
 import scommons.client.ui.tree.{BrowseTreeItemData, BrowseTreeNodeData}
-import scommons.client.util.ActionsData
+import scommons.client.util.{ActionsData, BrowsePath}
 
 class AppBrowseControllerSpec extends TestSpec {
 
@@ -21,9 +20,9 @@ class AppBrowseControllerSpec extends TestSpec {
     <.p()("topNodeComp")
   }
 
-  private val childItemPath = "/child-item"
-  private val topNodePath = "/top-node"
-  private val openedTopNodePath = "/opened-top-node"
+  private val childItemPath = BrowsePath("/child-item")
+  private val topNodePath = BrowsePath("/top-node")
+  private val openedTopNodePath = BrowsePath("/opened-top-node")
 
   private val buttons = List(Buttons.ADD, Buttons.REMOVE)
 
@@ -38,11 +37,11 @@ class AppBrowseControllerSpec extends TestSpec {
 
   private val treeRoots = List(topNode, openedTopNode)
 
-  private val initiallyOpenedNodes = Set(openedTopNode.key)
+  private val initiallyOpenedNodes = Set(openedTopNode.path)
 
   it should "render component with default (root) path" in {
     //given
-    val component = createAppBrowseController("/")
+    val component = createAppBrowseController(BrowsePath("/"))
 
     //when
     val result = renderIntoDocument(component)
@@ -61,7 +60,7 @@ class AppBrowseControllerSpec extends TestSpec {
     val result = renderIntoDocument(component)
 
     //then
-    assertRenderedProps(result, topNode.actions, Some(topNode.key))
+    assertRenderedProps(result, topNode.actions, Some(topNode.path))
     scryRenderedComponentsWithType(result, childItemComp).length shouldBe 0
     scryRenderedComponentsWithType(result, topNodeComp).length should be > 0
   }
@@ -74,7 +73,7 @@ class AppBrowseControllerSpec extends TestSpec {
     val result = renderIntoDocument(component)
 
     //then
-    assertRenderedProps(result, childItem.actions, Some(childItem.key), Set(topNode.key))
+    assertRenderedProps(result, childItem.actions, Some(childItem.path), Set(topNode.path))
     scryRenderedComponentsWithType(result, childItemComp).length should be > 0
     scryRenderedComponentsWithType(result, topNodeComp).length shouldBe 0
   }
@@ -82,7 +81,7 @@ class AppBrowseControllerSpec extends TestSpec {
   it should "re-render component when selected item changes" in {
     //given
     val comp = renderIntoDocument(createAppBrowseController(topNodePath))
-    assertRenderedProps(comp, topNode.actions, Some(topNode.key))
+    assertRenderedProps(comp, topNode.actions, Some(topNode.path))
     scryRenderedComponentsWithType(comp, topNodeComp).length should be > 0
     val treeProps = findRenderedComponentProps(comp, AppBrowsePanel).treeProps
 
@@ -90,22 +89,22 @@ class AppBrowseControllerSpec extends TestSpec {
     treeProps.onSelect(childItem)
 
     //then
-    assertRenderedProps(comp, childItem.actions, Some(childItem.key), Set(topNode.key))
+    assertRenderedProps(comp, childItem.actions, Some(childItem.path), Set(topNode.path))
     scryRenderedComponentsWithType(comp, childItemComp).length should be > 0
   }
 
   it should "return item path when findItemAndPath" in {
     //given
-    val item1 = BrowseTreeItemData("item1", "/item1")
-    val item2 = BrowseTreeItemData("item2", "/item2")
-    val item3 = BrowseTreeItemData("item3", "/item3")
-    val node1 = BrowseTreeNodeData("node1", "/node1")
-    val node2 = BrowseTreeNodeData("node2", "/node2", children = List(item3))
-    val node3 = BrowseTreeNodeData("node3", "/node3", children = List(item2, node2))
+    val item1 = BrowseTreeItemData("item1", BrowsePath("/item1"))
+    val item2 = BrowseTreeItemData("item2", BrowsePath("/item2"))
+    val item3 = BrowseTreeItemData("item3", BrowsePath("/item3"))
+    val node1 = BrowseTreeNodeData("node1", BrowsePath("/node1"))
+    val node2 = BrowseTreeNodeData("node2", BrowsePath("/node2"), children = List(item3))
+    val node3 = BrowseTreeNodeData("node3", BrowsePath("/node3"), children = List(item2, node2))
     val roots = List(node1, node3, item1)
 
     //when & then
-    findItemAndPath(roots, "/unknown") shouldBe None
+    findItemAndPath(roots, BrowsePath("/unknown")) shouldBe None
     findItemAndPath(roots, item1.path) shouldBe Some(item1 -> Nil)
     findItemAndPath(roots, item2.path) shouldBe Some(item2 -> List(node3))
     findItemAndPath(roots, item3.path) shouldBe Some(item3 -> List(node3, node2))
@@ -114,20 +113,20 @@ class AppBrowseControllerSpec extends TestSpec {
     findItemAndPath(roots, node3.path) shouldBe Some(node3 -> Nil)
   }
 
-  private def createAppBrowseController(targetPath: String): ReactElement = {
+  private def createAppBrowseController(targetPath: BrowsePath): ReactElement = {
     val compClass = React.createClass[Unit, Unit] { _ =>
       <(AppBrowseController())(^.wrapped := AppBrowseControllerProps(buttons, treeRoots, initiallyOpenedNodes))()
     }
 
-    <.MemoryRouter(^.initialEntries := List(targetPath))(
+    <.MemoryRouter(^.initialEntries := List(targetPath.value))(
       <(AppBrowseRouter())(^.wrapped := AppBrowseRouterProps(treeRoots, compClass))()
     )
   }
 
   private def assertRenderedProps(result: Instance,
                                   expectedActions: ActionsData,
-                                  expectedSelectedItem: Option[BrowseTreeDataKey],
-                                  expectedOpenedNodes: Set[BrowseTreeDataKey] = Set.empty): Unit = {
+                                  expectedSelectedItem: Option[BrowsePath],
+                                  expectedOpenedNodes: Set[BrowsePath] = Set.empty): Unit = {
 
     val browsePanelProps = findRenderedComponentProps(result, AppBrowsePanel)
     val buttonsProps = browsePanelProps.buttonsProps

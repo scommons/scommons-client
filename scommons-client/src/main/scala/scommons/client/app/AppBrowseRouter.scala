@@ -6,6 +6,7 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.router.WithRouter
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import scommons.client.ui.tree.BrowseTreeData
+import scommons.client.util.BrowsePath
 
 case class AppBrowseRouterProps(treeRoots: List[BrowseTreeData],
                                 component: ReactClass)
@@ -19,8 +20,8 @@ object AppBrowseRouter {
     val allNodes = BrowseTreeData.flattenNodes(props.treeRoots)
 
     <.Switch()(
-      (allNodes.map(_.path) :+ "/").map { path =>
-        <.Route(^.path := path, ^.component := props.component)()
+      (allNodes.map(_.path) :+ BrowsePath("/")).map { path =>
+        <.Route(^.path := path.value, ^.component := props.component)()
       }
     )
   }

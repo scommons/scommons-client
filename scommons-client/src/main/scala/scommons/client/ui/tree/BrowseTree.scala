@@ -7,17 +7,17 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import scommons.client.ui.UiComponent
 import scommons.client.ui.tree.BrowseTreeCss._
-import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
+import scommons.client.util.BrowsePath
 
 case class BrowseTreeProps(roots: List[BrowseTreeData],
-                           selectedItem: Option[BrowseTreeDataKey] = None,
+                           selectedItem: Option[BrowsePath] = None,
                            onSelect: BrowseTreeData => Unit = _ => (),
-                           openedNodes: Set[BrowseTreeDataKey] = Set.empty,
-                           initiallyOpenedNodes: Set[BrowseTreeDataKey] = Set.empty)
+                           openedNodes: Set[BrowsePath] = Set.empty,
+                           initiallyOpenedNodes: Set[BrowsePath] = Set.empty)
 
 object BrowseTree extends UiComponent[BrowseTreeProps] {
 
-  private case class BrowseTreeState(opened: Set[BrowseTreeDataKey])
+  private case class BrowseTreeState(opened: Set[BrowsePath])
 
   def apply(): ReactClass = reactClass
 
@@ -29,7 +29,7 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
     componentWillReceiveProps = { (self, nextProps) =>
       val props = nextProps.wrapped
       if (self.props.wrapped != props) {
-        val currKeys = getAllKeys(props.roots)
+        val currKeys = getAllPaths(props.roots)
         self.setState(s => s.copy(opened = (s.opened ++ props.openedNodes).intersect(currKeys)))
       }
     },
@@ -57,21 +57,21 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
     }
   )
 
-  private[tree] def getAllKeys(roots: List[BrowseTreeData]): Set[BrowseTreeDataKey] = {
-    def loop(nodes: List[BrowseTreeData], result: Set[BrowseTreeDataKey]): Set[BrowseTreeDataKey] = nodes match {
+  private[tree] def getAllPaths(roots: List[BrowseTreeData]): Set[BrowsePath] = {
+    def loop(nodes: List[BrowseTreeData], result: Set[BrowsePath]): Set[BrowsePath] = nodes match {
       case Nil => result
       case head :: tail =>
         loop(tail, head match {
           case node: BrowseTreeNodeData => loop(node.children, result)
           case _ => result
-        }) + head.key
+        }) + head.path
     }
 
-    loop(roots, Set.empty[BrowseTreeDataKey])
+    loop(roots, Set.empty[BrowsePath])
   }
 
   private def isSelected(props: BrowseTreeProps, data: BrowseTreeData): Boolean = {
-    props.selectedItem.contains(data.key)
+    props.selectedItem.contains(data.path)
   }
 
   private def onSelect(props: BrowseTreeProps)(data: BrowseTreeData): Unit = {
@@ -81,14 +81,14 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
   }
 
   private def isOpen(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
-    state.opened.contains(data.key)
+    state.opened.contains(data.path)
   }
 
   private def toggleState(self: Self[BrowseTreeProps, BrowseTreeState])(data: BrowseTreeData): Unit = {
     val currOpen = isOpen(self.state, data)
     val newState =
-      if (currOpen) self.state.opened - data.key
-      else self.state.opened + data.key
+      if (currOpen) self.state.opened - data.path
+      else self.state.opened + data.path
 
     self.setState(_.copy(opened = newState))
   }

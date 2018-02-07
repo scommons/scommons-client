@@ -5,13 +5,12 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import scommons.client.ui._
-import scommons.client.ui.tree.BrowseTreeData.BrowseTreeDataKey
-import scommons.client.ui.tree.{BrowseTreeData, BrowseTreeNodeData, BrowseTreeProps}
-import scommons.client.util.ActionsData
+import scommons.client.ui.tree._
+import scommons.client.util.{ActionsData, BrowsePath}
 
 case class AppBrowseControllerProps(buttons: List[ButtonData],
                                     treeRoots: List[BrowseTreeData],
-                                    initiallyOpenedNodes: Set[BrowseTreeDataKey] = Set.empty)
+                                    initiallyOpenedNodes: Set[BrowsePath] = Set.empty)
 
 object AppBrowseController extends RouterProps {
 
@@ -19,16 +18,16 @@ object AppBrowseController extends RouterProps {
 
   private lazy val reactClass = React.createClass[AppBrowseControllerProps, Unit] { self =>
     val props = self.props.wrapped
-    val path = self.props.location.pathname
+    val path = BrowsePath(self.props.location.pathname)
 
     val selectedRoute = findItemAndPath(props.treeRoots, path)
-    val selectedItem = selectedRoute.map(_._1.key)
+    val selectedItem = selectedRoute.map(_._1.path)
     val openedNodes = selectedRoute.map { case (_, itemPath) =>
-      itemPath.map(_.key).toSet
-    }.getOrElse(Set.empty[BrowseTreeDataKey])
+      itemPath.map(_.path).toSet
+    }.getOrElse(Set.empty[BrowsePath])
 
     def onSelectItem(data: BrowseTreeData): Unit = {
-      self.props.history.push(data.path)
+      self.props.history.push(data.path.value)
     }
 
     val actions = selectedRoute.map(_._1.actions).getOrElse(ActionsData.empty)
@@ -45,7 +44,7 @@ object AppBrowseController extends RouterProps {
   }
 
   private[app] def findItemAndPath(roots: List[BrowseTreeData],
-                                   path: String): Option[(BrowseTreeData, List[BrowseTreeData])] = {
+                                   path: BrowsePath): Option[(BrowseTreeData, List[BrowseTreeData])] = {
 
     def loop(nodes: List[BrowseTreeData], itemPath: List[BrowseTreeData]): List[BrowseTreeData] = nodes match {
       case Nil => Nil
