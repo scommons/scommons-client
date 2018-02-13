@@ -114,12 +114,8 @@ class AppBrowseControllerSpec extends TestSpec {
   }
 
   private def createAppBrowseController(targetPath: BrowsePath): ReactElement = {
-    val compClass = React.createClass[Unit, Unit] { _ =>
-      <(AppBrowseController())(^.wrapped := AppBrowseControllerProps(buttons, treeRoots, initiallyOpenedNodes))()
-    }
-
     <.MemoryRouter(^.initialEntries := List(targetPath.value))(
-      <(AppBrowseRouter())(^.wrapped := AppBrowseRouterProps(treeRoots, compClass))()
+      <(AppBrowseController())(^.wrapped := AppBrowseControllerProps(buttons, treeRoots, initiallyOpenedNodes))()
     )
   }
 

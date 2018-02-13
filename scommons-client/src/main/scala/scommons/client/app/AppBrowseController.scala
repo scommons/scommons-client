@@ -3,6 +3,7 @@ package scommons.client.app
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import scommons.client.ui._
 import scommons.client.ui.tree._
@@ -31,16 +32,21 @@ object AppBrowseController extends RouterProps {
     }
 
     val actions = selectedRoute.map(_._1.actions).getOrElse(ActionsData.empty)
-
-    val panelComp = selectedRoute.flatMap(_._1.reactClass).map { reactClass =>
-      <(WithRouter(reactClass))()()
-    }
+    val allNodes = BrowseTreeData.flattenNodes(props.treeRoots)
 
     <(AppBrowsePanel())(^.wrapped := AppBrowsePanelProps(
       ButtonsPanelProps(props.buttons, actions, group = true),
       BrowseTreeProps(props.treeRoots, selectedItem, onSelect = onSelectItem,
         openedNodes = openedNodes, initiallyOpenedNodes = props.initiallyOpenedNodes)
-    ))(panelComp)
+    ))(
+      <.Switch()(
+        allNodes.flatMap { n =>
+          n.reactClass.map { comp =>
+            <.Route(^.path := n.path.value, ^.component := comp)()
+          }
+        }
+      )
+    )
   }
 
   private[app] def findItemAndPath(roots: List[BrowseTreeData],
