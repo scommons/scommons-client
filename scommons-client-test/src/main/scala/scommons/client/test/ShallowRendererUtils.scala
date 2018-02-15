@@ -7,7 +7,6 @@ import scommons.client.test.raw.ShallowRenderer
 import scommons.client.test.raw.ShallowRenderer._
 
 import scala.collection.mutable.ListBuffer
-import scala.scalajs.js
 
 trait ShallowRendererUtils extends Matchers {
 
@@ -17,7 +16,7 @@ trait ShallowRendererUtils extends Matchers {
 
   def createRenderer(): ShallowRenderer = new ShallowRenderer
 
-  def shallowRender(element: js.Object): ComponentInstance = renderAndGetOutput(element)
+  def shallowRender(element: scalajs.js.Object): ComponentInstance = renderAndGetOutput(element)
 
   def getComponentProps[T](component: ComponentInstance): T = component.props.wrapped.asInstanceOf[T]
 
@@ -65,7 +64,7 @@ trait ShallowRendererUtils extends Matchers {
       val resultValue = result.props.selectDynamic(attr.name).asInstanceOf[Any]
       attr.value match {
         case attrValue: Map[_, _] =>
-          resultValue.asInstanceOf[js.Dictionary[String]].toMap shouldBe attrValue
+          resultValue.asInstanceOf[scalajs.js.Dictionary[String]].toMap shouldBe attrValue
         case _ if attr.valueType == AttributeValueType.SPACE_SEPARATED =>
           normalize(resultValue.toString).toSet shouldBe normalize(attr.valueToString).toSet
         case _ if resultValue.isInstanceOf[String] =>
@@ -95,13 +94,13 @@ trait ShallowRendererUtils extends Matchers {
   }
 
   private def getComponentChildren(result: ComponentInstance): List[ComponentInstance] = {
-    if (js.isUndefined(result.props)) Nil
+    if (scalajs.js.isUndefined(result.props)) Nil
     else {
       val children = result.props.children
 
-      if (js.isUndefined(children)) Nil
-      else if (js.Array.isArray(children)) {
-        children.asInstanceOf[js.Array[ComponentInstance]].toList
+      if (scalajs.js.isUndefined(children)) Nil
+      else if (scalajs.js.Array.isArray(children)) {
+        children.asInstanceOf[scalajs.js.Array[ComponentInstance]].toList
       }
       else List(children.asInstanceOf[ComponentInstance])
     }
