@@ -4,14 +4,14 @@ import common.{Libs, TestLibs}
 import sbt.Keys._
 import sbt._
 
-object ScommonsPlayWsApiClient extends BasicModule {
+object ScommonsApiClientPlayWs extends BasicModule {
 
-  override val id: String = "scommons-play-ws-api-client"
+  override val id: String = "scommons-api-client-play-ws"
 
   override def definition: Project = {
     super.definition
       .settings(
-        description := "Common Scala play-ws ApiHttpClient implementation"
+        description := "Common Scala ApiHttpClient implementation using play-ws library"
       )
   }
 
