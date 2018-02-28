@@ -3,6 +3,7 @@ package scommons.client.app
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.TestSpec
 import scommons.client.app.AppBrowseController.findItemAndPath
 import scommons.client.test.raw.MemoryRouter._
@@ -27,16 +28,16 @@ class AppBrowseControllerSpec extends TestSpec {
   private val buttons = List(Buttons.ADD, Buttons.REMOVE)
 
   private val childItem = BrowseTreeItemData("child item", childItemPath, None,
-    ActionsData(Set(Buttons.ADD.command), _ => ()), Some(childItemComp))
+    ActionsData.empty.copy(enabledCommands = Set(Buttons.ADD.command)), Some(childItemComp))
 
   private val topNode = BrowseTreeNodeData("top node", topNodePath, None,
-    ActionsData(Set(Buttons.REMOVE.command), _ => ()), Some(topNodeComp), List(childItem))
+    ActionsData.empty.copy(enabledCommands = Set(Buttons.REMOVE.command)), Some(topNodeComp), List(childItem))
 
   private val openedTopNode = BrowseTreeNodeData("initially opened top node", openedTopNodePath, None,
-    ActionsData(Set(Buttons.ADD.command), _ => ()), None)
+    ActionsData.empty.copy(enabledCommands = Set(Buttons.ADD.command)), None)
 
+  private val dispatch: Dispatch = _ => ()
   private val treeRoots = List(topNode, openedTopNode)
-
   private val initiallyOpenedNodes = Set(openedTopNode.path)
 
   it should "render component with default (root) path" in {
@@ -115,7 +116,12 @@ class AppBrowseControllerSpec extends TestSpec {
 
   private def createAppBrowseController(targetPath: BrowsePath): ReactElement = {
     <.MemoryRouter(^.initialEntries := List(targetPath.value))(
-      <(AppBrowseController())(^.wrapped := AppBrowseControllerProps(buttons, treeRoots, initiallyOpenedNodes))()
+      <(AppBrowseController())(^.wrapped := AppBrowseControllerProps(
+        buttons,
+        treeRoots,
+        dispatch,
+        initiallyOpenedNodes
+      ))()
     )
   }
 
@@ -128,6 +134,7 @@ class AppBrowseControllerSpec extends TestSpec {
     val buttonsProps = browsePanelProps.buttonsProps
     buttonsProps.buttons shouldBe buttons
     buttonsProps.actions shouldBe expectedActions
+    buttonsProps.dispatch shouldBe dispatch
     buttonsProps.group shouldBe true
 
     val treeProps = browsePanelProps.treeProps

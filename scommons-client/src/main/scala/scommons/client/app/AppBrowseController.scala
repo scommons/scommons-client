@@ -3,6 +3,7 @@ package scommons.client.app
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import scommons.client.ui._
@@ -11,6 +12,7 @@ import scommons.client.util.{ActionsData, BrowsePath}
 
 case class AppBrowseControllerProps(buttons: List[ButtonData],
                                     treeRoots: List[BrowseTreeData],
+                                    dispatch: Dispatch,
                                     initiallyOpenedNodes: Set[BrowsePath] = Set.empty)
 
 object AppBrowseController extends RouterProps {
@@ -35,7 +37,7 @@ object AppBrowseController extends RouterProps {
     val allNodes = BrowseTreeData.flattenNodes(props.treeRoots)
 
     <(AppBrowsePanel())(^.wrapped := AppBrowsePanelProps(
-      ButtonsPanelProps(props.buttons, actions, group = true),
+      ButtonsPanelProps(props.buttons, actions, props.dispatch, group = true),
       BrowseTreeProps(props.treeRoots, selectedItem, onSelect = onSelectItem,
         openedNodes = openedNodes, initiallyOpenedNodes = props.initiallyOpenedNodes)
     ))(

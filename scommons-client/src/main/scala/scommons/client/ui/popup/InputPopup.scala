@@ -40,16 +40,16 @@ object InputPopup extends UiComponent[InputPopupProps] {
     render = { self =>
       val props = self.props.wrapped
 
-      def onCommand(command: String): Unit = command match {
-        case Buttons.OK.command => props.onOk(self.state.value)
-        case _ => props.onCancel()
-      }
+      val onOk = () => props.onOk(self.state.value)
 
       <(Modal())(^.wrapped := ModalProps(props.show,
         None,
         List(Buttons.OK, Buttons.CANCEL),
-        ActionsData(self.state.actionCommands, onCommand),
-        props.onCancel,
+        ActionsData(self.state.actionCommands, {
+          case (Buttons.OK.command, _) => onOk()
+          case _ => props.onCancel()
+        }),
+        onClose = props.onCancel,
         onOpen = { () =>
           self.setState(_.copy(opened = true))
         }
@@ -66,9 +66,7 @@ object InputPopup extends UiComponent[InputPopupProps] {
               requestSelect = self.state.opened,
               className = Some("span12"),
               placeholder = props.placeholder,
-              onEnter = { () =>
-                onCommand(Buttons.OK.command)
-              }
+              onEnter = onOk
             ))()
           )
         )

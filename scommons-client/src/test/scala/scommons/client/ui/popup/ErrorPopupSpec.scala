@@ -35,7 +35,7 @@ class ErrorPopupSpec extends TestSpec {
     onClose.expects()
 
     //when
-    modalProps.actions.onCommand("close")
+    modalProps.actions.onCommand(("close", _ => ()))
   }
 
   it should "show details when on details command" in {
@@ -47,7 +47,7 @@ class ErrorPopupSpec extends TestSpec {
     val modalProps = findComponentProps(comp, Modal)
 
     //when
-    modalProps.actions.onCommand("details")
+    modalProps.actions.onCommand(("details", _ => ()))
 
     //then
     assertErrorPopup(renderer.getRenderOutput(), props, showDetails = true)
@@ -60,11 +60,11 @@ class ErrorPopupSpec extends TestSpec {
     renderer.render(<(ErrorPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val modalProps = findComponentProps(comp, Modal)
-    modalProps.actions.onCommand("details")
+    modalProps.actions.onCommand(("details", _ => ()))
     assertErrorPopup(renderer.getRenderOutput(), props, showDetails = true)
 
     //when
-    modalProps.actions.onCommand("details")
+    modalProps.actions.onCommand(("details", _ => ()))
 
     //then
     assertErrorPopup(renderer.getRenderOutput(), props, showDetails = false)
@@ -143,7 +143,7 @@ class ErrorPopupSpec extends TestSpec {
       else List(closeButton)
 
     assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, onClose, closable, _) =>
+      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
         show shouldBe props.show
         header shouldBe None
         buttons shouldBe buttonsList

@@ -3,10 +3,12 @@ package scommons.client.ui
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.util.ActionsData
 
 case class ButtonsPanelProps(buttons: List[ButtonData],
                              actions: ActionsData,
+                             dispatch: Dispatch = _ => (),
                              group: Boolean = false,
                              className: Option[String] = None)
 
@@ -23,7 +25,10 @@ object ButtonsPanel extends UiComponent[ButtonsPanelProps] {
     }
 
     def onCommand(command: String): () => Unit = { () =>
-      props.actions.onCommand(command)
+      val cmdDispatch = (command, props.dispatch)
+      if (props.actions.onCommand.isDefinedAt(cmdDispatch)) {
+        props.actions.onCommand.apply(cmdDispatch)
+      }
     }
 
     <.div(^.className := panelClass)(props.buttons.map { buttonData =>

@@ -60,7 +60,7 @@ class ModalSpec extends TestSpec {
         assertDOMComponent(child, <.p()("some children"))
       })
       assertComponent(footer, ModalFooter(), { footerProps: ModalFooterProps =>
-        footerProps shouldBe ModalFooterProps(props.buttons, props.actions)
+        footerProps shouldBe ModalFooterProps(props.buttons, props.actions, props.dispatch)
       })
     })
   }
@@ -81,7 +81,7 @@ class ModalSpec extends TestSpec {
         assertDOMComponent(child, <.p()("some children"))
       })
       assertComponent(footer, ModalFooter(), { footerProps: ModalFooterProps =>
-        footerProps shouldBe ModalFooterProps(props.buttons, props.actions)
+        footerProps shouldBe ModalFooterProps(props.buttons, props.actions, props.dispatch)
       })
     })
   }
@@ -93,7 +93,8 @@ class ModalSpec extends TestSpec {
     show = true,
     header,
     List(Buttons.OK, Buttons.CANCEL),
-    ActionsData(Set(Buttons.OK.command, Buttons.CANCEL.command), _ => ()),
+    ActionsData.empty.copy(enabledCommands = Set(Buttons.OK.command, Buttons.CANCEL.command)),
+    _ => (),
     onClose,
     closable,
     onOpen

@@ -20,7 +20,7 @@ class YesNoCancelPopupSpec extends TestSpec {
     onSelect.expects(Yes)
 
     //when
-    modalProps.actions.onCommand(Yes.command)
+    modalProps.actions.onCommand((Yes.command, _ => ()))
   }
 
   it should "call onSelect(No) function when No selected" in {
@@ -34,7 +34,7 @@ class YesNoCancelPopupSpec extends TestSpec {
     onSelect.expects(No)
 
     //when
-    modalProps.actions.onCommand(No.command)
+    modalProps.actions.onCommand((No.command, _ => ()))
   }
 
   it should "call onSelect(Cancel) function when Cancel selected" in {
@@ -48,7 +48,7 @@ class YesNoCancelPopupSpec extends TestSpec {
     onSelect.expects(Cancel)
 
     //when
-    modalProps.actions.onCommand(Cancel.command)
+    modalProps.actions.onCommand((Cancel.command, _ => ()))
   }
 
   it should "call onSelect(Cancel) function when onClose" in {
@@ -151,7 +151,7 @@ class YesNoCancelPopupSpec extends TestSpec {
     val enabledCommands = Set(Yes.command, No.command, Cancel.command)
 
     assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, closable, _) =>
+      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, _, closable, _) =>
         show shouldBe props.show
         header shouldBe None
         buttons shouldBe expectedButtons

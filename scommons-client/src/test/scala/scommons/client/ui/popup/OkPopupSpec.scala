@@ -19,7 +19,7 @@ class OkPopupSpec extends TestSpec {
     onClose.expects()
 
     //when
-    modalProps.actions.onCommand(Buttons.OK.command)
+    modalProps.actions.onCommand((Buttons.OK.command, _ => ()))
   }
 
   it should "render component with image" in {
@@ -101,7 +101,7 @@ class OkPopupSpec extends TestSpec {
     val actionCommands = Set(Buttons.OK.command)
 
     assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, onClose, closable, _) =>
+      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
         show shouldBe props.show
         header shouldBe None
         buttons shouldBe List(Buttons.OK)

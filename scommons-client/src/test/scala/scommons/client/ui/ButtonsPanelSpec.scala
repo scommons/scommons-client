@@ -11,15 +11,20 @@ class ButtonsPanelSpec extends TestSpec {
 
   it should "call onCommand when click on button" in {
     //given
-    val onCommand = mockFunction[String, Unit]
+    val dispatch = mockFunction[Any, Any]
+    val onCommand = mockFunction[(String, Any => Any), Any]
+    val onCommandP = new PartialFunction[(String, Any => Any), Any] {
+      def isDefinedAt(x: (String, Any => Any)) = true
+      def apply(v: (String, Any => Any)) = onCommand(v)
+    }
     val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
     val comp = renderIntoDocument(<(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
-      List(data), ActionsData(Set(data.command), onCommand)
+      List(data), ActionsData(Set(data.command), onCommandP), dispatch
     ))())
     val button = findRenderedDOMComponentWithClass(comp, "btn")
 
     //then
-    onCommand.expects(data.command)
+    onCommand.expects((data.command, dispatch))
 
     //when
     Simulate.click(button)
@@ -31,7 +36,7 @@ class ButtonsPanelSpec extends TestSpec {
     val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
     val props = ButtonsPanelProps(
       List(b1, b2),
-      ActionsData(Set(b1.command), _ => (), Some(b1.command)),
+      ActionsData.empty.copy(enabledCommands = Set(b1.command), focusedCommand = Some(b1.command)),
       className = Some("custom-class")
     )
     val component = <(ButtonsPanel())(^.wrapped := props)()
@@ -49,7 +54,7 @@ class ButtonsPanelSpec extends TestSpec {
     val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
     val props = ButtonsPanelProps(
       List(b1, b2),
-      ActionsData(Set(b1.command), _ => (), Some(b1.command))
+      ActionsData.empty.copy(enabledCommands = Set(b1.command), focusedCommand = Some(b1.command))
     )
     val component = <(ButtonsPanel())(^.wrapped := props)()
 
@@ -66,7 +71,7 @@ class ButtonsPanelSpec extends TestSpec {
     val b2 = ImageButtonData("add", add, addDisabled, "test button 2")
     val props = ButtonsPanelProps(
       List(b1, b2),
-      ActionsData(Set(b1.command), _ => (), Some(b1.command)),
+      ActionsData.empty.copy(enabledCommands = Set(b1.command), focusedCommand = Some(b1.command)),
       group = true
     )
     val component = <(ButtonsPanel())(^.wrapped := props)()

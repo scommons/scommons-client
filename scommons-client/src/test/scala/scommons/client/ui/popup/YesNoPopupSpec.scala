@@ -20,7 +20,7 @@ class YesNoPopupSpec extends TestSpec {
     onSelect.expects(Yes)
 
     //when
-    modalProps.actions.onCommand(Yes.command)
+    modalProps.actions.onCommand((Yes.command, _ => ()))
   }
 
   it should "call onSelect(No) function when No selected" in {
@@ -34,7 +34,7 @@ class YesNoPopupSpec extends TestSpec {
     onSelect.expects(No)
 
     //when
-    modalProps.actions.onCommand(No.command)
+    modalProps.actions.onCommand((No.command, _ => ()))
   }
 
   it should "render component with image" in {
@@ -122,7 +122,7 @@ class YesNoPopupSpec extends TestSpec {
     val enabledCommands = Set(Yes.command, No.command)
 
     assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, closable, _) =>
+      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, _, closable, _) =>
         show shouldBe props.show
         header shouldBe None
         buttons shouldBe expectedButtons

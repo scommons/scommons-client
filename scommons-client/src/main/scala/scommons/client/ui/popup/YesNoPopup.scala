@@ -32,18 +32,17 @@ object YesNoPopup extends UiComponent[YesNoPopupProps] {
     render = { self =>
       val props = self.props.wrapped
 
-      def onCommand(command: String): Unit = command match {
-        case Yes.command => props.onSelect(Yes)
-        case No.command => props.onSelect(No)
-      }
-
       <(Modal())(^.wrapped := ModalProps(props.show,
         None,
         List(
           SimpleButtonData(Yes.command, "Yes", props.selected == Yes),
           SimpleButtonData(No.command, "No", props.selected == No)
         ),
-        ActionsData(Set(Yes.command, No.command), onCommand,
+        ActionsData(Set(Yes.command, No.command),
+          {
+            case (Yes.command, _) => props.onSelect(Yes)
+            case (No.command, _) => props.onSelect(No)
+          },
           if (self.state.opened) Some(props.selected.command)
           else None
         ),

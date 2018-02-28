@@ -3,6 +3,7 @@ package scommons.client.ui.popup
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.ui.{ButtonData, UiComponent}
 import scommons.client.util.ActionsData
 
@@ -10,6 +11,7 @@ case class ModalProps(show: Boolean,
                       header: Option[String],
                       buttons: List[ButtonData],
                       actions: ActionsData,
+                      dispatch: Dispatch = _ => (),
                       onClose: () => Unit,
                       closable: Boolean = true,
                       onOpen: () => Unit = () => ())
@@ -33,7 +35,7 @@ object Modal extends UiComponent[ModalProps] {
       <(ModalBody())()(
         self.props.children
       ),
-      <(ModalFooter())(^.wrapped := ModalFooterProps(props.buttons, props.actions))()
+      <(ModalFooter())(^.wrapped := ModalFooterProps(props.buttons, props.actions, props.dispatch))()
     )
   }
 }

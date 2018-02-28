@@ -33,11 +33,14 @@ object OkPopup extends UiComponent[OkPopupProps] {
       <(Modal())(^.wrapped := ModalProps(props.show,
         None,
         List(Buttons.OK),
-        ActionsData(Set(Buttons.OK.command), _ => props.onClose(),
+        ActionsData(Set(Buttons.OK.command),
+          {
+            case _ => props.onClose()
+          },
           if (self.state.opened) Some(Buttons.OK.command)
           else None
         ),
-        props.onClose,
+        onClose = props.onClose,
         onOpen = { () =>
           self.setState(_.copy(opened = true))
         }
