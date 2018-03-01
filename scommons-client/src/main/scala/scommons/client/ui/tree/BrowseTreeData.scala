@@ -5,7 +5,11 @@ import scommons.client.util.{ActionsData, BrowsePath}
 
 sealed trait BrowseTreeData {
 
+  def text: String
+
   def path: BrowsePath
+
+  def image: Option[String]
 
   def actions: ActionsData
 
