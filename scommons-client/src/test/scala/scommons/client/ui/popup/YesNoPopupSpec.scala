@@ -20,7 +20,7 @@ class YesNoPopupSpec extends TestSpec {
     onSelect.expects(Yes)
 
     //when
-    modalProps.actions.onCommand((Yes.command, _ => ()))
+    modalProps.actions.onCommand(_ => ())(Yes.command)
   }
 
   it should "call onSelect(No) function when No selected" in {
@@ -34,7 +34,7 @@ class YesNoPopupSpec extends TestSpec {
     onSelect.expects(No)
 
     //when
-    modalProps.actions.onCommand((No.command, _ => ()))
+    modalProps.actions.onCommand(_ => ())(No.command)
   }
 
   it should "render component with image" in {

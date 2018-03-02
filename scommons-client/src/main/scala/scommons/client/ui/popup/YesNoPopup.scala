@@ -38,10 +38,9 @@ object YesNoPopup extends UiComponent[YesNoPopupProps] {
           SimpleButtonData(Yes.command, "Yes", props.selected == Yes),
           SimpleButtonData(No.command, "No", props.selected == No)
         ),
-        ActionsData(Set(Yes.command, No.command),
-          {
-            case (Yes.command, _) => props.onSelect(Yes)
-            case (No.command, _) => props.onSelect(No)
+        ActionsData(Set(Yes.command, No.command), _ => {
+            case Yes.command => props.onSelect(Yes)
+            case No.command => props.onSelect(No)
           },
           if (self.state.opened) Some(props.selected.command)
           else None

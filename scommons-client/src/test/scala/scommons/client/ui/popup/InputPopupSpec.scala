@@ -18,7 +18,7 @@ class InputPopupSpec extends TestSpec {
     onCancel.expects()
 
     //when
-    modalProps.actions.onCommand((Buttons.CANCEL.command, _ => ()))
+    modalProps.actions.onCommand(_ => ())(Buttons.CANCEL.command)
   }
 
   it should "call onOk function when ok command" in {
@@ -32,7 +32,7 @@ class InputPopupSpec extends TestSpec {
     onOk.expects(props.initialValue)
 
     //when
-    modalProps.actions.onCommand((Buttons.OK.command, _ => ()))
+    modalProps.actions.onCommand(_ => ())(Buttons.OK.command)
   }
 
   it should "call onOk functions with new value when onEnter" in {

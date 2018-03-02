@@ -39,10 +39,9 @@ object YesNoCancelPopup extends UiComponent[YesNoCancelPopupProps] {
           SimpleButtonData(No.command, "No", props.selected == No),
           Buttons.CANCEL.copy(command = Cancel.command, primary = props.selected == Cancel)
         ),
-        ActionsData(Set(Yes.command, No.command, Cancel.command),
-          {
-            case (Yes.command, _) => props.onSelect(Yes)
-            case (No.command, _) => props.onSelect(No)
+        ActionsData(Set(Yes.command, No.command, Cancel.command), _ => {
+            case Yes.command => props.onSelect(Yes)
+            case No.command => props.onSelect(No)
             case _ => props.onSelect(Cancel)
           },
           if (self.state.opened) Some(props.selected.command)

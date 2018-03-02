@@ -19,7 +19,7 @@ class OkPopupSpec extends TestSpec {
     onClose.expects()
 
     //when
-    modalProps.actions.onCommand((Buttons.OK.command, _ => ()))
+    modalProps.actions.onCommand(_ => ())(Buttons.OK.command)
   }
 
   it should "render component with image" in {

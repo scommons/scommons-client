@@ -25,9 +25,9 @@ object ButtonsPanel extends UiComponent[ButtonsPanelProps] {
     }
 
     def onCommand(command: String): () => Unit = { () =>
-      val cmdDispatch = (command, props.dispatch)
-      if (props.actions.onCommand.isDefinedAt(cmdDispatch)) {
-        props.actions.onCommand.apply(cmdDispatch)
+      val onCommandP = props.actions.onCommand(props.dispatch)
+      if (onCommandP.isDefinedAt(command)) {
+        onCommandP(command)
       }
     }
 

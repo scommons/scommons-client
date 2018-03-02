@@ -12,19 +12,21 @@ class ButtonsPanelSpec extends TestSpec {
   it should "call onCommand when click on button" in {
     //given
     val dispatch = mockFunction[Any, Any]
-    val onCommand = mockFunction[(String, Any => Any), Any]
-    val onCommandP = new PartialFunction[(String, Any => Any), Any] {
-      def isDefinedAt(x: (String, Any => Any)) = true
-      def apply(v: (String, Any => Any)) = onCommand(v)
+    val onCommand = mockFunction[Any => Any, PartialFunction[String, Any]]
+    val onCmd = mockFunction[String, Any]
+    val onCmdP = new PartialFunction[String, Any] {
+      def isDefinedAt(x: String) = true
+      def apply(v: String) = onCmd(v)
     }
     val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
     val comp = renderIntoDocument(<(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
-      List(data), ActionsData(Set(data.command), onCommandP), dispatch
+      List(data), ActionsData(Set(data.command), onCommand), dispatch
     ))())
     val button = findRenderedDOMComponentWithClass(comp, "btn")
 
     //then
-    onCommand.expects((data.command, dispatch))
+    onCommand.expects(dispatch).returning(onCmdP)
+    onCmd.expects(data.command)
 
     //when
     Simulate.click(button)

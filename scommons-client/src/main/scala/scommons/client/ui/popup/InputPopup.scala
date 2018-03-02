@@ -45,8 +45,8 @@ object InputPopup extends UiComponent[InputPopupProps] {
       <(Modal())(^.wrapped := ModalProps(props.show,
         None,
         List(Buttons.OK, Buttons.CANCEL),
-        ActionsData(self.state.actionCommands, {
-          case (Buttons.OK.command, _) => onOk()
+        ActionsData(self.state.actionCommands, _ => {
+          case Buttons.OK.command => onOk()
           case _ => props.onCancel()
         }),
         onClose = props.onCancel,

@@ -52,11 +52,10 @@ object ErrorPopup extends UiComponent[ErrorPopupProps] {
         None,
         if (props.details.isDefined) List(detailsBtn, closeBtn)
         else List(closeBtn),
-        ActionsData(Set(detailsBtn.command, closeBtn.command),
-          {
-            case (detailsBtn.command, _) => self.setState(s => s.copy(showDetails = !s.showDetails))
-            case _ => props.onClose()
-          },
+        ActionsData(Set(detailsBtn.command, closeBtn.command), _ => {
+          case detailsBtn.command => self.setState(s => s.copy(showDetails = !s.showDetails))
+          case _ => props.onClose()
+        },
           if (self.state.opened) Some(closeBtn.command)
           else None
         ),

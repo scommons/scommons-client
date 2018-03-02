@@ -33,8 +33,7 @@ object OkPopup extends UiComponent[OkPopupProps] {
       <(Modal())(^.wrapped := ModalProps(props.show,
         None,
         List(Buttons.OK),
-        ActionsData(Set(Buttons.OK.command),
-          {
+        ActionsData(Set(Buttons.OK.command), _ => {
             case _ => props.onClose()
           },
           if (self.state.opened) Some(Buttons.OK.command)
