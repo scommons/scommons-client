@@ -7,9 +7,9 @@ import scoverage.ScoverageKeys.coverageExcludedPackages
 
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
-object ScommonsClient extends ScalaJsModule {
+object ScommonsClientUi extends ScalaJsModule {
 
-  override val id: String = "scommons-client"
+  override val id: String = "scommons-client-ui"
 
   override def definition: Project = {
     super.definition

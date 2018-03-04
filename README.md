@@ -29,7 +29,7 @@ libraryDependencies ++= Seq(
   "org.scommons" %% "scommons-play" % scommonsVer,
 
   // client/js only
-  "org.scommons" %%% "scommons-client" % scommonsVer,
+  "org.scommons" %%% "scommons-client-ui" % scommonsVer,
   "org.scommons" %%% "scommons-client-test" % scommonsVer % "test"
 )
 ```
