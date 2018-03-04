@@ -4,9 +4,9 @@ import common.{Libs, TestLibs}
 import sbt.Keys._
 import sbt._
 
-object ScommonsApiClientPlayWs extends BasicModule {
+object ScommonsApiPlayWs extends BasicModule {
 
-  override val id: String = "scommons-api-client-play-ws"
+  override val id: String = "scommons-api-play-ws"
 
   override def definition: Project = {
     super.definition
