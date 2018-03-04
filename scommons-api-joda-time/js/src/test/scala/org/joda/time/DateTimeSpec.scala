@@ -2,6 +2,8 @@ package org.joda.time
 
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.scalajs.js
+
 class DateTimeSpec extends FlatSpec with Matchers {
 
   it should "fail if DateTime value is not ISO8601 time formatted string" in {
@@ -20,11 +22,24 @@ class DateTimeSpec extends FlatSpec with Matchers {
   }
 
   it should "create DateTime with valid iso string" in {
-    //given
-    val isoString = "2018-03-03T13:43:01.234Z"
+    def dateTime(isoString: String): Unit = {
+      DateTime(isoString).toString shouldBe isoString
+
+      //check that it can also be parsed by javascript date
+      new js.Date(isoString)
+    }
 
     //when & then
-    DateTime(isoString).toString shouldBe isoString
+    dateTime("2018-03-03T13:43:01.234z")
+    dateTime("2018-03-03T13:43:01.234Z")
+    dateTime("2018-03-03T13:43:01.234+01:00")
+    dateTime("2018-03-03T13:43:01.234+00:30")
+    dateTime("2018-03-03T13:43:01.234-01:00")
+    dateTime("2018-03-03T13:43:01.234-00:30")
+    dateTime("2018-03-03T13:43:01.234+0100")
+    dateTime("2018-03-03T13:43:01.234+0030")
+    dateTime("2018-03-03T13:43:01.234-0100")
+    dateTime("2018-03-03T13:43:01.234-0030")
   }
 
   it should "perform value equality" in {

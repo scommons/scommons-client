@@ -7,7 +7,7 @@ package org.joda.time
 case class DateTime(private val isoString: String) {
 
   require(isoString match {
-    case DateTime.isoRegex(parsed) => parsed == isoString
+    case DateTime.isoRegex(_*) => true
     case _ => false
   }, s"datetime string '$isoString' is not in ISO8601 format")
 
@@ -19,5 +19,5 @@ case class DateTime(private val isoString: String) {
 
 object DateTime {
 
-  private val isoRegex = """(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)""".r
+  private val isoRegex = """(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}([+-](\d{4}|\d{2}:\d{2})|[zZ]))""".r
 }
