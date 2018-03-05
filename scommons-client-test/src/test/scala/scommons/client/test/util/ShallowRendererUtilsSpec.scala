@@ -1,9 +1,10 @@
-package scommons.client.test
+package scommons.client.test.util
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import scommons.client.test.TestSpec
 
-class ShallowRendererUtilsSpec extends TestSpec with ShallowRendererUtils {
+class ShallowRendererUtilsSpec extends TestSpec {
 
   case class Comp1Props(a: Int)
   case class Comp2Props(b: Boolean)

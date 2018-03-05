@@ -4,8 +4,8 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
-import scommons.client.TestSpec
 import scommons.client.app.AppBrowseController.findItemAndPath
+import scommons.client.test.TestSpec
 import scommons.client.test.raw.MemoryRouter._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.Buttons

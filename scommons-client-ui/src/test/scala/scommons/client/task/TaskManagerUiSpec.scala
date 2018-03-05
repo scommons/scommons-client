@@ -1,7 +1,7 @@
 package scommons.client.task
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.TestSpec
+import scommons.client.test.TestSpec
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.popup._
 

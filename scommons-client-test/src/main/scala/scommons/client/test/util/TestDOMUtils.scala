@@ -1,4 +1,4 @@
-package scommons.client.test
+package scommons.client.test.util
 
 import io.github.shogowada.statictags
 import org.scalajs.dom
@@ -8,7 +8,7 @@ import scommons.client.test.raw.TestReactDOM
 
 import scala.scalajs.js
 
-object TestUtils extends Matchers {
+object TestDOMUtils extends Matchers {
 
   def createDomEvent[T <: Event](args: js.Any*)(implicit tag: js.ConstructorTag[T]): T = {
     js.Dynamic.newInstance(tag.constructor)(args: _*).asInstanceOf[T]

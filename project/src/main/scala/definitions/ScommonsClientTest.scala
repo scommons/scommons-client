@@ -24,12 +24,15 @@ object ScommonsClientTest extends ScalaJsModule {
       )
   }
 
-  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil
+  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
+    ScommonsClientCore.definition
+  )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     Libs.sjsReactJs.value,
     Libs.scalajsDom.value,
-    TestLibs.scalaTestJs.value
+    TestLibs.scalaTestJs.value,
+    TestLibs.scalaMockJs.value
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)

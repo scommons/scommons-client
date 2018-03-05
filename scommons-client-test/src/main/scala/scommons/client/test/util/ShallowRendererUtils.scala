@@ -1,4 +1,4 @@
-package scommons.client.test
+package scommons.client.test.util
 
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.statictags.{AttributeValueType, Element}

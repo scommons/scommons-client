@@ -1,7 +1,7 @@
 package scommons.client.app
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.TestSpec
+import scommons.client.test.TestSpec
 import scommons.client.ui.tree._
 import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
 import scommons.client.util.{ActionsData, BrowsePath}

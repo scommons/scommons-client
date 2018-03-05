@@ -1,4 +1,4 @@
-package scommons.client.test
+package scommons.client.test.util
 
 import org.scalajs.dom.{Element, Node}
 
@@ -9,7 +9,7 @@ import org.scalajs.dom.{Element, Node}
   * @param currNode current node, end of the path
   * @see [[prettyPrint]]
   */
-class TestDOMPath(val root: Element, val currNode: Element) {
+private[util] class TestDOMPath(val root: Element, val currNode: Element) {
 
   /**
     * Returns new [[TestDOMPath]] that ends at the given node.
@@ -72,7 +72,7 @@ class TestDOMPath(val root: Element, val currNode: Element) {
   }
 }
 
-object TestDOMPath {
+private[util] object TestDOMPath {
 
   def apply(root: Element, currNode: Element): TestDOMPath = new TestDOMPath(root, currNode)
 }

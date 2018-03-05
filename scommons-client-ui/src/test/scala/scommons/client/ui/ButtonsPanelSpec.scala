@@ -1,7 +1,7 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.TestSpec
+import scommons.client.test.TestSpec
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.ButtonImagesCss._

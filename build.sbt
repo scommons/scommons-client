@@ -20,6 +20,7 @@ lazy val scommons = (project in file("."))
   `scommons-api-joda-time-jvm`,
   `scommons-api-joda-time-js`,
   `scommons-api-play-ws`,
+  `scommons-client-core`,
   `scommons-client-ui`,
   `scommons-client-test`,
   `scommons-play`
@@ -31,6 +32,7 @@ lazy val `scommons-api-joda-time-jvm` = ScommonsApiJodaTime.jvm
 lazy val `scommons-api-joda-time-js` = ScommonsApiJodaTime.js
 lazy val `scommons-api-play-ws` = ScommonsApiPlayWs.definition
 
+lazy val `scommons-client-core` = ScommonsClientCore.definition
 lazy val `scommons-client-ui` = ScommonsClientUi.definition
 lazy val `scommons-client-test` = ScommonsClientTest.definition
 

@@ -4,8 +4,8 @@ import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.TestSpec
-import scommons.client.test.TestUtils._
+import scommons.client.test.TestSpec
+import scommons.client.test.util.TestDOMUtils._
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.Buttons

@@ -1,12 +1,12 @@
-package scommons.client
+package scommons.client.test
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalatest.Inside
-import scommons.client.test.ShallowRendererUtils
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
+import scommons.client.test.util.ShallowRendererUtils
 import scommons.client.ui.UiComponent
 
 trait BaseTestSpec extends ShallowRendererUtils

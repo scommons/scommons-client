@@ -1,7 +1,7 @@
 package scommons.client.app
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.TestSpec
+import scommons.client.test.TestSpec
 
 class AppHeaderSpec extends TestSpec {
 
