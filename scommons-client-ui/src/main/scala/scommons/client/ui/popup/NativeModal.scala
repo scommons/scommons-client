@@ -1,4 +1,4 @@
-package scommons.react.modal
+package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
@@ -49,7 +49,7 @@ trait ReactModalStyle extends js.Object {
   val content: js.UndefOr[ReactModalStyleContent] = js.undefined
 }
 
-object ReactModal {
+object NativeModal {
 
   implicit class ReactModalVirtualDOMElements(elements: VirtualDOMElements) {
     lazy val ReactModal: ReactClassElementSpec = elements(NativeReactModal)

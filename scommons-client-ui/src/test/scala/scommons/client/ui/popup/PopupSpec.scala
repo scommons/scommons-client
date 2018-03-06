@@ -5,7 +5,6 @@ import scommons.client.test.TestSpec
 import scommons.client.test.util.TestDOMUtils._
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.TestReactDOM._
-import scommons.react.modal.NativeReactModal
 
 class PopupSpec extends TestSpec {
 

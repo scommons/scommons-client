@@ -15,7 +15,7 @@ object ScommonsClientUi extends ScalaJsModule {
     super.definition
       .settings(
         description := "Common Scala.js, React.js web-client utilities and components",
-        coverageExcludedPackages := ".*Css;scommons.react.modal",
+        coverageExcludedPackages := ".*Css;Native.*",
 
         webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"),
 
