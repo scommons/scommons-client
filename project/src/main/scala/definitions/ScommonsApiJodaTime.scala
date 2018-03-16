@@ -1,7 +1,6 @@
 package definitions
 
 import common.{Common, Libs, TestLibs}
-import org.sbtidea.SbtIdeaPlugin.ideaExcludeFolders
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.cross.CrossProject
 import sbt.Keys._
@@ -18,11 +17,6 @@ object ScommonsApiJodaTime {
     .settings(
       description := "Common Scala/Scala.js joda-time play-json conversions for REST API",
 
-      ideaExcludeFolders ++= List(
-        s"$base/jvm/target",
-        s"$base/js/target",
-        s"$base/shared/target"
-      ),
       libraryDependencies ++= Seq(
         Libs.playJsonJs.value,
         TestLibs.scalaTestJs.value % "test",

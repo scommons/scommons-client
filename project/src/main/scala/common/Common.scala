@@ -24,9 +24,13 @@ object Common {
     //ivyScala := ivyScala.value map {
     //  _.copy(overrideScalaVersion = true)
     //},
-    ideaExcludeFolders := List(
-      ".idea"
-    ),
+    ideaExcludeFolders := {
+      val base = baseDirectory.value
+      List(
+        s"$base/.idea",
+        s"$base/target"
+      )
+    },
     //when run tests with coverage: "sbt clean coverage test it:test coverageReport && sbt coverageAggregate"
     coverageMinimum := 80,
 

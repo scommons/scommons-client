@@ -9,10 +9,7 @@ lazy val scommons = (project in file("."))
     publishM2 := ()
   )
   .settings(
-    ideaExcludeFolders ++= List(
-      "docs/_site",
-      "target"
-    )
+    ideaExcludeFolders += s"${baseDirectory.value}/docs/_site"
   )
   .aggregate(
   `scommons-api-jvm`,

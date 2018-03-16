@@ -21,10 +21,13 @@ trait ScalaJsModule extends BasicModule {
         requiresDOM in Test := true,
         version in webpack := "1.14.0", //TODO: migrate to default (latest version)
         emitSourceMaps := false,
-        ideaExcludeFolders ++= List(
-          s"$id/build",
-          s"$id/node_modules"
-        ),
+        ideaExcludeFolders ++= {
+          val base = baseDirectory.value
+          List(
+            s"$base/build",
+            s"$base/node_modules"
+          )
+        },
         cleanKeepFiles ++= Seq(
           target.value / "scala-2.12" / "scalajs-bundler" / "main" / "node_modules",
           target.value / "scala-2.12" / "scalajs-bundler" / "test" / "node_modules",
