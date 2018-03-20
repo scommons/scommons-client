@@ -4,10 +4,11 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.ui.UiComponent
+import scommons.client.ui.{ImageLabelWrapper, UiComponent}
 
 case class TabPanelProps(items: List[TabItemData],
                          selectedIndex: Int = 0,
+                         onSelect: (TabItemData, Int) => Boolean = (_, _) => true,
                          direction: TabDirection = TabDirection.Top)
 
 object TabPanel extends UiComponent[TabPanelProps] {
@@ -34,9 +35,14 @@ object TabPanel extends UiComponent[TabPanelProps] {
             ^.href := "",
             ^.onClick := { e: MouseSyntheticEvent =>
               e.preventDefault()
-              self.setState(_.copy(selectedIndex = index))
+              if (props.onSelect(item, index)) {
+                self.setState(_.copy(selectedIndex = index))
+              }
             }
-          )(item.title)
+          )(item.image match {
+            case None => item.title
+            case Some(image) => ImageLabelWrapper(image, Some(item.title), alignText = false)
+          })
         )
       })
 
@@ -46,7 +52,15 @@ object TabPanel extends UiComponent[TabPanelProps] {
           else ""
 
         <.div(^.className := s"tab-pane $activeClass")(
-          s"content for ${item.title}"
+          item.component.map { comp =>
+            <(comp)()()
+          }.getOrElse(
+            item.render.map { render =>
+              render(self.props)
+            }.getOrElse {
+              <.div()()
+            }
+          )
         )
       })
 
