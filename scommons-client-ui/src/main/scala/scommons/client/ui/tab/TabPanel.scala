@@ -9,7 +9,11 @@ import scommons.client.ui.{ImageLabelWrapper, UiComponent}
 case class TabPanelProps(items: List[TabItemData],
                          selectedIndex: Int = 0,
                          onSelect: (TabItemData, Int) => Boolean = (_, _) => true,
-                         direction: TabDirection = TabDirection.Top)
+                         direction: TabDirection = TabDirection.Top) {
+
+  require(selectedIndex >= 0 && selectedIndex < items.size,
+    s"selectedIndex($selectedIndex) should be within items indices")
+}
 
 object TabPanel extends UiComponent[TabPanelProps] {
 
@@ -20,6 +24,12 @@ object TabPanel extends UiComponent[TabPanelProps] {
   lazy val reactClass: ReactClass = React.createClass[PropsType, TabPanelState](
     getInitialState = { self =>
       TabPanelState(self.props.wrapped.selectedIndex)
+    },
+    componentWillReceiveProps = { (self, nextProps) =>
+      val props = nextProps.wrapped
+      if (self.props.wrapped != props) {
+        self.setState(_.copy(selectedIndex = props.selectedIndex))
+      }
     },
     render = { self =>
       val props = self.props.wrapped
