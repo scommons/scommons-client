@@ -1,0 +1,24 @@
+
+.tablePanelSortableHeader {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.tablePanelSortableHeader:hover {
+  color: #6c6b6b;
+}
+
+.tablePanelSelectedRow {
+  background: #628cd5;
+  color: white;
+  height: auto;
+  overflow: auto;
+}
+
+.tablePanelRow {
+  overflow: auto;
+}
+
+.tablePanelRow:hover {
+  background: #eee;
+}
