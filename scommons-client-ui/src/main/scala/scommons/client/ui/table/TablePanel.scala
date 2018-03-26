@@ -10,25 +10,32 @@ import scommons.client.ui.table.TablePanelCss._
 
 case class TablePanelProps(header: List[TableColumnData],
                            rows: List[TableRowData],
+                           selectedIds: Set[String] = Set.empty,
                            onSelect: TableRowData => Unit = _ => ())
 
 object TablePanel extends UiComponent[TablePanelProps] {
 
   private type TablePanelSelf = Self[PropsType, TablePanelState]
 
-  private case class TablePanelState(selectedIds: Set[String] = Set.empty)
+  private case class TablePanelState(selectedIds: Set[String])
 
   def apply(): ReactClass = reactClass
 
   lazy val reactClass: ReactClass = React.createClass[PropsType, TablePanelState](
-    getInitialState = { _ =>
-      TablePanelState()
+    getInitialState = { self =>
+      TablePanelState(self.props.wrapped.selectedIds)
+    },
+    componentWillReceiveProps = { (self, nextProps) =>
+      val props = nextProps.wrapped
+      if (self.props.wrapped.selectedIds != props.selectedIds) {
+        self.setState(_.copy(selectedIds = props.selectedIds))
+      }
     },
     render = { self =>
       val props = self.props.wrapped
 
       val tableHeader = props.header.map { column =>
-        <.th(^("colspan") := "1")(column.title)
+        <.th(^.colspan := 1)(column.title)
       }
 
       val tableBody = props.rows.map { row =>
@@ -44,7 +51,7 @@ object TablePanel extends UiComponent[TablePanelProps] {
         })
       }
 
-      <.table(^.className := "table table-condensed", ^("cellspacing") := "0")(
+      <.table(^.className := "table table-condensed", ^("cellSpacing") := "0")(
         <.thead(^("aria-hidden") := "false")(
           <.tr()(tableHeader)
         ),

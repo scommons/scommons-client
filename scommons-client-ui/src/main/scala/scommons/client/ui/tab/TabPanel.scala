@@ -27,7 +27,7 @@ object TabPanel extends UiComponent[TabPanelProps] {
     },
     componentWillReceiveProps = { (self, nextProps) =>
       val props = nextProps.wrapped
-      if (self.props.wrapped != props) {
+      if (self.props.wrapped.selectedIndex != props.selectedIndex) {
         self.setState(_.copy(selectedIndex = props.selectedIndex))
       }
     },

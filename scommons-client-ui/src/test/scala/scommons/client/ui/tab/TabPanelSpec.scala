@@ -127,6 +127,28 @@ class TabPanelSpec extends TestSpec {
     assertTabPanel(result, props, List(content1, content2, content3))
   }
 
+  it should "render component with pre-selected tab" in {
+    //given
+    val content1 = <.div()()
+    val content2 = <.div()("Test second tab content")
+    val content3 = <.div()("Test third tab content")
+    val items = List(
+      TabItemData("Tab 1", image = Some(Buttons.ADD.image)),
+      TabItemData("Tab 2", component = Some(React.createClass[Unit, Unit] { _ =>
+        content2
+      })),
+      TabItemData("Tab 3", render = Some(_ => content3))
+    )
+    val props = TabPanelProps(items, selectedIndex = 1)
+    val comp = <(TabPanel())(^.wrapped := props)()
+
+    //when
+    val result = shallowRender(comp)
+
+    //then
+    assertTabPanel(result, props, List(content1, content2, content3))
+  }
+
   it should "render component with tabs at the bottom" in {
     //given
     val content1 = <.div()()
