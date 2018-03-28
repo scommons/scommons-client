@@ -20,57 +20,111 @@ case class PaginationPanelProps(totalPages: Int,
 
 object PaginationPanel extends UiComponent[PaginationPanelProps] {
 
-  private case class PagingPanelState(selectedPage: Int)
+  private case class PaginationPanelState(selectedPage: Int, selectedRange: Range)
 
   def apply(): ReactClass = reactClass
 
-  lazy val reactClass: ReactClass = React.createClass[PropsType, PagingPanelState](
+  lazy val reactClass: ReactClass = React.createClass[PropsType, PaginationPanelState](
     getInitialState = { self =>
-      PagingPanelState(self.props.wrapped.selectedPage)
+      val props = self.props.wrapped
+      PaginationPanelState(props.selectedPage, getSelectedRange(props.selectedPage, props.totalPages))
     },
     componentWillReceiveProps = { (self, nextProps) =>
       val props = nextProps.wrapped
       if (self.props.wrapped.selectedPage != props.selectedPage) {
-        self.setState(_.copy(selectedPage = props.selectedPage))
+        self.setState(_.copy(
+          selectedPage = props.selectedPage,
+          selectedRange = getSelectedRange(props.selectedPage, props.totalPages)
+        ))
       }
     },
     render = { self =>
       val props = self.props.wrapped
+      val maxPage = props.totalPages
 
-      def renderBtn(text: String, page: Int, attributes: Any*): Element = {
+      def renderBtn(text: String, onClick: () => Unit, attributes: Any*): Element = {
         <.li(attributes: _*)(
           <.a(
             ^.href := "",
             ^.onClick := { e: MouseSyntheticEvent =>
               e.preventDefault()
-              props.onPage(page)
-              self.setState(_.copy(selectedPage = page))
+              onClick()
             }
           )(text)
         )
       }
 
-      val buttons = <.ul()((1 to props.totalPages).flatMap { page =>
-        def attributes(disabled: Boolean) =
-          if (page == self.state.selectedPage) {
-            Some(^.className := (if (disabled) "disabled" else "active"))
+      def isPageSelected(page: Int): Boolean = page == self.state.selectedPage
+
+      def pageBtn(text: String, page: Int, disableable: Boolean): Element = {
+        val attributes =
+          if (isPageSelected(page)) {
+            Some(^.className := (if (disableable) "disabled" else "active"))
           }
           else None
 
-        var elems = List(
-          renderBtn(s"$page", page, attributes(false))
+        renderBtn(text, onClick = { () =>
+          if (!isPageSelected(page)) {
+            selectPage(page)
+          }
+        }, attributes)
+      }
+
+      def selectPage(pageToSelect: Int): Unit = {
+        val page =
+          if (pageToSelect < minPage) minPage
+          else if (pageToSelect > maxPage) maxPage
+          else pageToSelect
+
+        props.onPage(page)
+        self.setState(_.copy(
+          selectedPage = page,
+          selectedRange = getSelectedRange(page, maxPage)
+        ))
+      }
+
+      def scrollBtn(text: String, scrollPages: Int): Element = {
+        renderBtn(text, onClick = { () =>
+          selectPage(self.state.selectedPage + scrollPages)
+        }, None)
+      }
+
+      val selectedRange = self.state.selectedRange
+      val buttons = selectedRange.map { page =>
+        pageBtn(s"$page", page, disableable = false)
+      }
+
+      <.div(^.className := props.alignment.style)(
+        <.ul()(
+          pageBtn("<<", minPage, disableable = true),
+          if (minPage < selectedRange.start) {
+            Some(scrollBtn("<", -viewPages))
+          }
+          else None,
+          buttons,
+          if (maxPage > selectedRange.end) {
+            Some(scrollBtn(">", viewPages))
+          }
+          else None,
+          pageBtn(">>", maxPage, disableable = true)
         )
-        if (page == 1) {
-          elems = renderBtn("<<", page, attributes(true)) +: elems
-        }
-        if (page == props.totalPages) {
-          elems = elems :+ renderBtn(">>", page, attributes(true))
-        }
-
-        elems
-      })
-
-      <.div(^.className := props.alignment.style)(buttons)
+      )
     }
   )
+
+  private val minPage = 1
+  private val viewPages = 5
+
+  private[page] def getSelectedRange(selectedPage: Int, maxPage: Int): Range = {
+    if (maxPage <= viewPages) minPage to maxPage
+    else {
+      val start = selectedPage - (viewPages / 2)
+      if (start < minPage) minPage to viewPages
+      else {
+        val end = start + viewPages - 1
+        if (end > maxPage) (maxPage - viewPages + 1) to maxPage
+        else start to end
+      }
+    }
+  }
 }
