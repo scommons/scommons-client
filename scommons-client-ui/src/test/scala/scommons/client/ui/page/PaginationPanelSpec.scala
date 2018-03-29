@@ -1,9 +1,82 @@
 package scommons.client.ui.page
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import io.github.shogowada.statictags.Element
 import scommons.client.test.TestSpec
+import scommons.client.test.raw.ReactTestUtils
+import scommons.client.test.raw.ReactTestUtils._
+import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.page.PaginationPanel.getSelectedRange
 
 class PaginationPanelSpec extends TestSpec {
+
+  it should "call onPage once and select page button when click on it" in {
+    //given
+    val onPage = mockFunction[Int, Unit]
+    val props = PaginationPanelProps(5, onPage = onPage)
+    val comp = renderIntoDocument(<(PaginationPanel())(^.wrapped := props)())
+    val buttons = scryRenderedDOMComponentsWithTag(comp, "a")
+    buttons.length shouldBe (props.totalPages + 2)
+    val pages = scryRenderedDOMComponentsWithTag(comp, "li")
+    pages.length shouldBe (props.totalPages + 2)
+    pages(props.selectedPage).className shouldBe "active"
+    val nextSelectPage = props.selectedPage + 1
+
+    //then
+    onPage.expects(nextSelectPage).once()
+
+    //when & then
+    ReactTestUtils.Simulate.click(buttons(nextSelectPage))
+    pages(props.selectedPage).className shouldBe ""
+    pages(nextSelectPage).className shouldBe "active"
+
+    //when & then
+    ReactTestUtils.Simulate.click(buttons(nextSelectPage))
+    pages(props.selectedPage).className shouldBe ""
+    pages(nextSelectPage).className shouldBe "active"
+  }
+
+  it should "reset selectedPage when componentWillReceiveProps" in {
+    //given
+    val prevProps = PaginationPanelProps(5)
+    val renderer = createRenderer()
+    renderer.render(<(PaginationPanel())(^.wrapped := prevProps)())
+    val comp = renderer.getRenderOutput()
+    assertPaginationPanel(comp, prevProps)
+
+    val props = prevProps.copy(totalPages = 10, selectedPage = 5)
+
+    //when
+    renderer.render(<(PaginationPanel())(^.wrapped := props)())
+
+    //then
+    val compV2 = renderer.getRenderOutput()
+    assertPaginationPanel(compV2, props)
+  }
+
+  it should "render component" in {
+    //given
+    val props = PaginationPanelProps(5)
+    val comp = <(PaginationPanel())(^.wrapped := props)()
+
+    //when
+    val result = shallowRender(comp)
+
+    //then
+    assertPaginationPanel(result, props)
+  }
+
+  it should "render component with pre-selected page" in {
+    //given
+    val props = PaginationPanelProps(10, selectedPage = 5)
+    val comp = <(PaginationPanel())(^.wrapped := props)()
+
+    //when
+    val result = shallowRender(comp)
+
+    //then
+    assertPaginationPanel(result, props)
+  }
 
   it should "return selected range when getSelectedRange" in {
     //when & then
@@ -36,5 +109,48 @@ class PaginationPanelSpec extends TestSpec {
     getSelectedRange(8, 10) shouldBe (6 to 10)
     getSelectedRange(9, 10) shouldBe (6 to 10)
     getSelectedRange(10, 10) shouldBe (6 to 10)
+  }
+
+  private def assertPaginationPanel(result: ComponentInstance, props: PaginationPanelProps): Unit = {
+    def renderBtn(text: String, attributes: Any*): Element = {
+      <.li(attributes: _*)(
+        <.a(^.href := "")(text)
+      )
+    }
+
+    def pageBtn(text: String, page: Int, disableable: Boolean): Element = {
+      val attributes =
+        if (page == props.selectedPage) {
+          Some(^.className := (if (disableable) "disabled" else "active"))
+        }
+        else None
+
+      renderBtn(text, attributes)
+    }
+
+    def scrollBtn(text: String): Element = renderBtn(text, None)
+
+    val minPage = 1
+    val maxPage = props.totalPages
+    val selectedRange = getSelectedRange(props.selectedPage, maxPage)
+    val buttons = selectedRange.map { page =>
+      Some(pageBtn(s"$page", page, disableable = false))
+    }
+
+    assertDOMComponent(result, <.div(^.className := props.alignment.style)(), { case List(ul) =>
+      assertDOMComponent(ul, <.ul()(
+        pageBtn("<<", minPage, disableable = true),
+        if (minPage < selectedRange.start) {
+          Some(scrollBtn("<"))
+        }
+        else None,
+        buttons,
+        if (maxPage > selectedRange.end) {
+          Some(scrollBtn(">"))
+        }
+        else None,
+        pageBtn(">>", maxPage, disableable = true)
+      ))
+    })
   }
 }
