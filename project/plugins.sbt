@@ -17,4 +17,4 @@ addSbtPlugin(("org.scommons" % "sbt-scommons-plugin" % "0.1.0-SNAPSHOT").changin
 
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
-addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.2.2")
+addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.2.4-SNAPSHOT")
