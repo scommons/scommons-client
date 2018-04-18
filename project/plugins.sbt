@@ -2,6 +2,7 @@
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.4.3")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.20")
 
