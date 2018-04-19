@@ -14,7 +14,7 @@ addSbtPlugin(("org.scommons.patched" % "sbt-scalajs-bundler" % "0.9.0-SNAPSHOT")
 
 //addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.9.0")
 
-addSbtPlugin(("org.scommons" % "sbt-scommons-plugin" % "0.1.0-SNAPSHOT").changing())
+addSbtPlugin(("org.scommons.sbt" % "sbt-scommons-plugin" % "0.1.0-SNAPSHOT").changing())
 
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
