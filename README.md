@@ -21,11 +21,11 @@ val scommonsVer = "0.1.0-SNAPSHOT"
 
 libraryDependencies ++= Seq(
   // shared
-  "org.scommons" %%% "scommons-api" % scommonsVer,
-  "org.scommons" %%% "scommons-api-joda-time" % scommonsVer,
+  "org.scommons.api" %%% "scommons-api-core" % scommonsVer,
+  "org.scommons.api" %%% "scommons-api-joda-time" % scommonsVer,
 
   // server/jvm only
-  "org.scommons" %% "scommons-api-play-ws" % scommonsVer,
+  "org.scommons.api" %% "scommons-api-play-ws" % scommonsVer,
   "org.scommons" %% "scommons-play" % scommonsVer,
 
   // client/js only

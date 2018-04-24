@@ -37,11 +37,12 @@ object ScommonsClientUi extends ScalaJsModule {
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
     ScommonsClientCore.definition,
-    ScommonsApi.js,
     ScommonsClientTest.definition % "test"
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
+    Libs.scommonsApiCore.value,
+
     Libs.sjsReactJs.value,              // For react facade
     Libs.sjsReactJsRouterDom.value,     // Optional. For react-router-dom facade
     Libs.sjsReactJsRouterRedux.value,   // Optional. For react-router-redux facade

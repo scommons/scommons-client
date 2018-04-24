@@ -15,11 +15,11 @@ object ScommonsPlay extends BasicModule {
       )
   }
 
-  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
-    ScommonsApi.jvm
-  )
+  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
+    Libs.scommonsApiCore.value,
+
     Libs.play.value,
     Libs.swaggerPlay.value,
     Libs.swaggerAnnotations.value,
