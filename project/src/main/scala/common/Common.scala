@@ -10,7 +10,7 @@ import scoverage.ScoverageSbtPlugin
 object Common {
 
   val settings: Seq[Setting[_]] = Seq(
-    organization := "org.scommons",
+    organization := "org.scommons.client",
     scalaVersion := "2.12.2",
     scalacOptions ++= Seq(
       //"-Xcheckinit",
@@ -61,7 +61,7 @@ object Common {
         Some("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
     },
     pomExtra := {
-      <url>https://github.com/scommons/scommons</url>
+      <url>https://github.com/scommons/scommons-client</url>
         <licenses>
           <license>
             <name>Apache 2</name>
@@ -70,8 +70,8 @@ object Common {
           </license>
         </licenses>
         <scm>
-          <url>git@github.com:scommons/scommons.git</url>
-          <connection>scm:git@github.com:scommons/scommons.git</connection>
+          <url>git@github.com:scommons/scommons-client.git</url>
+          <connection>scm:git@github.com:scommons/scommons-client.git</connection>
         </scm>
         <developers>
           <developer>

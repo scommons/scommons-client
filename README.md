@@ -1,6 +1,6 @@
 
-[![Build Status](https://travis-ci.org/scommons/scommons.svg?branch=master)](https://travis-ci.org/scommons/scommons)
-[![Coverage Status](https://coveralls.io/repos/github/scommons/scommons/badge.svg?branch=master)](https://coveralls.io/github/scommons/scommons?branch=master)
+[![Build Status](https://travis-ci.org/scommons/scommons-client.svg?branch=master)](https://travis-ci.org/scommons/scommons-client)
+[![Coverage Status](https://coveralls.io/repos/github/scommons/scommons-client/badge.svg?branch=master)](https://coveralls.io/github/scommons/scommons-client?branch=master)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org)
 
 ## Scala Commons
@@ -17,20 +17,22 @@ To see the showcase/demo UI with all the components live use the following link:
 
 Current version is under active development, but you already can try it:
 ```scala
-val scommonsVer = "0.1.0-SNAPSHOT"
+val scommonsApiVer = "0.1.0-SNAPSHOT"
+val scommonsServiceVer = "0.1.0-SNAPSHOT"
+val scommonsClientVer = "0.1.0-SNAPSHOT"
 
 libraryDependencies ++= Seq(
   // shared
-  "org.scommons.api" %%% "scommons-api-core" % scommonsVer,
-  "org.scommons.api" %%% "scommons-api-joda-time" % scommonsVer,
+  "org.scommons.api" %%% "scommons-api-core" % scommonsApiVer,
+  "org.scommons.api" %%% "scommons-api-joda-time" % scommonsApiVer,
 
   // server/jvm only
-  "org.scommons.api" %% "scommons-api-play-ws" % scommonsVer,
-  "org.scommons.service" %% "scommons-service-play" % scommonsVer,
+  "org.scommons.api" %% "scommons-api-play-ws" % scommonsApiVer,
+  "org.scommons.service" %% "scommons-service-play" % scommonsServiceVer,
 
   // client/js only
-  "org.scommons" %%% "scommons-client-ui" % scommonsVer,
-  "org.scommons" %%% "scommons-client-test" % scommonsVer % "test"
+  "org.scommons.client" %%% "scommons-client-ui" % scommonsClientVer,
+  "org.scommons.client" %%% "scommons-client-test" % scommonsClientVer % "test"
 )
 ```
 

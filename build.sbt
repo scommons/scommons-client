@@ -1,7 +1,7 @@
 import common.Common
 import definitions._
 
-lazy val scommons = (project in file("."))
+lazy val `scommons-client` = (project in file("."))
   .settings(Common.settings)
   .settings(
     skip in publish := true,
