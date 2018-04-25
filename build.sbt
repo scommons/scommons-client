@@ -15,13 +15,10 @@ lazy val scommons = (project in file("."))
   `scommons-client-assets`,
   `scommons-client-core`,
   `scommons-client-ui`,
-  `scommons-client-test`,
-  `scommons-play`
+  `scommons-client-test`
 )
 
 lazy val `scommons-client-assets` = ScommonsClientAssets.definition
 lazy val `scommons-client-core` = ScommonsClientCore.definition
 lazy val `scommons-client-ui` = ScommonsClientUi.definition
 lazy val `scommons-client-test` = ScommonsClientTest.definition
-
-lazy val `scommons-play` = ScommonsPlay.definition
