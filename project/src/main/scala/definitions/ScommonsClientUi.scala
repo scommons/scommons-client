@@ -17,7 +17,9 @@ object ScommonsClientUi extends ScalaJsModule {
         description := "Common Scala.js, React.js web-client utilities and components",
         coverageExcludedPackages := ".*Css;Native.*",
 
-        webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"),
+        webpackConfigFile in Test := Some(
+          baseDirectory.value / "src" / "main" / "resources" / "scommons.webpack.config.js"
+        ),
 
         npmDependencies in Compile ++= Seq(
           "react-modal" -> "3.1.2"

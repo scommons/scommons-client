@@ -1,4 +1,3 @@
-
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
@@ -22,6 +21,6 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('styles/styles.css')
+    new ExtractTextPlugin('styles/[name].css')
   ]
 }
