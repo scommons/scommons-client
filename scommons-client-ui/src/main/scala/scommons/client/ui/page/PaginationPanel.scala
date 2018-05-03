@@ -12,7 +12,8 @@ case class PaginationPanelProps(totalPages: Int,
                                 onPage: Int => Unit = _ => (),
                                 alignment: PaginationAlignment = PaginationAlignment.Centered) {
 
-  require(totalPages >= 1, s"totalPages($totalPages) should be greater than or equal 1")
+  require(totalPages >= 1,
+    s"totalPages($totalPages) should be greater than or equal 1")
 
   require(selectedPage >= 1 && selectedPage <= totalPages,
     s"selectedPage($selectedPage) should be between 1 and $totalPages")

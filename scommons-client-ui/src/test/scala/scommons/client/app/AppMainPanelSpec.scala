@@ -13,7 +13,7 @@ class AppMainPanelSpec extends TestSpec {
       copyright = "test copyright",
       version = "test version"
     )
-    val component = <(AppMainPanel.reactClass)(^.wrapped := props)(
+    val component = <(AppMainPanel())(^.wrapped := props)(
       <.div()("Some child element 1"),
       <.div()("Some child element 2")
     )

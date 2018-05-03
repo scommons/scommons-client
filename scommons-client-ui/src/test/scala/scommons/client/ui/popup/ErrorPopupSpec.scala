@@ -10,7 +10,9 @@ class ErrorPopupSpec extends TestSpec {
 
   it should "use stackTrace as error details when create props with exception" in {
     //given
-    val exception = new Exception("test exception")
+    val nestedCause = new Exception("test nestedCause exception")
+    val cause = new Exception("test cause exception", nestedCause)
+    val exception = new Exception("test exception", cause)
     val onClose = () => ()
 
     //when
@@ -22,6 +24,8 @@ class ErrorPopupSpec extends TestSpec {
     props.onClose shouldBe onClose
     props.details shouldBe Some(ErrorPopup.printStackTrace(exception))
     props.details.get should include ("test exception")
+    props.details.get should include ("test cause exception")
+    props.details.get should include ("test nestedCause exception")
   }
 
   it should "call onClose function when on close command" in {

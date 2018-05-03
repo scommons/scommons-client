@@ -59,7 +59,7 @@ object WithAutoHide extends UiComponent[WithAutoHideProps] {
   )
 
   private[popup] def onAutoHide(autoHideDiv: HTMLElement, onHide: () => Unit): Event => Unit = { e =>
-    require(autoHideDiv != null, "autoHideDiv is not null")
+    require(autoHideDiv != null, "autoHideDiv should not be null")
 
     val target = e.target.asInstanceOf[HTMLElement]
     if (!autoHideDiv.contains(target)) {

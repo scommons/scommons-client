@@ -76,6 +76,20 @@ class WithAutoHideSpec extends TestSpec {
     document.dispatchEvent(createDomEvent[KeyboardEvent]("keydown"))
   }
 
+  it should "fail if autoHideDiv is null" in {
+    //given
+    val onHide = mockFunction[Unit]
+    val event = mock[DomEventMock]
+
+    //when
+    val e = the[IllegalArgumentException] thrownBy {
+      WithAutoHide.onAutoHide(null, onHide)(event.asInstanceOf[MouseEvent])
+    }
+
+    //then
+    e.getMessage should include ("autoHideDiv should not be null")
+  }
+
   it should "call onHide when event target is outside autoHide element" in {
     //given
     val onHide = mockFunction[Unit]

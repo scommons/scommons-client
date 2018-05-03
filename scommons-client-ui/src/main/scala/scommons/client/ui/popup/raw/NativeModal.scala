@@ -1,4 +1,4 @@
-package scommons.client.ui.popup
+package scommons.client.ui.popup.raw
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._

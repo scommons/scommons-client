@@ -4,7 +4,7 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.UiComponent
-import scommons.client.ui.popup.NativeModal._
+import scommons.client.ui.popup.raw.NativeModal._
 
 case class PopupProps(show: Boolean,
                       onClose: () => Unit,

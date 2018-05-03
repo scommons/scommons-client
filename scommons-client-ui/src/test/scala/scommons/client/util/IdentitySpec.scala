@@ -14,6 +14,7 @@ class IdentitySpec extends FlatSpec with Matchers {
     key1 should be theSameInstanceAs key1
     key1 should not (be theSameInstanceAs key2)
     key1 shouldBe key1
+    key1 should not be key1.obj
     key1 should not be key2
   }
 
