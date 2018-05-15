@@ -54,6 +54,6 @@ sbt clean test
 Please, see the README.md in [scommons-showcase](https://github.com/scommons/scommons-showcase) project page.
 
 
-### Documentation
+## Documentation
 
 You can find documentation [here](https://scommons.org/scommons-client)
