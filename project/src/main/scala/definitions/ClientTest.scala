@@ -7,25 +7,23 @@ import scoverage.ScoverageKeys.coverageExcludedPackages
 
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
-object ScommonsClientTest extends ScalaJsModule {
+object ClientTest extends ScalaJsModule {
 
   override val id: String = "scommons-client-test"
 
-  override def definition: Project = {
-    super.definition
-      .settings(
-        description := "Common Scala.js, React.js testing utilities and components",
-        coverageExcludedPackages := "scommons.client.test.raw",
+  override def definition: Project = super.definition
+    .settings(
+      description := "Common Scala.js, React.js testing utilities and components",
+      coverageExcludedPackages := "scommons.client.test.raw",
 
-        npmDependencies in Compile ++= Seq(
-          "react-addons-test-utils" -> "15.6.0",
-          "react-test-renderer" -> "15.6.1"
-        )
+      npmDependencies in Compile ++= Seq(
+        "react-addons-test-utils" -> "15.6.0",
+        "react-test-renderer" -> "15.6.1"
       )
-  }
+    )
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
-    ScommonsClientCore.definition
+    ClientCore.definition
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(

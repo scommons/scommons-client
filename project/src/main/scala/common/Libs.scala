@@ -2,13 +2,13 @@ package common
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt._
+import scommons.sbtplugin.project.CommonLibs
 
-object Libs {
+object Libs extends CommonLibs {
 
   private val scommonsApiVersion = "0.1.0-SNAPSHOT"
   private val sjsReactJsVer = "0.14.0"
 
-  lazy val scalajsDom = Def.setting("org.scala-js" %%% "scalajs-dom" % "0.9.2")
   lazy val scommonsApiCore = Def.setting("org.scommons.api" %%% "scommons-api-core" % scommonsApiVersion)
 
   lazy val sjsReactJs = Def.setting("io.github.shogowada" %%% "scalajs-reactjs" % sjsReactJsVer)

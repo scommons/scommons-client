@@ -1,8 +1,9 @@
-import common.Common
 import definitions._
+import scommons.sbtplugin.project.CommonModule
 
 lazy val `scommons-client` = (project in file("."))
-  .settings(Common.settings)
+  .settings(CommonModule.settings: _*)
+  .settings(ClientModule.settings: _*)
   .settings(
     skip in publish := true,
     publish := (),
@@ -18,7 +19,7 @@ lazy val `scommons-client` = (project in file("."))
   `scommons-client-test`
 )
 
-lazy val `scommons-client-assets` = ScommonsClientAssets.definition
-lazy val `scommons-client-core` = ScommonsClientCore.definition
-lazy val `scommons-client-ui` = ScommonsClientUi.definition
-lazy val `scommons-client-test` = ScommonsClientTest.definition
+lazy val `scommons-client-assets` = ClientAssets.definition
+lazy val `scommons-client-core` = ClientCore.definition
+lazy val `scommons-client-ui` = ClientUi.definition
+lazy val `scommons-client-test` = ClientTest.definition

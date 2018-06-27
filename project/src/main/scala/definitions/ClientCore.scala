@@ -4,16 +4,14 @@ import common.{Libs, TestLibs}
 import sbt.Keys._
 import sbt._
 
-object ScommonsClientCore extends ScalaJsModule {
+object ClientCore extends ScalaJsModule {
 
   override val id: String = "scommons-client-core"
 
-  override def definition: Project = {
-    super.definition
-      .settings(
-        description := "Core Scala.js, React.js UI utilities and components"
-      )
-  }
+  override def definition: Project = super.definition
+    .settings(
+      description := "Core Scala.js, React.js UI utilities and components"
+    )
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil
 

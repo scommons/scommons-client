@@ -4,17 +4,15 @@ import com.typesafe.sbt.web.SbtWeb
 import sbt.Keys._
 import sbt._
 
-object ScommonsClientAssets extends BasicModule {
+object ClientAssets extends ClientModule {
 
   override val id: String = "scommons-client-assets"
 
-  override def definition: Project = {
-    super.definition
-      .enablePlugins(SbtWeb)
-      .settings(
-        description := "Web assets for scommons Client UI components"
-      )
-  }
+  override def definition: Project = super.definition
+    .enablePlugins(SbtWeb)
+    .settings(
+      description := "Web assets for scommons Client UI components"
+    )
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil
 
