@@ -6,7 +6,7 @@ import scommons.client.test.TestSpec
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
-import scommons.client.ui.page.PaginationPanel.getSelectedRange
+import scommons.client.ui.page.PaginationPanel._
 
 class PaginationPanelSpec extends TestSpec {
 
@@ -109,6 +109,51 @@ class PaginationPanelSpec extends TestSpec {
     getSelectedRange(8, 10) shouldBe (6 to 10)
     getSelectedRange(9, 10) shouldBe (6 to 10)
     getSelectedRange(10, 10) shouldBe (6 to 10)
+  }
+
+  it should "return totalPages for the given totalCount and limit when toTotalPages" in {
+    //when & then
+    toTotalPages(0, 1) shouldBe 1
+    toTotalPages(0, 10) shouldBe 1
+    toTotalPages(1, 10) shouldBe 1
+    toTotalPages(2, 10) shouldBe 1
+    toTotalPages(9, 10) shouldBe 1
+    toTotalPages(10, 10) shouldBe 1
+    toTotalPages(11, 10) shouldBe 2
+    toTotalPages(12, 10) shouldBe 2
+    toTotalPages(19, 10) shouldBe 2
+    toTotalPages(20, 10) shouldBe 2
+    toTotalPages(21, 10) shouldBe 3
+  }
+
+  it should "return offset for the given page and limit when toOffset" in {
+    //when & then
+    toOffset(1, 1) shouldBe 0
+    toOffset(1, 10) shouldBe 0
+    toOffset(2, 1) shouldBe 1
+    toOffset(2, 2) shouldBe 2
+    toOffset(2, 3) shouldBe 3
+    toOffset(2, 10) shouldBe 10
+    toOffset(3, 10) shouldBe 20
+  }
+
+  it should "return page for the given offset and limit when toPage" in {
+    //when & then
+    toPage(0, 1) shouldBe 1
+    toPage(1, 1) shouldBe 2
+    toPage(2, 1) shouldBe 3
+    toPage(0, 2) shouldBe 1
+    toPage(1, 2) shouldBe 1
+    toPage(2, 2) shouldBe 2
+    toPage(3, 2) shouldBe 2
+    toPage(4, 2) shouldBe 3
+    toPage(0, 10) shouldBe 1
+    toPage(9, 10) shouldBe 1
+    toPage(10, 10) shouldBe 2
+    toPage(11, 10) shouldBe 2
+    toPage(19, 10) shouldBe 2
+    toPage(20, 10) shouldBe 3
+    toPage(21, 10) shouldBe 3
   }
 
   private def assertPaginationPanel(result: ComponentInstance, props: PaginationPanelProps): Unit = {

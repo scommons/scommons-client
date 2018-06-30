@@ -24,8 +24,9 @@ object PaginationPanel extends UiComponent[PaginationPanelProps] {
   private case class PaginationPanelState(selectedPage: Int, selectedRange: Range)
 
   def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, PaginationPanelState](
+  lazy val reactClass: ReactClass = createComp
+  
+  private def createComp: ReactClass = React.createClass[PropsType, PaginationPanelState](
     getInitialState = { self =>
       val props = self.props.wrapped
       PaginationPanelState(props.selectedPage, getSelectedRange(props.selectedPage, props.totalPages))
@@ -128,4 +129,15 @@ object PaginationPanel extends UiComponent[PaginationPanelProps] {
       }
     }
   }
+  
+  def toTotalPages(totalCount: Int, limit: Int): Int = {
+    if (totalCount <= 0) 1
+    else {
+      (totalCount / limit) + (if (totalCount % limit == 0) 0 else 1)
+    }
+  }
+
+  def toOffset(page: Int, limit: Int): Int = (page - 1) * limit
+  
+  def toPage(offset: Int, limit: Int): Int = (offset / limit) + 1
 }
