@@ -17,9 +17,9 @@ case class AppBrowseControllerProps(buttons: List[ButtonData],
 
 object AppBrowseController extends RouterProps {
 
-  def apply(): ReactClass = WithRouter(reactClass)
+  def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = React.createClass[AppBrowseControllerProps, Unit] { self =>
+  private lazy val reactClass = WithRouter(React.createClass[AppBrowseControllerProps, Unit] { self =>
     val props = self.props.wrapped
     val path = BrowsePath(self.props.location.pathname)
 
@@ -49,7 +49,7 @@ object AppBrowseController extends RouterProps {
         }
       )
     )
-  }
+  })
 
   private[app] def findItemAndPath(roots: List[BrowseTreeData],
                                    path: BrowsePath): Option[(BrowseTreeData, List[BrowseTreeData])] = {
