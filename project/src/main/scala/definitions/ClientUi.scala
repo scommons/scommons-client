@@ -16,6 +16,7 @@ object ClientUi extends ScalaJsModule {
       description := "Common Scala.js, React.js web-client utilities and components",
       coverageExcludedPackages := ".*Css" +
         ";.*BaseStateController" +
+        ";.*BaseStateAndRouteController" +
         ";scommons.client.ui.popup.raw" +
         ";scommons.client.ui.HTML.InnerHTML",
 
