@@ -41,6 +41,7 @@ object AppBrowseController extends RouterProps {
       BrowseTreeProps(props.treeRoots, selectedItem, onSelect = onSelectItem,
         openedNodes = openedNodes, initiallyOpenedNodes = props.initiallyOpenedNodes)
     ))(
+      self.props.children,
       <.Switch()(
         allNodes.flatMap { n =>
           n.reactClass.map { comp =>

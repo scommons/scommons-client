@@ -20,6 +20,9 @@ class AppBrowseControllerSpec extends TestSpec {
   private val topNodeComp = React.createClass[Unit, Unit] { _ =>
     <.p()("topNodeComp")
   }
+  private val customChildrenComp = React.createClass[Unit, Unit] { _ =>
+    <.div()("customChildrenComp")
+  }
 
   private val childItemPath = BrowsePath("/child-item")
   private val topNodePath = BrowsePath("/top-node")
@@ -79,6 +82,22 @@ class AppBrowseControllerSpec extends TestSpec {
     scryRenderedComponentsWithType(result, topNodeComp).length shouldBe 0
   }
 
+  it should "render component with selected child path and children" in {
+    //given
+    val component = createAppBrowseController(childItemPath, Some(
+      <(customChildrenComp).empty
+    ))
+
+    //when
+    val result = renderIntoDocument(component)
+
+    //then
+    assertRenderedProps(result, childItem.actions, Some(childItem.path), Set(topNode.path))
+    scryRenderedComponentsWithType(result, customChildrenComp).length shouldBe 1
+    scryRenderedComponentsWithType(result, childItemComp).length should be > 0
+    scryRenderedComponentsWithType(result, topNodeComp).length shouldBe 0
+  }
+
   it should "re-render component when selected item changes" in {
     //given
     val comp = renderIntoDocument(createAppBrowseController(topNodePath))
@@ -114,14 +133,18 @@ class AppBrowseControllerSpec extends TestSpec {
     findItemAndPath(roots, node3.path) shouldBe Some(node3 -> Nil)
   }
 
-  private def createAppBrowseController(targetPath: BrowsePath): ReactElement = {
+  private def createAppBrowseController(targetPath: BrowsePath,
+                                        children: Option[ReactElement] = None): ReactElement = {
+    
     <.MemoryRouter(^.initialEntries := List(targetPath.value))(
       <(AppBrowseController())(^.wrapped := AppBrowseControllerProps(
         buttons,
         treeRoots,
         dispatch,
         initiallyOpenedNodes
-      ))()
+      ))(
+        children
+      )
     )
   }
 
