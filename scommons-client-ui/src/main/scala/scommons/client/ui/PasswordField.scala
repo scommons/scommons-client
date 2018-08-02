@@ -13,7 +13,8 @@ case class PasswordFieldProps(password: String,
                               requestSelect: Boolean = false,
                               className: Option[String] = None,
                               placeholder: Option[String] = None,
-                              onEnter: () => Unit = () => ())
+                              onEnter: () => Unit = () => (),
+                              readOnly: Boolean = false)
 
 object PasswordField extends UiComponent[PasswordFieldProps] {
 
@@ -52,6 +53,7 @@ object PasswordField extends UiComponent[PasswordFieldProps] {
       val props = self.props.wrapped
 
       <.input(
+        ^("readOnly") := props.readOnly,
         ^.`type` := "password",
         props.className.map { className =>
           ^.className := className

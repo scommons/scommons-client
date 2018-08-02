@@ -13,7 +13,8 @@ case class TextFieldProps(text: String,
                           requestSelect: Boolean = false,
                           className: Option[String] = None,
                           placeholder: Option[String] = None,
-                          onEnter: () => Unit = () => ())
+                          onEnter: () => Unit = () => (),
+                          readOnly: Boolean = false)
 
 object TextField extends UiComponent[TextFieldProps] {
 
@@ -52,6 +53,7 @@ object TextField extends UiComponent[TextFieldProps] {
       val props = self.props.wrapped
 
       <.input(
+        ^("readOnly") := props.readOnly,
         ^.`type` := "text",
         props.className.map { className =>
           ^.className := className

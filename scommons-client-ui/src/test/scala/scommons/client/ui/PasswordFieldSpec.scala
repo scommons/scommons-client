@@ -65,7 +65,8 @@ class PasswordFieldSpec extends TestSpec {
       "test password",
       onChange = _ => (),
       className = Some("test-class"),
-      placeholder = Some("test-placeholder")
+      placeholder = Some("test-placeholder"),
+      readOnly = true
     )
     val component = <(PasswordField())(^.wrapped := props)()
 
@@ -74,6 +75,7 @@ class PasswordFieldSpec extends TestSpec {
 
     //then
     assertDOMComponent(result, <.input(
+      ^("readOnly") := props.readOnly,
       ^.`type` := "password",
       props.className.map(^.className := _),
       props.placeholder.map(^.placeholder := _),

@@ -208,12 +208,13 @@ class InputPopupSpec extends TestSpec {
         assertDOMComponent(div, <.div(^.className := "control-group")(), { case List(textField) =>
           assertComponent(textField, TextField(), { textFieldProps: TextFieldProps =>
             inside(textFieldProps) {
-              case TextFieldProps(text, _, requestFocus, requestSelect, className, placeholder, _) =>
+              case TextFieldProps(text, _, requestFocus, requestSelect, className, placeholder, _, readOnly) =>
                 text shouldBe props.initialValue
                 requestFocus shouldBe false
                 requestSelect shouldBe false
                 className shouldBe Some("span12")
                 placeholder shouldBe props.placeholder
+                readOnly shouldBe false
             }
           })
         })

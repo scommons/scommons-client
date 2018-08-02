@@ -65,7 +65,8 @@ class TextFieldSpec extends TestSpec {
       "test text",
       onChange = _ => (),
       className = Some("test-class"),
-      placeholder = Some("test-placeholder")
+      placeholder = Some("test-placeholder"),
+      readOnly = true
     )
     val component = <(TextField())(^.wrapped := props)()
 
@@ -74,6 +75,7 @@ class TextFieldSpec extends TestSpec {
 
     //then
     assertDOMComponent(result, <.input(
+      ^("readOnly") := props.readOnly,
       ^.`type` := "text",
       props.className.map(^.className := _),
       props.placeholder.map(^.placeholder := _),
