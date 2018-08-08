@@ -15,11 +15,11 @@ case class AppBrowseControllerProps(buttons: List[ButtonData],
                                     dispatch: Dispatch,
                                     initiallyOpenedNodes: Set[BrowsePath] = Set.empty)
 
-object AppBrowseController extends RouterProps {
+object AppBrowseController extends UiComponent[AppBrowseControllerProps] with RouterProps {
 
   def apply(): ReactClass = reactClass
 
-  private lazy val reactClass = WithRouter(React.createClass[AppBrowseControllerProps, Unit] { self =>
+  lazy val reactClass = WithRouter(React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
     val path = BrowsePath(self.props.location.pathname)
 
