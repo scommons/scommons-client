@@ -1,4 +1,4 @@
-package scommons.client.app
+package scommons.client.controller
 
 import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
