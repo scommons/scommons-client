@@ -21,4 +21,27 @@ class BrowsePathSpec extends FlatSpec with Matchers {
     //when & then
     path.toString shouldBe path.value
   }
+  
+  it should "not construct BrowsePath if its empty" in {
+    //when
+    val e = the[IllegalArgumentException] thrownBy {
+      BrowsePath("")
+    }
+    
+    //then
+    e.getMessage should include("BrowsePath should not be empty!")
+  }
+
+  it should "not construct BrowsePath if it doesn't start with '/'" in {
+    //given
+    val path = "test"
+
+    //when
+    val e = the[IllegalArgumentException] thrownBy {
+      BrowsePath(path)
+    }
+
+    //then
+    e.getMessage should include(s"BrowsePath should start with '/', path: $path")
+  }
 }
