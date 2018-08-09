@@ -1,9 +1,9 @@
-package scommons.client.util
+package scommons.client.controller
 
+import scommons.client.controller.PathParams.extractId
 import scommons.client.test.TestSpec
-import scommons.client.util.PathParamsExtractors.extractId
 
-class PathParamsExtractorsSpec extends TestSpec {
+class PathParamsSpec extends TestSpec {
 
   it should "extract id from the given location path when extractId" in {
     //given

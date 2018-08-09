@@ -1,8 +1,8 @@
-package scommons.client.util
+package scommons.client.controller
 
 import scala.util.matching.Regex
 
-trait PathParamsExtractors {
+object PathParams {
 
   def extractId(idRegex: Regex, path: String, exact: Boolean = false): Option[Int] = {
     if (exact && !idRegex.pattern.matcher(path).matches()) {
@@ -17,5 +17,3 @@ trait PathParamsExtractors {
     }
   }
 }
-
-object PathParamsExtractors extends PathParamsExtractors
