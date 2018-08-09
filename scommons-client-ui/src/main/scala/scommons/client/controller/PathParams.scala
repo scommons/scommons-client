@@ -2,18 +2,23 @@ package scommons.client.controller
 
 import scala.util.matching.Regex
 
-object PathParams {
+class PathParams private(val path: String) extends AnyVal {
 
-  def extractId(idRegex: Regex, path: String, exact: Boolean = false): Option[Int] = {
-    if (exact && !idRegex.pattern.matcher(path).matches()) {
+  def extractInt(regex: Regex, exact: Boolean = false): Option[Int] = {
+    if (exact && !regex.pattern.matcher(path).matches()) {
       None
     }
     else {
       for {
-        idRegex(id) <- idRegex.findPrefixMatchOf(path)
+        regex(id) <- regex.findPrefixMatchOf(path)
       } yield {
         id.toInt
       }
     }
   }
+}
+
+object PathParams {
+  
+  def apply(path: String): PathParams = new PathParams(path)
 }

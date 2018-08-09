@@ -1,43 +1,40 @@
 package scommons.client.controller
 
-import scommons.client.controller.PathParams.extractId
 import scommons.client.test.TestSpec
 
 class PathParamsSpec extends TestSpec {
 
-  it should "extract id from the given location path when extractId" in {
+  it should "extract int from the given location path when extractInt" in {
     //given
     val prefix = "/some-path"
     val idRegex = s"$prefix/(\\d+)".r
 
     //when & then
-    extractId(idRegex, "") shouldBe None
-    extractId(idRegex, "/") shouldBe None
-    extractId(idRegex, "/test") shouldBe None
-    extractId(idRegex, s"/test/$prefix/1") shouldBe None
-    extractId(idRegex, s"$prefix/test") shouldBe None
-    extractId(idRegex, s"$prefix/1") shouldBe Some(1)
-    extractId(idRegex, s"$prefix/123") shouldBe Some(123)
-    extractId(idRegex, s"$prefix/123?test") shouldBe Some(123)
-    extractId(idRegex, s"$prefix/123/test") shouldBe Some(123)
-    extractId(idRegex, s"$prefix/123$prefix/456") shouldBe Some(123)
+    PathParams("/").extractInt(idRegex) shouldBe None
+    PathParams("/test").extractInt(idRegex) shouldBe None
+    PathParams(s"/test/$prefix/1").extractInt(idRegex) shouldBe None
+    PathParams(s"$prefix/test").extractInt(idRegex) shouldBe None
+    PathParams(s"$prefix/1").extractInt(idRegex) shouldBe Some(1)
+    PathParams(s"$prefix/123").extractInt(idRegex) shouldBe Some(123)
+    PathParams(s"$prefix/123?test").extractInt(idRegex) shouldBe Some(123)
+    PathParams(s"$prefix/123/test").extractInt(idRegex) shouldBe Some(123)
+    PathParams(s"$prefix/123$prefix/456").extractInt(idRegex) shouldBe Some(123)
   }
   
-  it should "extract id only if exact match when extractId" in {
+  it should "extract int only if exact match when extractInt" in {
     //given
     val prefix = "/some-path"
     val idRegex = s"$prefix/(\\d+)".r
 
     //when & then
-    extractId(idRegex, "", exact = true) shouldBe None
-    extractId(idRegex, "/", exact = true) shouldBe None
-    extractId(idRegex, "/test", exact = true) shouldBe None
-    extractId(idRegex, s"/test/$prefix/1", exact = true) shouldBe None
-    extractId(idRegex, s"$prefix/test", exact = true) shouldBe None
-    extractId(idRegex, s"$prefix/1", exact = true) shouldBe Some(1)
-    extractId(idRegex, s"$prefix/123", exact = true) shouldBe Some(123)
-    extractId(idRegex, s"$prefix/123?test", exact = true) shouldBe None
-    extractId(idRegex, s"$prefix/123/test", exact = true) shouldBe None
-    extractId(idRegex, s"$prefix/123$prefix/456", exact = true) shouldBe None
+    PathParams("/").extractInt(idRegex, exact = true) shouldBe None
+    PathParams("/test").extractInt(idRegex, exact = true) shouldBe None
+    PathParams(s"/test/$prefix/1").extractInt(idRegex, exact = true) shouldBe None
+    PathParams(s"$prefix/test").extractInt(idRegex, exact = true) shouldBe None
+    PathParams(s"$prefix/1").extractInt(idRegex, exact = true) shouldBe Some(1)
+    PathParams(s"$prefix/123").extractInt(idRegex, exact = true) shouldBe Some(123)
+    PathParams(s"$prefix/123?test").extractInt(idRegex, exact = true) shouldBe None
+    PathParams(s"$prefix/123/test").extractInt(idRegex, exact = true) shouldBe None
+    PathParams(s"$prefix/123$prefix/456").extractInt(idRegex, exact = true) shouldBe None
   }
 }

@@ -9,7 +9,7 @@ import scala.scalajs.js.annotation.JSExportAll
 
 class RouteParamsSpec extends TestSpec {
 
-  it should "return pathname from router location when path" in {
+  it should "return PathParams with pathname from the router location when pathParams" in {
     //given
     val routerProps = mock[RouterProps]
     val location = mock[LocationMock]
@@ -20,10 +20,10 @@ class RouteParamsSpec extends TestSpec {
     (location.pathname _).expects().returning(pathname)
 
     //when
-    val result = routeParams.path
+    val result = routeParams.pathParams
     
     //then
-    result.value shouldBe pathname
+    result.path shouldBe pathname
   }
 }
 
