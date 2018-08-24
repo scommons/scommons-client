@@ -47,7 +47,7 @@ object BrowseTreeNode extends UiComponent[BrowseTreeNodeProps] {
     )(
       <.div(^.className := s"$browseTreeItem $nodeClass $topItemImageClass")(
         if (isNode) {
-          <.div(^.className := s"$browseTreeNodeIcon", ^.onClick := arrowClick(self))(
+          <.div(^.className := s"$browseTreeItem $browseTreeNodeIcon", ^.onClick := arrowClick(self))(
             <.div(^.className := s"$arrowClass")()
           )
         }

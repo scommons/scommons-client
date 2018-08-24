@@ -133,7 +133,7 @@ class BrowseTreeNodeSpec extends TestSpec {
       <.div()(
         <.div(^.className := s"$browseTreeItem $browseTreeTopItem")(
           <.div(^.className := s"$browseTreeItem $browseTreeNode $browseTreeTopItemImageValue")(
-            <.div(^.className := s"$browseTreeNodeIcon")(
+            <.div(^.className := s"$browseTreeItem $browseTreeNodeIcon")(
               <.div(^.className := browseTreeClosedArrow)()
             ),
             <.div(^.className := browseTreeNodeValue)(data.text)
@@ -160,7 +160,7 @@ class BrowseTreeNodeSpec extends TestSpec {
       <.div()(
         <.div(^("class") := s"$browseTreeItem", ^("style") := "padding-left: 16px;")(
           <.div(^("class") := s"$browseTreeItem $browseTreeNode")(
-            <.div(^("class") := s"$browseTreeNodeIcon")(
+            <.div(^("class") := s"$browseTreeItem $browseTreeNodeIcon")(
               <.div(^("class") := browseTreeClosedArrow)()
             ),
             <.div(^("class") := browseTreeNodeValue)(data.text)
@@ -193,7 +193,7 @@ class BrowseTreeNodeSpec extends TestSpec {
       <.div()(
         <.div(^("class") := s"$browseTreeItem", ^("style") := "padding-left: 16px;")(
           <.div(^("class") := s"$browseTreeItem $browseTreeNode")(
-            <.div(^("class") := s"$browseTreeNodeIcon")(
+            <.div(^("class") := s"$browseTreeItem $browseTreeNodeIcon")(
               <.div(^("class") := browseTreeOpenArrow)()
             ),
             <.div(^("class") := browseTreeNodeValue)(data.text)
