@@ -31,6 +31,22 @@ object CheckBoxTreeData {
 
     loop(roots, Nil)
   }
+
+  def calcNodeValue(children: List[CheckBoxTreeData], defaultValue: TriState): TriState = {
+    @annotation.tailrec
+    def loop(prevValue: TriState, nodes: List[CheckBoxTreeData]): TriState = nodes match {
+      case Nil => prevValue
+      case head :: tail =>
+        val v = head.value
+        if (v == TriState.Indeterminate || v != prevValue) TriState.Indeterminate
+        else loop(v, tail)
+    }
+
+    children match {
+      case Nil => defaultValue
+      case head :: tail => loop(head.value, tail)
+    }
+  }
 }
 
 case class CheckBoxTreeItemData(key: String,
