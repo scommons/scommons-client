@@ -8,12 +8,12 @@ import scommons.client.test.TestSpec
 import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.util.TestDOMUtils._
-import scommons.client.ui.tree.CheckBoxTreeCss._
-import scommons.client.ui.tree.CheckBoxTreeNodeSpec.MouseSyntheticEventMock
+import scommons.client.ui.tree.TreeCss._
+import scommons.client.ui.tree.TreeNodeSpec.MouseSyntheticEventMock
 
 import scala.scalajs.js.annotation.JSExportAll
 
-class CheckBoxTreeNodeSpec extends TestSpec {
+class TreeNodeSpec extends TestSpec {
 
   it should "call onExpand when click on node arrow" in {
     //given
@@ -32,8 +32,8 @@ class CheckBoxTreeNodeSpec extends TestSpec {
     //given
     val onExpand = mockFunction[Unit]
     val props = nodeProps(isNode = true, 0, onExpand = onExpand)
-    val self = mock[Self[CheckBoxTreeNodeProps, Unit]]
-    val selfProps = mock[Props[CheckBoxTreeNodeProps]]
+    val self = mock[Self[TreeNodeProps, Unit]]
+    val selfProps = mock[Props[TreeNodeProps]]
     val event = mock[MouseSyntheticEventMock]
 
     //then
@@ -43,7 +43,7 @@ class CheckBoxTreeNodeSpec extends TestSpec {
     onExpand.expects()
 
     //when
-    CheckBoxTreeNode.arrowClick(self)(event.asInstanceOf[MouseSyntheticEvent])
+    TreeNode.arrowClick(self)(event.asInstanceOf[MouseSyntheticEvent])
   }
 
   it should "render item" in {
@@ -134,25 +134,25 @@ class CheckBoxTreeNodeSpec extends TestSpec {
                         level: Int,
                         text: String = "Test",
                         expanded: Boolean = false,
-                        onExpand: () => Unit = () => ()): CheckBoxTreeNodeProps = {
+                        onExpand: () => Unit = () => ()): TreeNodeProps = {
 
 
-    CheckBoxTreeNodeProps(isNode, level, expanded, onExpand, { () =>
+    TreeNodeProps(isNode, level, expanded, onExpand, { () =>
       <.label()(text)
     })
   }
 
-  private def treeNode(props: CheckBoxTreeNodeProps,
+  private def treeNode(props: TreeNodeProps,
                        children: List[ReactElement] = Nil): ReactElement = {
 
-    <(CheckBoxTreeNode())(^.wrapped := props)(
+    <(TreeNode())(^.wrapped := props)(
       if (props.isNode && props.expanded) children
       else Nil
     )
   }
 }
 
-object CheckBoxTreeNodeSpec {
+object TreeNodeSpec {
 
   @JSExportAll
   trait MouseSyntheticEventMock {

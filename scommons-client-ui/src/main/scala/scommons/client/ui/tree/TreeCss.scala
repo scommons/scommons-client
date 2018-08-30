@@ -3,9 +3,9 @@ package scommons.client.ui.tree
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
-@JSImport("scommons/client/ui/tree/CheckBoxTree.css", JSImport.Namespace)
+@JSImport("scommons/client/ui/tree/Tree.css", JSImport.Namespace)
 @js.native
-object CheckBoxTreeCss extends js.Object {
+object TreeCss extends js.Object {
 
   val checkBoxTree: String = js.native
   

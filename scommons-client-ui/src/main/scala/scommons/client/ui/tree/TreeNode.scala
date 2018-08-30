@@ -6,18 +6,18 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.ui._
-import scommons.client.ui.tree.CheckBoxTreeCss._
+import scommons.client.ui.UiComponent
+import scommons.client.ui.tree.TreeCss._
 
-case class CheckBoxTreeNodeProps(isNode: Boolean,
-                                 level: Int,
-                                 expanded: Boolean,
-                                 onExpand: () => Unit,
-                                 renderValue: () => ReactElement)
+case class TreeNodeProps(isNode: Boolean,
+                         level: Int,
+                         expanded: Boolean,
+                         onExpand: () => Unit,
+                         renderValue: () => ReactElement)
 
-object CheckBoxTreeNode extends UiComponent[CheckBoxTreeNodeProps] {
+object TreeNode extends UiComponent[TreeNodeProps] {
 
-  private[tree] type CheckBoxTreeNodeSelf = Self[CheckBoxTreeNodeProps, Unit]
+  private[tree] type TreeNodeSelf = Self[TreeNodeProps, Unit]
 
   def apply(): ReactClass = reactClass
   lazy val reactClass: ReactClass = createComp
@@ -56,7 +56,7 @@ object CheckBoxTreeNode extends UiComponent[CheckBoxTreeNodeProps] {
     else treeItem
   }
 
-  private[tree] def arrowClick(self: CheckBoxTreeNodeSelf): MouseSyntheticEvent => Unit = { event =>
+  private[tree] def arrowClick(self: TreeNodeSelf): MouseSyntheticEvent => Unit = { event =>
     event.stopPropagation()
 
     val props = self.props.wrapped

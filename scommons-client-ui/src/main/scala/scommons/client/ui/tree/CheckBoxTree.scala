@@ -6,7 +6,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import scommons.client.ui.{ImageCheckBox, ImageCheckBoxProps, TriState, UiComponent}
-import scommons.client.ui.tree.CheckBoxTreeCss._
+import scommons.client.ui.tree.TreeCss._
 
 case class CheckBoxTreeProps(roots: List[CheckBoxTreeData],
                              onChange: (CheckBoxTreeData, TriState) => Unit,
@@ -46,7 +46,7 @@ object CheckBoxTree extends UiComponent[CheckBoxTreeProps] {
           case n: CheckBoxTreeNodeData => (true, isOpen(self.state, n), n.children)
         }
 
-        <(CheckBoxTreeNode())(^.wrapped := CheckBoxTreeNodeProps(
+        <(TreeNode())(^.wrapped := TreeNodeProps(
           isNode = isNode,
           level = level,
           expanded = isOpened,
