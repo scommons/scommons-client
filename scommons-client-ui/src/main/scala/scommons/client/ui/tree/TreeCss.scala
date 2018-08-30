@@ -7,19 +7,19 @@ import scala.scalajs.js.annotation.JSImport
 @js.native
 object TreeCss extends js.Object {
 
-  val checkBoxTree: String = js.native
+  val tree: String = js.native
   
-  val checkBoxTreeItem: String = js.native
+  val treeItem: String = js.native
   
-  val checkBoxTreeNodeValue: String = js.native
+  val treeNodeValue: String = js.native
   
-  val checkBoxTreeItemValue: String = js.native
+  val treeItemValue: String = js.native
   
-  val checkBoxTreeNode: String = js.native
+  val treeNode: String = js.native
   
-  val checkBoxTreeNodeIcon: String = js.native
+  val treeNodeIcon: String = js.native
   
-  val checkBoxTreeClosedArrow: String = js.native
+  val treeClosedArrow: String = js.native
   
-  val checkBoxTreeOpenArrow: String = js.native
+  val treeOpenArrow: String = js.native
 }

@@ -18,8 +18,8 @@ class TreeNodeSpec extends TestSpec {
   it should "call onExpand when click on node arrow" in {
     //given
     val onExpand = mockFunction[Unit]
-    val comp = renderIntoDocument(treeNode(nodeProps(isNode = true, 0, onExpand = onExpand)))
-    val arrowDiv = findRenderedDOMComponentWithClass(comp, s"$checkBoxTreeNodeIcon")
+    val comp = renderIntoDocument(getTreeNode(getTreeNodeProps(isNode = true, 0, onExpand = onExpand)))
+    val arrowDiv = findRenderedDOMComponentWithClass(comp, s"$treeNodeIcon")
 
     //then
     onExpand.expects()
@@ -31,7 +31,7 @@ class TreeNodeSpec extends TestSpec {
   it should "call stopPropagation on click event" in {
     //given
     val onExpand = mockFunction[Unit]
-    val props = nodeProps(isNode = true, 0, onExpand = onExpand)
+    val props = getTreeNodeProps(isNode = true, 0, onExpand = onExpand)
     val self = mock[Self[TreeNodeProps, Unit]]
     val selfProps = mock[Props[TreeNodeProps]]
     val event = mock[MouseSyntheticEventMock]
@@ -49,17 +49,17 @@ class TreeNodeSpec extends TestSpec {
   it should "render item" in {
     //given
     val text = "Item"
-    val props = nodeProps(isNode = false, 1, text = text)
-    val component = treeNode(props)
+    val props = getTreeNodeProps(isNode = false, 1, text = text)
+    val component = getTreeNode(props)
 
     //when
     val result = shallowRender(component)
 
     //then
     assertDOMComponent(result,
-      <.div(^.className := s"$checkBoxTreeItem", ^.style := Map("paddingLeft" -> "16px"))(
+      <.div(^.className := s"$treeItem", ^.style := Map("paddingLeft" -> "16px"))(
         <.div(^.className := "")(
-          <.div(^.className := checkBoxTreeItemValue)(
+          <.div(^.className := treeItemValue)(
             <.label()(text)
           )
         )
@@ -70,9 +70,9 @@ class TreeNodeSpec extends TestSpec {
   it should "render non-empty node" in {
     //given
     val nodeText = "Node"
-    val props = nodeProps(isNode = true, 1, nodeText)
-    val component = treeNode(props, List(
-      treeNode(nodeProps(isNode = false, 2, "Item"))
+    val props = getTreeNodeProps(isNode = true, 1, nodeText)
+    val component = getTreeNode(props, List(
+      getTreeNode(getTreeNodeProps(isNode = false, 2, "Item"))
     ))
 
     //when
@@ -81,12 +81,12 @@ class TreeNodeSpec extends TestSpec {
     //then
     assertDOMElement(findReactElement(result),
       <.div()(
-        <.div(^("class") := s"$checkBoxTreeItem", ^("style") := "padding-left: 16px;")(
-          <.div(^("class") := s"$checkBoxTreeNode")(
-            <.div(^("class") := s"$checkBoxTreeItem $checkBoxTreeNodeIcon")(
-              <.div(^("class") := checkBoxTreeClosedArrow)()
+        <.div(^("class") := s"$treeItem", ^("style") := "padding-left: 16px;")(
+          <.div(^("class") := s"$treeNode")(
+            <.div(^("class") := s"$treeItem $treeNodeIcon")(
+              <.div(^("class") := treeClosedArrow)()
             ),
-            <.div(^("class") := checkBoxTreeNodeValue)(
+            <.div(^("class") := treeNodeValue)(
               <.label()(nodeText)
             )
           )
@@ -99,8 +99,8 @@ class TreeNodeSpec extends TestSpec {
     //given
     val childText = "child item"
     val nodeText = "expanded non-empty node"
-    val component = treeNode(nodeProps(isNode = true, 1, nodeText, expanded = true), List(
-      treeNode(nodeProps(isNode = false, 2, childText))
+    val component = getTreeNode(getTreeNodeProps(isNode = true, 1, nodeText, expanded = true), List(
+      getTreeNode(getTreeNodeProps(isNode = false, 2, childText))
     ))
 
     //when
@@ -109,19 +109,19 @@ class TreeNodeSpec extends TestSpec {
     //then
     assertDOMElement(findReactElement(result),
       <.div()(
-        <.div(^("class") := s"$checkBoxTreeItem", ^("style") := "padding-left: 16px;")(
-          <.div(^("class") := s"$checkBoxTreeNode")(
-            <.div(^("class") := s"$checkBoxTreeItem $checkBoxTreeNodeIcon")(
-              <.div(^("class") := checkBoxTreeOpenArrow)()
+        <.div(^("class") := s"$treeItem", ^("style") := "padding-left: 16px;")(
+          <.div(^("class") := s"$treeNode")(
+            <.div(^("class") := s"$treeItem $treeNodeIcon")(
+              <.div(^("class") := treeOpenArrow)()
             ),
-            <.div(^("class") := checkBoxTreeNodeValue)(
+            <.div(^("class") := treeNodeValue)(
               <.label()(nodeText)
             )
           )
         ),
-        <.div(^("class") := s"$checkBoxTreeItem", ^("style") := "padding-left: 32px;")(
+        <.div(^("class") := s"$treeItem", ^("style") := "padding-left: 32px;")(
           <.div(^("class") := "")(
-            <.div(^("class") := checkBoxTreeItemValue)(
+            <.div(^("class") := treeItemValue)(
               <.label()(childText)
             )
           )
@@ -129,12 +129,12 @@ class TreeNodeSpec extends TestSpec {
       )
     )
   }
-  
-  private def nodeProps(isNode: Boolean,
-                        level: Int,
-                        text: String = "Test",
-                        expanded: Boolean = false,
-                        onExpand: () => Unit = () => ()): TreeNodeProps = {
+
+  private def getTreeNodeProps(isNode: Boolean,
+                               level: Int,
+                               text: String = "Test",
+                               expanded: Boolean = false,
+                               onExpand: () => Unit = () => ()): TreeNodeProps = {
 
 
     TreeNodeProps(isNode, level, expanded, onExpand, { () =>
@@ -142,8 +142,8 @@ class TreeNodeSpec extends TestSpec {
     })
   }
 
-  private def treeNode(props: TreeNodeProps,
-                       children: List[ReactElement] = Nil): ReactElement = {
+  private def getTreeNode(props: TreeNodeProps,
+                          children: List[ReactElement] = Nil): ReactElement = {
 
     <(TreeNode())(^.wrapped := props)(
       if (props.isNode && props.expanded) children

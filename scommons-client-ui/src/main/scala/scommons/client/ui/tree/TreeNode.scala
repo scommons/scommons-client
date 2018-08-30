@@ -25,18 +25,21 @@ object TreeNode extends UiComponent[TreeNodeProps] {
   private def createComp = React.createClass[PropsType, Unit]{ self =>
     val props = self.props.wrapped
 
-    val nodeClass = if (props.isNode) checkBoxTreeNode else ""
-    val valueClass = if (props.isNode) checkBoxTreeNodeValue else checkBoxTreeItemValue
-    val arrowClass = if (props.expanded) checkBoxTreeOpenArrow else checkBoxTreeClosedArrow
+    val nodeClass = if (props.isNode) treeNode else ""
+    val valueClass = if (props.isNode) treeNodeValue else treeItemValue
+    val arrowClass = if (props.expanded) treeOpenArrow else treeClosedArrow
 
-    val treeItem = <.div(
-      ^.className := checkBoxTreeItem,
+    val item = <.div(
+      ^.className := treeItem,
       if (props.level == 0) None
       else Some(^.style := Map("paddingLeft" -> s"${props.level * 16}px"))
     )(
       <.div(^.className := nodeClass)(
         if (props.isNode) {
-          <.div(^.className := s"$checkBoxTreeItem $checkBoxTreeNodeIcon", ^.onClick := arrowClick(self))(
+          <.div(
+            ^.className := s"$treeItem $treeNodeIcon",
+            ^.onClick := arrowClick(self)
+          )(
             <.div(^.className := arrowClass)()
           )
         }
@@ -49,11 +52,11 @@ object TreeNode extends UiComponent[TreeNodeProps] {
 
     if (props.isNode) {
       <.div()(
-        treeItem,
+        item,
         self.props.children
       )
     }
-    else treeItem
+    else item
   }
 
   private[tree] def arrowClick(self: TreeNodeSelf): MouseSyntheticEvent => Unit = { event =>

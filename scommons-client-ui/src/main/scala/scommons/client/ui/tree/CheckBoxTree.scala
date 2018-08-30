@@ -70,7 +70,7 @@ object CheckBoxTree extends UiComponent[CheckBoxTreeProps] {
         )
       }
 
-      <.div(^.className := checkBoxTree)(
+      <.div(^.className := tree)(
         createElements(props.roots, 0)
       )
     }

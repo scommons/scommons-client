@@ -1,10 +1,10 @@
 
-.checkBoxTree {
+.tree {
   width: 100%;
   overflow: auto;
 }
 
-.checkBoxTreeItem {
+.treeItem {
   padding-top: 4px;
   padding-bottom: 4px;
   cursor: hand;
@@ -12,38 +12,38 @@
   zoom: 1;
 }
 
-.checkBoxTreeNodeValue {
+.treeNodeValue {
   padding-left: 3px;
   padding-right: 3px;
   outline: none;
 }
 
-.checkBoxTreeItemValue {
+.treeItemValue {
   padding-left: 18px;
   padding-right: 3px;
   outline: none;
 }
 
-.checkBoxTreeNode {
+.treeNode {
   padding-left: 16px;
   position: relative;
 }
 
-.checkBoxTreeNodeIcon {
+.treeNodeIcon {
   left: 0px;
   height: 15px;
   width: 15px;
   position: absolute;
 }
 
-.checkBoxTreeClosedArrow {
+.treeClosedArrow {
   background: url('./img/treeClosed.gif') no-repeat 0px 0px;
   height: 15px;
   width: 15px;
   vertical-align: middle;
 }
 
-.checkBoxTreeOpenArrow {
+.treeOpenArrow {
   background: url('./img/treeOpen.gif') no-repeat 0px 0px;
   height: 15px;
   width: 15px;
