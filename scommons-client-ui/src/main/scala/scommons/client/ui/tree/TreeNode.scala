@@ -7,17 +7,19 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.UiComponent
-import scommons.client.ui.tree.TreeCss._
 
 case class TreeNodeProps(isNode: Boolean,
-                         level: Int,
-                         expanded: Boolean,
+                         paddingLeft: Int,
+                         itemClass: String,
+                         nodeClass: String,
+                         nodeIconClass: String,
+                         arrowClass: String,
+                         valueClass: String,
+                         onSelect: Option[() => Unit],
                          onExpand: () => Unit,
                          renderValue: () => ReactElement)
 
 object TreeNode extends UiComponent[TreeNodeProps] {
-
-  private[tree] type TreeNodeSelf = Self[TreeNodeProps, Unit]
 
   def apply(): ReactClass = reactClass
   lazy val reactClass: ReactClass = createComp
@@ -25,26 +27,26 @@ object TreeNode extends UiComponent[TreeNodeProps] {
   private def createComp = React.createClass[PropsType, Unit]{ self =>
     val props = self.props.wrapped
 
-    val nodeClass = if (props.isNode) treeNode else ""
-    val valueClass = if (props.isNode) treeNodeValue else treeItemValue
-    val arrowClass = if (props.expanded) treeOpenArrow else treeClosedArrow
-
     val item = <.div(
-      ^.className := treeItem,
-      if (props.level == 0) None
-      else Some(^.style := Map("paddingLeft" -> s"${props.level * 16}px"))
+      ^.className := props.itemClass,
+      if (props.paddingLeft == 0) None
+      else {
+        ^.style := Map("paddingLeft" -> s"${props.paddingLeft}px")
+      },
+      props.onSelect.map { onSelect =>
+        ^.onClick := { _: MouseSyntheticEvent =>
+          onSelect()
+        }
+      }
     )(
-      <.div(^.className := nodeClass)(
+      <.div(^.className := props.nodeClass)(
         if (props.isNode) {
-          <.div(
-            ^.className := s"$treeItem $treeNodeIcon",
-            ^.onClick := arrowClick(self)
-          )(
-            <.div(^.className := arrowClass)()
+          <.div(^.className := props.nodeIconClass, ^.onClick := arrowClick(self))(
+            <.div(^.className := props.arrowClass)()
           )
         }
         else None,
-        <.div(^.className := valueClass)(
+        <.div(^.className := props.valueClass)(
           props.renderValue()
         )
       )
@@ -59,7 +61,7 @@ object TreeNode extends UiComponent[TreeNodeProps] {
     else item
   }
 
-  private[tree] def arrowClick(self: TreeNodeSelf): MouseSyntheticEvent => Unit = { event =>
+  private[tree] def arrowClick(self: Self[TreeNodeProps, Unit]): MouseSyntheticEvent => Unit = { event =>
     event.stopPropagation()
 
     val props = self.props.wrapped

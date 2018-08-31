@@ -48,8 +48,13 @@ object CheckBoxTree extends UiComponent[CheckBoxTreeProps] {
 
         <(TreeNode())(^.wrapped := TreeNodeProps(
           isNode = isNode,
-          level = level,
-          expanded = isOpened,
+          paddingLeft = level * 16,
+          itemClass = treeItem,
+          nodeClass = if (isNode) treeNode else "",
+          nodeIconClass = s"$treeItem $treeNodeIcon",
+          arrowClass = if (isOpened) treeOpenArrow else treeClosedArrow,
+          valueClass = if (isNode) treeNodeValue else treeItemValue,
+          onSelect = None,
           onExpand = { () =>
             toggleState(self)(data)
           },
