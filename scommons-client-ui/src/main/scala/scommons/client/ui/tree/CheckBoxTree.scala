@@ -9,7 +9,7 @@ import scommons.client.ui.{ImageCheckBox, ImageCheckBoxProps, TriState, UiCompon
 import scommons.client.ui.tree.TreeCss._
 
 case class CheckBoxTreeProps(roots: List[CheckBoxTreeData],
-                             onChange: (CheckBoxTreeData, TriState) => Unit,
+                             onChange: (CheckBoxTreeData, TriState) => Unit = (_, _) => (),
                              readOnly: Boolean = false,
                              openNodes: Set[String] = Set.empty,
                              closeNodes: Set[String] = Set.empty)
@@ -56,7 +56,7 @@ object CheckBoxTree extends UiComponent[CheckBoxTreeProps] {
           valueClass = if (isNode) treeNodeValue else treeItemValue,
           onSelect = None,
           onExpand = { () =>
-            toggleState(self)(data)
+            toggleState(self, data)
           },
           renderValue = { () =>
             <(ImageCheckBox())(^.wrapped := ImageCheckBoxProps(
@@ -85,7 +85,7 @@ object CheckBoxTree extends UiComponent[CheckBoxTreeProps] {
     state.opened.contains(data.key)
   }
 
-  private def toggleState(self: Self[CheckBoxTreeProps, CheckBoxTreeState])(data: CheckBoxTreeData): Unit = {
+  private def toggleState(self: Self[CheckBoxTreeProps, CheckBoxTreeState], data: CheckBoxTreeData): Unit = {
     val currOpen = isOpen(self.state, data)
     val newState =
       if (currOpen) self.state.opened - data.key
