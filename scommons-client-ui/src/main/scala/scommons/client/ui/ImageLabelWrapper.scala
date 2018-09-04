@@ -4,7 +4,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 
 /**
-  * Common implementation for image with label.
+  * Common implementation for image with optional label.
   */
 object ImageLabelWrapper {
 
