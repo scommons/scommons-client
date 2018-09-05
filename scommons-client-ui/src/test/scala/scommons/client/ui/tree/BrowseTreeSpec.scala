@@ -4,8 +4,9 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalatest.Assertion
 import scommons.client.test.TestSpec
-import scommons.client.ui.{ButtonImagesCss, ImageLabelWrapper}
 import scommons.client.ui.tree.BrowseTreeCss._
+import scommons.client.ui.tree.TreeCss._
+import scommons.client.ui.{ButtonImagesCss, ImageLabelWrapper}
 import scommons.client.util.BrowsePath
 
 class BrowseTreeSpec extends TestSpec {
@@ -236,7 +237,7 @@ class BrowseTreeSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := browseTree)(), { case List(topItemE, topNodeE) =>
+    assertDOMComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
       assertComponent(topItemE, TreeNode(), { topItemProps: TreeNodeProps =>
         assertTreeNode(topItemProps, props, topItem)
       })
@@ -267,7 +268,7 @@ class BrowseTreeSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := browseTree)(), { case List(topItemE, topNodeE) =>
+    assertDOMComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
       assertComponent(topItemE, TreeNode(), { topItemProps: TreeNodeProps =>
         assertTreeNode(topItemProps, props, topItem)
       })
@@ -290,17 +291,17 @@ class BrowseTreeSpec extends TestSpec {
     val topItemClass = if (level == 0) browseTreeTopItem else ""
     val topItemImageClass = if (level == 0) browseTreeTopItemImageValue else ""
     val selectedClass = if (props.selectedItem.contains(data.path)) browseTreeSelectedItem else ""
-    val expectedNodeClass = if (expectedIsNode) browseTreeNode else ""
+    val expectedNodeClass = if (expectedIsNode) treeNode else ""
 
     inside (nodeProps) {
       case TreeNodeProps(isNode, paddingLeft, itemClass, nodeClass, nodeIconClass, arrowClass, valueClass, _, _, _) =>
         isNode shouldBe expectedIsNode
         paddingLeft shouldBe (level * 16)
-        itemClass shouldBe s"$browseTreeItem $selectedClass $topItemClass"
-        nodeClass shouldBe s"$browseTreeItem $expectedNodeClass $topItemImageClass"
-        nodeIconClass shouldBe s"$browseTreeItem $browseTreeNodeIcon"
+        itemClass shouldBe s"$treeItem $selectedClass $topItemClass"
+        nodeClass shouldBe s"$treeItem $expectedNodeClass $topItemImageClass"
+        nodeIconClass shouldBe s"$treeItem $treeNodeIcon"
         arrowClass shouldBe (if (expectedIsOpened) browseTreeOpenArrow else browseTreeClosedArrow)
-        valueClass shouldBe (if (expectedIsNode) browseTreeNodeValue else browseTreeItemValue)
+        valueClass shouldBe (if (expectedIsNode) treeNodeValue else treeItemValue)
     }
   }
 }

@@ -1,29 +1,4 @@
 
-.browseTree {
-  width: 100%;
-  overflow: auto;
-}
-
-.browseTreeItem {
-  padding-top: 4px;
-  padding-bottom: 4px;
-  cursor: hand;
-  cursor: pointer;
-  zoom: 1;
-}
-
-.browseTreeNodeValue {
-  padding-left: 3px;
-  padding-right: 3px;
-  outline: none;
-}
-
-.browseTreeItemValue {
-  padding-left: 18px;
-  padding-right: 3px;
-  outline: none;
-}
-
 .browseTreeTopItem {
   font-weight: bold;
   color: #4b4a4a;
@@ -47,18 +22,6 @@
   color: white;
   height: auto;
   overflow: visible;
-}
-
-.browseTreeNode {
-  padding-left: 16px;
-  position: relative;
-}
-
-.browseTreeNodeIcon {
-  left: 0px;
-  height: 15px;
-  width: 15px;
-  position: absolute;
 }
 
 .browseTreeClosedArrow {

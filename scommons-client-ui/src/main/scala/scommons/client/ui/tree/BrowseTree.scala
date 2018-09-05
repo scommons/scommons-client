@@ -6,6 +6,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import scommons.client.ui.tree.BrowseTreeCss._
+import scommons.client.ui.tree.TreeCss._
 import scommons.client.ui.{ImageLabelWrapper, UiComponent}
 import scommons.client.util.BrowsePath
 
@@ -47,16 +48,16 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
         val topItemClass = if (level == 0) browseTreeTopItem else ""
         val topItemImageClass = if (level == 0) browseTreeTopItemImageValue else ""
         val selectedClass = if (selected) browseTreeSelectedItem else ""
-        val nodeClass = if (isNode) browseTreeNode else ""
+        val nodeClass = if (isNode) treeNode else ""
 
         <(TreeNode())(^.wrapped := TreeNodeProps(
           isNode = isNode,
           paddingLeft = level * 16,
-          itemClass = s"$browseTreeItem $selectedClass $topItemClass",
-          nodeClass = s"$browseTreeItem $nodeClass $topItemImageClass",
-          nodeIconClass = s"$browseTreeItem $browseTreeNodeIcon",
+          itemClass = s"$treeItem $selectedClass $topItemClass",
+          nodeClass = s"$treeItem $nodeClass $topItemImageClass",
+          nodeIconClass = s"$treeItem $treeNodeIcon",
           arrowClass = if (isOpened) browseTreeOpenArrow else browseTreeClosedArrow,
-          valueClass = if (isNode) browseTreeNodeValue else browseTreeItemValue,
+          valueClass = if (isNode) treeNodeValue else treeItemValue,
           onSelect = Some({ () =>
             if (!selected) {
               props.onSelect(data)
@@ -79,7 +80,7 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
         )
       }
 
-      <.div(^.className := browseTree)(
+      <.div(^.className := TreeCss.tree)(
         createElements(props.roots, 0)
       )
     }

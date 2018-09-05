@@ -7,14 +7,6 @@ import scala.scalajs.js.annotation.JSImport
 @js.native
 object BrowseTreeCss extends js.Object {
 
-  val browseTree: String = js.native
-
-  val browseTreeItem: String = js.native
-
-  val browseTreeNodeValue: String = js.native
-
-  val browseTreeItemValue: String = js.native
-
   val browseTreeTopItem: String = js.native
 
   val browseTreeTopItemImageValue: String = js.native
@@ -22,10 +14,6 @@ object BrowseTreeCss extends js.Object {
   val browseTreeKeyboardSelectedItem: String = js.native
 
   val browseTreeSelectedItem: String = js.native
-
-  val browseTreeNode: String = js.native
-
-  val browseTreeNodeIcon: String = js.native
 
   val browseTreeClosedArrow: String = js.native
 
