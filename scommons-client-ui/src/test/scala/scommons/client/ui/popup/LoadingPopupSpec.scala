@@ -19,8 +19,8 @@ class LoadingPopupSpec extends TestSpec {
       inside(popupProps) { case PopupProps(show, _, closable, _, overlayClass, popupClass) =>
         show shouldBe props.show
         closable shouldBe false
-        overlayClass shouldBe loadingOverlay
-        popupClass shouldBe loadingContent
+        overlayClass shouldBe s"$loadingOverlay scommons-modal-top"
+        popupClass shouldBe s"$loadingContent scommons-modal-top"
       }
     }, { case List(img) =>
       assertDOMComponent(img, <.img(^.className := loadingImg, ^.src := "")())

@@ -18,8 +18,8 @@ object LoadingPopup extends UiComponent[LoadingPopupProps] {
       props.show,
       onClose = () => (),
       closable = false,
-      overlayClass = PopupCss.loadingOverlay,
-      popupClass = PopupCss.loadingContent
+      overlayClass = s"${PopupCss.loadingOverlay} scommons-modal-top",
+      popupClass = s"${PopupCss.loadingContent} scommons-modal-top"
     ))(
       <.img(^.className := PopupCss.loadingImg, ^.src := "")()
     )

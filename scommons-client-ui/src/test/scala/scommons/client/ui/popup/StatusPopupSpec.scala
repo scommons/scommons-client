@@ -19,8 +19,8 @@ class StatusPopupSpec extends TestSpec {
       inside(popupProps) { case PopupProps(show, _, closable, _, overlayClass, popupClass) =>
         show shouldBe props.show
         closable shouldBe true
-        overlayClass shouldBe "scommons-status-no-overlay"
-        popupClass shouldBe statusContent
+        overlayClass shouldBe "scommons-modal-no-overlay scommons-modal-top"
+        popupClass shouldBe s"$statusContent scommons-modal-top"
       }
     }, { case List(autoHide) =>
       assertComponent(autoHide, WithAutoHide(), { autoHideProps: WithAutoHideProps =>

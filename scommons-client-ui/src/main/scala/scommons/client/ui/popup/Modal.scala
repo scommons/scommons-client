@@ -14,7 +14,9 @@ case class ModalProps(show: Boolean,
                       dispatch: Dispatch = _ => (),
                       onClose: () => Unit,
                       closable: Boolean = true,
-                      onOpen: () => Unit = () => ())
+                      onOpen: () => Unit = () => (),
+                      overlayClass: String = "scommons-modal-overlay",
+                      popupClass: String = "scommons-modal")
 
 object Modal extends UiComponent[ModalProps] {
 
@@ -24,10 +26,12 @@ object Modal extends UiComponent[ModalProps] {
     val props = self.props.wrapped
 
     <(Popup())(^.wrapped := PopupProps(
-      props.show,
-      props.onClose,
+      show = props.show,
+      onClose = props.onClose,
       closable = props.closable,
-      props.onOpen
+      onOpen = props.onOpen,
+      overlayClass = props.overlayClass,
+      popupClass = props.popupClass
     ))(
       props.header.map { header =>
         <(ModalHeader())(^.wrapped := ModalHeaderProps(header, props.onClose, closable = props.closable))()

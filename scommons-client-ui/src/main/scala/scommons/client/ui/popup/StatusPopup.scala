@@ -19,8 +19,8 @@ object StatusPopup extends UiComponent[StatusPopupProps] {
     <(Popup())(^.wrapped := PopupProps(
       props.show,
       onClose = () => (),
-      overlayClass = "scommons-status-no-overlay",
-      popupClass = PopupCss.statusContent
+      overlayClass = "scommons-modal-no-overlay scommons-modal-top",
+      popupClass = s"${PopupCss.statusContent} scommons-modal-top"
     ))(
       <(WithAutoHide())(^.wrapped := WithAutoHideProps(props.onHide))(props.text)
     )

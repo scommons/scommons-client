@@ -48,11 +48,11 @@ object ErrorPopup extends UiComponent[ErrorPopupProps] {
       )
       val closeBtn = SimpleButtonData("close", "Close", primary = true)
 
-      <(Modal())(^.wrapped := ModalProps(props.show,
-        None,
-        if (props.details.isDefined) List(detailsBtn, closeBtn)
-        else List(closeBtn),
-        ActionsData(Set(detailsBtn.command, closeBtn.command), _ => {
+      <(Modal())(^.wrapped := ModalProps(
+        show = props.show,
+        header = None,
+        buttons = if (props.details.isDefined) List(detailsBtn, closeBtn) else List(closeBtn),
+        actions = ActionsData(Set(detailsBtn.command, closeBtn.command), _ => {
           case detailsBtn.command => self.setState(s => s.copy(showDetails = !s.showDetails))
           case _ => props.onClose()
         },
@@ -62,7 +62,9 @@ object ErrorPopup extends UiComponent[ErrorPopupProps] {
         onClose = props.onClose,
         onOpen = { () =>
           self.setState(_.copy(opened = true))
-        }
+        },
+        overlayClass = "scommons-modal-overlay scommons-modal-top",
+        popupClass = "scommons-modal scommons-modal-top"
       ))(
         <.div(^.className := "row-fluid")(
           <.img(^.className := IconCss.dialogError, ^.src := "")(),

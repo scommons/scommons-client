@@ -21,7 +21,6 @@ body {
   position: fixed;
   top: 10%;
   left: 50%;
-  /* z-index: 1050; */
   /* new custom width */
   width: 560px;
   /* must be half of the width, minus scrollbar on the left (30px) */
@@ -42,10 +41,13 @@ body {
           background-clip: padding-box;
 }
 
-/* z-order should be the same as in .scommons-modal */
-/*.scommons-PopupPanel {*/
-	/* z-index: 1050; */
-/*}*/
+/* z-order should be the same in modal and overlay !!! */
+.scommons-modal-top {
+	z-index: 1050;
+}
+
+.scommons-modal-no-overlay {
+}
 
 /* z-order should be the same as in .scommons-modal */
 .scommons-modal-overlay {
@@ -54,7 +56,6 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  /* z-index: 1050; */
   background-color: rgba(0,0,0, 0.3)
   /* background-color: #000; */
   /* opacity: 0.3; */
