@@ -15,11 +15,12 @@ object LoadingPopup extends UiComponent[LoadingPopupProps] {
     val props = self.props.wrapped
 
     <(Popup())(^.wrapped := PopupProps(
-      props.show,
+      show = props.show,
       onClose = () => (),
       closable = false,
-      overlayClass = s"${PopupCss.loadingOverlay} scommons-modal-top",
-      popupClass = s"${PopupCss.loadingContent} scommons-modal-top"
+      focusable = false,
+      overlayClass = PopupCss.loadingOverlay,
+      popupClass = PopupCss.loadingContent
     ))(
       <.img(^.className := PopupCss.loadingImg, ^.src := "")()
     )

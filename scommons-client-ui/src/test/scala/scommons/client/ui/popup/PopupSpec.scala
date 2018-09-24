@@ -35,9 +35,9 @@ class PopupSpec extends TestSpec {
     component.props.onRequestClose()
   }
 
-  it should "render closable popup with default styles" in {
+  it should "render closable, non-focusable popup with default styles" in {
     //given
-    val props = PopupProps(show = true, () => ())
+    val props = PopupProps(show = true, focusable = false, onClose = () => ())
     val component = <(Popup())(^.wrapped := props)()
 
     //when
@@ -46,12 +46,14 @@ class PopupSpec extends TestSpec {
     //then
     result.`type` shouldBe NativeReactModal
     result.props.isOpen shouldBe true
-    result.props.shouldCloseOnOverlayClick shouldBe props.closable
+    result.props.shouldCloseOnOverlayClick shouldBe true
+    result.props.shouldFocusAfterRender shouldBe false
+    result.props.shouldReturnFocusAfterClose shouldBe false
     result.props.overlayClassName shouldBe props.overlayClass
     result.props.className shouldBe props.popupClass
   }
 
-  it should "render non-closable popup with custom styles" in {
+  it should "render non-closable, focusable popup with custom styles" in {
     //given
     val props = PopupProps(show = true, () => (),
       closable = false,
@@ -66,7 +68,9 @@ class PopupSpec extends TestSpec {
     //then
     result.`type` shouldBe NativeReactModal
     result.props.isOpen shouldBe true
-    result.props.shouldCloseOnOverlayClick shouldBe props.closable
+    result.props.shouldCloseOnOverlayClick shouldBe false
+    result.props.shouldFocusAfterRender shouldBe true
+    result.props.shouldReturnFocusAfterClose shouldBe true
     result.props.overlayClassName shouldBe props.overlayClass
     result.props.className shouldBe props.popupClass
   }

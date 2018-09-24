@@ -16,11 +16,12 @@ class StatusPopupSpec extends TestSpec {
 
     //then
     assertComponent(result, Popup(), { popupProps: PopupProps =>
-      inside(popupProps) { case PopupProps(show, _, closable, _, overlayClass, popupClass) =>
+      inside(popupProps) { case PopupProps(show, _, closable, focusable, _, overlayClass, popupClass) =>
         show shouldBe props.show
         closable shouldBe true
-        overlayClass shouldBe "scommons-modal-no-overlay scommons-modal-top"
-        popupClass shouldBe s"$statusContent scommons-modal-top"
+        focusable shouldBe false
+        overlayClass shouldBe "scommons-modal-no-overlay"
+        popupClass shouldBe statusContent
       }
     }, { case List(autoHide) =>
       assertComponent(autoHide, WithAutoHide(), { autoHideProps: WithAutoHideProps =>

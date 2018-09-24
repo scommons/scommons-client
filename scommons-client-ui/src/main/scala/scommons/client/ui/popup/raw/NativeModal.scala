@@ -84,6 +84,8 @@ object NativeModal {
     lazy val contentLabel = StringAttributeSpec("contentLabel")
     lazy val overlayClassName = StringAttributeSpec("overlayClassName")
     lazy val modalClassName = StringAttributeSpec("className")
+    lazy val shouldFocusAfterRender = BooleanAttributeSpec("shouldFocusAfterRender")
     lazy val shouldCloseOnOverlayClick = BooleanAttributeSpec("shouldCloseOnOverlayClick")
+    lazy val shouldReturnFocusAfterClose = BooleanAttributeSpec("shouldReturnFocusAfterClose")
   }
 }

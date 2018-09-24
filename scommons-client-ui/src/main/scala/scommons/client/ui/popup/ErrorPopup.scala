@@ -62,9 +62,7 @@ object ErrorPopup extends UiComponent[ErrorPopupProps] {
         onClose = props.onClose,
         onOpen = { () =>
           self.setState(_.copy(opened = true))
-        },
-        overlayClass = "scommons-modal-overlay scommons-modal-top",
-        popupClass = "scommons-modal scommons-modal-top"
+        }
       ))(
         <.div(^.className := "row-fluid")(
           <.img(^.className := IconCss.dialogError, ^.src := "")(),

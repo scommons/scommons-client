@@ -194,27 +194,13 @@ class InputPopupSpec extends TestSpec {
       else Set(Buttons.CANCEL.command)
 
     assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) {
-        case ModalProps(
-        show,
-        header,
-        buttons,
-        actions,
-        _,
-        onClose,
-        closable,
-        _,
-        overlayClass,
-        popupClass
-        ) =>
-          show shouldBe props.show
-          header shouldBe None
-          buttons shouldBe List(Buttons.OK, Buttons.CANCEL)
-          actions.enabledCommands shouldBe actionCommands
-          onClose shouldBe props.onCancel
-          closable shouldBe true
-          overlayClass shouldBe "scommons-modal-overlay"
-          popupClass shouldBe "scommons-modal"
+      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
+        show shouldBe props.show
+        header shouldBe None
+        buttons shouldBe List(Buttons.OK, Buttons.CANCEL)
+        actions.enabledCommands shouldBe actionCommands
+        onClose shouldBe props.onCancel
+        closable shouldBe true
       }
     }, { case List(modalChild) =>
       assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(p, div) =>

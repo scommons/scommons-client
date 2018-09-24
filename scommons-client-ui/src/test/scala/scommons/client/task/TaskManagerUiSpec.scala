@@ -1,6 +1,7 @@
 package scommons.client.task
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import org.scalatest.Succeeded
 import scommons.client.test.TestSpec
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.popup._
@@ -102,12 +103,16 @@ class TaskManagerUiSpec extends TestSpec {
   }
 
   private def assertRenderingResult(result: ComponentInstance, props: TaskManagerUiProps): Unit = {
-    assertDOMComponent(result, <.div()(), { case List(loadingPopup, statusPopup, errorPopup) =>
-      assertComponent(loadingPopup, LoadingPopup(), { (loadingPopupProps: LoadingPopupProps) =>
-        inside(loadingPopupProps) { case LoadingPopupProps(show) =>
-          show shouldBe props.showLoading
-        }
-      })
+    val showError = props.error.isDefined
+    
+    assertDOMComponent(result, <.div()(), { children =>
+      val (statusPopup, loadingPopup, errorPopup) = children match {
+        case List(sp) => (sp, None, None)
+        case List(sp, lp) if props.showLoading => (sp, Some(lp), None)
+        case List(sp, ep) if showError => (sp, None, Some(ep))
+        case List(sp, lp, ep) => (sp, Some(lp), Some(ep))
+      }
+      
       assertComponent(statusPopup, StatusPopup(), { (statusPopupProps: StatusPopupProps) =>
         inside(statusPopupProps) { case StatusPopupProps(text, show, onHide) =>
           show shouldBe props.status.isDefined
@@ -115,14 +120,29 @@ class TaskManagerUiSpec extends TestSpec {
           onHide shouldBe props.onHideStatus
         }
       })
-      assertComponent(errorPopup, ErrorPopup(), { (errorPopupProps: ErrorPopupProps) =>
-        inside(errorPopupProps) { case ErrorPopupProps(show, error, onClose, details) =>
-          show shouldBe props.error.isDefined
-          error shouldBe props.error.getOrElse("")
-          details shouldBe props.errorDetails
-          onClose shouldBe props.onCloseErrorPopup
-        }
-      })
+      
+      if (props.showLoading) {
+        loadingPopup should not be None
+        assertComponent(loadingPopup.get, LoadingPopup(), { (loadingPopupProps: LoadingPopupProps) =>
+          inside(loadingPopupProps) { case LoadingPopupProps(show) =>
+            show shouldBe props.showLoading
+          }
+        })
+      }
+
+      if (showError) {
+        errorPopup should not be None
+        assertComponent(errorPopup.get, ErrorPopup(), { (errorPopupProps: ErrorPopupProps) =>
+          inside(errorPopupProps) { case ErrorPopupProps(show, error, onClose, details) =>
+            show shouldBe showError
+            error shouldBe props.error.getOrElse("")
+            details shouldBe props.errorDetails
+            onClose shouldBe props.onCloseErrorPopup
+          }
+        })
+      }
+      
+      Succeeded
     })
   }
 

@@ -50,10 +50,10 @@ class ModalSpec extends TestSpec {
     //then
     assertComponent(result, Popup(), { popupProps: PopupProps =>
       popupProps shouldBe PopupProps(
-        props.show,
-        props.onClose,
+        show = props.show,
+        onClose = props.onClose,
         closable = props.closable,
-        props.onOpen
+        onOpen = props.onOpen
       )
     }, { case List(body, footer) =>
       assertComponent(body, ModalBody(), assertChildren = { case List(child) =>
@@ -68,10 +68,10 @@ class ModalSpec extends TestSpec {
   private def assertModal(result: ComponentInstance, props: ModalProps): Assertion = {
     assertComponent(result, Popup(), { popupProps: PopupProps =>
       popupProps shouldBe PopupProps(
-        props.show,
-        props.onClose,
+        show = props.show,
+        onClose = props.onClose,
         closable = props.closable,
-        props.onOpen
+        onOpen = props.onOpen
       )
     }, { case List(header, body, footer) =>
       assertComponent(header, ModalHeader(), { headerProps: ModalHeaderProps =>

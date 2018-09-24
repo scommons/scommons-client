@@ -147,28 +147,14 @@ class ErrorPopupSpec extends TestSpec {
       else List(closeButton)
 
     assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) {
-        case ModalProps(
-        show,
-        header,
-        buttons,
-        actions,
-        _,
-        onClose,
-        closable,
-        _,
-        overlayClass,
-        popupClass
-        ) =>
-          show shouldBe props.show
-          header shouldBe None
-          buttons shouldBe buttonsList
-          actions.enabledCommands shouldBe Set(detailsButton.command, closeButton.command)
-          actions.focusedCommand shouldBe None
-          onClose shouldBe props.onClose
-          closable shouldBe true
-          overlayClass shouldBe "scommons-modal-overlay scommons-modal-top"
-          popupClass shouldBe "scommons-modal scommons-modal-top"
+      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
+        show shouldBe props.show
+        header shouldBe None
+        buttons shouldBe buttonsList
+        actions.enabledCommands shouldBe Set(detailsButton.command, closeButton.command)
+        actions.focusedCommand shouldBe None
+        onClose shouldBe props.onClose
+        closable shouldBe true
       }
     }, { case List(modalChild) =>
       assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(img, html) =>

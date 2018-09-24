@@ -17,10 +17,11 @@ object StatusPopup extends UiComponent[StatusPopupProps] {
     val props = self.props.wrapped
 
     <(Popup())(^.wrapped := PopupProps(
-      props.show,
+      show = props.show,
       onClose = () => (),
-      overlayClass = "scommons-modal-no-overlay scommons-modal-top",
-      popupClass = s"${PopupCss.statusContent} scommons-modal-top"
+      focusable = false,
+      overlayClass = "scommons-modal-no-overlay",
+      popupClass = PopupCss.statusContent
     ))(
       <(WithAutoHide())(^.wrapped := WithAutoHideProps(props.onHide))(props.text)
     )

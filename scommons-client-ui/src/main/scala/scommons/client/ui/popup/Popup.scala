@@ -9,6 +9,7 @@ import scommons.client.ui.popup.raw.NativeModal._
 case class PopupProps(show: Boolean,
                       onClose: () => Unit,
                       closable: Boolean = true,
+                      focusable: Boolean = true,
                       onOpen: () => Unit = () => (),
                       overlayClass: String = "scommons-modal-overlay",
                       popupClass: String = "scommons-modal")
@@ -23,6 +24,8 @@ object Popup extends UiComponent[PopupProps] {
     <.ReactModal(
       ^.isOpen := props.show,
       ^.shouldCloseOnOverlayClick := props.closable,
+      ^.shouldFocusAfterRender := props.focusable,
+      ^.shouldReturnFocusAfterClose := props.focusable,
       ^.onAfterOpen := props.onOpen,
       ^.onRequestClose := props.onClose,
       ^.overlayClassName := props.overlayClass,
