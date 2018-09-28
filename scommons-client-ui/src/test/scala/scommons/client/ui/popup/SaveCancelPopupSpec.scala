@@ -97,7 +97,21 @@ class SaveCancelPopupSpec extends TestSpec {
     modalProps.actions.enabledCommands shouldBe Set(Buttons.CANCEL.command)
   }
 
-  it should "render the component" in {
+  it should "render custom popup component" in {
+    //given
+    val props = TestPopupProps()
+    val component = <(TestPopup())(^.wrapped := props)()
+
+    //when
+    val result = shallowRender(component)
+
+    //then
+    assertComponent(result, SaveCancelPopup(), { pProps: SaveCancelPopupProps =>
+      pProps shouldBe props
+    })
+  }
+
+  it should "render base popup component" in {
     //given
     val props = TestPopupProps()
     val component = <(SaveCancelPopup())(^.wrapped := props)()
@@ -195,6 +209,21 @@ object SaveCancelPopupSpec {
 
   private case class TestData(name: String)
 
+  private case class TestEditPanelProps(initialData: TestData,
+                                        requestFocus: Boolean,
+                                        onChange: TestData => Unit,
+                                        onEnter: () => Unit)
+
+  private object TestEditPanel extends UiComponent[TestEditPanelProps] {
+
+    def apply(): ReactClass = reactClass
+    lazy val reactClass: ReactClass = createComp
+
+    private def createComp = React.createClass[PropsType, Unit] { self =>
+      <.div()(s"Name: ${self.props.wrapped.initialData.name}")
+    }
+  }
+
   private case class TestPopupProps(show: Boolean = true,
                                     title: String = "Test Title",
                                     initialData: TestData = TestData("test name"),
@@ -221,18 +250,5 @@ object SaveCancelPopupSpec {
     }
   }
 
-  private case class TestEditPanelProps(initialData: TestData,
-                                        requestFocus: Boolean,
-                                        onChange: TestData => Unit,
-                                        onEnter: () => Unit)
-
-  private object TestEditPanel extends UiComponent[TestEditPanelProps] {
-
-    def apply(): ReactClass = reactClass
-    lazy val reactClass: ReactClass = createComp
-
-    private def createComp = React.createClass[PropsType, Unit] { self =>
-      <.div()(s"Name: ${self.props.wrapped.initialData.name}")
-    }
-  }
+  private object TestPopup extends SaveCancelPopup[TestPopupProps]
 }

@@ -20,6 +20,16 @@ trait SaveCancelPopupProps {
   def render(data: DataType, requestFocus: Boolean, onChange: DataType => Unit, onSave: () => Unit): ReactElement
 }
 
+trait SaveCancelPopup[T <: SaveCancelPopupProps] extends UiComponent[T] {
+
+  def apply(): ReactClass = reactClass
+  lazy val reactClass: ReactClass = createComp
+
+  private def createComp = React.createClass[PropsType, Unit] { self =>
+    <(SaveCancelPopup())(^.wrapped := self.props.wrapped)()
+  }
+}
+
 object SaveCancelPopup extends UiComponent[SaveCancelPopupProps] {
 
   private case class SaveCancelPopupState(data: Any, opened: Boolean = false)
