@@ -18,6 +18,7 @@ object ClientUi extends ScalaJsModule {
         ";.*BaseStateController" +
         ";.*BaseStateAndRouteController" +
         ";scommons.client.ui.popup.raw" +
+        ";scommons.client.ui.select.raw" +
         ";scommons.client.ui.HTML.InnerHTML",
 
       webpackConfigFile in Test := Some(
@@ -25,7 +26,8 @@ object ClientUi extends ScalaJsModule {
       ),
 
       npmDependencies in Compile ++= Seq(
-        "react-modal" -> "3.1.2"
+        "react-modal" -> "3.1.2",
+        "react-select" -> "2.0.0"
       ),
 
       npmDevDependencies in Compile ++= Seq(

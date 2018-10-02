@@ -61,3 +61,18 @@ body {
   /* opacity: 0.3; */
   /* filter: alpha(opacity=30); */
 }
+
+
+/* customizing react-select component style
+ *
+ * see https://react-select.com/styles#using-classnames
+ */
+.react-select__input > input {
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+.react-select__input > input:focus {
+  box-shadow: none;
+  margin-bottom: 0;
+}
