@@ -11,9 +11,11 @@ import scala.concurrent.duration._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.util.{Failure, Success}
 
-case class SearchSelectProps(initialValue: Option[SelectData],
+case class SearchSelectProps(selected: Option[SelectData],
                              onLoad: String => Future[List[SelectData]] = _ => Future.successful(Nil),
-                             onChange: SelectData => Unit = _ => ())
+                             onChange: Option[SelectData] => Unit = _ => (),
+                             isClearable: Boolean = false,
+                             readOnly: Boolean = false)
 
 object SearchSelect extends UiComponent[SearchSelectProps] {
 
@@ -32,12 +34,15 @@ object SearchSelect extends UiComponent[SearchSelectProps] {
     render = { self =>
       val props = self.props.wrapped
   
-      <(Select())(^.wrapped := SelectProps(
-        selectedOptions = props.initialValue.toList,
+      <(SingleSelect())(^.wrapped := SingleSelectProps(
+        selected = props.selected,
         options = self.state.options,
         onSelectChange = props.onChange,
+        isClearable = props.isClearable,
+        readOnly = props.readOnly,
+        isSearchable = true,
         isLoading = self.state.isLoading,
-        onInputChange = { value =>
+        onInputChange = Some({ value =>
           self.state.handleId.foreach { handleId =>
             dom.window.clearTimeout(handleId)
           }
@@ -58,7 +63,7 @@ object SearchSelect extends UiComponent[SearchSelectProps] {
           }, 750.millis.toMillis.toDouble)
           
           self.setState(s => s.copy(value = value, handleId = Some(handleId)))
-        }
+        })
       ))()
     }
   )

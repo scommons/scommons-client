@@ -36,7 +36,7 @@ object NativeSelect {
 
     import VirtualDOMAttributes.Type._
 
-    type ReactSelectOnChangeEvent = js.Function1[ReactSelectOption, Unit]
+    type ReactSelectSingleOnChangeEvent = js.Function1[ReactSelectOption, Unit]
     type ReactSelectOnInputChangeEvent = js.Function2[String, ReactSelectAction, Unit]
 
     case class ReactSelectOptionsAttributeSpec(name: String) extends AttributeSpec {
@@ -44,8 +44,8 @@ object NativeSelect {
         Attribute(name = name, value = js.Array(options: _*), AS_IS)
     }
 
-    case class ReactSelectOnChangeEventAttribute(name: String) extends AttributeSpec {
-      def :=(onEvent: ReactSelectOnChangeEvent): Attribute[ReactSelectOnChangeEvent] =
+    case class ReactSelectSingleOnChangeEventAttribute(name: String) extends AttributeSpec {
+      def :=(onEvent: ReactSelectSingleOnChangeEvent): Attribute[ReactSelectSingleOnChangeEvent] =
         Attribute(name = name, value = onEvent, AS_IS)
     }
     
@@ -61,9 +61,12 @@ object NativeSelect {
 
     lazy val selectedOptions = ReactSelectOptionsAttributeSpec("value")
     lazy val options = ReactSelectOptionsAttributeSpec("options")
-    lazy val onSelectChange = ReactSelectOnChangeEventAttribute("onChange")
+    lazy val onSingleSelectChange = ReactSelectSingleOnChangeEventAttribute("onChange")
 
+    lazy val isClearable = BooleanAttributeSpec("isClearable")
+    lazy val isDisabled = BooleanAttributeSpec("isDisabled")
     lazy val isLoading = BooleanAttributeSpec("isLoading")
+    lazy val isSearchable = BooleanAttributeSpec("isSearchable")
     lazy val onInputChange = ReactSelectOnInputChangeEventAttribute("onInputChange")
     
     lazy val classNamePrefix = StringAttributeSpec("classNamePrefix")
