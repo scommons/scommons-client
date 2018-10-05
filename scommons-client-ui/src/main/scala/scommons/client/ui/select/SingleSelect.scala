@@ -29,6 +29,7 @@ object SingleSelect extends UiComponent[SingleSelectProps] {
     <.ReactSelect(
       ^.className := "react-select-container",
       ^.classNamePrefix := "react-select",
+      ^.menuPlacement := "auto", // bottom, top
       ^.selectedOptions := props.selected.toList.map(v =>
         new ReactSelectOption() {
           override val value = v.value
@@ -60,8 +61,7 @@ object SingleSelect extends UiComponent[SingleSelectProps] {
             onInputChange(inputValue)
           }
         }
-      },
-      ^.menuPlacement := "auto" // bottom, top
+      }
     )()
   }
 }
