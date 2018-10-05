@@ -42,8 +42,10 @@ object SearchSelect extends UiComponent[SearchSelectProps] {
         readOnly = props.readOnly,
         isSearchable = true,
         isLoading = self.state.isLoading,
+        
         onInputChange = Some({ value =>
           self.state.handleId.foreach { handleId =>
+            // clear intermediate load schedule
             dom.window.clearTimeout(handleId)
           }
 
@@ -59,6 +61,7 @@ object SearchSelect extends UiComponent[SearchSelectProps] {
               case Failure(_) if self.state.value == loadValue =>
                 self.setState(s => s.copy(isLoading = false))
               case _ =>
+                // ignore stale load results
             }
           }, 750.millis.toMillis.toDouble)
           

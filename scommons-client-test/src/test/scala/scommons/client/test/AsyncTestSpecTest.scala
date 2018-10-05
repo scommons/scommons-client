@@ -1,7 +1,14 @@
 package scommons.client.test
 
+import org.scalatest.time.{Millis, Span}
+
 class AsyncTestSpecTest extends AsyncTestSpec {
 
+  implicit override val patienceConfig: PatienceConfig = PatienceConfig(
+    timeout = scaled(Span(500, Millis)),
+    interval = scaled(Span(100, Millis))
+  )
+  
   it should "run successfully after several retries when eventually" in {
     //given
     val value = 5
@@ -15,16 +22,13 @@ class AsyncTestSpecTest extends AsyncTestSpec {
     }
   }
 
-  it should "fail if not succeeded within maxRetries when eventually" in {
+  it should "fail if not succeeded within timeout when eventually" in {
     //given
     val value = 5
-    var retries = 10
 
     //when & then
     eventually {
-      retries -= 1
-      if (retries >= 0) value shouldBe 1
-      else value shouldBe 5
+      value shouldBe 1
     }.failed.map { result =>
       result.getMessage should include ("5 was not equal to 1")
     }
