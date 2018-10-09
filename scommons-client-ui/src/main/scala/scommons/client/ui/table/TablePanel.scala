@@ -20,8 +20,9 @@ object TablePanel extends UiComponent[TablePanelProps] {
   private case class TablePanelState(selectedIds: Set[String])
 
   def apply(): ReactClass = reactClass
+  lazy val reactClass: ReactClass = createComp
 
-  lazy val reactClass: ReactClass = React.createClass[PropsType, TablePanelState](
+  private def createComp = React.createClass[PropsType, TablePanelState](
     getInitialState = { self =>
       TablePanelState(self.props.wrapped.selectedIds)
     },

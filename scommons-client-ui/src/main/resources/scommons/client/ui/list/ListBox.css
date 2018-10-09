@@ -1,0 +1,13 @@
+
+.listBoxItem {
+  cursor: pointer;
+  zoom: 1;
+}
+
+.listBoxSelectedItem {
+  background: url('./listBoxSelectedBackground.png') -0px -0px repeat-x;
+  background-color: #628cd5;
+  color: white;
+  height: auto;
+  overflow: visible;
+}
