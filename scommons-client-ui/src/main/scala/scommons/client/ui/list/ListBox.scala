@@ -5,7 +5,7 @@ import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.ui.UiComponent
+import scommons.client.ui.{ImageLabelWrapper, UiComponent}
 import scommons.client.ui.list.ListBoxCss._
 
 case class ListBoxProps(items: List[ListBoxData],
@@ -40,7 +40,12 @@ object ListBox extends UiComponent[ListBoxProps] {
         <.div(
           ^.className := s"$listBoxItem $selectedClass",
           ^.onClick := itemClick(self, data)
-        )(data.label)
+        )(
+          data.image match {
+            case None => data.label
+            case Some(image) => ImageLabelWrapper(image, Some(data.label))
+          }
+        )
       }
 
       <.div()(
