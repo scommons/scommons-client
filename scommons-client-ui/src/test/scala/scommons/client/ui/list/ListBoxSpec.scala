@@ -137,12 +137,13 @@ class ListBoxSpec extends TestSpec {
           case None => data.label
           case Some(image) => ImageLabelWrapper(image, Some(data.label))
         }
-      )
+      ) -> data
     }
 
     assertDOMComponent(result, <.div()(), { items =>
       items.size shouldBe expectedItems.size
-      items.zip(expectedItems).foreach { case (resultItem, expectedItemElem) =>
+      items.zip(expectedItems).foreach { case (resultItem, (expectedItemElem, data)) =>
+        resultItem.key shouldBe data.id
         assertDOMComponent(resultItem, expectedItemElem)
       }
 

@@ -38,6 +38,7 @@ object ListBox extends UiComponent[ListBoxProps] {
         val selectedClass = if (isSelected(self.state, data)) listBoxSelectedItem else ""
         
         <.div(
+          ^.key := data.id,
           ^.className := s"$listBoxItem $selectedClass",
           ^.onClick := itemClick(self, data)
         )(
