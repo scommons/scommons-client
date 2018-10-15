@@ -5,6 +5,7 @@ import io.github.shogowada.statictags.{AttributeValueType, Element}
 import org.scalatest.{Assertion, Matchers, Succeeded}
 import scommons.client.test.raw.ShallowRenderer
 import scommons.client.test.raw.ShallowRenderer._
+import scommons.client.ui.UiComponent
 
 import scala.collection.mutable.ListBuffer
 
@@ -39,6 +40,13 @@ trait ShallowRendererUtils extends Matchers {
     val result = new ListBuffer[ComponentInstance]
     search(List(component), result)
     result.toList
+  }
+
+  def assertComp[T](result: ComponentInstance, expectedComp: UiComponent[T])
+                   (assertProps: T => Assertion,
+                    assertChildren: List[ComponentInstance] => Assertion = expectNoChildren): Assertion = {
+
+    assertComponent(result, expectedComp.reactClass, assertProps, assertChildren)
   }
 
   def assertComponent[T](result: ComponentInstance,

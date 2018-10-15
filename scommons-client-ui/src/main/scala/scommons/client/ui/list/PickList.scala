@@ -45,15 +45,23 @@ object PickList extends UiComponent[PickListProps] {
       val removeAllIds = state.selectedIds -- props.preSelectedIds
       val selectAllIds = sourceItems.map(_.id).toSet
 
-      def handleAdd(ids: Set[String]): Unit = self.setState(s => s.copy(
-        selectedIds = s.selectedIds ++ ids,
-        selectedSourceIds = s.selectedSourceIds -- ids
-      ))
+      def handleAdd(ids: Set[String]): Unit = {
+        val selectedIds = self.state.selectedIds ++ ids
+        self.setState(s => s.copy(
+          selectedIds = selectedIds,
+          selectedSourceIds = s.selectedSourceIds -- ids
+        ))
+        props.onSelect(selectedIds)
+      }
 
-      def handleRemove(ids: Set[String]): Unit = self.setState(s => s.copy(
-        selectedIds = s.selectedIds -- ids,
-        selectedDestIds = s.selectedDestIds -- ids
-      ))
+      def handleRemove(ids: Set[String]): Unit = {
+        val selectedIds = self.state.selectedIds -- ids
+        self.setState(s => s.copy(
+          selectedIds = selectedIds,
+          selectedDestIds = s.selectedDestIds -- ids
+        ))
+        props.onSelect(selectedIds)
+      }
 
       <.div(^.className := "row-fluid")(
         <.div(^.className := "span5")(
