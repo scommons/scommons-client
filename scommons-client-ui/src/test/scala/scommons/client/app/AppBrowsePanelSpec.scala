@@ -31,13 +31,13 @@ class AppBrowsePanelSpec extends TestSpec {
       assertDOMComponent(span4, <.div(^.className := "span4")(), { case List(sidebar) =>
         assertDOMComponent(sidebar, <.div(^.className := "well sidebar-nav")(), { case List(sidebarBp, tree) =>
           assertDOMComponent(sidebarBp, <.div(^.className := AppBrowsePanelCss.sidebarBp)(), { case List(bp) =>
-            assertComponent(bp, ButtonsPanel(), { bpProps: ButtonsPanelProps =>
+            assertComponent(bp, ButtonsPanel) { bpProps =>
               bpProps shouldBe buttonsPanelProps
-            })
+            }
           })
-          assertComponent(tree, BrowseTree(), { treeProps: BrowseTreeProps =>
+          assertComponent(tree, BrowseTree) { treeProps =>
             treeProps shouldBe browseTreeProps
-          })
+          }
         })
       })
       assertDOMComponent(span8, <.div(^.className := "span8")(), { case List(children) =>

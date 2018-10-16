@@ -92,21 +92,19 @@ class ButtonsPanelSpec extends TestSpec {
                                  b2: ImageButtonData): Unit = {
 
     assertDOMComponent(result, <.div(^.className := className)(), { case List(simpleBtn, imageBtn) =>
-      assertComponent(simpleBtn, SimpleButton(), { simpleBtnProps: SimpleButtonProps =>
-        inside(simpleBtnProps) { case SimpleButtonProps(data, _, disabled, requestFocus) =>
+      assertComponent(simpleBtn, SimpleButton) {
+        case SimpleButtonProps(data, _, disabled, requestFocus) =>
           data shouldBe b1
           disabled shouldBe false
           requestFocus shouldBe true
-        }
-      })
-      assertComponent(imageBtn, ImageButton(), { imageBtnProps: ImageButtonProps =>
-        inside(imageBtnProps) { case ImageButtonProps(data, _, disabled, showTextAsTitle, requestFocus) =>
+      }
+      assertComponent(imageBtn, ImageButton) {
+        case ImageButtonProps(data, _, disabled, showTextAsTitle, requestFocus) =>
           data shouldBe b2
           disabled shouldBe true
           showTextAsTitle shouldBe group
           requestFocus shouldBe false
-        }
-      })
+      }
     })
   }
 }

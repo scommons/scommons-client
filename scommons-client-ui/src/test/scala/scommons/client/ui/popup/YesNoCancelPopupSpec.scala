@@ -150,15 +150,14 @@ class YesNoCancelPopupSpec extends TestSpec {
     )
     val enabledCommands = Set(Yes.command, No.command, Cancel.command)
 
-    assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, _, closable, _) =>
+    assertComponent(result, Modal)({
+      case ModalProps(show, header, buttons, actions, _, _, closable, _) =>
         show shouldBe props.show
         header shouldBe None
         buttons shouldBe expectedButtons
         actions.enabledCommands shouldBe enabledCommands
         actions.focusedCommand shouldBe None
         closable shouldBe true
-      }
     }, { case List(modalChild) =>
       assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
         val (img, p) = children match {

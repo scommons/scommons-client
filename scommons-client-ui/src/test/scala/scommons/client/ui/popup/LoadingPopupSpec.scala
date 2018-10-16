@@ -15,14 +15,13 @@ class LoadingPopupSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertComponent(result, Popup(), { popupProps: PopupProps =>
-      inside(popupProps) { case PopupProps(show, _, closable, focusable, _, overlayClass, popupClass) =>
+    assertComponent(result, Popup)({
+      case PopupProps(show, _, closable, focusable, _, overlayClass, popupClass) =>
         show shouldBe props.show
         closable shouldBe false
         focusable shouldBe false
         overlayClass shouldBe loadingOverlay
         popupClass shouldBe loadingContent
-      }
     }, { case List(img) =>
       assertDOMComponent(img, <.img(^.className := loadingImg, ^.src := "")())
     })

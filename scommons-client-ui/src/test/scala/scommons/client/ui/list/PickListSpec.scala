@@ -224,12 +224,12 @@ class PickListSpec extends TestSpec {
       assertDOMComponent(src, <.div(^.className := "span5")(), { case List(title, hr, list) =>
         assertDOMComponent(title, <.strong()(props.sourceTitle))
         assertDOMComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
-        assertComp(list, ListBox) { case ListBoxProps(items, srcSelectedIds, _) =>
+        assertComponent(list, ListBox) { case ListBoxProps(items, srcSelectedIds, _) =>
           items shouldBe sourceItems
           srcSelectedIds shouldBe selectedSourceIds
         }
       })
-      assertComp(btns, PickButtons) {
+      assertComponent(btns, PickButtons) {
         case PickButtonsProps(add, remove, addAll, removeAll, _, _, _, _, className) =>
           className shouldBe Some("span2")
           add shouldBe addEnabled
@@ -240,7 +240,7 @@ class PickListSpec extends TestSpec {
       assertDOMComponent(dst, <.div(^.className := "span5")(), { case List(title, hr, list) =>
         assertDOMComponent(title, <.strong()(props.destTitle))
         assertDOMComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
-        assertComp(list, ListBox) { case ListBoxProps(items, dstSelectedIds, _) =>
+        assertComponent(list, ListBox) { case ListBoxProps(items, dstSelectedIds, _) =>
           items shouldBe destItems
           dstSelectedIds shouldBe selectedDestIds
         }

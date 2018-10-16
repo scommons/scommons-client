@@ -234,9 +234,9 @@ class TaskManagerSpec extends AsyncTestSpec {
   }
 
   private def assertRenderingResult(result: ComponentInstance, props: TaskManagerUiProps): Assertion = {
-    assertComponent(result, TaskManagerUi(), { (uiProps: TaskManagerUiProps) =>
+    assertComponent(result, TaskManagerUi) { uiProps =>
       assertUiProps(uiProps, props)
-    })
+    }
   }
 
   private def assertUiProps(uiProps: TaskManagerUiProps,

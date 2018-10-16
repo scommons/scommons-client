@@ -229,25 +229,23 @@ class SearchSelectSpec extends AsyncTestSpec {
   }
 
   private def assertSearchSelect(result: ComponentInstance, props: SearchSelectProps): Assertion = {
-    assertComponent(result, SingleSelect(), { sProps: SingleSelectProps =>
-      inside(sProps) {
-        case SingleSelectProps(
-        selected,
-        options,
-        _,
-        isClearable,
-        isSearchable,
-        isLoading,
-        onInputChange,
-        readOnly) =>
-          selected shouldBe props.selected
-          options shouldBe Nil
-          isClearable shouldBe props.isClearable
-          isSearchable shouldBe true
-          isLoading shouldBe false
-          readOnly shouldBe props.readOnly
-          onInputChange should not be None
-      }
-    })
+    assertComponent(result, SingleSelect) {
+      case SingleSelectProps(
+      selected,
+      options,
+      _,
+      isClearable,
+      isSearchable,
+      isLoading,
+      onInputChange,
+      readOnly) =>
+        selected shouldBe props.selected
+        options shouldBe Nil
+        isClearable shouldBe props.isClearable
+        isSearchable shouldBe true
+        isLoading shouldBe false
+        readOnly shouldBe props.readOnly
+        onInputChange should not be None
+    }
   }
 }

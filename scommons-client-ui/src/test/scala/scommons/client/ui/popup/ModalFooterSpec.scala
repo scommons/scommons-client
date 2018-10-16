@@ -19,14 +19,13 @@ class ModalFooterSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertComponent(result, ButtonsPanel(), { buttonsPanelProps: ButtonsPanelProps =>
-      inside(buttonsPanelProps) { case ButtonsPanelProps(buttons, actions, dispatch, group, className) =>
+    assertComponent(result, ButtonsPanel) {
+      case ButtonsPanelProps(buttons, actions, dispatch, group, className) =>
         buttons shouldBe props.buttons
         actions shouldBe props.actions
         dispatch shouldBe props.dispatch
         group shouldBe false
         className shouldBe Some("modal-footer")
-      }
-    })
+    }
   }
 }

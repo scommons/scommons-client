@@ -1,7 +1,6 @@
 package scommons.client.ui.tab
 
 import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.statictags.Element
 import org.scalatest.{Assertion, Succeeded}
@@ -208,7 +207,7 @@ class TabPanelSpec extends TestSpec {
         contentItems.zip(expectedItems).foreach { case (contentItem, (expectedElem, item, expectedChild)) =>
           assertDOMComponent(contentItem, expectedElem, { case List(child) =>
             item.component match {
-              case Some(comp) => assertComponent[Props[_]](child, comp)
+              case Some(comp) => child.`type` shouldBe comp
               case _ => assertDOMComponent(child, expectedChild)
             }
           })

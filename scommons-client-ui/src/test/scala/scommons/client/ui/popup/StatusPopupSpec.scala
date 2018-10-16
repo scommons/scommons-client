@@ -15,16 +15,15 @@ class StatusPopupSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertComponent(result, Popup(), { popupProps: PopupProps =>
-      inside(popupProps) { case PopupProps(show, _, closable, focusable, _, overlayClass, popupClass) =>
+    assertComponent(result, Popup)({
+      case PopupProps(show, _, closable, focusable, _, overlayClass, popupClass) =>
         show shouldBe props.show
         closable shouldBe true
         focusable shouldBe false
         overlayClass shouldBe "scommons-modal-no-overlay"
         popupClass shouldBe statusContent
-      }
     }, { case List(autoHide) =>
-      assertComponent(autoHide, WithAutoHide(), { autoHideProps: WithAutoHideProps =>
+      assertComponent(autoHide, WithAutoHide)({ autoHideProps =>
         autoHideProps shouldBe WithAutoHideProps(props.onHide)
       }, { case List(child) =>
         child shouldBe props.text

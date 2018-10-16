@@ -100,8 +100,8 @@ class OkPopupSpec extends TestSpec {
   private def assertOkPopup(result: ComponentInstance, props: OkPopupProps): Unit = {
     val actionCommands = Set(Buttons.OK.command)
 
-    assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
+    assertComponent(result, Modal)({
+      case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
         show shouldBe props.show
         header shouldBe None
         buttons shouldBe List(Buttons.OK)
@@ -109,7 +109,6 @@ class OkPopupSpec extends TestSpec {
         actions.focusedCommand shouldBe None
         onClose shouldBe props.onClose
         closable shouldBe true
-      }
     }, { case List(modalChild) =>
       assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
         val (img, p) = children match {

@@ -193,30 +193,27 @@ class InputPopupSpec extends TestSpec {
       if (props.initialValue.nonEmpty) Set(Buttons.OK.command, Buttons.CANCEL.command)
       else Set(Buttons.CANCEL.command)
 
-    assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
+    assertComponent(result, Modal)({
+      case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
         show shouldBe props.show
         header shouldBe None
         buttons shouldBe List(Buttons.OK, Buttons.CANCEL)
         actions.enabledCommands shouldBe actionCommands
         onClose shouldBe props.onCancel
         closable shouldBe true
-      }
     }, { case List(modalChild) =>
       assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(p, div) =>
         assertDOMComponent(p, <.p()(props.message))
         assertDOMComponent(div, <.div(^.className := "control-group")(), { case List(textField) =>
-          assertComponent(textField, TextField(), { textFieldProps: TextFieldProps =>
-            inside(textFieldProps) {
-              case TextFieldProps(text, _, requestFocus, requestSelect, className, placeholder, _, readOnly) =>
-                text shouldBe props.initialValue
-                requestFocus shouldBe false
-                requestSelect shouldBe false
-                className shouldBe Some("span12")
-                placeholder shouldBe props.placeholder
-                readOnly shouldBe false
-            }
-          })
+          assertComponent(textField, TextField) {
+            case TextFieldProps(text, _, requestFocus, requestSelect, className, placeholder, _, readOnly) =>
+              text shouldBe props.initialValue
+              requestFocus shouldBe false
+              requestSelect shouldBe false
+              className shouldBe Some("span12")
+              placeholder shouldBe props.placeholder
+              readOnly shouldBe false
+          }
         })
       })
     })

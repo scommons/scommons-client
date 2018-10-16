@@ -146,8 +146,8 @@ class ErrorPopupSpec extends TestSpec {
       if (props.details.isDefined) List(detailsButton, closeButton)
       else List(closeButton)
 
-    assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
+    assertComponent(result, Modal)({
+      case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
         show shouldBe props.show
         header shouldBe None
         buttons shouldBe buttonsList
@@ -155,20 +155,18 @@ class ErrorPopupSpec extends TestSpec {
         actions.focusedCommand shouldBe None
         onClose shouldBe props.onClose
         closable shouldBe true
-      }
     }, { case List(modalChild) =>
       assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(img, html) =>
         assertDOMComponent(img, <.img(^.className := IconCss.dialogError, ^.src := "")())
-        assertComponent(html, HTML(), { htmlProps: HTMLProps =>
-          inside(htmlProps) { case HTMLProps(htmlText, wordWrap) =>
+        assertComponent(html, HTML) {
+          case HTMLProps(htmlText, wordWrap) =>
             if (showDetails)
               htmlText shouldBe HTML.makeHtmlText(s"${props.error}\n\n${props.details.getOrElse("")}")
             else
               htmlText shouldBe props.error
-
+  
             wordWrap shouldBe false
-          }
-        })
+        }
       })
     })
   }

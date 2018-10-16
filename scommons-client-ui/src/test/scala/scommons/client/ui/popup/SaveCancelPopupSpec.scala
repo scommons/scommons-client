@@ -106,9 +106,9 @@ class SaveCancelPopupSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertComponent(result, SaveCancelPopup(), { pProps: SaveCancelPopupProps =>
+    assertComponent(result, SaveCancelPopup) { pProps =>
       pProps shouldBe props
-    })
+    }
   }
 
   it should "render base popup component" in {
@@ -180,8 +180,8 @@ class SaveCancelPopupSpec extends TestSpec {
       }
       else Set(Buttons.CANCEL.command)
 
-    assertComponent(result, Modal(), { modalProps: ModalProps =>
-      inside(modalProps) { case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
+    assertComponent(result, Modal)({
+      case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
         show shouldBe props.show
         header shouldBe Some(props.title)
         buttons shouldBe List(Buttons.SAVE.copy(
@@ -192,15 +192,12 @@ class SaveCancelPopupSpec extends TestSpec {
         actions.enabledCommands shouldBe actionCommands
         onClose shouldBe props.onCancel
         closable shouldBe true
-      }
     }, { case List(editPanel) =>
-      assertComponent(editPanel, TestEditPanel(), { panelProps: TestEditPanelProps =>
-        inside(panelProps) {
-          case TestEditPanelProps(initialData, requestFocus, _, _) =>
-            initialData shouldBe props.initialData
-            requestFocus shouldBe false
-        }
-      })
+      assertComponent(editPanel, TestEditPanel) {
+        case TestEditPanelProps(initialData, requestFocus, _, _) =>
+          initialData shouldBe props.initialData
+          requestFocus shouldBe false
+      }
     })
   }
 }

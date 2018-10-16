@@ -42,19 +42,11 @@ trait ShallowRendererUtils extends Matchers {
     result.toList
   }
 
-  def assertComp[T](result: ComponentInstance, expectedComp: UiComponent[T])
-                   (assertProps: T => Assertion,
-                    assertChildren: List[ComponentInstance] => Assertion = expectNoChildren): Assertion = {
-
-    assertComponent(result, expectedComp.reactClass, assertProps, assertChildren)
-  }
-
-  def assertComponent[T](result: ComponentInstance,
-                         expectedClass: ReactClass,
-                         assertProps: T => Assertion = (_: T) => Succeeded,
+  def assertComponent[T](result: ComponentInstance, expectedComp: UiComponent[T])
+                        (assertProps: T => Assertion,
                          assertChildren: List[ComponentInstance] => Assertion = expectNoChildren): Assertion = {
 
-    result.`type` shouldBe expectedClass
+    result.`type` shouldBe expectedComp.reactClass
 
     assertProps(result.props.wrapped.asInstanceOf[T])
     assertChildren(getComponentChildren(result))

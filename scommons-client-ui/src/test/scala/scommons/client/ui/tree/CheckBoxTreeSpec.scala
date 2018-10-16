@@ -210,18 +210,18 @@ class CheckBoxTreeSpec extends TestSpec {
 
     //then
     assertDOMComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
-      assertComponent(topItemE, TreeNode(), { topItemProps: TreeNodeProps =>
+      assertComponent(topItemE, TreeNode) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
-      })
-      assertComponent(topNodeE, TreeNode(), { topNodeProps: TreeNodeProps =>
+      }
+      assertComponent(topNodeE, TreeNode)({ topNodeProps =>
         assertTreeNode(topNodeProps, props, topNode)
       }, { case List(childNodeE) =>
-        assertComponent(childNodeE, TreeNode(), { childNodeProps: TreeNodeProps =>
+        assertComponent(childNodeE, TreeNode)({ childNodeProps =>
           assertTreeNode(childNodeProps, props, childNode, level = 1)
         }, { case List(childItemE) =>
-          assertComponent(childItemE, TreeNode(), { childItemProps: TreeNodeProps =>
+          assertComponent(childItemE, TreeNode) { childItemProps =>
             assertTreeNode(childItemProps, props, childItem, level = 2)
-          })
+          }
         })
       })
     })
@@ -241,12 +241,12 @@ class CheckBoxTreeSpec extends TestSpec {
 
     //then
     assertDOMComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
-      assertComponent(topItemE, TreeNode(), { topItemProps: TreeNodeProps =>
+      assertComponent(topItemE, TreeNode) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
-      })
-      assertComponent(topNodeE, TreeNode(), { topNodeProps: TreeNodeProps =>
+      }
+      assertComponent(topNodeE, TreeNode) { topNodeProps =>
         assertTreeNode(topNodeProps, props, topNode)
-      })
+      }
     })
   }
 

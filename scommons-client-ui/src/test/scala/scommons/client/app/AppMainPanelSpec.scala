@@ -23,18 +23,18 @@ class AppMainPanelSpec extends TestSpec {
 
     //then
     assertDOMComponent(result, <.div()(), { case List(header, cont, footer) =>
-      assertComponent(header, AppHeader(), { headerProps: AppHeaderProps =>
-        headerProps.name shouldBe props.name
-        headerProps.user shouldBe props.user
-      })
+      assertComponent(header, AppHeader) { case AppHeaderProps(name, user) =>
+        name shouldBe props.name
+        user shouldBe props.user
+      }
       assertDOMComponent(cont, <.div(^.className := "container-fluid")(
         <.div()("Some child element 1"),
         <.div()("Some child element 2")
       ))
-      assertComponent(footer, AppFooter(), { footerProps: AppFooterProps =>
-        footerProps.copyright shouldBe props.copyright
-        footerProps.version shouldBe props.version
-      })
+      assertComponent(footer, AppFooter) { case AppFooterProps(copyright, version) =>
+        copyright shouldBe props.copyright
+        version shouldBe props.version
+      }
     })
   }
 }

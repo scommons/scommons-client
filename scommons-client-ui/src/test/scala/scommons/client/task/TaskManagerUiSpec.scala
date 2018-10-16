@@ -113,33 +113,27 @@ class TaskManagerUiSpec extends TestSpec {
         case List(sp, lp, ep) => (sp, Some(lp), Some(ep))
       }
       
-      assertComponent(statusPopup, StatusPopup(), { (statusPopupProps: StatusPopupProps) =>
-        inside(statusPopupProps) { case StatusPopupProps(text, show, onHide) =>
-          show shouldBe props.status.isDefined
-          text shouldBe props.status.getOrElse("")
-          onHide shouldBe props.onHideStatus
-        }
-      })
+      assertComponent(statusPopup, StatusPopup) { case StatusPopupProps(text, show, onHide) =>
+        show shouldBe props.status.isDefined
+        text shouldBe props.status.getOrElse("")
+        onHide shouldBe props.onHideStatus
+      }
       
       if (props.showLoading) {
         loadingPopup should not be None
-        assertComponent(loadingPopup.get, LoadingPopup(), { (loadingPopupProps: LoadingPopupProps) =>
-          inside(loadingPopupProps) { case LoadingPopupProps(show) =>
-            show shouldBe props.showLoading
-          }
-        })
+        assertComponent(loadingPopup.get, LoadingPopup) { case LoadingPopupProps(show) =>
+          show shouldBe props.showLoading
+        }
       }
 
       if (showError) {
         errorPopup should not be None
-        assertComponent(errorPopup.get, ErrorPopup(), { (errorPopupProps: ErrorPopupProps) =>
-          inside(errorPopupProps) { case ErrorPopupProps(show, error, onClose, details) =>
-            show shouldBe showError
-            error shouldBe props.error.getOrElse("")
-            details shouldBe props.errorDetails
-            onClose shouldBe props.onCloseErrorPopup
-          }
-        })
+        assertComponent(errorPopup.get, ErrorPopup) { case ErrorPopupProps(show, error, onClose, details) =>
+          show shouldBe showError
+          error shouldBe props.error.getOrElse("")
+          details shouldBe props.errorDetails
+          onClose shouldBe props.onCloseErrorPopup
+        }
       }
       
       Succeeded
