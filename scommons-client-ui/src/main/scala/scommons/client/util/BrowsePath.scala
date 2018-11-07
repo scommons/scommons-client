@@ -1,16 +1,14 @@
 package scommons.client.util
 
-class BrowsePath private(val value: String) extends AnyVal {
+case class BrowsePath(value: String, exact: Boolean = true) {
+  
+  require(!value.isEmpty, "BrowsePath should not be empty!")
+  require(value.startsWith("/"), s"BrowsePath should start with '/', path: $value")
 
-  override def toString: String = value
-}
-
-object BrowsePath {
-
-  def apply(path: String): BrowsePath = {
-    require(!path.isEmpty, "BrowsePath should not be empty!")
-    require(path.startsWith("/"), s"BrowsePath should start with '/', path: $path")
-    
-    new BrowsePath(path)
+  def matches(path: String): Boolean = {
+    if (exact) path == value
+    else path.startsWith(value)
   }
+  
+  override def toString: String = value
 }

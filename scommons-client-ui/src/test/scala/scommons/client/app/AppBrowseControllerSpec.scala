@@ -115,7 +115,7 @@ class AppBrowseControllerSpec extends TestSpec {
 
   it should "return item path when findItemAndPath" in {
     //given
-    val item1 = BrowseTreeItemData("item1", BrowsePath("/item1"))
+    val item1 = BrowseTreeItemData("item1", BrowsePath("/item1", exact = false))
     val item2 = BrowseTreeItemData("item2", BrowsePath("/item2"))
     val item3 = BrowseTreeItemData("item3", BrowsePath("/item3"))
     val node1 = BrowseTreeNodeData("node1", BrowsePath("/node1"))
@@ -124,13 +124,14 @@ class AppBrowseControllerSpec extends TestSpec {
     val roots = List(node1, node3, item1)
 
     //when & then
-    findItemAndPath(roots, BrowsePath("/unknown")) shouldBe None
-    findItemAndPath(roots, item1.path) shouldBe Some(item1 -> Nil)
-    findItemAndPath(roots, item2.path) shouldBe Some(item2 -> List(node3))
-    findItemAndPath(roots, item3.path) shouldBe Some(item3 -> List(node3, node2))
-    findItemAndPath(roots, node1.path) shouldBe Some(node1 -> Nil)
-    findItemAndPath(roots, node2.path) shouldBe Some(node2 -> List(node3))
-    findItemAndPath(roots, node3.path) shouldBe Some(node3 -> Nil)
+    findItemAndPath(roots, "/unknown") shouldBe None
+    findItemAndPath(roots, "/item1/2") shouldBe Some(item1 -> Nil)
+    findItemAndPath(roots, item1.path.value) shouldBe Some(item1 -> Nil)
+    findItemAndPath(roots, item2.path.value) shouldBe Some(item2 -> List(node3))
+    findItemAndPath(roots, item3.path.value) shouldBe Some(item3 -> List(node3, node2))
+    findItemAndPath(roots, node1.path.value) shouldBe Some(node1 -> Nil)
+    findItemAndPath(roots, node2.path.value) shouldBe Some(node2 -> List(node3))
+    findItemAndPath(roots, node3.path.value) shouldBe Some(node3 -> Nil)
   }
 
   private def createAppBrowseController(targetPath: BrowsePath,

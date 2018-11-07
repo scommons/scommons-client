@@ -21,7 +21,7 @@ object AppBrowseController extends UiComponent[AppBrowseControllerProps] with Ro
 
   lazy val reactClass = WithRouter(React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
-    val path = BrowsePath(self.props.location.pathname)
+    val path = self.props.location.pathname
 
     val selectedRoute = findItemAndPath(props.treeRoots, path)
     val selectedItem = selectedRoute.map(_._1.path)
@@ -53,12 +53,12 @@ object AppBrowseController extends UiComponent[AppBrowseControllerProps] with Ro
   })
 
   private[app] def findItemAndPath(roots: List[BrowseTreeData],
-                                   path: BrowsePath): Option[(BrowseTreeData, List[BrowseTreeData])] = {
+                                   path: String): Option[(BrowseTreeData, List[BrowseTreeData])] = {
 
     def loop(nodes: List[BrowseTreeData], itemPath: List[BrowseTreeData]): List[BrowseTreeData] = nodes match {
       case Nil => Nil
       case head :: tail =>
-        if (head.path == path) head :: itemPath
+        if (head.path.matches(path)) head :: itemPath
         else {
           (head match {
             case node: BrowseTreeNodeData => loop(node.children, head :: itemPath)

@@ -44,4 +44,18 @@ class BrowsePathSpec extends FlatSpec with Matchers {
     //then
     e.getMessage should include(s"BrowsePath should start with '/', path: $path")
   }
+
+  it should "match url path accordingly" in {
+    //when & then
+    BrowsePath("/").matches("/path") shouldBe false
+    BrowsePath("/path").matches("/") shouldBe false
+    BrowsePath("/path").matches("/test") shouldBe false
+    BrowsePath("/path").matches("/path") shouldBe true
+
+    //when & then
+    BrowsePath("/path", exact = false).matches("/") shouldBe false
+    BrowsePath("/path", exact = false).matches("/test") shouldBe false
+    BrowsePath("/path", exact = false).matches("/path") shouldBe true
+    BrowsePath("/path", exact = false).matches("/path/1/2") shouldBe true
+  }
 }
