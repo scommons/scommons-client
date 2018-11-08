@@ -45,7 +45,7 @@ object AppBrowseController extends UiComponent[AppBrowseControllerProps] with Ro
       <.Switch()(
         allNodes.flatMap { n =>
           n.reactClass.map { comp =>
-            <.Route(^.path := n.path.value, ^.component := comp)()
+            <.Route(^.path := n.path.prefix, ^.exact := n.path.exact, ^.component := comp)()
           }
         }
       )

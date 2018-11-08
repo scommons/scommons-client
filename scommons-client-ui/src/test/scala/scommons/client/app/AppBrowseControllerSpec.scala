@@ -25,7 +25,7 @@ class AppBrowseControllerSpec extends TestSpec {
   }
 
   private val childItemPath = BrowsePath("/child-item")
-  private val topNodePath = BrowsePath("/top-node")
+  private val topNodePath = BrowsePath("/top-node", exact = false)
   private val openedTopNodePath = BrowsePath("/opened-top-node")
 
   private val buttons = List(Buttons.ADD, Buttons.REMOVE)
@@ -56,7 +56,7 @@ class AppBrowseControllerSpec extends TestSpec {
     scryRenderedComponentsWithType(result, topNodeComp).length shouldBe 0
   }
 
-  it should "render component with selected top node path" in {
+  it should "render component with selected top node exact path" in {
     //given
     val component = createAppBrowseController(topNodePath)
 
@@ -67,6 +67,32 @@ class AppBrowseControllerSpec extends TestSpec {
     assertRenderedProps(result, topNode.actions, Some(topNode.path))
     scryRenderedComponentsWithType(result, childItemComp).length shouldBe 0
     scryRenderedComponentsWithType(result, topNodeComp).length should be > 0
+  }
+
+  it should "render component with selected top node non-exact path" in {
+    //given
+    val component = createAppBrowseController(topNodePath.copy(value = s"$topNodePath/1/2"))
+
+    //when
+    val result = renderIntoDocument(component)
+
+    //then
+    assertRenderedProps(result, topNode.actions, Some(topNode.path))
+    scryRenderedComponentsWithType(result, childItemComp).length shouldBe 0
+    scryRenderedComponentsWithType(result, topNodeComp).length should be > 0
+  }
+
+  it should "render component with not selected child when non-exact path" in {
+    //given
+    val component = createAppBrowseController(childItemPath.copy(value = s"$childItemPath/1/2"))
+
+    //when
+    val result = renderIntoDocument(component)
+
+    //then
+    assertRenderedProps(result, ActionsData.empty, None)
+    scryRenderedComponentsWithType(result, childItemComp).length shouldBe 0
+    scryRenderedComponentsWithType(result, topNodeComp).length shouldBe 0
   }
 
   it should "render component with selected child path" in {
@@ -116,7 +142,7 @@ class AppBrowseControllerSpec extends TestSpec {
   it should "return item path when findItemAndPath" in {
     //given
     val item1 = BrowseTreeItemData("item1", BrowsePath("/item1", exact = false))
-    val item2 = BrowseTreeItemData("item2", BrowsePath("/item2"))
+    val item2 = BrowseTreeItemData("item2", BrowsePath("/item2/1", "/item2"))
     val item3 = BrowseTreeItemData("item3", BrowsePath("/item3"))
     val node1 = BrowseTreeNodeData("node1", BrowsePath("/node1"))
     val node2 = BrowseTreeNodeData("node2", BrowsePath("/node2"), children = List(item3))
@@ -127,6 +153,7 @@ class AppBrowseControllerSpec extends TestSpec {
     findItemAndPath(roots, "/unknown") shouldBe None
     findItemAndPath(roots, "/item1/2") shouldBe Some(item1 -> Nil)
     findItemAndPath(roots, item1.path.value) shouldBe Some(item1 -> Nil)
+    findItemAndPath(roots, "/item2") shouldBe Some(item2 -> List(node3))
     findItemAndPath(roots, item2.path.value) shouldBe Some(item2 -> List(node3))
     findItemAndPath(roots, item3.path.value) shouldBe Some(item3 -> List(node3, node2))
     findItemAndPath(roots, node1.path.value) shouldBe Some(node1 -> Nil)

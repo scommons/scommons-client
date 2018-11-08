@@ -18,7 +18,7 @@ case class BrowseTreeProps(roots: List[BrowseTreeData],
 
 object BrowseTree extends UiComponent[BrowseTreeProps] {
 
-  private case class BrowseTreeState(opened: Set[BrowsePath])
+  private case class BrowseTreeState(opened: Set[String])
 
   def apply(): ReactClass = reactClass
   lazy val reactClass: ReactClass = createComp
@@ -26,13 +26,13 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
   private def createComp = React.createClass[PropsType, BrowseTreeState](
     getInitialState = { self =>
       val props = self.props.wrapped
-      BrowseTreeState(props.initiallyOpenedNodes ++ props.openedNodes)
+      BrowseTreeState(props.initiallyOpenedNodes.map(_.prefix) ++ props.openedNodes.map(_.prefix))
     },
     componentWillReceiveProps = { (self, nextProps) =>
       val props = nextProps.wrapped
       if (self.props.wrapped != props) {
-        val currKeys = BrowseTreeData.flattenNodes(props.roots).map(_.path).toSet
-        self.setState(s => s.copy(opened = (s.opened ++ props.openedNodes).intersect(currKeys)))
+        val currKeys = BrowseTreeData.flattenNodes(props.roots).map(_.path.prefix).toSet
+        self.setState(s => s.copy(opened = (s.opened ++ props.openedNodes.map(_.prefix)).intersect(currKeys)))
       }
     },
     render = { self =>
@@ -44,7 +44,7 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
           case n: BrowseTreeNodeData => (true, isOpen(self.state, data), n.children)
         }
 
-        val selected = props.selectedItem.contains(data.path)
+        val selected = props.selectedItem.exists(p => p.prefix == data.path.prefix)
         val topItemClass = if (level == 0) browseTreeTopItem else ""
         val topItemImageClass = if (level == 0) browseTreeTopItemImageValue else ""
         val selectedClass = if (selected) browseTreeSelectedItem else ""
@@ -87,14 +87,14 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
   )
 
   private def isOpen(state: BrowseTreeState, data: BrowseTreeData): Boolean = {
-    state.opened.contains(data.path)
+    state.opened.contains(data.path.prefix)
   }
 
   private def toggleState(self: Self[BrowseTreeProps, BrowseTreeState], data: BrowseTreeData): Unit = {
     val currOpen = isOpen(self.state, data)
     val newState =
-      if (currOpen) self.state.opened - data.path
-      else self.state.opened + data.path
+      if (currOpen) self.state.opened - data.path.prefix
+      else self.state.opened + data.path.prefix
 
     self.setState(_.copy(opened = newState))
   }

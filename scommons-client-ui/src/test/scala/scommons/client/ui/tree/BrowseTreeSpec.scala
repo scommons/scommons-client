@@ -29,11 +29,15 @@ class BrowseTreeSpec extends TestSpec {
   it should "not call onSelect function when select the same item" in {
     //given
     val onSelect = mockFunction[BrowseTreeData, Unit]
-    val data = BrowseTreeItemData("test", BrowsePath("/test"))
-    val props = BrowseTreeProps(List(data), selectedItem = Some(data.path), onSelect = onSelect)
+    val data = BrowseTreeItemData("test", BrowsePath("/test", exact = false))
+    val props = BrowseTreeProps(
+      roots = List(data),
+      selectedItem = Some(data.path.copy(value = "/test/1")),
+      onSelect = onSelect
+    )
     val comp = shallowRender(<(BrowseTree())(^.wrapped := props)())
     val nodeProps = findComponentProps(comp, TreeNode)
-    props.selectedItem shouldBe Some(data.path)
+    props.selectedItem.map(_.prefix) shouldBe Some(data.path.prefix)
 
     //then
     onSelect.expects(_: BrowseTreeData).never()
@@ -62,8 +66,11 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "collapse initially opened node when onExpand" in {
     //given
-    val data = BrowseTreeNodeData("test", BrowsePath("/test"))
-    val props = BrowseTreeProps(List(data), initiallyOpenedNodes = Set(data.path))
+    val data = BrowseTreeNodeData("test", BrowsePath("/test", exact = false))
+    val props = BrowseTreeProps(
+      roots = List(data),
+      initiallyOpenedNodes = Set(data.path.copy(value = "/test/1"))
+    )
     val renderer = createRenderer()
     renderer.render(<(BrowseTree())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
@@ -101,8 +108,11 @@ class BrowseTreeSpec extends TestSpec {
 
   it should "render selected item" in {
     //given
-    val data = BrowseTreeItemData("test", BrowsePath("/test"))
-    val props = BrowseTreeProps(List(data), selectedItem = Some(data.path))
+    val data = BrowseTreeItemData("test", BrowsePath("/test", exact = false))
+    val props = BrowseTreeProps(
+      roots = List(data),
+      selectedItem = Some(data.path.copy(value = "/test/1"))
+    )
     val component = <(BrowseTree())(^.wrapped := props)()
 
     //when
