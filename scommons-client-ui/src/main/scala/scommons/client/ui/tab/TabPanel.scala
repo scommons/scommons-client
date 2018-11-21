@@ -36,11 +36,11 @@ object TabPanel extends UiComponent[TabPanelProps] {
       val itemWithIndexList = props.items.zipWithIndex
 
       val tabs = <.ul(^.className := "nav nav-tabs")(itemWithIndexList.map { case (item, index) =>
-        val attributes =
+        <.li(
+          ^.key := index.toString,
           if (index == self.state.selectedIndex) Some(^.className := "active")
           else None
-
-        <.li(attributes)(
+        )(
           <.a(
             ^.href := "",
             ^.onClick := { e: MouseSyntheticEvent =>
@@ -61,7 +61,10 @@ object TabPanel extends UiComponent[TabPanelProps] {
           if (index == self.state.selectedIndex) "active"
           else ""
 
-        <.div(^.className := s"tab-pane $activeClass")(
+        <.div(
+          ^.key := index.toString,
+          ^.className := s"tab-pane $activeClass"
+        )(
           item.component.map { comp =>
             <(comp)()()
           }.getOrElse(

@@ -176,12 +176,12 @@ class TabPanelSpec extends TestSpec {
 
     val itemWithIndexList = props.items.zipWithIndex
 
-    val expectedTabs = <.ul(^.className := "nav nav-tabs")(itemWithIndexList.map { case (item, index) =>
+    val expectedTabs = itemWithIndexList.map { case (item, index) =>
       val attributes =
         if (index == props.selectedIndex) Some(^.className := "active")
         else None
 
-      <.li(attributes)(
+      (<.li(attributes)(
         <.a(^.href := "")(item.image match {
           case None => item.title
           case Some(image) => List(
@@ -189,26 +189,35 @@ class TabPanelSpec extends TestSpec {
             <.span(^.style := Map("paddingLeft" -> "3px"))(item.title)
           )
         })
-      )
-    })
+      ), index)
+    }
 
     val expectedItems = itemWithIndexList.map { case (item, index) =>
       val activeClass =
         if (index == props.selectedIndex) "active"
         else ""
 
-      (<.div(^.className := s"tab-pane $activeClass")(), item, contentElements(index))
+      (<.div(^.className := s"tab-pane $activeClass")(), item, index)
     }
 
     def assertTabsAndContent(tabs: ComponentInstance, content: ComponentInstance): Assertion = {
-      assertDOMComponent(tabs, expectedTabs)
+      assertDOMComponent(tabs, <.ul(^.className := "nav nav-tabs")(), { tabItems =>
+        tabItems.size shouldBe expectedTabs.size
+        tabItems.zip(expectedTabs).foreach { case (tabItem, (expectedTab, index)) =>
+          tabItem.key shouldBe index.toString
+          assertDOMComponent(tabItem, expectedTab)
+        }
+
+        Succeeded
+      })
       assertDOMComponent(content, <.div(^.className := "tab-content")(), { contentItems =>
         contentItems.size shouldBe expectedItems.size
-        contentItems.zip(expectedItems).foreach { case (contentItem, (expectedElem, item, expectedChild)) =>
+        contentItems.zip(expectedItems).foreach { case (contentItem, (expectedElem, item, index)) =>
+          contentItem.key shouldBe index.toString
           assertDOMComponent(contentItem, expectedElem, { case List(child) =>
             item.component match {
               case Some(comp) => child.`type` shouldBe comp
-              case _ => assertDOMComponent(child, expectedChild)
+              case _ => assertDOMComponent(child, contentElements(index))
             }
           })
         }
