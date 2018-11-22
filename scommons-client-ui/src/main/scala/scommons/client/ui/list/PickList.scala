@@ -8,7 +8,7 @@ import scommons.client.ui.UiComponent
 case class PickListProps(items: List[ListBoxData],
                          selectedIds: Set[String] = Set.empty,
                          preSelectedIds: Set[String] = Set.empty,
-                         onSelect: Set[String] => Unit = _ => (),
+                         onSelectChange: (Set[String], Boolean) => Unit = (_, _) => (),
                          sourceTitle: String = "Available items:",
                          destTitle: String = "Selected items:")
 
@@ -28,12 +28,8 @@ object PickList extends UiComponent[PickListProps] {
       PickListState(props.selectedIds ++ props.preSelectedIds)
     },
     componentWillReceiveProps = { (self, nextProps) =>
-      val prevProps = self.props.wrapped
       val props = nextProps.wrapped
-      if (prevProps.selectedIds != props.selectedIds ||
-        prevProps.preSelectedIds != props.preSelectedIds) {
-        self.setState(_.copy(selectedIds = props.selectedIds ++ props.preSelectedIds))
-      }
+      self.setState(_.copy(selectedIds = props.selectedIds ++ props.preSelectedIds))
     },
     render = { self =>
       val props = self.props.wrapped
@@ -51,7 +47,7 @@ object PickList extends UiComponent[PickListProps] {
           selectedIds = selectedIds,
           selectedSourceIds = s.selectedSourceIds -- ids
         ))
-        props.onSelect(selectedIds)
+        props.onSelectChange(ids, true)
       }
 
       def handleRemove(ids: Set[String]): Unit = {
@@ -60,7 +56,7 @@ object PickList extends UiComponent[PickListProps] {
           selectedIds = selectedIds,
           selectedDestIds = s.selectedDestIds -- ids
         ))
-        props.onSelect(selectedIds)
+        props.onSelectChange(ids, false)
       }
 
       <.div(^.className := "row-fluid")(

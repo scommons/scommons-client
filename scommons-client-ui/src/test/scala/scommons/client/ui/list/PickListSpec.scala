@@ -7,10 +7,10 @@ import scommons.client.ui.ButtonImagesCss
 
 class PickListSpec extends TestSpec {
 
-  it should "call onSelect when onAdd" in {
+  it should "call onSelectChange when onAdd" in {
     //given
-    val onSelect = mockFunction[Set[String], Unit]
-    val props = PickListProps(List(ListBoxData("1", "Test")), onSelect = onSelect)
+    val onSelectChange = mockFunction[Set[String], Boolean, Unit]
+    val props = PickListProps(List(ListBoxData("1", "Test")), onSelectChange = onSelectChange)
     val renderer = createRenderer()
     renderer.render(<(PickList())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
@@ -20,7 +20,7 @@ class PickListSpec extends TestSpec {
     val ids = Set("1")
     
     //then
-    onSelect.expects(ids)
+    onSelectChange.expects(ids, true)
 
     //when & then
     srcList.onSelect(ids)
@@ -33,10 +33,10 @@ class PickListSpec extends TestSpec {
     assertPickList(compV3, props.copy(selectedIds = ids), addAllEnabled = false, removeAllEnabled = true)
   }
 
-  it should "call onSelect when onRemove" in {
+  it should "call onSelectChange when onRemove" in {
     //given
-    val onSelect = mockFunction[Set[String], Unit]
-    val props = PickListProps(List(ListBoxData("1", "Test")), selectedIds = Set("1"), onSelect = onSelect)
+    val onSelectChange = mockFunction[Set[String], Boolean, Unit]
+    val props = PickListProps(List(ListBoxData("1", "Test")), selectedIds = Set("1"), onSelectChange = onSelectChange)
     val renderer = createRenderer()
     renderer.render(<(PickList())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
@@ -46,7 +46,7 @@ class PickListSpec extends TestSpec {
     val ids = Set("1")
     
     //then
-    onSelect.expects(Set.empty[String])
+    onSelectChange.expects(ids, false)
 
     //when & then
     dstList.onSelect(ids)
@@ -60,17 +60,17 @@ class PickListSpec extends TestSpec {
     assertPickList(compV3, props.copy(selectedIds = Set.empty[String]))
   }
 
-  it should "call onSelect when onAddAll" in {
+  it should "call onSelectChange when onAddAll" in {
     //given
-    val onSelect = mockFunction[Set[String], Unit]
-    val props = PickListProps(List(ListBoxData("1", "Test")), onSelect = onSelect)
+    val onSelectChange = mockFunction[Set[String], Boolean, Unit]
+    val props = PickListProps(List(ListBoxData("1", "Test")), onSelectChange = onSelectChange)
     val renderer = createRenderer()
     renderer.render(<(PickList())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
     val ids = Set("1")
 
     //then
-    onSelect.expects(ids)
+    onSelectChange.expects(ids, true)
 
     //when
     findComponentProps(comp, PickButtons).onAddAll()
@@ -80,16 +80,17 @@ class PickListSpec extends TestSpec {
     assertPickList(compV2, props.copy(selectedIds = ids), addAllEnabled = false, removeAllEnabled = true)
   }
 
-  it should "call onSelect when onRemoveAll" in {
+  it should "call onSelectChange when onRemoveAll" in {
     //given
-    val onSelect = mockFunction[Set[String], Unit]
-    val props = PickListProps(List(ListBoxData("1", "Test")), selectedIds = Set("1"), onSelect = onSelect)
+    val onSelectChange = mockFunction[Set[String], Boolean, Unit]
+    val props = PickListProps(List(ListBoxData("1", "Test")), selectedIds = Set("1"), onSelectChange = onSelectChange)
     val renderer = createRenderer()
     renderer.render(<(PickList())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
+    val ids = Set("1")
 
     //then
-    onSelect.expects(Set.empty[String])
+    onSelectChange.expects(ids, false)
 
     //when
     findComponentProps(comp, PickButtons).onRemoveAll()
