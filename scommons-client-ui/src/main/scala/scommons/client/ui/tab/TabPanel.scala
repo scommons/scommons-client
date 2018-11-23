@@ -8,7 +8,7 @@ import scommons.client.ui.{ImageLabelWrapper, UiComponent}
 
 case class TabPanelProps(items: List[TabItemData],
                          selectedIndex: Int = 0,
-                         onSelect: (TabItemData, Int) => Boolean = (_, _) => true,
+                         onSelect: (TabItemData, Int) => Unit = (_, _) => (),
                          direction: TabDirection = TabDirection.Top) {
 
   require(selectedIndex >= 0 && selectedIndex < items.size,
@@ -45,9 +45,8 @@ object TabPanel extends UiComponent[TabPanelProps] {
             ^.href := "",
             ^.onClick := { e: MouseSyntheticEvent =>
               e.preventDefault()
-              if (props.onSelect(item, index)) {
-                self.setState(_.copy(selectedIndex = index))
-              }
+              self.setState(_.copy(selectedIndex = index))
+              props.onSelect(item, index)
             }
           )(item.image match {
             case None => item.title

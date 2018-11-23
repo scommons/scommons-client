@@ -12,9 +12,9 @@ import scommons.client.ui.Buttons
 
 class TabPanelSpec extends TestSpec {
 
-  it should "select tab when onSelect returns true" in {
+  it should "call onSelect when select tab" in {
     //given
-    val onSelect = mockFunction[TabItemData, Int, Boolean]
+    val onSelect = mockFunction[TabItemData, Int, Unit]
     val items = List(
       TabItemData("Tab 1"),
       TabItemData("Tab 2")
@@ -32,7 +32,7 @@ class TabPanelSpec extends TestSpec {
     val nextSelectIndex = 1
 
     //then
-    onSelect.expects(items(nextSelectIndex), nextSelectIndex).returns(true)
+    onSelect.expects(items(nextSelectIndex), nextSelectIndex)
 
     //when
     ReactTestUtils.Simulate.click(buttons(nextSelectIndex))
@@ -42,38 +42,6 @@ class TabPanelSpec extends TestSpec {
     tabs(nextSelectIndex).className shouldBe "active"
     panels(props.selectedIndex).className shouldBe "tab-pane "
     panels(nextSelectIndex).className shouldBe "tab-pane active"
-  }
-
-  it should "not select tab when onSelect returns false" in {
-    //given
-    val onSelect = mockFunction[TabItemData, Int, Boolean]
-    val items = List(
-      TabItemData("Tab 1"),
-      TabItemData("Tab 2")
-    )
-    val props = TabPanelProps(items, onSelect = onSelect)
-    val comp = renderIntoDocument(<(TabPanel())(^.wrapped := props)())
-    val buttons = scryRenderedDOMComponentsWithTag(comp, "a")
-    buttons.length shouldBe items.size
-    val tabs = scryRenderedDOMComponentsWithTag(comp, "li")
-    tabs.length shouldBe items.size
-    tabs(props.selectedIndex).className shouldBe "active"
-    val panels = scryRenderedDOMComponentsWithClass(comp, "tab-pane")
-    panels.length shouldBe items.size
-    panels(props.selectedIndex).className shouldBe "tab-pane active"
-    val nextSelectIndex = 1
-
-    //then
-    onSelect.expects(items(nextSelectIndex), nextSelectIndex).returns(false)
-
-    //when
-    ReactTestUtils.Simulate.click(buttons(nextSelectIndex))
-
-    //then
-    tabs(props.selectedIndex).className shouldBe "active"
-    tabs(nextSelectIndex).className shouldBe ""
-    panels(props.selectedIndex).className shouldBe "tab-pane active"
-    panels(nextSelectIndex).className shouldBe "tab-pane "
   }
 
   it should "reset selectedIndex when componentWillReceiveProps" in {
