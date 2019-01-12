@@ -4,8 +4,9 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
-import scommons.client.ui.{ButtonData, ButtonsPanel, ButtonsPanelProps, UiComponent}
+import scommons.client.ui.{ButtonData, ButtonsPanel, ButtonsPanelProps}
 import scommons.client.util.ActionsData
+import scommons.react.UiComponent
 
 case class ModalFooterProps(buttons: List[ButtonData],
                             actions: ActionsData,
@@ -13,9 +14,7 @@ case class ModalFooterProps(buttons: List[ButtonData],
 
 object ModalFooter extends UiComponent[ModalFooterProps] {
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
 
     <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(

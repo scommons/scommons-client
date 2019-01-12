@@ -9,6 +9,7 @@ import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import scommons.client.ui._
 import scommons.client.ui.tree._
 import scommons.client.util.{ActionsData, BrowsePath}
+import scommons.react.UiComponent
 
 case class AppBrowseControllerProps(buttons: List[ButtonData],
                                     treeRoots: List[BrowseTreeData],
@@ -17,9 +18,7 @@ case class AppBrowseControllerProps(buttons: List[ButtonData],
 
 object AppBrowseController extends UiComponent[AppBrowseControllerProps] with RouterProps {
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass = WithRouter(React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = WithRouter(React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
     val path = self.props.location.pathname
 

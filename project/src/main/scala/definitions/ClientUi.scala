@@ -42,18 +42,18 @@ object ClientUi extends ScalaJsModule {
     )
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
-    ClientCore.definition,
     ClientTest.definition % "test"
   )
 
   override val superRepoProjectsDependencies: Seq[(String, String, Option[String])] = Seq(
+    ("scommons-react", "scommons-react-core", None),
     ("scommons-api", "scommons-api-coreJS", None)
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
+    Libs.scommonsReactCore.value,
     Libs.scommonsApiCore.value,
 
-    Libs.sjsReactJs.value,              // For react facade
     Libs.sjsReactJsRouterDom.value,     // Optional. For react-router-dom facade
     Libs.sjsReactJsRouterRedux.value,   // Optional. For react-router-redux facade
     Libs.sjsReactJsRedux.value,         // Optional. For react-redux facade

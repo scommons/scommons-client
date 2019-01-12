@@ -4,7 +4,7 @@ import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 trait BaseStateController[S, P] {
 
@@ -13,7 +13,7 @@ trait BaseStateController[S, P] {
   private lazy val reactClass = ReactRedux.connectAdvanced { dispatch: Dispatch =>
     (state: S, props: Props[Unit]) =>
       mapStateToProps(dispatch, state, props)
-  }(uiComponent.reactClass)
+  }(uiComponent.apply())
   
   def uiComponent: UiComponent[P]
 

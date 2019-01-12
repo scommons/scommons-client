@@ -7,7 +7,8 @@ import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import scommons.client.test.TestSpec
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.popup.SaveCancelPopupSpec._
-import scommons.client.ui.{ButtonImagesCss, Buttons, UiComponent}
+import scommons.client.ui.{ButtonImagesCss, Buttons}
+import scommons.react.UiComponent
 
 class SaveCancelPopupSpec extends TestSpec {
 
@@ -213,10 +214,7 @@ object SaveCancelPopupSpec {
 
   private object TestEditPanel extends UiComponent[TestEditPanelProps] {
 
-    def apply(): ReactClass = reactClass
-    lazy val reactClass: ReactClass = createComp
-
-    private def createComp = React.createClass[PropsType, Unit] { self =>
+    protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
       <.div()(s"Name: ${self.props.wrapped.initialData.name}")
     }
   }

@@ -3,9 +3,10 @@ package scommons.client.ui.popup
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.{Buttons, SimpleButtonData, UiComponent}
+import scommons.client.ui.{Buttons, SimpleButtonData}
 import scommons.client.ui.popup.YesNoCancelOption._
 import scommons.client.util.ActionsData
+import scommons.react.UiComponent
 
 case class YesNoCancelPopupProps(show: Boolean,
                                  message: String,
@@ -17,9 +18,7 @@ object YesNoCancelPopup extends UiComponent[YesNoCancelPopupProps] {
 
   private case class YesNoCancelPopupState(opened: Boolean = false)
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, YesNoCancelPopupState](
+  protected def create(): ReactClass = React.createClass[PropsType, YesNoCancelPopupState](
     getInitialState = { _ =>
       YesNoCancelPopupState()
     },

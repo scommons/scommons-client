@@ -5,8 +5,9 @@ import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import scommons.client.ui.{ImageCheckBox, ImageCheckBoxProps, TriState, UiComponent}
+import scommons.client.ui.{ImageCheckBox, ImageCheckBoxProps, TriState}
 import scommons.client.ui.tree.TreeCss._
+import scommons.react.UiComponent
 
 case class CheckBoxTreeProps(roots: List[CheckBoxTreeData],
                              onChange: (CheckBoxTreeData, TriState) => Unit = (_, _) => (),
@@ -18,10 +19,7 @@ object CheckBoxTree extends UiComponent[CheckBoxTreeProps] {
 
   private case class CheckBoxTreeState(opened: Set[String])
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-  
-  private def createComp = React.createClass[PropsType, CheckBoxTreeState](
+  protected def create(): ReactClass = React.createClass[PropsType, CheckBoxTreeState](
     getInitialState = { self =>
       val props = self.props.wrapped
       CheckBoxTreeState(props.openNodes -- props.closeNodes)

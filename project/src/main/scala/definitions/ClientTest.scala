@@ -22,12 +22,14 @@ object ClientTest extends ScalaJsModule {
       )
     )
 
-  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
-    ClientCore.definition
+  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil
+
+  override val superRepoProjectsDependencies: Seq[(String, String, Option[String])] = Seq(
+    ("scommons-react", "scommons-react-core", None)
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    Libs.sjsReactJs.value,
+    Libs.scommonsReactCore.value,
     Libs.scalajsDom.value,
     TestLibs.scalaTestJs.value,
     TestLibs.scalaMockJs.value

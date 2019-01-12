@@ -5,8 +5,9 @@ import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.ui.{ImageLabelWrapper, UiComponent}
+import scommons.client.ui.ImageLabelWrapper
 import scommons.client.ui.list.ListBoxCss._
+import scommons.react.UiComponent
 
 case class ListBoxProps(items: List[ListBoxData],
                         selectedIds: Set[String] = Set.empty,
@@ -18,10 +19,7 @@ object ListBox extends UiComponent[ListBoxProps] {
 
   private case class ListBoxState(selectedIds: Set[String])
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-  
-  private def createComp = React.createClass[PropsType, ListBoxState](
+  protected def create(): ReactClass = React.createClass[PropsType, ListBoxState](
     getInitialState = { self =>
       ListBoxState(self.props.wrapped.selectedIds)
     },

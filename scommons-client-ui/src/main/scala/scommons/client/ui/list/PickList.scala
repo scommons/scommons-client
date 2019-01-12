@@ -3,7 +3,7 @@ package scommons.client.ui.list
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 case class PickListProps(items: List[ListBoxData],
                          selectedIds: Set[String] = Set.empty,
@@ -18,10 +18,7 @@ object PickList extends UiComponent[PickListProps] {
                                    selectedSourceIds: Set[String] = Set.empty,
                                    selectedDestIds: Set[String] = Set.empty)
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-
-  private def createComp = React.createClass[PropsType, PickListState](
+  protected def create(): ReactClass = React.createClass[PropsType, PickListState](
     getInitialState = { self =>
       val props = self.props.wrapped
       

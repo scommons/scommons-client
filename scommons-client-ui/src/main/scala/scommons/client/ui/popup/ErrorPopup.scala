@@ -4,8 +4,9 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.icon.IconCss
-import scommons.client.ui.{HTML, HTMLProps, SimpleButtonData, UiComponent}
+import scommons.client.ui.{HTML, HTMLProps, SimpleButtonData}
 import scommons.client.util.ActionsData
+import scommons.react.UiComponent
 
 case class ErrorPopupProps(show: Boolean,
                            error: String,
@@ -28,9 +29,7 @@ object ErrorPopup extends UiComponent[ErrorPopupProps] {
   private case class ErrorPopupState(showDetails: Boolean = false,
                                      opened: Boolean = false)
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, ErrorPopupState](
+  protected def create(): ReactClass = React.createClass[PropsType, ErrorPopupState](
     getInitialState = { _ =>
       ErrorPopupState()
     },

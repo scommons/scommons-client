@@ -3,9 +3,9 @@ package scommons.client.ui.select
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.UiComponent
 import scommons.client.ui.select.raw.NativeSelect._
 import scommons.client.ui.select.raw.{ReactSelectAction, ReactSelectOption}
+import scommons.react.UiComponent
 
 import scala.scalajs.js
 
@@ -20,10 +20,7 @@ case class SingleSelectProps(selected: Option[SelectData],
 
 object SingleSelect extends UiComponent[SingleSelectProps] {
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-
-  private def createComp: ReactClass = React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
 
     <.ReactSelect(

@@ -4,7 +4,8 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.ui.{ImageLabelWrapper, UiComponent}
+import scommons.client.ui.ImageLabelWrapper
+import scommons.react.UiComponent
 
 case class TabPanelProps(items: List[TabItemData],
                          selectedIndex: Int = 0,
@@ -19,9 +20,7 @@ object TabPanel extends UiComponent[TabPanelProps] {
 
   private case class TabPanelState(selectedIndex: Int)
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, TabPanelState](
+  protected def create(): ReactClass = React.createClass[PropsType, TabPanelState](
     getInitialState = { self =>
       TabPanelState(self.props.wrapped.selectedIndex)
     },

@@ -6,7 +6,7 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalatest.{Failed, OutcomeOf}
 import scommons.client.test.TestSpec
 import scommons.client.test.util.ShallowRendererUtilsSpec._
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 class ShallowRendererUtilsSpec extends TestSpec
   with OutcomeOf {
@@ -131,9 +131,7 @@ object ShallowRendererUtilsSpec {
 
   object TestComp extends UiComponent[Comp1Props] {
 
-    def apply(): ReactClass = reactClass
-    
-    lazy val reactClass: ReactClass = React.createClass[Comp1Props, Unit] { _ =>
+    protected def create(): ReactClass = React.createClass[Comp1Props, Unit] { _ =>
       <.p(^.className := "test1")("test1 child")
     }
   }

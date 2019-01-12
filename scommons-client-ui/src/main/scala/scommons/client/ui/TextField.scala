@@ -6,6 +6,7 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, KeyboardSyntheticEvent}
 import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.raw.HTMLInputElement
+import scommons.react.UiComponent
 
 case class TextFieldProps(text: String,
                           onChange: (String) => Unit,
@@ -21,9 +22,7 @@ object TextField extends UiComponent[TextFieldProps] {
   private case class TextFieldState(setInputRef: HTMLInputElement => Unit,
                                     getInputRef: () => HTMLInputElement)
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, TextFieldState](
+  protected def create(): ReactClass = React.createClass[PropsType, TextFieldState](
     getInitialState = { _ =>
       var inputRef: HTMLInputElement = null
 

@@ -4,8 +4,9 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
-import scommons.client.ui.{ButtonData, UiComponent}
+import scommons.client.ui.ButtonData
 import scommons.client.util.ActionsData
+import scommons.react.UiComponent
 
 case class ModalProps(show: Boolean,
                       header: Option[String],
@@ -18,9 +19,7 @@ case class ModalProps(show: Boolean,
 
 object Modal extends UiComponent[ModalProps] {
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
 
     <(Popup())(^.wrapped := PopupProps(

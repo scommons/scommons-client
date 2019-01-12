@@ -6,8 +6,8 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.api.ApiResponse
 import scommons.client.task.AbstractTask.AbstractTaskKey
-import scommons.client.ui.UiComponent
 import scommons.client.ui.popup.ErrorPopup
+import scommons.react.UiComponent
 
 import scala.util.{Failure, Success, Try}
 
@@ -23,9 +23,7 @@ object TaskManager extends UiComponent[TaskManagerProps] {
                                       error: Option[String] = None,
                                       errorDetails: Option[String] = None)
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, TaskManagerState](
+  protected def create(): ReactClass = React.createClass[PropsType, TaskManagerState](
     getInitialState = { self =>
       self.props.wrapped.startTask.foldLeft(TaskManagerState()) { (currState, taskKey) =>
         onTaskStart(self, currState, taskKey.obj)

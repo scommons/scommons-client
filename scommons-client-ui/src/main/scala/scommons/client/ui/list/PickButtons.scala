@@ -5,7 +5,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import io.github.shogowada.statictags.Element
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 case class PickButtonsProps(addEnabled: Boolean = true,
                             removeEnabled: Boolean = true,
@@ -19,10 +19,7 @@ case class PickButtonsProps(addEnabled: Boolean = true,
 
 object PickButtons extends UiComponent[PickButtonsProps] {
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-  
-  private def createComp = React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
     
     def btn(style: Map[String, String],

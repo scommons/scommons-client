@@ -5,6 +5,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import org.scalajs.dom.raw.HTMLButtonElement
+import scommons.react.UiComponent
 
 case class SimpleButtonProps(data: SimpleButtonData,
                              onClick: () => Unit,
@@ -16,9 +17,7 @@ object SimpleButton extends UiComponent[SimpleButtonProps] {
   private case class SimpleButtonState(setButtonRef: HTMLButtonElement => Unit,
                                        getButtonRef: () => HTMLButtonElement)
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, SimpleButtonState](
+  protected def create(): ReactClass = React.createClass[PropsType, SimpleButtonState](
     getInitialState = { _ =>
       var buttonRef: HTMLButtonElement = null
 

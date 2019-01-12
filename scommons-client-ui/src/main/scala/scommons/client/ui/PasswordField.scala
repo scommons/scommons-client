@@ -6,6 +6,7 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, KeyboardSyntheticEvent}
 import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.raw.HTMLInputElement
+import scommons.react.UiComponent
 
 case class PasswordFieldProps(password: String,
                               onChange: (String) => Unit,
@@ -21,9 +22,7 @@ object PasswordField extends UiComponent[PasswordFieldProps] {
   private case class PasswordFieldState(setInputRef: HTMLInputElement => Unit,
                                         getInputRef: () => HTMLInputElement)
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, PasswordFieldState](
+  protected def create(): ReactClass = React.createClass[PropsType, PasswordFieldState](
     getInitialState = { _ =>
       var inputRef: HTMLInputElement = null
 

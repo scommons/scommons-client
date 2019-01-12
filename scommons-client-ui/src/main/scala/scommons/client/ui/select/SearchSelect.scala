@@ -4,7 +4,7 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -23,11 +23,8 @@ object SearchSelect extends UiComponent[SearchSelectProps] {
                                        value: String = "",
                                        handleId: Option[Int] = None,
                                        options: List[SelectData] = Nil)
-  
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
 
-  private def createComp: ReactClass = React.createClass[PropsType, SearchSelectState](
+  protected def create(): ReactClass = React.createClass[PropsType, SearchSelectState](
     getInitialState = { _ =>
       SearchSelectState()
     },

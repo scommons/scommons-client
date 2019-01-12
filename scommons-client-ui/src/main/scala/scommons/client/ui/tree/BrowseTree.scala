@@ -7,8 +7,9 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import scommons.client.ui.tree.BrowseTreeCss._
 import scommons.client.ui.tree.TreeCss._
-import scommons.client.ui.{ImageLabelWrapper, UiComponent}
+import scommons.client.ui.ImageLabelWrapper
 import scommons.client.util.BrowsePath
+import scommons.react.UiComponent
 
 case class BrowseTreeProps(roots: List[BrowseTreeData],
                            selectedItem: Option[BrowsePath] = None,
@@ -20,10 +21,7 @@ object BrowseTree extends UiComponent[BrowseTreeProps] {
 
   private case class BrowseTreeState(opened: Set[String])
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-  
-  private def createComp = React.createClass[PropsType, BrowseTreeState](
+  protected def create(): ReactClass = React.createClass[PropsType, BrowseTreeState](
     getInitialState = { self =>
       val props = self.props.wrapped
       BrowseTreeState(props.initiallyOpenedNodes.map(_.prefix) ++ props.openedNodes.map(_.prefix))

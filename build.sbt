@@ -14,12 +14,10 @@ lazy val `scommons-client` = (project in file("."))
   )
   .aggregate(
   `scommons-client-assets`,
-  `scommons-client-core`,
   `scommons-client-ui`,
   `scommons-client-test`
 )
 
 lazy val `scommons-client-assets` = ClientAssets.definition
-lazy val `scommons-client-core` = ClientCore.definition
 lazy val `scommons-client-ui` = ClientUi.definition
 lazy val `scommons-client-test` = ClientTest.definition

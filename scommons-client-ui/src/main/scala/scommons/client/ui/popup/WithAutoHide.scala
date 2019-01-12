@@ -6,7 +6,7 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
 import org.scalajs.dom.Event
 import org.scalajs.dom.raw.HTMLElement
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 import scala.scalajs.js
 
@@ -18,9 +18,7 @@ object WithAutoHide extends UiComponent[WithAutoHideProps] {
                                        getAutoHideDiv: () => HTMLElement,
                                        autoHideHandle: Option[js.Function1[Event, Unit]] = None)
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, WithAutoHideState](
+  protected def create(): ReactClass = React.createClass[PropsType, WithAutoHideState](
     getInitialState = { _ =>
       var autoHideDiv: HTMLElement = null
 

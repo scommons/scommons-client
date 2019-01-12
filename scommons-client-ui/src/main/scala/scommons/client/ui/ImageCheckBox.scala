@@ -5,6 +5,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
 import org.scalajs.dom.raw.HTMLInputElement
+import scommons.react.UiComponent
 
 case class ImageCheckBoxProps(value: TriState,
                               image: String,
@@ -26,10 +27,7 @@ object ImageCheckBox extends UiComponent[ImageCheckBoxProps] {
   private case class ImageCheckBoxState(setInputRef: HTMLInputElement => Unit,
                                         getInputRef: () => HTMLInputElement)
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-  
-  private def createComp = React.createClass[PropsType, ImageCheckBoxState](
+  protected def create(): ReactClass = React.createClass[PropsType, ImageCheckBoxState](
     getInitialState = { _ =>
       var inputRef: HTMLInputElement = null
 

@@ -5,8 +5,8 @@ import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.ui.UiComponent
 import scommons.client.ui.table.TablePanelCss._
+import scommons.react.UiComponent
 
 case class TablePanelProps(header: List[TableColumnData],
                            rows: List[TableRowData],
@@ -19,10 +19,7 @@ object TablePanel extends UiComponent[TablePanelProps] {
 
   private case class TablePanelState(selectedIds: Set[String])
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-
-  private def createComp = React.createClass[PropsType, TablePanelState](
+  protected def create(): ReactClass = React.createClass[PropsType, TablePanelState](
     getInitialState = { self =>
       TablePanelState(self.props.wrapped.selectedIds)
     },

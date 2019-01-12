@@ -3,8 +3,8 @@ package scommons.client.ui.popup
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.UiComponent
 import scommons.client.ui.popup.raw.NativeModal._
+import scommons.react.UiComponent
 
 case class PopupProps(show: Boolean,
                       onClose: () => Unit,
@@ -16,9 +16,7 @@ case class PopupProps(show: Boolean,
 
 object Popup extends UiComponent[PopupProps] {
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
 
     <.ReactModal(

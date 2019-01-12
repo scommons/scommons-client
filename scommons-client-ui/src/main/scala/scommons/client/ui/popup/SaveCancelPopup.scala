@@ -6,6 +6,7 @@ import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import scommons.client.ui._
 import scommons.client.util.ActionsData
+import scommons.react.UiComponent
 
 trait SaveCancelPopupProps {
   type DataType
@@ -22,10 +23,7 @@ trait SaveCancelPopupProps {
 
 trait SaveCancelPopup[T <: SaveCancelPopupProps] extends UiComponent[T] {
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-
-  private def createComp = React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
     <(SaveCancelPopup())(^.wrapped := self.props.wrapped)()
   }
 }
@@ -34,10 +32,7 @@ object SaveCancelPopup extends UiComponent[SaveCancelPopupProps] {
 
   private case class SaveCancelPopupState(data: Any, opened: Boolean = false)
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-
-  private def createComp = React.createClass[PropsType, SaveCancelPopupState](
+  protected def create(): ReactClass = React.createClass[PropsType, SaveCancelPopupState](
     getInitialState = { self =>
       SaveCancelPopupState(self.props.wrapped.initialData)
     },

@@ -7,7 +7,7 @@ import scommons.client.test.raw.ReactTestUtils
 import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.test.util.ShallowRendererUtils
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 trait BaseTestSpec extends ShallowRendererUtils
   with Inside {
@@ -22,12 +22,12 @@ trait BaseTestSpec extends ShallowRendererUtils
   }
 
   def findProps[T](renderedComp: ComponentInstance, searchComp: UiComponent[T]): List[T] = {
-    findComponents(renderedComp, searchComp.reactClass).map(getComponentProps[T])
+    findComponents(renderedComp, searchComp.apply()).map(getComponentProps[T])
   }
 
   def renderIntoDocument(element: ReactElement): Instance = ReactTestUtils.renderIntoDocument(element)
 
   def findRenderedComponentProps[T](tree: Instance, searchComp: UiComponent[T]): T = {
-    getComponentProps[T](findRenderedComponentWithType(tree, searchComp.reactClass))
+    getComponentProps[T](findRenderedComponentWithType(tree, searchComp.apply()))
   }
 }

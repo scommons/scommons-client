@@ -4,6 +4,7 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.statictags.{Attribute, AttributeSpec}
+import scommons.react.UiComponent
 
 import scala.scalajs.js
 
@@ -11,9 +12,7 @@ case class HTMLProps(htmlText: String, wordWrap: Boolean)
 
 object HTML extends UiComponent[HTMLProps] {
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
 
     <.div(

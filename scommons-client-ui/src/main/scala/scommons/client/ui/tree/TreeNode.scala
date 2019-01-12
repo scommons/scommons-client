@@ -6,7 +6,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 case class TreeNodeProps(isNode: Boolean,
                          paddingLeft: Int,
@@ -21,10 +21,7 @@ case class TreeNodeProps(isNode: Boolean,
 
 object TreeNode extends UiComponent[TreeNodeProps] {
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-
-  private def createComp = React.createClass[PropsType, Unit]{ self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit]{ self =>
     val props = self.props.wrapped
 
     val item = <.div(

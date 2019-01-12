@@ -5,6 +5,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.util.ActionsData
+import scommons.react.UiComponent
 
 case class ButtonsPanelProps(buttons: List[ButtonData],
                              actions: ActionsData,
@@ -14,9 +15,7 @@ case class ButtonsPanelProps(buttons: List[ButtonData],
 
 object ButtonsPanel extends UiComponent[ButtonsPanelProps] {
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
 
     val panelClass = props.className match {

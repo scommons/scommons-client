@@ -5,7 +5,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import io.github.shogowada.statictags.Element
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 case class PaginationPanelProps(totalPages: Int,
                                 selectedPage: Int = 1,
@@ -23,10 +23,7 @@ object PaginationPanel extends UiComponent[PaginationPanelProps] {
 
   private case class PaginationPanelState(selectedPage: Int, selectedRange: Range)
 
-  def apply(): ReactClass = reactClass
-  lazy val reactClass: ReactClass = createComp
-  
-  private def createComp: ReactClass = React.createClass[PropsType, PaginationPanelState](
+  protected def create(): ReactClass = React.createClass[PropsType, PaginationPanelState](
     getInitialState = { self =>
       val props = self.props.wrapped
       PaginationPanelState(props.selectedPage, getSelectedRange(props.selectedPage, props.totalPages))

@@ -3,7 +3,7 @@ package scommons.client.app
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.UiComponent
+import scommons.react.UiComponent
 
 case class AppMainPanelProps(name: String = "App",
                              user: String = "user",
@@ -12,16 +12,14 @@ case class AppMainPanelProps(name: String = "App",
 
 object AppMainPanel extends UiComponent[AppMainPanelProps] {
 
-  def apply(): ReactClass = reactClass
-
-  lazy val reactClass: ReactClass = React.createClass[PropsType, Unit] { self =>
+  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
     val props = self.props.wrapped
     <.div()(
-      <(AppHeader.reactClass)(^.wrapped := AppHeaderProps(props.name, props.user))(),
+      <(AppHeader())(^.wrapped := AppHeaderProps(props.name, props.user))(),
       <.div(^.className := "container-fluid")(
         self.props.children
       ),
-      <(AppFooter.reactClass)(^.wrapped := AppFooterProps(props.copyright, props.version))()
+      <(AppFooter())(^.wrapped := AppFooterProps(props.copyright, props.version))()
     )
   }
 }
