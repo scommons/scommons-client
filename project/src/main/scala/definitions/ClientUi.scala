@@ -17,6 +17,7 @@ object ClientUi extends ScalaJsModule {
       coverageExcludedPackages := ".*Css" +
         ";.*BaseStateController" +
         ";.*BaseStateAndRouteController" +
+        ";scommons.client.ui.popup.WithAutoHide" + // causes "a dangling UndefinedParam", see https://github.com/scoverage/scalac-scoverage-plugin/issues/196
         ";scommons.client.ui.popup.raw" +
         ";scommons.client.ui.select.raw" +
         ";scommons.client.ui.HTML.InnerHTML",
