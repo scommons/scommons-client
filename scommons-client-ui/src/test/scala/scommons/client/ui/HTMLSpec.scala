@@ -1,12 +1,12 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.util.TestDOMUtils._
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js
 
-class HTMLSpec extends TestSpec {
+class HTMLSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
 
   it should "render component with wordWrap = true" in {
     //given

@@ -1,15 +1,15 @@
 package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalatest.Assertion
-import scommons.client.test.TestSpec
 import scommons.client.ui.tree.BrowseTreeCss._
 import scommons.client.ui.tree.TreeCss._
 import scommons.client.ui.{ButtonImagesCss, ImageLabelWrapper}
 import scommons.client.util.BrowsePath
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class BrowseTreeSpec extends TestSpec {
+class BrowseTreeSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onSelect function when select new item" in {
     //given
@@ -135,7 +135,7 @@ class BrowseTreeSpec extends TestSpec {
     val result = shallowRender(<(valueWrapper).empty)
 
     //then
-    assertDOMComponent(result, <.div()(
+    assertNativeComponent(result, <.div()(
       ImageLabelWrapper(data.image.get, Some(data.text), alignText = false)
     ))
   }
@@ -153,7 +153,7 @@ class BrowseTreeSpec extends TestSpec {
     val result = shallowRender(<(valueWrapper).empty)
 
     //then
-    assertDOMComponent(result, <.div()(
+    assertNativeComponent(result, <.div()(
       data.text
     ))
   }
@@ -247,7 +247,7 @@ class BrowseTreeSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
+    assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
       assertComponent(topItemE, TreeNode) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
       }
@@ -278,7 +278,7 @@ class BrowseTreeSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
+    assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
       assertComponent(topItemE, TreeNode) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
       }

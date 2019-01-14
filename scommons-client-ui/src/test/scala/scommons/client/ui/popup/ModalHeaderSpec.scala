@@ -1,10 +1,10 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils._
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.util.ShallowRendererUtils
 
-class ModalHeaderSpec extends TestSpec {
+class ModalHeaderSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onClose function when onCloseClick" in {
     //given
@@ -29,12 +29,12 @@ class ModalHeaderSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := "modal-header")(), { case List(closeButton, h3) =>
-      assertDOMComponent(closeButton, <.button(
+    assertNativeComponent(result, <.div(^.className := "modal-header")(), { case List(closeButton, h3) =>
+      assertNativeComponent(closeButton, <.button(
         ^.`type` := "button",
         ^.className := "close"
       )("×"))
-      assertDOMComponent(h3, <.h3()(props.header))
+      assertNativeComponent(h3, <.h3()(props.header))
     })
   }
 
@@ -47,8 +47,8 @@ class ModalHeaderSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := "modal-header")(), { case List(h3) =>
-      assertDOMComponent(h3, <.h3()(props.header))
+    assertNativeComponent(result, <.div(^.className := "modal-header")(), { case List(h3) =>
+      assertNativeComponent(h3, <.h3()(props.header))
     })
   }
 }

@@ -1,14 +1,14 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLButtonElement
-import scommons.client.test.TestSpec
-import scommons.client.test.util.TestDOMUtils._
-import scommons.client.test.raw.ReactTestUtils._
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test.util.ShallowRendererUtils
 
-class SimpleButtonSpec extends TestSpec {
+class SimpleButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
 
   it should "call onClick when click on button" in {
     //given
@@ -35,7 +35,7 @@ class SimpleButtonSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.button(
+    assertNativeComponent(result, <.button(
       ^.`type` := "button",
       ^.className := "btn"
     )(data.text))
@@ -51,7 +51,7 @@ class SimpleButtonSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.button(
+    assertNativeComponent(result, <.button(
       ^.`type` := "button",
       ^.className := "btn",
       ^.disabled := true
@@ -68,7 +68,7 @@ class SimpleButtonSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.button(
+    assertNativeComponent(result, <.button(
       ^.`type` := "button",
       ^.className := "btn btn-primary"
     )(data.text))
@@ -84,7 +84,7 @@ class SimpleButtonSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.button(
+    assertNativeComponent(result, <.button(
       ^.`type` := "button",
       ^.className := "btn btn-primary",
       ^.disabled := true

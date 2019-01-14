@@ -1,15 +1,15 @@
 package scommons.client.task
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalatest.Assertion
 import scommons.api.{ApiStatus, StatusResponse}
-import scommons.client.test.AsyncTestSpec
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.popup._
+import scommons.react.test.dom.AsyncTestSpec
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
 import scala.concurrent.{Future, Promise}
 
-class TaskManagerSpec extends AsyncTestSpec {
+class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
 
   it should "set status to None when onHideStatus" in {
     //given

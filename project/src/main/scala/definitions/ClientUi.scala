@@ -1,6 +1,6 @@
 package definitions
 
-import common.Libs
+import common.{Libs, TestLibs}
 import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys.coverageExcludedPackages
@@ -42,13 +42,12 @@ object ClientUi extends ScalaJsModule {
       )
     )
 
-  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(
-    ClientTest.definition % "test"
-  )
+  override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil
 
   override val superRepoProjectsDependencies: Seq[(String, String, Option[String])] = Seq(
+    ("scommons-api", "scommons-api-coreJS", None),
     ("scommons-react", "scommons-react-core", None),
-    ("scommons-api", "scommons-api-coreJS", None)
+    ("scommons-react", "scommons-react-test-dom", Some("test"))
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
@@ -61,5 +60,7 @@ object ClientUi extends ScalaJsModule {
     Libs.sjsReactJsReduxDevTools.value  // Optional. For redux-devtools facade
   ))
 
-  override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)
+  override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
+    TestLibs.scommonsReactTestDom.value
+  ).map(_ % "test"))
 }

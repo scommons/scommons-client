@@ -19,6 +19,7 @@ Current version is under active development, but you already can try it:
 ```scala
 val scommonsApiVer = "0.1.0-SNAPSHOT"
 val scommonsServiceVer = "0.1.0-SNAPSHOT"
+val scommonsReactVer = "0.1.0-SNAPSHOT"
 val scommonsClientVer = "0.1.0-SNAPSHOT"
 
 libraryDependencies ++= Seq(
@@ -32,7 +33,7 @@ libraryDependencies ++= Seq(
 
   // client/js only
   "org.scommons.client" %%% "scommons-client-ui" % scommonsClientVer,
-  "org.scommons.client" %%% "scommons-client-test" % scommonsClientVer % "test"
+  "org.scommons.react" %%% "scommons-react-test-dom" % scommonsReactVer % "test"
 )
 ```
 

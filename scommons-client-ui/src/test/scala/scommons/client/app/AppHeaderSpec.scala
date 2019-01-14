@@ -1,9 +1,9 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class AppHeaderSpec extends TestSpec {
+class AppHeaderSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render the component" in {
     //given
@@ -17,7 +17,7 @@ class AppHeaderSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result,
+    assertNativeComponent(result,
       <.div(^.className := "navbar navbar-inverse navbar-fixed-top")(
         <.div(^.className := "navbar-inner")(
           <.div(^.className := "container-fluid")(

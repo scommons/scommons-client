@@ -1,13 +1,13 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalatest.{Assertion, Succeeded}
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.Buttons
 import scommons.client.util.ActionsData
+import scommons.react.test.TestSpec
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class ModalSpec extends TestSpec {
+class ModalSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render closable modal with header" in {
     //given
@@ -57,7 +57,7 @@ class ModalSpec extends TestSpec {
       )
     }, { case List(body, footer) =>
       assertComponent(body, ModalBody)({ _ => Succeeded }, { case List(child) =>
-        assertDOMComponent(child, <.p()("some children"))
+        assertNativeComponent(child, <.p()("some children"))
       })
       assertComponent(footer, ModalFooter) { footerProps =>
         footerProps shouldBe ModalFooterProps(props.buttons, props.actions, props.dispatch)
@@ -78,7 +78,7 @@ class ModalSpec extends TestSpec {
         headerProps shouldBe ModalHeaderProps(props.header.get, props.onClose, closable = props.closable)
       }
       assertComponent(body, ModalBody)({ _ => Succeeded }, { case List(child) =>
-        assertDOMComponent(child, <.p()("some children"))
+        assertNativeComponent(child, <.p()("some children"))
       })
       assertComponent(footer, ModalFooter) { footerProps =>
         footerProps shouldBe ModalFooterProps(props.buttons, props.actions, props.dispatch)

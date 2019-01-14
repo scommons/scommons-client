@@ -1,11 +1,11 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
+import scommons.react.test.TestSpec
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class InputPopupSpec extends TestSpec {
+class InputPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onCancel function when cancel command" in {
     //given
@@ -202,9 +202,9 @@ class InputPopupSpec extends TestSpec {
         onClose shouldBe props.onCancel
         closable shouldBe true
     }, { case List(modalChild) =>
-      assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(p, div) =>
-        assertDOMComponent(p, <.p()(props.message))
-        assertDOMComponent(div, <.div(^.className := "control-group")(), { case List(textField) =>
+      assertNativeComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(p, div) =>
+        assertNativeComponent(p, <.p()(props.message))
+        assertNativeComponent(div, <.div(^.className := "control-group")(), { case List(textField) =>
           assertComponent(textField, TextField) {
             case TextFieldProps(text, _, requestFocus, requestSelect, className, placeholder, _, readOnly) =>
               text shouldBe props.initialValue

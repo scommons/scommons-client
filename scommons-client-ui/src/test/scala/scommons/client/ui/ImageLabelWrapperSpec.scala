@@ -2,9 +2,10 @@ package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class ImageLabelWrapperSpec extends TestSpec {
+class ImageLabelWrapperSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render only image" in {
     //given
@@ -20,7 +21,7 @@ class ImageLabelWrapperSpec extends TestSpec {
     val result = shallowRender(component)
     
     //then
-    assertDOMComponent(result, <.div()(
+    assertNativeComponent(result, <.div()(
       <.img(^.className := image, ^.src := "")()
     ))
   }
@@ -40,7 +41,7 @@ class ImageLabelWrapperSpec extends TestSpec {
     val result = shallowRender(component)
     
     //then
-    assertDOMComponent(result, <.div()(
+    assertNativeComponent(result, <.div()(
       <.img(^.className := image, ^.src := "")(),
       <.span(^.style := Map(
         "paddingLeft" -> "3px",
@@ -64,7 +65,7 @@ class ImageLabelWrapperSpec extends TestSpec {
     val result = shallowRender(component)
     
     //then
-    assertDOMComponent(result, <.div()(
+    assertNativeComponent(result, <.div()(
       <.img(^.className := image, ^.src := "")(),
       <.span(^.style := Map(
         "paddingLeft" -> "3px"

@@ -1,16 +1,16 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLButtonElement
-import scommons.client.test.TestSpec
-import scommons.client.test.util.TestDOMUtils._
-import scommons.client.test.raw.ReactTestUtils
-import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.ButtonImagesCss._
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test.util.ShallowRendererUtils
 
-class ImageButtonSpec extends TestSpec {
+class ImageButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
 
   it should "call onClick when click on button" in {
     //given
@@ -35,7 +35,7 @@ class ImageButtonSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result,
+    assertNativeComponent(result,
       <.button(^.`type` := "button", ^.className := "btn")(
         <.img(^.className := s"${data.image}", ^.src := "")(),
         <.span(^.style := Map("paddingLeft" -> "3px", "verticalAlign" -> "middle"))(data.text)
@@ -52,7 +52,7 @@ class ImageButtonSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result,
+    assertNativeComponent(result,
       <.button(^.`type` := "button", ^.className := "btn", ^.title := s"${data.text}")(
         <.img(^.className := s"${data.image}", ^.src := "")()
       )
@@ -68,7 +68,7 @@ class ImageButtonSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result,
+    assertNativeComponent(result,
       <.button(^.`type` := "button", ^.className := "btn", ^.disabled := true)(
         <.img(^.className := s"${data.disabledImage}", ^.src := "")(),
         <.span(^.style := Map("paddingLeft" -> "3px", "verticalAlign" -> "middle"))(data.text)
@@ -85,7 +85,7 @@ class ImageButtonSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result,
+    assertNativeComponent(result,
       <.button(^.`type` := "button", ^.className := "btn btn-primary")(
         <.img(^.className := s"${data.image}", ^.src := "")(),
         <.span(^.style := Map("paddingLeft" -> "3px", "verticalAlign" -> "middle"))(data.text)

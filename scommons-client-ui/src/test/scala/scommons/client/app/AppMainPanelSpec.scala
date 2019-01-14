@@ -1,9 +1,9 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class AppMainPanelSpec extends TestSpec {
+class AppMainPanelSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render the component" in {
     //given
@@ -22,12 +22,12 @@ class AppMainPanelSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div()(), { case List(header, cont, footer) =>
+    assertNativeComponent(result, <.div()(), { case List(header, cont, footer) =>
       assertComponent(header, AppHeader) { case AppHeaderProps(name, user) =>
         name shouldBe props.name
         user shouldBe props.user
       }
-      assertDOMComponent(cont, <.div(^.className := "container-fluid")(
+      assertNativeComponent(cont, <.div(^.className := "container-fluid")(
         <.div()("Some child element 1"),
         <.div()("Some child element 2")
       ))

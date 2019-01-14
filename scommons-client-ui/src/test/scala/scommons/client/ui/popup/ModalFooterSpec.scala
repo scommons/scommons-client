@@ -1,11 +1,11 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
 import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
 import scommons.client.util.ActionsData
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class ModalFooterSpec extends TestSpec {
+class ModalFooterSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render component with correct props" in {
     //given

@@ -4,7 +4,7 @@ import io.github.shogowada.scalajs.history.History
 import io.github.shogowada.scalajs.reactjs.router.Location
 import io.github.shogowada.scalajs.reactjs.router.RouterProps.RouterProps
 import scommons.client.controller.RouteParamsSpec._
-import scommons.client.test.TestSpec
+import scommons.react.test.TestSpec
 
 import scala.scalajs.js.annotation.JSExportAll
 

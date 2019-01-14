@@ -1,14 +1,14 @@
 package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalatest.Assertion
-import scommons.client.test.TestSpec
 import scommons.client.ui.TriState._
 import scommons.client.ui._
 import scommons.client.ui.tree.TreeCss._
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class CheckBoxTreeSpec extends TestSpec {
+class CheckBoxTreeSpec extends TestSpec with ShallowRendererUtils {
 
   it should "expand node when onExpand" in {
     //given
@@ -209,7 +209,7 @@ class CheckBoxTreeSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
+    assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
       assertComponent(topItemE, TreeNode) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
       }
@@ -240,7 +240,7 @@ class CheckBoxTreeSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
+    assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
       assertComponent(topItemE, TreeNode) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
       }

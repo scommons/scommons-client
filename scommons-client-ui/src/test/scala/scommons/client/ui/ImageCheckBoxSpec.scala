@@ -1,20 +1,20 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLInputElement
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.util.TestDOMUtils._
 import scommons.client.ui.ImageCheckBoxSpec.FormSyntheticEventMock
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportAll
 
-class ImageCheckBoxSpec extends TestSpec {
+class ImageCheckBoxSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
 
   it should "call stopPropagation and preventDefault if readOnly when onChange" in {
     //given
@@ -68,7 +68,7 @@ class ImageCheckBoxSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.label()(
+    assertNativeComponent(result, <.label()(
       <.input(
         ^.`type` := "checkbox",
         ^.checked := TriState.isSelected(props.value)

@@ -1,13 +1,13 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.ButtonImagesCss._
 import scommons.client.util.ActionsData
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class ButtonsPanelSpec extends TestSpec {
+class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onCommand when click on button" in {
     //given
@@ -91,7 +91,7 @@ class ButtonsPanelSpec extends TestSpec {
                                  b1: SimpleButtonData,
                                  b2: ImageButtonData): Unit = {
 
-    assertDOMComponent(result, <.div(^.className := className)(), { case List(simpleBtn, imageBtn) =>
+    assertNativeComponent(result, <.div(^.className := className)(), { case List(simpleBtn, imageBtn) =>
       assertComponent(simpleBtn, SimpleButton) {
         case SimpleButtonProps(data, _, disabled, requestFocus) =>
           data shouldBe b1

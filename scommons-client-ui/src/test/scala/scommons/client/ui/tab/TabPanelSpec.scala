@@ -4,13 +4,14 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.statictags.Element
 import org.scalatest.{Assertion, Succeeded}
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.Buttons
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class TabPanelSpec extends TestSpec {
+class TabPanelSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onSelect when select tab" in {
     //given
@@ -169,23 +170,23 @@ class TabPanelSpec extends TestSpec {
     }
 
     def assertTabsAndContent(tabs: ComponentInstance, content: ComponentInstance): Assertion = {
-      assertDOMComponent(tabs, <.ul(^.className := "nav nav-tabs")(), { tabItems =>
+      assertNativeComponent(tabs, <.ul(^.className := "nav nav-tabs")(), { tabItems =>
         tabItems.size shouldBe expectedTabs.size
         tabItems.zip(expectedTabs).foreach { case (tabItem, (expectedTab, index)) =>
           tabItem.key shouldBe index.toString
-          assertDOMComponent(tabItem, expectedTab)
+          assertNativeComponent(tabItem, expectedTab)
         }
 
         Succeeded
       })
-      assertDOMComponent(content, <.div(^.className := "tab-content")(), { contentItems =>
+      assertNativeComponent(content, <.div(^.className := "tab-content")(), { contentItems =>
         contentItems.size shouldBe expectedItems.size
         contentItems.zip(expectedItems).foreach { case (contentItem, (expectedElem, item, index)) =>
           contentItem.key shouldBe index.toString
-          assertDOMComponent(contentItem, expectedElem, { case List(child) =>
+          assertNativeComponent(contentItem, expectedElem, { case List(child) =>
             item.component match {
               case Some(comp) => child.`type` shouldBe comp
-              case _ => assertDOMComponent(child, contentElements(index))
+              case _ => assertNativeComponent(child, contentElements(index))
             }
           })
         }
@@ -194,7 +195,7 @@ class TabPanelSpec extends TestSpec {
       })
     }
 
-    assertDOMComponent(result, <.div(^.className := props.direction.style)(), { case List(tabs, content) =>
+    assertNativeComponent(result, <.div(^.className := props.direction.style)(), { case List(tabs, content) =>
       if (props.direction == TabDirection.Bottom) assertTabsAndContent(content, tabs)
       else assertTabsAndContent(tabs, content)
     })

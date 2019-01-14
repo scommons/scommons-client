@@ -1,10 +1,10 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
 import scommons.client.ui.popup.PopupCss._
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class StatusPopupSpec extends TestSpec {
+class StatusPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render component with correct props" in {
     //given

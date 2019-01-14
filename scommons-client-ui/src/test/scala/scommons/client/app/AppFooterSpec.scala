@@ -1,9 +1,9 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class AppFooterSpec extends TestSpec {
+class AppFooterSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render the component" in {
     //given
@@ -17,7 +17,7 @@ class AppFooterSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result,
+    assertNativeComponent(result,
       <.div()(
         <.hr.empty,
         <.footer()(

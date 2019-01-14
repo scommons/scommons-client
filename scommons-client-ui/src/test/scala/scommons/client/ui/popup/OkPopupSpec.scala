@@ -1,12 +1,12 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.Buttons
 import scommons.client.ui.icon.IconCss
+import scommons.react.test.TestSpec
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class OkPopupSpec extends TestSpec {
+class OkPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onClose function when onOkCommand" in {
     //given
@@ -110,16 +110,16 @@ class OkPopupSpec extends TestSpec {
         onClose shouldBe props.onClose
         closable shouldBe true
     }, { case List(modalChild) =>
-      assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
+      assertNativeComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
         val (img, p) = children match {
           case List(pElem) => (None, pElem)
           case List(imgElem, pElem) => (Some(imgElem), pElem)
         }
         props.image.foreach { image =>
           img should not be None
-          assertDOMComponent(img.get, <.img(^.className := image, ^.src := "")())
+          assertNativeComponent(img.get, <.img(^.className := image, ^.src := "")())
         }
-        assertDOMComponent(p, <.p()(props.message))
+        assertNativeComponent(p, <.p()(props.message))
       })
     })
   }

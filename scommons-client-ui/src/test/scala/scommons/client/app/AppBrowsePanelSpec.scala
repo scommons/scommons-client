@@ -1,12 +1,12 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
 import scommons.client.ui.tree._
 import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
 import scommons.client.util.{ActionsData, BrowsePath}
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class AppBrowsePanelSpec extends TestSpec {
+class AppBrowsePanelSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render the component" in {
     //given
@@ -27,10 +27,10 @@ class AppBrowsePanelSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := "row-fluid")(), { case List(span4, span8) =>
-      assertDOMComponent(span4, <.div(^.className := "span4")(), { case List(sidebar) =>
-        assertDOMComponent(sidebar, <.div(^.className := "well sidebar-nav")(), { case List(sidebarBp, tree) =>
-          assertDOMComponent(sidebarBp, <.div(^.className := AppBrowsePanelCss.sidebarBp)(), { case List(bp) =>
+    assertNativeComponent(result, <.div(^.className := "row-fluid")(), { case List(span4, span8) =>
+      assertNativeComponent(span4, <.div(^.className := "span4")(), { case List(sidebar) =>
+        assertNativeComponent(sidebar, <.div(^.className := "well sidebar-nav")(), { case List(sidebarBp, tree) =>
+          assertNativeComponent(sidebarBp, <.div(^.className := AppBrowsePanelCss.sidebarBp)(), { case List(bp) =>
             assertComponent(bp, ButtonsPanel) { bpProps =>
               bpProps shouldBe buttonsPanelProps
             }
@@ -40,8 +40,8 @@ class AppBrowsePanelSpec extends TestSpec {
           }
         })
       })
-      assertDOMComponent(span8, <.div(^.className := "span8")(), { case List(children) =>
-        assertDOMComponent(children, <.div()("Some child element"))
+      assertNativeComponent(span8, <.div(^.className := "span8")(), { case List(children) =>
+        assertNativeComponent(children, <.div()("Some child element"))
       })
     })
   }

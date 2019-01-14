@@ -1,6 +1,6 @@
 package scommons.client.controller
 
-import scommons.client.test.TestSpec
+import scommons.react.test.TestSpec
 
 class PathParamsSpec extends TestSpec {
 

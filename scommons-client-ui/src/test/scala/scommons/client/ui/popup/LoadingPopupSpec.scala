@@ -1,10 +1,10 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
 import scommons.client.ui.popup.PopupCss._
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class LoadingPopupSpec extends TestSpec {
+class LoadingPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render component with correct props" in {
     //given
@@ -23,7 +23,7 @@ class LoadingPopupSpec extends TestSpec {
         overlayClass shouldBe loadingOverlay
         popupClass shouldBe loadingContent
     }, { case List(img) =>
-      assertDOMComponent(img, <.img(^.className := loadingImg, ^.src := "")())
+      assertNativeComponent(img, <.img(^.className := loadingImg, ^.src := "")())
     })
   }
 }

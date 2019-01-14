@@ -1,14 +1,14 @@
 package scommons.client.ui.table
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalatest.Succeeded
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.table.TablePanelCss._
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class TablePanelSpec extends TestSpec {
+class TablePanelSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onSelect once and select row when click on row" in {
     //given
@@ -116,27 +116,27 @@ class TablePanelSpec extends TestSpec {
       }
     }
 
-    assertDOMComponent(result, <.table(
+    assertNativeComponent(result, <.table(
       ^.className := "table table-condensed",
       ^("cellSpacing") := "0"
     )(), { case List(thead, tbody) =>
-      assertDOMComponent(thead, <.thead(^("aria-hidden") := "false")(), { case List(tr) =>
-        assertDOMComponent(tr, <.tr()(), { headerRow =>
+      assertNativeComponent(thead, <.thead(^("aria-hidden") := "false")(), { case List(tr) =>
+        assertNativeComponent(tr, <.tr()(), { headerRow =>
           headerRow.size shouldBe expectedHeader.size
           headerRow.zip(expectedHeader).foreach { case (headerCell, expectedElem) =>
-            assertDOMComponent(headerCell, expectedElem)
+            assertNativeComponent(headerCell, expectedElem)
           }
 
           Succeeded
         })
       })
-      assertDOMComponent(tbody, <.tbody()(), { rows =>
+      assertNativeComponent(tbody, <.tbody()(), { rows =>
         rows.size shouldBe expectedRows.size
         rows.zip(expectedRows).foreach { case (resultRow, (expectedRowElem, expectedCells)) =>
-          assertDOMComponent(resultRow, expectedRowElem, { resultCells =>
+          assertNativeComponent(resultRow, expectedRowElem, { resultCells =>
             resultCells.size shouldBe expectedCells.size
             resultCells.zip(expectedCells).foreach { case (resultCell, expectedCellElem) =>
-              assertDOMComponent(resultCell, expectedCellElem)
+              assertNativeComponent(resultCell, expectedCellElem)
             }
 
             Succeeded

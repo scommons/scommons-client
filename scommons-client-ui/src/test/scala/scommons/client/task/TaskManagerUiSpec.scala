@@ -1,12 +1,12 @@
 package scommons.client.task
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalatest.Succeeded
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.popup._
+import scommons.react.test.TestSpec
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class TaskManagerUiSpec extends TestSpec {
+class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onHideStatus function when onHide status popup" in {
     //given
@@ -105,7 +105,7 @@ class TaskManagerUiSpec extends TestSpec {
   private def assertRenderingResult(result: ComponentInstance, props: TaskManagerUiProps): Unit = {
     val showError = props.error.isDefined
     
-    assertDOMComponent(result, <.div()(), { children =>
+    assertNativeComponent(result, <.div()(), { children =>
       val (statusPopup, loadingPopup, errorPopup) = children match {
         case List(sp) => (sp, None, None)
         case List(sp, lp) if props.showLoading => (sp, Some(lp), None)

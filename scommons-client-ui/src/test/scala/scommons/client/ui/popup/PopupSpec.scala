@@ -1,13 +1,13 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.util.TestDOMUtils._
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.raw.TestReactDOM._
 import scommons.client.ui.popup.raw.NativeReactModal
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.raw.TestReactDOM._
+import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test.util.ShallowRendererUtils
 
-class PopupSpec extends TestSpec {
+class PopupSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
 
   it should "call onOpen function when onAfterOpen" in {
     //given

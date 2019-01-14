@@ -5,14 +5,15 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.app.AppBrowseController.findItemAndPath
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.MemoryRouter._
-import scommons.client.test.raw.ReactTestUtils._
 import scommons.client.ui.Buttons
 import scommons.client.ui.tree.{BrowseTreeItemData, BrowseTreeNodeData}
 import scommons.client.util.{ActionsData, BrowsePath}
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.MemoryRouter._
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
 
-class AppBrowseControllerSpec extends TestSpec {
+class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
 
   private val childItemComp = React.createClass[Unit, Unit] { _ =>
     <.p()("childItemComp")

@@ -1,9 +1,9 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
+import scommons.react.test.TestSpec
+import scommons.react.test.util.ShallowRendererUtils
 
-class ModalBodySpec extends TestSpec {
+class ModalBodySpec extends TestSpec with ShallowRendererUtils {
 
   it should "render component with provided children" in {
     //given
@@ -15,8 +15,8 @@ class ModalBodySpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result, <.div(^.className := "modal-body")(), { case List(child) =>
-      assertDOMComponent(child, <.p()("some children"))
+    assertNativeComponent(result, <.div(^.className := "modal-body")(), { case List(child) =>
+      assertNativeComponent(child, <.p()("some children"))
     })
   }
 }

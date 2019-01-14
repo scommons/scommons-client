@@ -1,7 +1,7 @@
 package scommons.client.ui.tree
 
-import scommons.client.test.TestSpec
 import scommons.client.ui.TriState._
+import scommons.react.test.TestSpec
 
 class CheckBoxTreeDataSpec extends TestSpec {
 

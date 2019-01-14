@@ -1,13 +1,13 @@
 package scommons.client.ui.list
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.statictags.Element
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class PickButtonsSpec extends TestSpec {
+class PickButtonsSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onAdd when onClick in vertical group" in {
     //given
@@ -217,20 +217,20 @@ class PickButtonsSpec extends TestSpec {
     val btnHoriz = Map("height" -> "30px", "writingMode" -> "tb-rl")
     val btnGroupHoriz = Map("margin" -> "10px 0")
     
-    assertDOMComponent(result, <.div(props.className.map(cn => ^.className := cn))(), { case List(vert, horiz) =>
-      assertDOMComponent(vert, <.div(^.className := "btn-group btn-group-vertical hidden-phone")(), {
+    assertNativeComponent(result, <.div(props.className.map(cn => ^.className := cn))(), { case List(vert, horiz) =>
+      assertNativeComponent(vert, <.div(^.className := "btn-group btn-group-vertical hidden-phone")(), {
         case List(add, remove, addAll, removeAll) =>
-          assertDOMComponent(add, btn(btnVert, "Add", ">", props.addEnabled))
-          assertDOMComponent(remove, btn(btnVert, "Remove", "<", props.removeEnabled))
-          assertDOMComponent(addAll, btn(btnVert, "Add All", ">>", props.addAllEnabled))
-          assertDOMComponent(removeAll, btn(btnVert, "Remove All", "<<", props.removeAllEnabled))
+          assertNativeComponent(add, btn(btnVert, "Add", ">", props.addEnabled))
+          assertNativeComponent(remove, btn(btnVert, "Remove", "<", props.removeEnabled))
+          assertNativeComponent(addAll, btn(btnVert, "Add All", ">>", props.addAllEnabled))
+          assertNativeComponent(removeAll, btn(btnVert, "Remove All", "<<", props.removeAllEnabled))
       })
-      assertDOMComponent(horiz, <.div(^.className := "btn-group visible-phone", ^.style := btnGroupHoriz)(), {
+      assertNativeComponent(horiz, <.div(^.className := "btn-group visible-phone", ^.style := btnGroupHoriz)(), {
         case List(add, remove, addAll, removeAll) =>
-          assertDOMComponent(add, btn(btnHoriz, "Add", ">", props.addEnabled))
-          assertDOMComponent(remove, btn(btnHoriz, "Remove", "<", props.removeEnabled))
-          assertDOMComponent(addAll, btn(btnHoriz, "Add All", ">>", props.addAllEnabled))
-          assertDOMComponent(removeAll, btn(btnHoriz, "Remove All", "<<", props.removeAllEnabled))
+          assertNativeComponent(add, btn(btnHoriz, "Add", ">", props.addEnabled))
+          assertNativeComponent(remove, btn(btnHoriz, "Remove", "<", props.removeEnabled))
+          assertNativeComponent(addAll, btn(btnHoriz, "Add All", ">>", props.addAllEnabled))
+          assertNativeComponent(removeAll, btn(btnHoriz, "Remove All", "<<", props.removeAllEnabled))
       })
     })
   }

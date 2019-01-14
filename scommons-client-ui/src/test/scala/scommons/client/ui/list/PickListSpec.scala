@@ -1,11 +1,11 @@
 package scommons.client.ui.list
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.ButtonImagesCss
+import scommons.react.test.TestSpec
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class PickListSpec extends TestSpec {
+class PickListSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onSelectChange when onAdd" in {
     //given
@@ -221,10 +221,10 @@ class PickListSpec extends TestSpec {
     val sourceItems = props.items.filterNot(i => selectedIds.contains(i.id))
     val destItems = props.items.filter(i => selectedIds.contains(i.id))
 
-    assertDOMComponent(result, <.div(^.className := "row-fluid")(), { case List(src, btns, dst) =>
-      assertDOMComponent(src, <.div(^.className := "span5")(), { case List(title, hr, list) =>
-        assertDOMComponent(title, <.strong()(props.sourceTitle))
-        assertDOMComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
+    assertNativeComponent(result, <.div(^.className := "row-fluid")(), { case List(src, btns, dst) =>
+      assertNativeComponent(src, <.div(^.className := "span5")(), { case List(title, hr, list) =>
+        assertNativeComponent(title, <.strong()(props.sourceTitle))
+        assertNativeComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
         assertComponent(list, ListBox) { case ListBoxProps(items, srcSelectedIds, _) =>
           items shouldBe sourceItems
           srcSelectedIds shouldBe selectedSourceIds
@@ -238,9 +238,9 @@ class PickListSpec extends TestSpec {
           addAll shouldBe addAllEnabled
           removeAll shouldBe removeAllEnabled
       }
-      assertDOMComponent(dst, <.div(^.className := "span5")(), { case List(title, hr, list) =>
-        assertDOMComponent(title, <.strong()(props.destTitle))
-        assertDOMComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
+      assertNativeComponent(dst, <.div(^.className := "span5")(), { case List(title, hr, list) =>
+        assertNativeComponent(title, <.strong()(props.destTitle))
+        assertNativeComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
         assertComponent(list, ListBox) { case ListBoxProps(items, dstSelectedIds, _) =>
           items shouldBe destItems
           dstSelectedIds shouldBe selectedDestIds

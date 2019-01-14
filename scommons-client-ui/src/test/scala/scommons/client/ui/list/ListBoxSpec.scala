@@ -1,17 +1,18 @@
 package scommons.client.ui.list
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalatest.Succeeded
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.list.ListBoxCss._
 import scommons.client.ui.{ButtonImagesCss, ImageLabelWrapper}
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js.Dynamic.literal
 
-class ListBoxSpec extends TestSpec {
+class ListBoxSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
 
   it should "call onSelect once and select single item when onClick" in {
     //given
@@ -140,11 +141,11 @@ class ListBoxSpec extends TestSpec {
       ) -> data
     }
 
-    assertDOMComponent(result, <.div()(), { items =>
+    assertNativeComponent(result, <.div()(), { items =>
       items.size shouldBe expectedItems.size
       items.zip(expectedItems).foreach { case (resultItem, (expectedItemElem, data)) =>
         resultItem.key shouldBe data.id
-        assertDOMComponent(resultItem, expectedItemElem)
+        assertNativeComponent(resultItem, expectedItemElem)
       }
 
       Succeeded

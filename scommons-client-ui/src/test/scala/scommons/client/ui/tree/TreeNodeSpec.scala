@@ -4,15 +4,16 @@ import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.util.TestDOMUtils._
 import scommons.client.ui.tree.TreeNodeSpec.MouseSyntheticEventMock
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js.annotation.JSExportAll
 
-class TreeNodeSpec extends TestSpec {
+class TreeNodeSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
 
   it should "call onSelect when click on item div" in {
     //given
@@ -70,7 +71,7 @@ class TreeNodeSpec extends TestSpec {
     val result = shallowRender(component)
 
     //then
-    assertDOMComponent(result,
+    assertNativeComponent(result,
       <.div(^.className := props.itemClass)(
         <.div(^.className := props.nodeClass)(
           <.div(^.className := props.valueClass)(

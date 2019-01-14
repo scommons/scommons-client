@@ -1,7 +1,7 @@
 package scommons.client.ui
 
-import scommons.client.test.TestSpec
 import scommons.client.ui.TriState._
+import scommons.react.test.TestSpec
 
 class TriStateSpec extends TestSpec {
 

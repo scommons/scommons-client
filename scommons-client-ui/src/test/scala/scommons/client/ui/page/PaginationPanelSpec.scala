@@ -1,14 +1,14 @@
 package scommons.client.ui.page
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.statictags.Element
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.page.PaginationPanel._
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class PaginationPanelSpec extends TestSpec {
+class PaginationPanelSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onPage once and select page button when click on it" in {
     //given
@@ -182,8 +182,8 @@ class PaginationPanelSpec extends TestSpec {
       Some(pageBtn(s"$page", page, disableable = false))
     }
 
-    assertDOMComponent(result, <.div(^.className := props.alignment.style)(), { case List(ul) =>
-      assertDOMComponent(ul, <.ul()(
+    assertNativeComponent(result, <.div(^.className := props.alignment.style)(), { case List(ul) =>
+      assertNativeComponent(ul, <.ul()(
         pageBtn("<<", minPage, disableable = true),
         if (minPage < selectedRange.start) {
           Some(scrollBtn("<"))

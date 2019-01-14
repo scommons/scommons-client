@@ -1,12 +1,12 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.{HTML, HTMLProps, SimpleButtonData}
+import scommons.react.test.TestSpec
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class ErrorPopupSpec extends TestSpec {
+class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "use stackTrace as error details when create props with exception" in {
     //given
@@ -156,8 +156,8 @@ class ErrorPopupSpec extends TestSpec {
         onClose shouldBe props.onClose
         closable shouldBe true
     }, { case List(modalChild) =>
-      assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(img, html) =>
-        assertDOMComponent(img, <.img(^.className := IconCss.dialogError, ^.src := "")())
+      assertNativeComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(img, html) =>
+        assertNativeComponent(img, <.img(^.className := IconCss.dialogError, ^.src := "")())
         assertComponent(html, HTML) {
           case HTMLProps(htmlText, wordWrap) =>
             if (showDetails)

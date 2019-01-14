@@ -4,13 +4,14 @@ import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.popup.SaveCancelPopupSpec._
 import scommons.client.ui.{ButtonImagesCss, Buttons}
 import scommons.react.UiComponent
+import scommons.react.test.TestSpec
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class SaveCancelPopupSpec extends TestSpec {
+class SaveCancelPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onCancel function when cancel command" in {
     //given

@@ -1,16 +1,15 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom.raw.{EventTarget, HTMLElement}
 import org.scalajs.dom.{KeyboardEvent, MouseEvent, document}
-import scommons.client.test.TestSpec
-import scommons.client.test.util.TestDOMUtils._
-import scommons.client.test.raw.TestReactDOM._
 import scommons.client.ui.popup.WithAutoHideSpec.DomEventMock
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.TestReactDOM._
+import scommons.react.test.dom.util.TestDOMUtils
 
 import scala.scalajs.js.annotation.JSExportAll
 
-class WithAutoHideSpec extends TestSpec {
+class WithAutoHideSpec extends TestSpec with TestDOMUtils {
 
   it should "call onHide when triggered outside content element on mouseUp" in {
     //given

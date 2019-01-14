@@ -1,7 +1,7 @@
 package scommons.client.ui.tree
 
-import scommons.client.test.TestSpec
 import scommons.client.util.BrowsePath
+import scommons.react.test.TestSpec
 
 class BrowseTreeDataSpec extends TestSpec {
 

@@ -1,13 +1,13 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.YesNoCancelOption._
 import scommons.client.ui.{Buttons, SimpleButtonData}
+import scommons.react.test.TestSpec
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
-class YesNoCancelPopupSpec extends TestSpec {
+class YesNoCancelPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "call onSelect(Yes) function when Yes selected" in {
     //given
@@ -159,16 +159,16 @@ class YesNoCancelPopupSpec extends TestSpec {
         actions.focusedCommand shouldBe None
         closable shouldBe true
     }, { case List(modalChild) =>
-      assertDOMComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
+      assertNativeComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
         val (img, p) = children match {
           case List(pElem) => (None, pElem)
           case List(imgElem, pElem) => (Some(imgElem), pElem)
         }
         props.image.foreach { image =>
           img should not be None
-          assertDOMComponent(img.get, <.img(^.className := image, ^.src := "")())
+          assertNativeComponent(img.get, <.img(^.className := image, ^.src := "")())
         }
-        assertDOMComponent(p, <.p()(props.message))
+        assertNativeComponent(p, <.p()(props.message))
       })
     })
   }

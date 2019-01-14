@@ -1,15 +1,16 @@
 package scommons.client.ui.select
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import scommons.client.test.TestSpec
-import scommons.client.test.raw.ReactTestUtils._
-import scommons.client.test.raw.ShallowRenderer.ComponentInstance
-import scommons.client.test.util.TestDOMUtils._
 import scommons.client.ui.select.raw._
+import scommons.react.test.TestSpec
+import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js
 
-class SingleSelectSpec extends TestSpec {
+class SingleSelectSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
 
   it should "call onSelectChange(Some(data)) when onChange(option)" in {
     //given
