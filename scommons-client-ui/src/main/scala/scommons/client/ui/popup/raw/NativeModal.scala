@@ -15,7 +15,10 @@ import scala.scalajs.js.annotation.JSImport
   */
 @js.native
 @JSImport("react-modal", JSImport.Default)
-object NativeReactModal extends ReactClass
+object NativeReactModal extends ReactClass {
+
+  def setAppElement(domElem: js.Any): Unit = js.native
+}
 
 trait ReactModalStyleOverlay extends js.Object {
   val position: js.UndefOr[String] = js.undefined

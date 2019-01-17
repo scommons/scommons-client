@@ -1,9 +1,9 @@
 package scommons.client.ui.popup
 
+import org.scalajs.dom.document
 import scommons.client.ui.popup.raw.NativeReactModal
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils._
-import scommons.react.test.dom.raw.TestReactDOM._
 import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.util.ShallowRendererUtils
 
@@ -77,6 +77,8 @@ class PopupSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
 
   it should "render and call onOpen function when render in the DOM" in {
     //given
+    NativeReactModal.setAppElement(document.body)
+    
     val onOpen = mockFunction[Unit]
     val props = PopupProps(show = true, onClose = () => (), onOpen = onOpen)
     val component = <(Popup())(^.wrapped := props)(
@@ -87,30 +89,23 @@ class PopupSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
     onOpen.expects()
 
     //when
-    renderIntoDocument(component)
-  }
-
-  it should "render component in the DOM" in {
-    //given
-    val props = PopupProps(show = true, () => ())
-    val component = <(Popup())(^.wrapped := props)(
-      <.p()("some children")
-    )
-
-    //when
     val result = renderIntoDocument(component)
 
     //then
     val modal = findRenderedComponentWithType(result, NativeReactModal).portal
     assertDOMElement(findReactElement(modal),
       <.div(^("class") := s"ReactModal__Overlay ReactModal__Overlay--after-open ${props.overlayClass}")(
-        <.div(^("class") := s"ReactModal__Content ReactModal__Content--after-open ${props.popupClass}", ^.tabindex := -1)(
+        <.div(
+          ^("class") := s"ReactModal__Content ReactModal__Content--after-open ${props.popupClass}",
+          ^.role := "dialog",
+          ^.tabindex := -1
+        )(
           <.p()("some children")
         )
       )
     )
 
     //cleanup
-    unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
+    //unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
   }
 }
