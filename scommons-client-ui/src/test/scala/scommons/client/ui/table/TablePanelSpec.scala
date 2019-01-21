@@ -5,7 +5,7 @@ import scommons.client.ui.table.TablePanelCss._
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils
 import scommons.react.test.dom.raw.ReactTestUtils._
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class TablePanelSpec extends TestSpec with ShallowRendererUtils {
@@ -101,7 +101,7 @@ class TablePanelSpec extends TestSpec with ShallowRendererUtils {
     assertTablePanel(result, props)
   }
 
-  private def assertTablePanel(result: ComponentInstance, props: TablePanelProps): Unit = {
+  private def assertTablePanel(result: ShallowInstance, props: TablePanelProps): Unit = {
     val expectedHeader = props.header.map { column =>
       <.th(^("colSpan") := "1")(column.title)
     }

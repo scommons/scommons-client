@@ -4,7 +4,7 @@ import org.scalatest.Assertion
 import scommons.api.{ApiStatus, StatusResponse}
 import scommons.client.ui.popup._
 import scommons.react.test.dom.AsyncTestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 import scala.concurrent.{Future, Promise}
@@ -233,7 +233,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     succeed
   }
 
-  private def assertRenderingResult(result: ComponentInstance, props: TaskManagerUiProps): Assertion = {
+  private def assertRenderingResult(result: ShallowInstance, props: TaskManagerUiProps): Assertion = {
     assertComponent(result, TaskManagerUi) { uiProps =>
       assertUiProps(uiProps, props)
     }

@@ -3,7 +3,7 @@ package scommons.client.task
 import org.scalatest.Succeeded
 import scommons.client.ui.popup._
 import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
@@ -102,7 +102,7 @@ class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
     assertRenderingResult(result, props)
   }
 
-  private def assertRenderingResult(result: ComponentInstance, props: TaskManagerUiProps): Unit = {
+  private def assertRenderingResult(result: ShallowInstance, props: TaskManagerUiProps): Unit = {
     val showError = props.error.isDefined
     
     assertNativeComponent(result, <.div()(), { children =>

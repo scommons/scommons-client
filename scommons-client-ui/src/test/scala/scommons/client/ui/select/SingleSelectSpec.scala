@@ -5,7 +5,7 @@ import scommons.client.ui.select.raw._
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils._
 import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js
@@ -175,7 +175,7 @@ class SingleSelectSpec extends TestSpec with ShallowRendererUtils with TestDOMUt
     control.getAttribute("class") should include ("react-select__control")
   }
   
-  private def assertSingleSelect(result: ComponentInstance, props: SingleSelectProps): Unit = {
+  private def assertSingleSelect(result: ShallowInstance, props: SingleSelectProps): Unit = {
     result.`type` shouldBe NativeReactSelect
     result.props.className shouldBe "react-select-container"
     result.props.classNamePrefix shouldBe "react-select"

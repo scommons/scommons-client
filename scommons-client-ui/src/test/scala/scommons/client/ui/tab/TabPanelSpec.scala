@@ -8,7 +8,7 @@ import scommons.client.ui.Buttons
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils
 import scommons.react.test.dom.raw.ReactTestUtils._
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class TabPanelSpec extends TestSpec with ShallowRendererUtils {
@@ -139,7 +139,7 @@ class TabPanelSpec extends TestSpec with ShallowRendererUtils {
     assertTabPanel(result, props, List(content1, content2, content3))
   }
 
-  private def assertTabPanel(result: ComponentInstance,
+  private def assertTabPanel(result: ShallowInstance,
                              props: TabPanelProps,
                              contentElements: List[Element]): Unit = {
 
@@ -169,7 +169,7 @@ class TabPanelSpec extends TestSpec with ShallowRendererUtils {
       (<.div(^.className := s"tab-pane $activeClass")(), item, index)
     }
 
-    def assertTabsAndContent(tabs: ComponentInstance, content: ComponentInstance): Assertion = {
+    def assertTabsAndContent(tabs: ShallowInstance, content: ShallowInstance): Assertion = {
       assertNativeComponent(tabs, <.ul(^.className := "nav nav-tabs")(), { tabItems =>
         tabItems.size shouldBe expectedTabs.size
         tabItems.zip(expectedTabs).foreach { case (tabItem, (expectedTab, index)) =>

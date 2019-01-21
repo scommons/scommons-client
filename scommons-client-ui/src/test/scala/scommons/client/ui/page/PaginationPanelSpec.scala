@@ -5,7 +5,7 @@ import scommons.client.ui.page.PaginationPanel._
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils
 import scommons.react.test.dom.raw.ReactTestUtils._
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class PaginationPanelSpec extends TestSpec with ShallowRendererUtils {
@@ -156,7 +156,7 @@ class PaginationPanelSpec extends TestSpec with ShallowRendererUtils {
     toPage(21, 10) shouldBe 3
   }
 
-  private def assertPaginationPanel(result: ComponentInstance, props: PaginationPanelProps): Unit = {
+  private def assertPaginationPanel(result: ShallowInstance, props: PaginationPanelProps): Unit = {
     def renderBtn(text: String, attributes: Any*): Element = {
       <.li(attributes: _*)(
         <.a(^.href := "")(text)

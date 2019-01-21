@@ -4,7 +4,7 @@ import org.scalatest.{Assertion, Succeeded}
 import scommons.client.ui.Buttons
 import scommons.client.util.ActionsData
 import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class ModalSpec extends TestSpec with ShallowRendererUtils {
@@ -65,7 +65,7 @@ class ModalSpec extends TestSpec with ShallowRendererUtils {
     })
   }
 
-  private def assertModal(result: ComponentInstance, props: ModalProps): Assertion = {
+  private def assertModal(result: ShallowInstance, props: ModalProps): Assertion = {
     assertComponent(result, Popup)({ popupProps =>
       popupProps shouldBe PopupProps(
         show = props.show,

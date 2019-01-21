@@ -3,7 +3,7 @@ package scommons.client.ui.popup
 import scommons.client.ui.Buttons
 import scommons.client.ui.icon.IconCss
 import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class OkPopupSpec extends TestSpec with ShallowRendererUtils {
@@ -97,7 +97,7 @@ class OkPopupSpec extends TestSpec with ShallowRendererUtils {
     image = image
   )
 
-  private def assertOkPopup(result: ComponentInstance, props: OkPopupProps): Unit = {
+  private def assertOkPopup(result: ShallowInstance, props: OkPopupProps): Unit = {
     val actionCommands = Set(Buttons.OK.command)
 
     assertComponent(result, Modal)({

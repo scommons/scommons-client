@@ -4,7 +4,7 @@ import scommons.client.ui.ButtonImagesCss._
 import scommons.client.util.ActionsData
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils._
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
@@ -61,7 +61,7 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
     val component = <(ButtonsPanel())(^.wrapped := props)()
 
     //when
-    val result: ComponentInstance = shallowRender(component)
+    val result: ShallowInstance = shallowRender(component)
 
     //then
     assertButtonsPanel(result, "btn-toolbar", group = false, b1, b2)
@@ -79,13 +79,13 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
     val component = <(ButtonsPanel())(^.wrapped := props)()
 
     //when
-    val result: ComponentInstance = shallowRender(component)
+    val result: ShallowInstance = shallowRender(component)
 
     //then
     assertButtonsPanel(result, "btn-group", group = true, b1, b2)
   }
 
-  private def assertButtonsPanel(result: ComponentInstance,
+  private def assertButtonsPanel(result: ShallowInstance,
                                  className: String,
                                  group: Boolean,
                                  b1: SimpleButtonData,

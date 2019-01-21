@@ -2,7 +2,7 @@ package scommons.client.ui.list
 
 import scommons.client.ui.ButtonImagesCss
 import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class PickListSpec extends TestSpec with ShallowRendererUtils {
@@ -208,7 +208,7 @@ class PickListSpec extends TestSpec with ShallowRendererUtils {
     )
   }
 
-  private def assertPickList(result: ComponentInstance,
+  private def assertPickList(result: ShallowInstance,
                              props: PickListProps,
                              selectedSourceIds: Set[String] = Set.empty,
                              selectedDestIds: Set[String] = Set.empty,

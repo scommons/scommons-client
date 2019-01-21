@@ -4,7 +4,7 @@ import io.github.shogowada.statictags.Element
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils
 import scommons.react.test.dom.raw.ReactTestUtils._
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class PickButtonsSpec extends TestSpec with ShallowRendererUtils {
@@ -201,7 +201,7 @@ class PickButtonsSpec extends TestSpec with ShallowRendererUtils {
     assertPickButtons(result, props)
   }
 
-  private def assertPickButtons(result: ComponentInstance, props: PickButtonsProps): Unit = {
+  private def assertPickButtons(result: ShallowInstance, props: PickButtonsProps): Unit = {
 
     def btn(style: Map[String, String], title: String, text: String, enabled: Boolean): Element = {
       <.button(

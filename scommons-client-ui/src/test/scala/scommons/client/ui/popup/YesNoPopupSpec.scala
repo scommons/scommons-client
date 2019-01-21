@@ -4,7 +4,7 @@ import scommons.client.ui.SimpleButtonData
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.YesNoCancelOption._
 import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class YesNoPopupSpec extends TestSpec with ShallowRendererUtils {
@@ -114,7 +114,7 @@ class YesNoPopupSpec extends TestSpec with ShallowRendererUtils {
     image = image
   )
 
-  private def assertYesNoPopup(result: ComponentInstance, props: YesNoPopupProps): Unit = {
+  private def assertYesNoPopup(result: ShallowInstance, props: YesNoPopupProps): Unit = {
     val expectedButtons = List(
       SimpleButtonData(Yes.command, "Yes", props.selected == Yes),
       SimpleButtonData(No.command, "No", props.selected == No)

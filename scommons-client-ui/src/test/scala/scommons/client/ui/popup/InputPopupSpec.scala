@@ -2,7 +2,7 @@ package scommons.client.ui.popup
 
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
 import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class InputPopupSpec extends TestSpec with ShallowRendererUtils {
@@ -188,7 +188,7 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
     initialValue = initialValue
   )
 
-  private def assertInputPopup(result: ComponentInstance, props: InputPopupProps): Unit = {
+  private def assertInputPopup(result: ShallowInstance, props: InputPopupProps): Unit = {
     val actionCommands =
       if (props.initialValue.nonEmpty) Set(Buttons.OK.command, Buttons.CANCEL.command)
       else Set(Buttons.CANCEL.command)

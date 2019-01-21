@@ -8,7 +8,7 @@ import scommons.client.ui.popup.SaveCancelPopupSpec._
 import scommons.client.ui.{ButtonImagesCss, Buttons}
 import scommons.react.UiComponent
 import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class SaveCancelPopupSpec extends TestSpec with ShallowRendererUtils {
@@ -174,7 +174,7 @@ class SaveCancelPopupSpec extends TestSpec with ShallowRendererUtils {
     textPropsV3.requestFocus shouldBe false
   }
 
-  private def assertSaveCancelPopup(result: ComponentInstance, props: SaveCancelPopupProps): Unit = {
+  private def assertSaveCancelPopup(result: ShallowInstance, props: SaveCancelPopupProps): Unit = {
     val data = props.initialData
     val actionCommands =
       if (props.isSaveEnabled(data)) {

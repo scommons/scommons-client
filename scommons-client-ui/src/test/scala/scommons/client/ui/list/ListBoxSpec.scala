@@ -7,7 +7,7 @@ import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils
 import scommons.react.test.dom.raw.ReactTestUtils._
 import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js.Dynamic.literal
@@ -127,7 +127,7 @@ class ListBoxSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
     assertListBox(result, props)
   }
 
-  private def assertListBox(result: ComponentInstance, props: ListBoxProps): Unit = {
+  private def assertListBox(result: ShallowInstance, props: ListBoxProps): Unit = {
     val expectedItems = props.items.map { data =>
       val selectedClass = if (props.selectedIds.contains(data.id)) listBoxSelectedItem else ""
 

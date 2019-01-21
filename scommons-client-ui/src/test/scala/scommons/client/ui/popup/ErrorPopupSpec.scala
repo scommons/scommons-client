@@ -3,7 +3,7 @@ package scommons.client.ui.popup
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.{HTML, HTMLProps, SimpleButtonData}
 import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
@@ -139,7 +139,7 @@ class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
     modalPropsV3.actions.focusedCommand shouldBe None
   }
 
-  private def assertErrorPopup(result: ComponentInstance, props: ErrorPopupProps, showDetails: Boolean): Unit = {
+  private def assertErrorPopup(result: ShallowInstance, props: ErrorPopupProps, showDetails: Boolean): Unit = {
     val detailsButton = SimpleButtonData("details", if (showDetails) "Details <<" else "Details >>")
     val closeButton = SimpleButtonData("close", "Close", primary = true)
     val buttonsList =

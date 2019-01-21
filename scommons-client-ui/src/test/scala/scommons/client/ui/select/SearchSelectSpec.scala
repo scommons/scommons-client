@@ -2,7 +2,7 @@ package scommons.client.ui.select
 
 import org.scalatest.{Assertion, Succeeded}
 import scommons.react.test.dom.AsyncTestSpec
-import scommons.react.test.raw.ShallowRenderer.ComponentInstance
+import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 import scala.concurrent.{Future, Promise}
@@ -228,7 +228,7 @@ class SearchSelectSpec extends AsyncTestSpec with ShallowRendererUtils {
     assertSearchSelect(result, props)
   }
 
-  private def assertSearchSelect(result: ComponentInstance, props: SearchSelectProps): Assertion = {
+  private def assertSearchSelect(result: ShallowInstance, props: SearchSelectProps): Assertion = {
     assertComponent(result, SingleSelect) {
       case SingleSelectProps(
       selected,
