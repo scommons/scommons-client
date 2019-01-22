@@ -1,6 +1,10 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
+  stats: {
+    children: false // disable child plugin/loader logging
+  },
+  
   module: {
     rules: [{
       test: /\.(ico|png|gif|jpe?g|svg)$/i,
