@@ -8,6 +8,8 @@ object ClientAssets extends ClientModule {
 
   override val id: String = "scommons-client-assets"
 
+  override val base: File = file("assets")
+
   override def definition: Project = super.definition
     .enablePlugins(SbtWeb)
     .settings(

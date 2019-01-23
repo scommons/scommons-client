@@ -11,6 +11,8 @@ object ClientUi extends ScalaJsModule {
 
   override val id: String = "scommons-client-ui"
 
+  override val base: File = file("ui")
+
   override def definition: Project = super.definition
     .settings(
       description := "Common Scala.js, React.js web-client utilities and components",
