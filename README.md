@@ -11,7 +11,7 @@ Scala and Scala.js common utilities and components.
 
 To see the showcase/demo UI with all the components live use the following link:
 
-[https://scommons.org/scommons-showcase/](https://scommons.org/scommons-showcase/)
+[https://scommons.org/scommons-client/showcase/](https://scommons.org/scommons-client/showcase/)
 
 ### How to add it to your project
 
@@ -50,9 +50,9 @@ To build and run all the tests use the following command:
 sbt clean test
 ```
 
-### How to Run Showcase/Demo server locally
+### How to Run Showcase/Demo locally
 
-Please, see the README.md in [scommons-showcase](https://github.com/scommons/scommons-showcase) project page.
+Please, see the README.md in [showcase](https://github.com/scommons/scommons-client/showcase) sub-project page.
 
 
 ## Documentation
