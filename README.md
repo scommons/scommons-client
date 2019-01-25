@@ -52,7 +52,7 @@ sbt clean test
 
 ### How to Run Showcase/Demo locally
 
-Please, see the README.md in [showcase](https://github.com/scommons/scommons-client/showcase) sub-project page.
+Please, see the README.md in [showcase](https://github.com/scommons/scommons-client/tree/master/showcase) sub-project page.
 
 
 ## Documentation
