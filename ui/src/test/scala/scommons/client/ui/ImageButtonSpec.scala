@@ -36,7 +36,7 @@ class ImageButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUti
 
     //then
     assertNativeComponent(result,
-      <.button(^.`type` := "button", ^.className := "btn")(
+      <.button(^.`type` := "button", ^.className := "btn ")(
         <.img(^.className := s"${data.image}", ^.src := "")(),
         <.span(^.style := Map("paddingLeft" -> "3px", "verticalAlign" -> "middle"))(data.text)
       )
@@ -53,7 +53,7 @@ class ImageButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUti
 
     //then
     assertNativeComponent(result,
-      <.button(^.`type` := "button", ^.className := "btn", ^.title := s"${data.text}")(
+      <.button(^.`type` := "button", ^.className := "btn ", ^.title := s"${data.text}")(
         <.img(^.className := s"${data.image}", ^.src := "")()
       )
     )
@@ -69,7 +69,7 @@ class ImageButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUti
 
     //then
     assertNativeComponent(result,
-      <.button(^.`type` := "button", ^.className := "btn", ^.disabled := true)(
+      <.button(^.`type` := "button", ^.className := "btn ", ^.disabled := true)(
         <.img(^.className := s"${data.disabledImage}", ^.src := "")(),
         <.span(^.style := Map("paddingLeft" -> "3px", "verticalAlign" -> "middle"))(data.text)
       )

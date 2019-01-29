@@ -1,7 +1,6 @@
 package scommons.client.ui.tab
 
 import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.statictags.Element
 import org.scalatest.{Assertion, Succeeded}
 import scommons.client.ui.Buttons

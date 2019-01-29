@@ -1,7 +1,6 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.react.test.TestSpec
 import scommons.react.test.util.ShallowRendererUtils
 

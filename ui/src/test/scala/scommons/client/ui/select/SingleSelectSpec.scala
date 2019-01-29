@@ -1,6 +1,5 @@
 package scommons.client.ui.select
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import scommons.client.ui.select.raw._
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils._

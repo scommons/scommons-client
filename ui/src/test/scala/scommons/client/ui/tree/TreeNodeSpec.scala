@@ -1,7 +1,6 @@
 package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.tree.TreeNodeSpec.MouseSyntheticEventMock
