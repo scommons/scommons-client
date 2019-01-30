@@ -2,7 +2,7 @@ package scommons.client.ui.tab
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.statictags.Element
-import org.scalatest.{Assertion, Succeeded}
+import org.scalatest.Assertion
 import scommons.client.ui.Buttons
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.ReactTestUtils
@@ -145,11 +145,11 @@ class TabPanelSpec extends TestSpec with ShallowRendererUtils {
     val itemWithIndexList = props.items.zipWithIndex
 
     val expectedTabs = itemWithIndexList.map { case (item, index) =>
-      val attributes =
+      val maybeClassNameAttr =
         if (index == props.selectedIndex) Some(^.className := "active")
         else None
 
-      (<.li(attributes)(
+      <.li(maybeClassNameAttr, ^.key := s"$index")(
         <.a(^.href := "")(item.image match {
           case None => item.title
           case Some(image) => List(
@@ -157,7 +157,7 @@ class TabPanelSpec extends TestSpec with ShallowRendererUtils {
             <.span(^.style := Map("paddingLeft" -> "3px"))(item.title)
           )
         })
-      ), index)
+      )
     }
 
     val expectedItems = itemWithIndexList.map { case (item, index) =>
@@ -165,33 +165,18 @@ class TabPanelSpec extends TestSpec with ShallowRendererUtils {
         if (index == props.selectedIndex) "active"
         else ""
 
-      (<.div(^.className := s"tab-pane $activeClass")(), item, index)
+      <.div(^.className := s"tab-pane $activeClass", ^.key := s"$index")(
+        item.component.map(compClass => <(compClass)()()).getOrElse {
+          item.render.map(render => render(null)).getOrElse {
+            <.div()()
+          }
+        }
+      )
     }
 
     def assertTabsAndContent(tabs: ShallowInstance, content: ShallowInstance): Assertion = {
-      assertNativeComponent(tabs, <.ul(^.className := "nav nav-tabs")(), { tabItems =>
-        tabItems.size shouldBe expectedTabs.size
-        tabItems.zip(expectedTabs).foreach { case (tabItem, (expectedTab, index)) =>
-          tabItem.key shouldBe index.toString
-          assertNativeComponent(tabItem, expectedTab)
-        }
-
-        Succeeded
-      })
-      assertNativeComponent(content, <.div(^.className := "tab-content")(), { contentItems =>
-        contentItems.size shouldBe expectedItems.size
-        contentItems.zip(expectedItems).foreach { case (contentItem, (expectedElem, item, index)) =>
-          contentItem.key shouldBe index.toString
-          assertNativeComponent(contentItem, expectedElem, { case List(child) =>
-            item.component match {
-              case Some(comp) => child.`type` shouldBe comp
-              case _ => assertNativeComponent(child, contentElements(index))
-            }
-          })
-        }
-
-        Succeeded
-      })
+      assertNativeComponent(tabs, <.ul(^.className := "nav nav-tabs")(expectedTabs))
+      assertNativeComponent(content, <.div(^.className := "tab-content")(expectedItems))
     }
 
     assertNativeComponent(result, <.div(^.className := props.direction.style)(), { case List(tabs, content) =>

@@ -1,6 +1,5 @@
 package scommons.client.ui.list
 
-import org.scalatest.Succeeded
 import scommons.client.ui.list.ListBoxCss._
 import scommons.client.ui.{ButtonImagesCss, ImageLabelWrapper}
 import scommons.react.test.TestSpec
@@ -132,23 +131,16 @@ class ListBoxSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
       val selectedClass = if (props.selectedIds.contains(data.id)) listBoxSelectedItem else ""
 
       <.div(
-        ^.className := s"$listBoxItem $selectedClass"
+        ^.className := s"$listBoxItem $selectedClass",
+        ^.key := data.id
       )(
         data.image match {
           case None => data.label
           case Some(image) => ImageLabelWrapper(image, Some(data.label))
         }
-      ) -> data
+      )
     }
 
-    assertNativeComponent(result, <.div()(), { items =>
-      items.size shouldBe expectedItems.size
-      items.zip(expectedItems).foreach { case (resultItem, (expectedItemElem, data)) =>
-        resultItem.key shouldBe data.id
-        assertNativeComponent(resultItem, expectedItemElem)
-      }
-
-      Succeeded
-    })
+    assertNativeComponent(result, <.div()(expectedItems))
   }
 }
