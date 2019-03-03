@@ -15,11 +15,8 @@ import scommons.client.task.{TaskManager, TaskManagerProps}
 import scommons.client.ui.Buttons
 import scommons.client.ui.popup.raw.NativeReactModal
 
-import scala.scalajs.js.annotation.JSExportTopLevel
-
 object ShowcaseMain {
 
-  @JSExportTopLevel("scommons.client.showcase.main")
   def main(args: Array[String]): Unit = {
     val mountNode = dom.document.getElementById("root")
 

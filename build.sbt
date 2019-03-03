@@ -7,9 +7,9 @@ lazy val `scommons-client` = (project in file("."))
   .settings(ClientModule.settings: _*)
   .settings(
     skip in publish := true,
-    publish := (),
-    publishM2 := (),
-    publishLocal := ()
+    publish := ((): Unit),
+    publishLocal := ((): Unit),
+    publishM2 := ((): Unit)
   )
   .settings(
     ideExcludedDirectories += baseDirectory.value / "docs" / "_site"

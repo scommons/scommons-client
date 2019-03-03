@@ -17,9 +17,9 @@ object ClientShowcase extends ScalaJsModule {
   override def definition: Project = super.definition
     .settings(
       skip in publish := true,
-      publish := (),
-      publishM2 := (),
-      publishLocal := (),
+      publish := ((): Unit),
+      publishLocal := ((): Unit),
+      publishM2 := ((): Unit),
 
       coverageEnabled := false,
       coverageExcludedPackages := ".*Css",
