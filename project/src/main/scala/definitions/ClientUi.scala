@@ -49,11 +49,15 @@ object ClientUi extends ScalaJsModule {
   override val superRepoProjectsDependencies: Seq[(String, String, Option[String])] = Seq(
     ("scommons-api", "scommons-api-coreJS", None),
     ("scommons-react", "scommons-react-core", None),
+    ("scommons-react", "scommons-react-dom", None),
+    
+    ("scommons-react", "scommons-react-test", Some("test")),
     ("scommons-react", "scommons-react-test-dom", Some("test"))
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     Libs.scommonsReactCore.value,
+    Libs.scommonsReactDom.value,
     Libs.scommonsApiCore.value,
 
     Libs.sjsReactJsRouterDom.value,     // Optional. For react-router-dom facade
