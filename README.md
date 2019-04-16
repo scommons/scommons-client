@@ -1,10 +1,11 @@
 
 [![Build Status](https://travis-ci.org/scommons/scommons-client.svg?branch=master)](https://travis-ci.org/scommons/scommons-client)
 [![Coverage Status](https://coveralls.io/repos/github/scommons/scommons-client/badge.svg?branch=master)](https://coveralls.io/github/scommons/scommons-client?branch=master)
+[![scala-index](https://index.scala-lang.org/scommons/scommons-client/scommons-client-ui/latest.svg)](https://index.scala-lang.org/scommons/scommons-client/scommons-client-ui)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org)
 
-## Scala Commons
-Scala and Scala.js common utilities and components.
+## Scala Commons Client
+Common Scala.js, React.js web-client utilities and components.
 
 
 ### Showcase/Demo UI
@@ -15,25 +16,24 @@ To see the showcase/demo UI with all the components live use the following link:
 
 ### How to add it to your project
 
-Current version is under active development, but you already can try it:
 ```scala
-val scommonsApiVer = "0.1.0-SNAPSHOT"
-val scommonsServiceVer = "0.1.0-SNAPSHOT"
-val scommonsReactVer = "0.1.0-SNAPSHOT"
-val scommonsClientVer = "0.1.0-SNAPSHOT"
+val scommonsApiVer = "1.0.0-SNAPSHOT"
+val scommonsReactVer = "1.0.0-SNAPSHOT"
+val scommonsClientVer = "1.0.0-SNAPSHOT"
+val scommonsServiceVer = "1.0.0-SNAPSHOT"
 
 libraryDependencies ++= Seq(
   // shared
   "org.scommons.api" %%% "scommons-api-core" % scommonsApiVer,
   "org.scommons.api" %%% "scommons-api-joda-time" % scommonsApiVer,
 
-  // server/jvm only
-  "org.scommons.api" %% "scommons-api-play-ws" % scommonsApiVer,
-  "org.scommons.service" %% "scommons-service-play" % scommonsServiceVer,
-
   // client/js only
   "org.scommons.client" %%% "scommons-client-ui" % scommonsClientVer,
-  "org.scommons.react" %%% "scommons-react-test-dom" % scommonsReactVer % "test"
+  "org.scommons.react" %%% "scommons-react-test-dom" % scommonsReactVer % "test",
+
+  // server/jvm only
+  "org.scommons.service" %% "scommons-service-play" % scommonsServiceVer,
+  "org.scommons.api" %% "scommons-api-play-ws" % scommonsApiVer % "test"
 )
 ```
 
@@ -57,4 +57,4 @@ Please, see the README.md in [showcase](https://github.com/scommons/scommons-cli
 
 ## Documentation
 
-You can find documentation [here](https://scommons.org/scommons-client)
+You can find more documentation [here](https://scommons.org/scommons-client)
