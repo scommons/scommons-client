@@ -34,6 +34,10 @@ object ClientUi extends ScalaJsModule {
       ),
 
       npmDevDependencies in Compile ++= Seq(
+        "babel-loader" -> "8.0.5",
+        "@babel/core" -> "7.4.0",
+        "@babel/preset-env" -> "7.4.2",
+        
         "css-loader" -> "0.28.7",
         "extract-text-webpack-plugin" -> "3.0.0",
         "resolve-url-loader" -> "3.0.0",
