@@ -1,13 +1,12 @@
 package scommons.client.showcase
 
 import scommons.client.showcase.demo._
-import scommons.client.task.AbstractTask.AbstractTaskKey
-import scommons.client.task.TaskAction
 import scommons.client.ui.Buttons
 import scommons.client.ui.tree._
 import scommons.client.util.{ActionsData, BrowsePath}
+import scommons.react.redux.task.{AbstractTask, TaskReducer}
 
-case class ShowcaseState(currentTask: Option[AbstractTaskKey])
+case class ShowcaseState(currentTask: Option[AbstractTask])
 
 object ShowcaseReducer {
 
@@ -59,13 +58,6 @@ object ShowcaseReducer {
   )
 
   def reduce(state: Option[ShowcaseState], action: Any): ShowcaseState = ShowcaseState(
-    currentTask = currentTaskReducer(state.flatMap(_.currentTask), action)
+    currentTask = TaskReducer(state.flatMap(_.currentTask), action)
   )
-
-  private def currentTaskReducer(currentTask: Option[AbstractTaskKey],
-                                 action: Any): Option[AbstractTaskKey] = action match {
-
-    case a: TaskAction => Some(a.task.key)
-    case _ => None
-  }
 }

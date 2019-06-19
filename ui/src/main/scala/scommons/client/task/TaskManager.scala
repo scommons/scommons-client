@@ -5,13 +5,13 @@ import io.github.shogowada.scalajs.reactjs.React.Self
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.api.ApiResponse
-import scommons.client.task.AbstractTask.AbstractTaskKey
 import scommons.client.ui.popup.ErrorPopup
 import scommons.react.UiComponent
+import scommons.react.redux.task.AbstractTask
 
 import scala.util.{Failure, Success, Try}
 
-case class TaskManagerProps(startTask: Option[AbstractTaskKey])
+case class TaskManagerProps(startTask: Option[AbstractTask])
 
 /**
   * Controls running tasks.
@@ -25,15 +25,15 @@ object TaskManager extends UiComponent[TaskManagerProps] {
 
   protected def create(): ReactClass = React.createClass[PropsType, TaskManagerState](
     getInitialState = { self =>
-      self.props.wrapped.startTask.foldLeft(TaskManagerState()) { (currState, taskKey) =>
-        onTaskStart(self, currState, taskKey.obj)
+      self.props.wrapped.startTask.foldLeft(TaskManagerState()) { (currState, task) =>
+        onTaskStart(self, currState, task)
       }
     },
     componentWillReceiveProps = { (self, nextProps) =>
       val props = nextProps.wrapped
       if (self.props.wrapped != props) {
-        props.startTask.foreach { taskKey =>
-          self.setState(onTaskStart(self, self.state, taskKey.obj))
+        props.startTask.foreach { task =>
+          self.setState(onTaskStart(self, self.state, task))
         }
       }
     },

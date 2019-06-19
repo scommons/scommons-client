@@ -3,6 +3,7 @@ package scommons.client.task
 import org.scalatest.Assertion
 import scommons.api.{ApiStatus, StatusResponse}
 import scommons.client.ui.popup._
+import scommons.react.redux.task.FutureTask
 import scommons.react.test.dom.AsyncTestSpec
 import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
@@ -14,7 +15,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
   it should "set status to None when onHideStatus" in {
     //given
     val task = FutureTask("Fetching data", Promise[Unit]().future)
-    val props = TaskManagerProps(Some(task.key))
+    val props = TaskManagerProps(Some(task))
     val renderer = createRenderer()
     renderer.render(<(TaskManager())(^.wrapped := props)())
     val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
@@ -32,7 +33,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     //given
     val promise = Promise[Unit]()
     val task = FutureTask("Fetching data", promise.future)
-    val props = TaskManagerProps(Some(task.key))
+    val props = TaskManagerProps(Some(task))
     val renderer = createRenderer()
     renderer.render(<(TaskManager())(^.wrapped := props)())
     val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
@@ -67,7 +68,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
   it should "render loading and status" in {
     //given
     val task = FutureTask("Fetching data", Promise[Unit]().future)
-    val props = TaskManagerProps(Some(task.key))
+    val props = TaskManagerProps(Some(task))
     val component = <(TaskManager())(^.wrapped := props)()
 
     //when
@@ -84,7 +85,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     //given
     val promise = Promise[Unit]()
     val task = FutureTask("Fetching data", promise.future)
-    val props = TaskManagerProps(Some(task.key))
+    val props = TaskManagerProps(Some(task))
     val renderer = createRenderer()
     renderer.render(<(TaskManager())(^.wrapped := props)())
     val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
@@ -109,7 +110,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     //given
     val promise = Promise[StatusResponse]()
     val task = FutureTask("Fetching data", promise.future)
-    val props = TaskManagerProps(Some(task.key))
+    val props = TaskManagerProps(Some(task))
     val renderer = createRenderer()
     renderer.render(<(TaskManager())(^.wrapped := props)())
     val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
@@ -134,7 +135,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     //given
     val promise = Promise[StatusResponse]()
     val task = FutureTask("Fetching data", promise.future)
-    val props = TaskManagerProps(Some(task.key))
+    val props = TaskManagerProps(Some(task))
     val renderer = createRenderer()
     renderer.render(<(TaskManager())(^.wrapped := props)())
     val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
@@ -158,7 +159,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
   it should "render status of already completed task" in {
     //given
     val task = FutureTask("Fetching data", Future.successful(()))
-    val props = TaskManagerProps(Some(task.key))
+    val props = TaskManagerProps(Some(task))
     val renderer = createRenderer()
     renderer.render(<(TaskManager())(^.wrapped := props)())
     assertRenderingResult(renderer.getRenderOutput(), expected(
@@ -182,7 +183,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     val renderer = createRenderer()
     val promise1 = Promise[StatusResponse]()
     val task1 = FutureTask("Fetching data 1", promise1.future)
-    renderer.render(<(TaskManager())(^.wrapped := TaskManagerProps(Some(task1.key)))())
+    renderer.render(<(TaskManager())(^.wrapped := TaskManagerProps(Some(task1)))())
     assertRenderingResult(renderer.getRenderOutput(), expected(
       showLoading = true,
       status = Some(s"${task1.message}...")
@@ -190,7 +191,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
 
     val promise2 = Promise[StatusResponse]()
     val task2 = FutureTask("Fetching data 2", promise2.future)
-    renderer.render(<(TaskManager())(^.wrapped := TaskManagerProps(Some(task2.key)))())
+    renderer.render(<(TaskManager())(^.wrapped := TaskManagerProps(Some(task2)))())
     assertRenderingResult(renderer.getRenderOutput(), expected(
       showLoading = true,
       status = Some(s"${task2.message}...")

@@ -3,7 +3,7 @@ package scommons.client.showcase.action.api
 import io.github.shogowada.scalajs.reactjs.redux.Action
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.api.{ApiStatus, StatusResponse}
-import scommons.client.task.{FutureTask, TaskAction}
+import scommons.react.redux.task.{FutureTask, TaskAction}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Success

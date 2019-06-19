@@ -17,7 +17,6 @@ object ClientUi extends ScalaJsModule {
     .settings(
       description := "Common Scala.js, React.js web-client utilities and components",
       coverageExcludedPackages := ".*Css" +
-        ";.*BaseStateController" +
         ";.*BaseStateAndRouteController" +
         ";scommons.client.ui.popup.WithAutoHide" + // causes "a dangling UndefinedParam", see https://github.com/scoverage/scalac-scoverage-plugin/issues/196
         ";scommons.client.ui.popup.raw" +
@@ -54,6 +53,7 @@ object ClientUi extends ScalaJsModule {
     ("scommons-api", "scommons-api-coreJS", None),
     ("scommons-react", "scommons-react-core", None),
     ("scommons-react", "scommons-react-dom", None),
+    ("scommons-react", "scommons-react-redux", None),
     
     ("scommons-react", "scommons-react-test", Some("test")),
     ("scommons-react", "scommons-react-test-dom", Some("test"))
@@ -62,12 +62,11 @@ object ClientUi extends ScalaJsModule {
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     Libs.scommonsReactCore.value,
     Libs.scommonsReactDom.value,
+    Libs.scommonsReactRedux.value,
     Libs.scommonsApiCore.value,
 
     Libs.sjsReactJsRouterDom.value,     // Optional. For react-router-dom facade
-    Libs.sjsReactJsRouterRedux.value,   // Optional. For react-router-redux facade
-    Libs.sjsReactJsRedux.value,         // Optional. For react-redux facade
-    Libs.sjsReactJsReduxDevTools.value  // Optional. For redux-devtools facade
+    Libs.sjsReactJsRouterRedux.value    // Optional. For react-router-redux facade
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
