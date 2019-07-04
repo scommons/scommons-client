@@ -1,26 +1,25 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import scommons.client.ui._
 import scommons.client.ui.tree._
 import scommons.client.util.{ActionsData, BrowsePath}
-import scommons.react.UiComponent
+import scommons.react._
 
 case class AppBrowseControllerProps(buttons: List[ButtonData],
                                     treeRoots: List[BrowseTreeData],
                                     dispatch: Dispatch,
                                     initiallyOpenedNodes: Set[BrowsePath] = Set.empty)
 
-object AppBrowseController extends UiComponent[AppBrowseControllerProps] with RouterProps {
+object AppBrowseController extends FunctionComponent[AppBrowseControllerProps] with RouterProps {
 
-  protected def create(): ReactClass = WithRouter(React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
-    val path = self.props.location.pathname
+  override protected def create(): ReactClass = WithRouter(super.create())
+
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
+    val path = compProps.location.pathname
 
     val selectedRoute = findItemAndPath(props.treeRoots, path)
     val selectedItem = selectedRoute.map(_._1.path)
@@ -29,7 +28,7 @@ object AppBrowseController extends UiComponent[AppBrowseControllerProps] with Ro
     }.getOrElse(Set.empty[BrowsePath])
 
     def onSelectItem(data: BrowseTreeData): Unit = {
-      self.props.history.push(data.path.value)
+      compProps.history.push(data.path.value)
     }
 
     val actions = selectedRoute.map(_._1.actions).getOrElse(ActionsData.empty)
@@ -40,7 +39,8 @@ object AppBrowseController extends UiComponent[AppBrowseControllerProps] with Ro
       BrowseTreeProps(props.treeRoots, selectedItem, onSelect = onSelectItem,
         openedNodes = openedNodes, initiallyOpenedNodes = props.initiallyOpenedNodes)
     ))(
-      self.props.children,
+      compProps.children,
+      
       <.Switch()(
         allNodes.flatMap { n =>
           n.reactClass.map { comp =>
@@ -49,7 +49,7 @@ object AppBrowseController extends UiComponent[AppBrowseControllerProps] with Ro
         }
       )
     )
-  })
+  }
 
   private[app] def findItemAndPath(roots: List[BrowseTreeData],
                                    path: String): Option[(BrowseTreeData, List[BrowseTreeData])] = {

@@ -1,9 +1,9 @@
 package scommons.client.app
 
 import scommons.react.test.TestSpec
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test.util.TestRendererUtils
 
-class AppFooterSpec extends TestSpec with ShallowRendererUtils {
+class AppFooterSpec extends TestSpec with TestRendererUtils {
 
   it should "render the component" in {
     //given
@@ -11,15 +11,14 @@ class AppFooterSpec extends TestSpec with ShallowRendererUtils {
       "test copyright",
       "test version"
     )
-    val component = <(AppFooter())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(<(AppFooter())(^.wrapped := props)())
 
     //then
-    assertNativeComponent(result,
-      <.div()(
-        <.hr.empty,
+    inside(result.children.toList) { case List(hr, footer) =>
+      assertNativeComponent(hr, <.hr.empty)
+      assertNativeComponent(footer,
         <.footer()(
           <.p(^.className := "text-center")(
             <.span()(props.copyright),
@@ -28,6 +27,6 @@ class AppFooterSpec extends TestSpec with ShallowRendererUtils {
           )
         )
       )
-    )
+    }
   }
 }

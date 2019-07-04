@@ -1,28 +1,18 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.app.AppBrowseController.findItemAndPath
+import scommons.client.app.AppBrowseControllerSpec._
 import scommons.client.ui.Buttons
 import scommons.client.ui.tree.{BrowseTreeItemData, BrowseTreeNodeData}
 import scommons.client.util.{ActionsData, BrowsePath}
+import scommons.react._
 import scommons.react.test.TestSpec
 import scommons.react.test.dom.raw.MemoryRouter._
-import scommons.react.test.dom.raw.ReactTestUtils._
-import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test.raw.TestInstance
+import scommons.react.test.util.TestRendererUtils
 
-class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
-
-  private val childItemComp = React.createClass[Unit, Unit] { _ =>
-    <.p()("childItemComp")
-  }
-  private val topNodeComp = React.createClass[Unit, Unit] { _ =>
-    <.p()("topNodeComp")
-  }
-  private val customChildrenComp = React.createClass[Unit, Unit] { _ =>
-    <.div()("customChildrenComp")
-  }
+class AppBrowseControllerSpec extends TestSpec with TestRendererUtils {
 
   private val childItemPath = BrowsePath("/child-item")
   private val topNodePath = BrowsePath("/top-node", exact = false)
@@ -31,10 +21,10 @@ class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
   private val buttons = List(Buttons.ADD, Buttons.REMOVE)
 
   private val childItem = BrowseTreeItemData("child item", childItemPath, None,
-    ActionsData.empty.copy(enabledCommands = Set(Buttons.ADD.command)), Some(childItemComp))
+    ActionsData.empty.copy(enabledCommands = Set(Buttons.ADD.command)), Some(ChildItemComp()))
 
   private val topNode = BrowseTreeNodeData("top node", topNodePath, None,
-    ActionsData.empty.copy(enabledCommands = Set(Buttons.REMOVE.command)), Some(topNodeComp), List(childItem))
+    ActionsData.empty.copy(enabledCommands = Set(Buttons.REMOVE.command)), Some(TopNodeComp()), List(childItem))
 
   private val openedTopNode = BrowseTreeNodeData("initially opened top node", openedTopNodePath, None,
     ActionsData.empty.copy(enabledCommands = Set(Buttons.ADD.command)), None)
@@ -48,12 +38,12 @@ class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
     val component = createAppBrowseController(BrowsePath("/"))
 
     //when
-    val result = renderIntoDocument(component)
+    val result = testRender(component)
 
     //then
     assertRenderedProps(result, ActionsData.empty, None)
-    scryRenderedComponentsWithType(result, childItemComp).length shouldBe 0
-    scryRenderedComponentsWithType(result, topNodeComp).length shouldBe 0
+    findProps(result, ChildItemComp).length shouldBe 0
+    findProps(result, TopNodeComp).length shouldBe 0
   }
 
   it should "render component with selected top node exact path" in {
@@ -61,12 +51,12 @@ class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
     val component = createAppBrowseController(topNodePath)
 
     //when
-    val result = renderIntoDocument(component)
+    val result = testRender(component)
 
     //then
     assertRenderedProps(result, topNode.actions, Some(topNode.path))
-    scryRenderedComponentsWithType(result, childItemComp).length shouldBe 0
-    scryRenderedComponentsWithType(result, topNodeComp).length should be > 0
+    findProps(result, ChildItemComp).length shouldBe 0
+    findProps(result, TopNodeComp).length should be > 0
   }
 
   it should "render component with selected top node non-exact path" in {
@@ -74,12 +64,12 @@ class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
     val component = createAppBrowseController(topNodePath.copy(value = s"$topNodePath/1/2"))
 
     //when
-    val result = renderIntoDocument(component)
+    val result = testRender(component)
 
     //then
     assertRenderedProps(result, topNode.actions, Some(topNode.path))
-    scryRenderedComponentsWithType(result, childItemComp).length shouldBe 0
-    scryRenderedComponentsWithType(result, topNodeComp).length should be > 0
+    findProps(result, ChildItemComp).length shouldBe 0
+    findProps(result, TopNodeComp).length should be > 0
   }
 
   it should "render component with not selected child when non-exact path" in {
@@ -87,12 +77,12 @@ class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
     val component = createAppBrowseController(childItemPath.copy(value = s"$childItemPath/1/2"))
 
     //when
-    val result = renderIntoDocument(component)
+    val result = testRender(component)
 
     //then
     assertRenderedProps(result, ActionsData.empty, None)
-    scryRenderedComponentsWithType(result, childItemComp).length shouldBe 0
-    scryRenderedComponentsWithType(result, topNodeComp).length shouldBe 0
+    findProps(result, ChildItemComp).length shouldBe 0
+    findProps(result, TopNodeComp).length shouldBe 0
   }
 
   it should "render component with selected child path" in {
@@ -100,43 +90,43 @@ class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
     val component = createAppBrowseController(childItemPath)
 
     //when
-    val result = renderIntoDocument(component)
+    val result = testRender(component)
 
     //then
     assertRenderedProps(result, childItem.actions, Some(childItem.path), Set(topNode.path))
-    scryRenderedComponentsWithType(result, childItemComp).length should be > 0
-    scryRenderedComponentsWithType(result, topNodeComp).length shouldBe 0
+    findProps(result, ChildItemComp).length should be > 0
+    findProps(result, TopNodeComp).length shouldBe 0
   }
 
   it should "render component with selected child path and children" in {
     //given
     val component = createAppBrowseController(childItemPath, Some(
-      <(customChildrenComp).empty
+      <(CustomChildrenComp()).empty
     ))
 
     //when
-    val result = renderIntoDocument(component)
+    val result = testRender(component)
 
     //then
     assertRenderedProps(result, childItem.actions, Some(childItem.path), Set(topNode.path))
-    scryRenderedComponentsWithType(result, customChildrenComp).length shouldBe 1
-    scryRenderedComponentsWithType(result, childItemComp).length should be > 0
-    scryRenderedComponentsWithType(result, topNodeComp).length shouldBe 0
+    findProps(result, CustomChildrenComp).length shouldBe 1
+    findProps(result, ChildItemComp).length should be > 0
+    findProps(result, TopNodeComp).length shouldBe 0
   }
 
   it should "re-render component when selected item changes" in {
     //given
-    val comp = renderIntoDocument(createAppBrowseController(topNodePath))
+    val comp = testRender(createAppBrowseController(topNodePath))
     assertRenderedProps(comp, topNode.actions, Some(topNode.path))
-    scryRenderedComponentsWithType(comp, topNodeComp).length should be > 0
-    val treeProps = findRenderedComponentProps(comp, AppBrowsePanel).treeProps
+    findProps(comp, TopNodeComp).length should be > 0
+    val treeProps = findComponentProps(comp, AppBrowsePanel).treeProps
 
     //when
     treeProps.onSelect(childItem)
 
     //then
     assertRenderedProps(comp, childItem.actions, Some(childItem.path), Set(topNode.path))
-    scryRenderedComponentsWithType(comp, childItemComp).length should be > 0
+    findProps(comp, ChildItemComp).length should be > 0
   }
 
   it should "return item path when findItemAndPath" in {
@@ -176,12 +166,12 @@ class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
     )
   }
 
-  private def assertRenderedProps(result: Instance,
+  private def assertRenderedProps(result: TestInstance,
                                   expectedActions: ActionsData,
                                   expectedSelectedItem: Option[BrowsePath],
                                   expectedOpenedNodes: Set[BrowsePath] = Set.empty): Unit = {
 
-    val browsePanelProps = findRenderedComponentProps(result, AppBrowsePanel)
+    val browsePanelProps = findComponentProps(result, AppBrowsePanel)
     val buttonsProps = browsePanelProps.buttonsProps
     buttonsProps.buttons shouldBe buttons
     buttonsProps.actions shouldBe expectedActions
@@ -193,5 +183,26 @@ class AppBrowseControllerSpec extends TestSpec with TestDOMUtils {
     treeProps.selectedItem shouldBe expectedSelectedItem
     treeProps.openedNodes shouldBe expectedOpenedNodes
     treeProps.initiallyOpenedNodes shouldBe initiallyOpenedNodes
+  }
+}
+
+object AppBrowseControllerSpec {
+
+  private object ChildItemComp extends FunctionComponent[Unit] {
+    protected def render(props: Props): ReactElement = {
+      <.p()("childItemComp")
+    }
+  }
+  
+  private object TopNodeComp extends FunctionComponent[Unit] {
+    protected def render(props: Props): ReactElement = {
+      <.p()("topNodeComp")
+    }
+  }
+
+  private object CustomChildrenComp extends FunctionComponent[Unit] {
+    protected def render(props: Props): ReactElement = {
+      <.div()("customChildrenComp")
+    }
   }
 }

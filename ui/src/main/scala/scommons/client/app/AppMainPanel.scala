@@ -1,23 +1,21 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.react.UiComponent
+import scommons.react._
 
 case class AppMainPanelProps(name: String = "App",
                              user: String = "user",
                              copyright: String = "copyright",
                              version: String = "version")
 
-object AppMainPanel extends UiComponent[AppMainPanelProps] {
+object AppMainPanel extends FunctionComponent[AppMainPanelProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
-    <.div()(
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
+    
+    <.>()(
       <(AppHeader())(^.wrapped := AppHeaderProps(props.name, props.user))(),
       <.div(^.className := "container-fluid")(
-        self.props.children
+        compProps.children
       ),
       <(AppFooter())(^.wrapped := AppFooterProps(props.copyright, props.version))()
     )

@@ -1,19 +1,16 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.tree.{BrowseTree, BrowseTreeProps}
 import scommons.client.ui.{ButtonsPanel, ButtonsPanelProps}
-import scommons.react.UiComponent
+import scommons.react._
 
 case class AppBrowsePanelProps(buttonsProps: ButtonsPanelProps,
                                treeProps: BrowseTreeProps)
 
-object AppBrowsePanel extends UiComponent[AppBrowsePanelProps] {
+object AppBrowsePanel extends FunctionComponent[AppBrowsePanelProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
 
     <.div(^.className := "row-fluid")(
       <.div(^.className := "span4")(
@@ -25,7 +22,7 @@ object AppBrowsePanel extends UiComponent[AppBrowsePanelProps] {
         )
       ),
       <.div(^.className := "span8")(
-        self.props.children
+        compProps.children
       )
     )
   }

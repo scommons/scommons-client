@@ -1,9 +1,9 @@
 package scommons.client.app
 
 import scommons.react.test.TestSpec
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test.util.TestRendererUtils
 
-class AppHeaderSpec extends TestSpec with ShallowRendererUtils {
+class AppHeaderSpec extends TestSpec with TestRendererUtils {
 
   it should "render the component" in {
     //given
@@ -11,13 +11,12 @@ class AppHeaderSpec extends TestSpec with ShallowRendererUtils {
       "test app",
       "test user"
     )
-    val component = <(AppHeader())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(<(AppHeader())(^.wrapped := props)())
 
     //then
-    assertNativeComponent(result,
+    assertNativeComponent(result.children(0),
       <.div(^.className := "navbar navbar-inverse navbar-fixed-top")(
         <.div(^.className := "navbar-inner")(
           <.div(^.className := "container-fluid")(

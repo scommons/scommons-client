@@ -1,17 +1,21 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.react.UiComponent
+import scommons.react._
 
 case class AppHeaderProps(name: String = "App",
                           user: String = "user")
 
-object AppHeader extends UiComponent[AppHeaderProps] {
+object AppHeader extends FunctionComponent[AppHeaderProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
+  override protected def create(): ReactClass = {
+    ReactMemo[Props](super.create(), { (prevProps, nextProps) =>
+      prevProps.wrapped == nextProps.wrapped
+    })
+  }
+  
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
+    
     <.div(^.className := "navbar navbar-inverse navbar-fixed-top")(
       <.div(^.className := "navbar-inner")(
         <.div(^.className := "container-fluid")(
