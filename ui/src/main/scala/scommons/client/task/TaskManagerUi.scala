@@ -1,10 +1,7 @@
 package scommons.client.task
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.popup._
-import scommons.react.UiComponent
+import scommons.react._
 
 case class TaskManagerUiProps(showLoading: Boolean,
                               status: Option[String],
@@ -13,16 +10,16 @@ case class TaskManagerUiProps(showLoading: Boolean,
                               errorDetails: Option[String],
                               onCloseErrorPopup: () => Unit)
 
-object TaskManagerUi extends UiComponent[TaskManagerUiProps] {
+object TaskManagerUi extends FunctionComponent[TaskManagerUiProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
     val showStatus = props.status.isDefined
     val statusMessage = props.status.getOrElse("")
     val showError = props.error.isDefined
     val errorMessage = props.error.getOrElse("")
 
-    <.div()(
+    <.>()(
       <(StatusPopup())(^.wrapped := StatusPopupProps(
         statusMessage,
         showStatus,

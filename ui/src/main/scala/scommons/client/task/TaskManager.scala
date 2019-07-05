@@ -1,73 +1,69 @@
 package scommons.client.task
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.React.Self
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.api.ApiResponse
 import scommons.client.ui.popup.ErrorPopup
-import scommons.react.UiComponent
+import scommons.react._
+import scommons.react.hooks._
 import scommons.react.redux.task.AbstractTask
 
+import scala.scalajs.js
 import scala.util.{Failure, Success, Try}
 
 case class TaskManagerProps(startTask: Option[AbstractTask])
 
 /**
-  * Controls running tasks.
+  * Displays status of running tasks.
   */
-object TaskManager extends UiComponent[TaskManagerProps] {
+object TaskManager extends FunctionComponent[TaskManagerProps] {
 
+  private[task] var uiComponent: UiComponent[TaskManagerUiProps] = TaskManagerUi
+  
   private case class TaskManagerState(taskCount: Int = 0,
                                       status: Option[String] = None,
                                       error: Option[String] = None,
                                       errorDetails: Option[String] = None)
 
-  protected def create(): ReactClass = React.createClass[PropsType, TaskManagerState](
-    getInitialState = { self =>
-      self.props.wrapped.startTask.foldLeft(TaskManagerState()) { (currState, task) =>
-        onTaskStart(self, currState, task)
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
+    val (state, setState) = useStateUpdater(() => TaskManagerState())
+    
+    useEffect({ () =>
+      props.startTask.foreach { task =>
+        onTaskStart(setState, task)
       }
-    },
-    componentWillReceiveProps = { (self, nextProps) =>
-      val props = nextProps.wrapped
-      if (self.props.wrapped != props) {
-        props.startTask.foreach { task =>
-          self.setState(onTaskStart(self, self.state, task))
-        }
+    }, List(props.startTask match {
+      case None => js.undefined
+      case Some(task) => task.asInstanceOf[js.Any]
+    }))
+    
+    <(uiComponent())(^.wrapped := TaskManagerUiProps(
+      showLoading = state.taskCount > 0,
+      status = state.status,
+      onHideStatus = { () =>
+        setState(_.copy(status = None))
+      },
+      error = state.error,
+      errorDetails = state.errorDetails,
+      onCloseErrorPopup = { () =>
+        setState(_.copy(error = None, errorDetails = None))
       }
-    },
-    render = { self =>
-      <(TaskManagerUi())(^.wrapped := TaskManagerUiProps(
-        self.state.taskCount > 0,
-        self.state.status,
-        onHideStatus = { () =>
-          self.setState(_.copy(status = None))
-        },
-        self.state.error,
-        self.state.errorDetails,
-        onCloseErrorPopup = { () =>
-          self.setState(_.copy(error = None, errorDetails = None))
-        }
-      ))()
-    }
-  )
-
-  private def onTaskStart(self: Self[TaskManagerProps, TaskManagerState],
-                          currState: TaskManagerState,
-                          task: AbstractTask): TaskManagerState = {
-
-    task.onComplete { value: Try[_] =>
-      onTaskFinish(self, task, value)
-    }
-
-    currState.copy(
-      taskCount = currState.taskCount + 1,
-      status = Some(s"${task.message}...")
-    )
+    ))()
   }
 
-  private def onTaskFinish(self: Self[TaskManagerProps, TaskManagerState],
+  private def onTaskStart(setState: js.Function1[js.Function1[TaskManagerState, TaskManagerState], Unit],
+                          task: AbstractTask): Unit = {
+
+    task.onComplete { value: Try[_] =>
+      onTaskFinish(setState, task, value)
+    }
+
+    setState(s => s.copy(
+      taskCount = s.taskCount + 1,
+      status = Some(s"${task.message}...")
+    ))
+  }
+
+  private def onTaskFinish(setState: js.Function1[js.Function1[TaskManagerState, TaskManagerState], Unit],
                            task: AbstractTask,
                            value: Try[_]): Unit = {
 
@@ -85,8 +81,8 @@ object TaskManager extends UiComponent[TaskManagerProps] {
       case Failure(e) => (Some(e.toString), Some(ErrorPopup.printStackTrace(e)))
     }
 
-    self.setState(_.copy(
-      taskCount = self.state.taskCount - 1,
+    setState(s => s.copy(
+      taskCount = s.taskCount - 1,
       status = Some(statusMessage),
       error = error,
       errorDetails = errorDetails

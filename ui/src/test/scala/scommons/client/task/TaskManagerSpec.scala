@@ -1,31 +1,38 @@
 package scommons.client.task
 
-import org.scalatest.Assertion
+import org.scalactic.source.Position
+import org.scalatest.{Assertion, Succeeded}
 import scommons.api.{ApiStatus, StatusResponse}
 import scommons.client.ui.popup._
+import scommons.react._
 import scommons.react.redux.task.FutureTask
 import scommons.react.test.dom.AsyncTestSpec
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test.raw.TestRenderer
+import scommons.react.test.util.TestRendererUtils
 
 import scala.concurrent.{Future, Promise}
 
-class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
+class TaskManagerSpec extends AsyncTestSpec with TestRendererUtils {
 
+  TaskManager.uiComponent = new FunctionComponent[TaskManagerUiProps] {
+    override protected def render(props: Props): ReactElement = {
+      <.>.empty
+    }
+  }
+  
   it should "set status to None when onHideStatus" in {
     //given
     val task = FutureTask("Fetching data", Promise[Unit]().future)
     val props = TaskManagerProps(Some(task))
-    val renderer = createRenderer()
-    renderer.render(<(TaskManager())(^.wrapped := props)())
-    val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
+    val renderer = createTestRenderer(<(TaskManager())(^.wrapped := props)())
+    val uiProps = findComponentProps(renderer.root, TaskManager.uiComponent)
     assertUiProps(uiProps, expected(showLoading = true, status = Some(s"${task.message}\\.\\.\\.")))
 
     //when
     uiProps.onHideStatus()
 
     //then
-    val updatedUiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
+    val updatedUiProps = findComponentProps(renderer.root, TaskManager.uiComponent)
     assertUiProps(updatedUiProps, expected(showLoading = true, status = None))
   }
 
@@ -34,16 +41,15 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     val promise = Promise[Unit]()
     val task = FutureTask("Fetching data", promise.future)
     val props = TaskManagerProps(Some(task))
-    val renderer = createRenderer()
-    renderer.render(<(TaskManager())(^.wrapped := props)())
-    val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
+    val renderer = createTestRenderer(<(TaskManager())(^.wrapped := props)())
+    val uiProps = findComponentProps(renderer.root, TaskManager.uiComponent)
     assertUiProps(uiProps, expected(showLoading = true, status = Some(s"${task.message}\\.\\.\\.")))
 
     val e = new Exception("Test error")
     promise.failure(e)
 
     eventually {
-      val uiPropsV2 = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
+      val uiPropsV2 = findComponentProps(renderer.root, TaskManager.uiComponent)
       assertUiProps(uiPropsV2, expected(
         showLoading = false,
         status = Some(s"${task.message}\\.\\.\\.Done \\d+\\.\\d+ sec\\."),
@@ -55,7 +61,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
       uiPropsV2.onCloseErrorPopup()
 
       //then
-      val uiPropsV3 = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
+      val uiPropsV3 = findComponentProps(renderer.root, TaskManager.uiComponent)
       assertUiProps(uiPropsV3, expected(
         showLoading = false,
         status = Some(s"${task.message}\\.\\.\\.Done \\d+\\.\\d+ sec\\."),
@@ -72,10 +78,10 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     val component = <(TaskManager())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
-    assertRenderingResult(result, expected(
+    assertUiProps(findComponentProps(result, TaskManager.uiComponent), expected(
       showLoading = true,
       status = Some(s"${task.message}\\.\\.\\.")
     ))
@@ -86,9 +92,8 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     val promise = Promise[Unit]()
     val task = FutureTask("Fetching data", promise.future)
     val props = TaskManagerProps(Some(task))
-    val renderer = createRenderer()
-    renderer.render(<(TaskManager())(^.wrapped := props)())
-    val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
+    val renderer = createTestRenderer(<(TaskManager())(^.wrapped := props)())
+    val uiProps = findComponentProps(renderer.root, TaskManager.uiComponent)
     assertUiProps(uiProps, expected(showLoading = true, status = Some(s"${task.message}...")))
     val e = new Exception("Test error")
 
@@ -97,7 +102,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
 
     //then
     eventually {
-      assertRenderingResult(renderer.getRenderOutput(), expected(
+      assertUiProps(findComponentProps(renderer.root, TaskManager.uiComponent), expected(
         showLoading = false,
         status = Some(s"${task.message}\\.\\.\\.Done \\d+\\.\\d+ sec\\."),
         error = Some(e.toString),
@@ -111,9 +116,8 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     val promise = Promise[StatusResponse]()
     val task = FutureTask("Fetching data", promise.future)
     val props = TaskManagerProps(Some(task))
-    val renderer = createRenderer()
-    renderer.render(<(TaskManager())(^.wrapped := props)())
-    val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
+    val renderer = createTestRenderer(<(TaskManager())(^.wrapped := props)())
+    val uiProps = findComponentProps(renderer.root, TaskManager.uiComponent)
     assertUiProps(uiProps, expected(showLoading = true, status = Some(s"${task.message}...")))
     val resp = StatusResponse(ApiStatus(500, "Some API error", "Some error details"))
 
@@ -122,7 +126,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
 
     //then
     eventually {
-      assertRenderingResult(renderer.getRenderOutput(), expected(
+      assertUiProps(findComponentProps(renderer.root, TaskManager.uiComponent), expected(
         showLoading = false,
         status = Some(s"${task.message}\\.\\.\\.Done \\d+\\.\\d+ sec\\."),
         error = resp.status.error,
@@ -136,9 +140,8 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     val promise = Promise[StatusResponse]()
     val task = FutureTask("Fetching data", promise.future)
     val props = TaskManagerProps(Some(task))
-    val renderer = createRenderer()
-    renderer.render(<(TaskManager())(^.wrapped := props)())
-    val uiProps = findComponentProps(renderer.getRenderOutput(), TaskManagerUi)
+    val renderer = createTestRenderer(<(TaskManager())(^.wrapped := props)())
+    val uiProps = findComponentProps(renderer.root, TaskManager.uiComponent)
     assertUiProps(uiProps, expected(showLoading = true, status = Some(s"${task.message}...")))
     val resp = StatusResponse.Ok
 
@@ -147,7 +150,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
 
     //then
     eventually {
-      assertRenderingResult(renderer.getRenderOutput(), expected(
+      assertUiProps(findComponentProps(renderer.root, TaskManager.uiComponent), expected(
         showLoading = false,
         status = Some(s"${task.message}\\.\\.\\.Done \\d+\\.\\d+ sec\\."),
         error = None,
@@ -160,16 +163,15 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     //given
     val task = FutureTask("Fetching data", Future.successful(()))
     val props = TaskManagerProps(Some(task))
-    val renderer = createRenderer()
-    renderer.render(<(TaskManager())(^.wrapped := props)())
-    assertRenderingResult(renderer.getRenderOutput(), expected(
+    val renderer = createTestRenderer(<(TaskManager())(^.wrapped := props)())
+    assertUiProps(findComponentProps(renderer.root, TaskManager.uiComponent), expected(
       showLoading = true,
       status = Some(s"${task.message}...")
     ))
 
     //when & then
     eventually {
-      assertRenderingResult(renderer.getRenderOutput(), expected(
+      assertUiProps(findComponentProps(renderer.root, TaskManager.uiComponent), expected(
         showLoading = false,
         status = Some(s"${task.message}\\.\\.\\.Done \\d+\\.\\d+ sec\\."),
         error = None,
@@ -180,19 +182,21 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
 
   it should "render status of concurrent tasks" in {
     //given
-    val renderer = createRenderer()
     val promise1 = Promise[StatusResponse]()
     val task1 = FutureTask("Fetching data 1", promise1.future)
-    renderer.render(<(TaskManager())(^.wrapped := TaskManagerProps(Some(task1)))())
-    assertRenderingResult(renderer.getRenderOutput(), expected(
+    val renderer = createTestRenderer(<(TaskManager())(^.wrapped := TaskManagerProps(Some(task1)))())
+    assertUiProps(findComponentProps(renderer.root, TaskManager.uiComponent), expected(
       showLoading = true,
       status = Some(s"${task1.message}...")
     ))
 
     val promise2 = Promise[StatusResponse]()
     val task2 = FutureTask("Fetching data 2", promise2.future)
-    renderer.render(<(TaskManager())(^.wrapped := TaskManagerProps(Some(task2)))())
-    assertRenderingResult(renderer.getRenderOutput(), expected(
+    
+    TestRenderer.act { () =>
+      renderer.update(<(TaskManager())(^.wrapped := TaskManagerProps(Some(task2)))())
+    }
+    assertUiProps(findComponentProps(renderer.root, TaskManager.uiComponent), expected(
       showLoading = true,
       status = Some(s"${task2.message}...")
     ))
@@ -202,7 +206,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
 
     //then
     eventually {
-      assertRenderingResult(renderer.getRenderOutput(), expected(
+      assertUiProps(findComponentProps(renderer.root, TaskManager.uiComponent), expected(
         showLoading = true,
         status = Some(s"${task1.message}\\.\\.\\.Done \\d+\\.\\d+ sec\\.")
       ))
@@ -212,7 +216,7 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
 
       //then
       eventually {
-        assertRenderingResult(renderer.getRenderOutput(), expected(
+        assertUiProps(findComponentProps(renderer.root, TaskManager.uiComponent), expected(
           showLoading = false,
           status = Some(s"${task2.message}\\.\\.\\.Done \\d+\\.\\d+ sec\\.")
         ))
@@ -231,17 +235,12 @@ class TaskManagerSpec extends AsyncTestSpec with ShallowRendererUtils {
     TaskManager.formatDuration(1132L) shouldBe "1.132"
     TaskManager.formatDuration(1333L) shouldBe "1.333"
 
-    succeed
-  }
-
-  private def assertRenderingResult(result: ShallowInstance, props: TaskManagerUiProps): Assertion = {
-    assertComponent(result, TaskManagerUi) { uiProps =>
-      assertUiProps(uiProps, props)
-    }
+    Succeeded
   }
 
   private def assertUiProps(uiProps: TaskManagerUiProps,
-                            expectedProps: TaskManagerUiProps): Assertion = {
+                            expectedProps: TaskManagerUiProps
+                           )(implicit pos: Position): Assertion = {
 
     inside(uiProps) { case TaskManagerUiProps(showLoading, status, _, error, errorDetails, _) =>
       showLoading shouldBe expectedProps.showLoading
