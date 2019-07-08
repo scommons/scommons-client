@@ -3,7 +3,6 @@ package scommons.client.ui
 import scommons.client.ui.ButtonImagesCss._
 import scommons.client.util.ActionsData
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils._
 import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
@@ -18,18 +17,25 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
       def isDefinedAt(x: String) = true
       def apply(v: String) = onCmd(v)
     }
-    val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
-    val comp = renderIntoDocument(<(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
-      List(data), ActionsData(Set(data.command), onCommand), dispatch
+    val buttons = List(
+      SimpleButtonData("accept", "test button 1"),
+      ImageButtonData("add", add, addDisabled, "test button 2")
+    )
+    val comp = shallowRender(<(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
+      buttons, ActionsData(buttons.map(_.command).toSet, onCommand), dispatch
     ))())
-    val button = findRenderedDOMComponentWithClass(comp, "btn")
+    val btn1 = findComponentProps(comp, SimpleButton)
+    val btn2 = findComponentProps(comp, ImageButton)
 
     //then
-    onCommand.expects(dispatch).returning(onCmdP)
-    onCmd.expects(data.command)
+    buttons.foreach { btn =>
+      onCommand.expects(dispatch).returning(onCmdP)
+      onCmd.expects(btn.command)
+    }
 
     //when
-    Simulate.click(button)
+    btn1.onClick()
+    btn2.onClick()
   }
 
   it should "render buttons panel with custom class" in {
@@ -41,10 +47,9 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
       ActionsData.empty.copy(enabledCommands = Set(b1.command), focusedCommand = Some(b1.command)),
       className = Some("custom-class")
     )
-    val component = <(ButtonsPanel())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(ButtonsPanel())(^.wrapped := props)())
 
     //then
     assertButtonsPanel(result, props.className.get, group = false, b1, b2)
@@ -58,10 +63,9 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
       List(b1, b2),
       ActionsData.empty.copy(enabledCommands = Set(b1.command), focusedCommand = Some(b1.command))
     )
-    val component = <(ButtonsPanel())(^.wrapped := props)()
 
     //when
-    val result: ShallowInstance = shallowRender(component)
+    val result = shallowRender(<(ButtonsPanel())(^.wrapped := props)())
 
     //then
     assertButtonsPanel(result, "btn-toolbar", group = false, b1, b2)
@@ -76,10 +80,9 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
       ActionsData.empty.copy(enabledCommands = Set(b1.command), focusedCommand = Some(b1.command)),
       group = true
     )
-    val component = <(ButtonsPanel())(^.wrapped := props)()
 
     //when
-    val result: ShallowInstance = shallowRender(component)
+    val result = shallowRender(<(ButtonsPanel())(^.wrapped := props)())
 
     //then
     assertButtonsPanel(result, "btn-group", group = true, b1, b2)

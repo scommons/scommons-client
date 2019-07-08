@@ -1,11 +1,8 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.util.ActionsData
-import scommons.react.UiComponent
+import scommons.react._
 
 case class ButtonsPanelProps(buttons: List[ButtonData],
                              actions: ActionsData,
@@ -13,10 +10,10 @@ case class ButtonsPanelProps(buttons: List[ButtonData],
                              group: Boolean = false,
                              className: Option[String] = None)
 
-object ButtonsPanel extends UiComponent[ButtonsPanelProps] {
+object ButtonsPanel extends FunctionComponent[ButtonsPanelProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
 
     val panelClass = props.className match {
       case None => if (props.group) "btn-group" else "btn-toolbar"
