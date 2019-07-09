@@ -1,62 +1,61 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
 import org.scalajs.dom.document
 import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.raw.HTMLInputElement
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils
-import scommons.react.test.dom.raw.ReactTestUtils._
 import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.util.ShallowRendererUtils
 
-import scala.scalajs.js
+import scala.scalajs.js.Dynamic.literal
 
-class PasswordFieldSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
+class PasswordFieldSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "call onChange function when input is changed" in {
     //given
     val onChange = mockFunction[String, Unit]
     val props = PasswordFieldProps("test password", onChange)
-    val comp = renderIntoDocument(<(PasswordField())(^.wrapped := props)())
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    domRender(<(PasswordField())(^.wrapped := props)())
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.password
 
     //then
     onChange.expects(props.password)
 
     //when
-    ReactTestUtils.Simulate.change(inputElem, js.Dynamic.literal(target = inputElem))
+    fireDomEvent(Simulate.change(inputElem, literal(target = inputElem)))
   }
 
   it should "call onEnter function when keyCode is Enter" in {
     //given
     val onEnter = mockFunction[Unit]
     val props = PasswordFieldProps("test password", _ => (), onEnter = onEnter)
-    val comp = renderIntoDocument(<(PasswordField())(^.wrapped := props)())
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    domRender(<(PasswordField())(^.wrapped := props)())
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.password
 
     //then
     onEnter.expects()
 
     //when
-    ReactTestUtils.Simulate.keyDown(inputElem, js.Dynamic.literal(keyCode = KeyCode.Enter))
+    fireDomEvent(Simulate.keyDown(inputElem, literal(keyCode = KeyCode.Enter)))
   }
 
   it should "not call onEnter function when keyCode is other than Enter" in {
     //given
     val onEnter = mockFunction[Unit]
     val props = PasswordFieldProps("test password", _ => (), onEnter = onEnter)
-    val comp = renderIntoDocument(<(PasswordField())(^.wrapped := props)())
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    domRender(<(PasswordField())(^.wrapped := props)())
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.password
 
     //then
     onEnter.expects().never()
 
     //when
-    ReactTestUtils.Simulate.keyDown(inputElem, js.Dynamic.literal(keyCode = KeyCode.Up))
+    fireDomEvent(Simulate.keyDown(inputElem, literal(keyCode = KeyCode.Up)))
   }
 
   it should "render correct props" in {
@@ -68,10 +67,9 @@ class PasswordFieldSpec extends TestSpec with ShallowRendererUtils with TestDOMU
       placeholder = Some("test-placeholder"),
       readOnly = true
     )
-    val component = <(PasswordField())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(PasswordField())(^.wrapped := props)())
 
     //then
     assertNativeComponent(result, <.input(
@@ -83,79 +81,95 @@ class PasswordFieldSpec extends TestSpec with ShallowRendererUtils with TestDOMU
     )())
   }
 
-  it should "focus input element if requestFocus prop changed from false to true" in {
+  it should "focus input element if requestFocus = true" in {
     //given
-    val prevProps = PasswordFieldProps("test password", onChange = _ => ())
-    val comp = renderIntoDocument(<(PasswordField())(^.wrapped := prevProps)())
     val props = PasswordFieldProps("new password", onChange = _ => (), requestFocus = true)
-    val containerElement = findReactElement(comp).parentNode
-    document.body.appendChild(containerElement)
-    props should not be prevProps
 
     //when
-    ReactDOM.render(<(PasswordField())(^.wrapped := props)(), containerElement)
+    domRender(<(PasswordField())(^.wrapped := props)())
 
     //then
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem shouldBe document.activeElement
     inputElem.value shouldBe props.password
-
-    //cleanup
-    document.body.removeChild(containerElement)
   }
 
-  it should "not focus input element if requestFocus prop not changed" in {
-    //given
-    val prevProps = PasswordFieldProps("test password", onChange = _ => (), requestFocus = true)
-    val comp = renderIntoDocument(<(PasswordField())(^.wrapped := prevProps)())
-    val props = PasswordFieldProps("new password", onChange = _ => (), requestFocus = true)
-    val containerElement = findReactElement(comp).parentNode
-    document.body.appendChild(containerElement)
-    props should not be prevProps
-
-    //when
-    ReactDOM.render(<(PasswordField())(^.wrapped := props)(), containerElement)
-
-    //then
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
-    inputElem should not be document.activeElement
-    inputElem.value shouldBe props.password
-
-    //cleanup
-    document.body.removeChild(containerElement)
-  }
-
-  it should "select password if requestSelect prop changed from false to true" in {
+  it should "focus input element if requestFocus changed from false to true" in {
     //given
     val prevProps = PasswordFieldProps("test password", onChange = _ => ())
-    val comp = renderIntoDocument(<(PasswordField())(^.wrapped := prevProps)())
-    val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
-    val containerElement = findReactElement(comp).parentNode
+    domRender(<(PasswordField())(^.wrapped := prevProps)())
+    val props = PasswordFieldProps("new password", onChange = _ => (), requestFocus = true)
+    props should not be prevProps
+    domContainer.querySelector("input") should not be document.activeElement
+
+    //when
+    domRender(<(PasswordField())(^.wrapped := props)())
+
+    //then
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
+    inputElem shouldBe document.activeElement
+    inputElem.value shouldBe props.password
+  }
+
+  it should "not focus input element if requestFocus not changed" in {
+    //given
+    val prevProps = PasswordFieldProps("test password", onChange = _ => ())
+    domRender(<(PasswordField())(^.wrapped := prevProps)())
+    val props = PasswordFieldProps("new password", onChange = _ => ())
     props should not be prevProps
 
     //when
-    ReactDOM.render(<(PasswordField())(^.wrapped := props)(), containerElement)
+    domRender(<(PasswordField())(^.wrapped := props)())
 
     //then
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
+    inputElem should not be document.activeElement
+    inputElem.value shouldBe props.password
+  }
+
+  it should "select password if requestSelect = true" in {
+    //given
+    val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
+
+    //when
+    domRender(<(PasswordField())(^.wrapped := props)())
+
+    //then
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.password
     inputElem.selectionStart shouldBe 0
     inputElem.selectionEnd shouldBe props.password.length
   }
 
-  it should "not select password if requestSelect prop not changed" in {
+  it should "select password if requestSelect changed from false to true" in {
     //given
-    val prevProps = PasswordFieldProps("test password", onChange = _ => (), requestSelect = true)
-    val comp = renderIntoDocument(<(PasswordField())(^.wrapped := prevProps)())
+    val prevProps = PasswordFieldProps("test password", onChange = _ => ())
+    domRender(<(PasswordField())(^.wrapped := prevProps)())
     val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
-    val containerElement = findReactElement(comp).parentNode
     props should not be prevProps
 
     //when
-    ReactDOM.render(<(PasswordField())(^.wrapped := props)(), containerElement)
+    domRender(<(PasswordField())(^.wrapped := props)())
 
     //then
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
+    inputElem.value shouldBe props.password
+    inputElem.selectionStart shouldBe 0
+    inputElem.selectionEnd shouldBe props.password.length
+  }
+
+  it should "not select password if requestSelect not changed" in {
+    //given
+    val prevProps = PasswordFieldProps("test password", onChange = _ => (), requestSelect = true)
+    domRender(<(PasswordField())(^.wrapped := prevProps)())
+    val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
+    props should not be prevProps
+
+    //when
+    domRender(<(PasswordField())(^.wrapped := props)())
+
+    //then
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.password
     inputElem.selectionStart shouldBe 0
     inputElem.selectionEnd shouldBe 0

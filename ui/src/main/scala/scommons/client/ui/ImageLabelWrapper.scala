@@ -1,7 +1,7 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.statictags.Element
+import scommons.react._
 
 /**
   * Common implementation for image with optional label.

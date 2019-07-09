@@ -1,6 +1,6 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.React
+import scommons.react._
 import scommons.react.test.TestSpec
 import scommons.react.test.util.ShallowRendererUtils
 
@@ -9,18 +9,19 @@ class ImageLabelWrapperSpec extends TestSpec with ShallowRendererUtils {
   it should "render only image" in {
     //given
     val image = ButtonImagesCss.folder
-    val wrapper = React.createClass[Unit, Unit] { _ =>
-      <.div()(
-        ImageLabelWrapper(image, None)
-      )
+    val wrapper = new FunctionComponent[Unit] {
+      protected def render(props: Props): ReactElement = {
+        <.>()(
+          ImageLabelWrapper(image, None)
+        )
+      }
     }
-    val component = <(wrapper).empty
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(wrapper()).empty)
     
     //then
-    assertNativeComponent(result, <.div()(
+    assertNativeComponent(result, <.>()(
       <.img(^.className := image, ^.src := "")()
     ))
   }
@@ -29,18 +30,19 @@ class ImageLabelWrapperSpec extends TestSpec with ShallowRendererUtils {
     //given
     val image = ButtonImagesCss.folder
     val text = "some text"
-    val wrapper = React.createClass[Unit, Unit] { _ =>
-      <.div()(
-        ImageLabelWrapper(image, Some(text))
-      )
+    val wrapper = new FunctionComponent[Unit] {
+      protected def render(props: Props): ReactElement = {
+        <.>()(
+          ImageLabelWrapper(image, Some(text))
+        )
+      }
     }
-    val component = <(wrapper).empty
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(wrapper()).empty)
     
     //then
-    assertNativeComponent(result, <.div()(
+    assertNativeComponent(result, <.>()(
       <.img(^.className := image, ^.src := "")(),
       <.span(^.style := Map(
         "paddingLeft" -> "3px",
@@ -53,18 +55,19 @@ class ImageLabelWrapperSpec extends TestSpec with ShallowRendererUtils {
     //given
     val image = ButtonImagesCss.folder
     val text = "some text"
-    val wrapper = React.createClass[Unit, Unit] { _ =>
-      <.div()(
-        ImageLabelWrapper(image, Some(text), alignText = false)
-      )
+    val wrapper = new FunctionComponent[Unit] {
+      protected def render(props: Props): ReactElement = {
+        <.>()(
+          ImageLabelWrapper(image, Some(text), alignText = false)
+        )
+      }
     }
-    val component = <(wrapper).empty
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(wrapper()).empty)
     
     //then
-    assertNativeComponent(result, <.div()(
+    assertNativeComponent(result, <.>()(
       <.img(^.className := image, ^.src := "")(),
       <.span(^.style := Map(
         "paddingLeft" -> "3px"

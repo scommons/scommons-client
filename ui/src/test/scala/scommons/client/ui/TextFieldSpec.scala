@@ -1,62 +1,61 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
 import org.scalajs.dom.document
 import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.raw.HTMLInputElement
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils
-import scommons.react.test.dom.raw.ReactTestUtils._
 import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.util.ShallowRendererUtils
 
-import scala.scalajs.js
+import scala.scalajs.js.Dynamic.literal
 
-class TextFieldSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
+class TextFieldSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "call onChange function when input is changed" in {
     //given
     val onChange = mockFunction[String, Unit]
     val props = TextFieldProps("test text", onChange)
-    val comp = renderIntoDocument(<(TextField())(^.wrapped := props)())
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    domRender(<(TextField())(^.wrapped := props)())
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.text
 
     //then
     onChange.expects(props.text)
 
     //when
-    ReactTestUtils.Simulate.change(inputElem, js.Dynamic.literal(target = inputElem))
+    fireDomEvent(Simulate.change(inputElem, literal(target = inputElem)))
   }
 
   it should "call onEnter function when keyCode is Enter" in {
     //given
     val onEnter = mockFunction[Unit]
     val props = TextFieldProps("test text", _ => (), onEnter = onEnter)
-    val comp = renderIntoDocument(<(TextField())(^.wrapped := props)())
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    domRender(<(TextField())(^.wrapped := props)())
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.text
 
     //then
     onEnter.expects()
 
     //when
-    ReactTestUtils.Simulate.keyDown(inputElem, js.Dynamic.literal(keyCode = KeyCode.Enter))
+    fireDomEvent(Simulate.keyDown(inputElem, literal(keyCode = KeyCode.Enter)))
   }
 
   it should "not call onEnter function when keyCode is other than Enter" in {
     //given
     val onEnter = mockFunction[Unit]
     val props = TextFieldProps("test text", _ => (), onEnter = onEnter)
-    val comp = renderIntoDocument(<(TextField())(^.wrapped := props)())
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    domRender(<(TextField())(^.wrapped := props)())
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.text
 
     //then
     onEnter.expects().never()
 
     //when
-    ReactTestUtils.Simulate.keyDown(inputElem, js.Dynamic.literal(keyCode = KeyCode.Up))
+    fireDomEvent(Simulate.keyDown(inputElem, literal(keyCode = KeyCode.Up)))
   }
 
   it should "render correct props" in {
@@ -68,10 +67,9 @@ class TextFieldSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils
       placeholder = Some("test-placeholder"),
       readOnly = true
     )
-    val component = <(TextField())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(TextField())(^.wrapped := props)())
 
     //then
     assertNativeComponent(result, <.input(
@@ -83,79 +81,95 @@ class TextFieldSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils
     )())
   }
 
-  it should "focus input element if requestFocus prop changed from false to true" in {
+  it should "focus input element if requestFocus = true" in {
     //given
-    val prevProps = TextFieldProps("test text", onChange = _ => ())
-    val comp = renderIntoDocument(<(TextField())(^.wrapped := prevProps)())
     val props = TextFieldProps("new test text", onChange = _ => (), requestFocus = true)
-    val containerElement = findReactElement(comp).parentNode
-    document.body.appendChild(containerElement)
-    props should not be prevProps
 
     //when
-    ReactDOM.render(<(TextField())(^.wrapped := props)(), containerElement)
+    domRender(<(TextField())(^.wrapped := props)())
 
     //then
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem shouldBe document.activeElement
     inputElem.value shouldBe props.text
-
-    //cleanup
-    document.body.removeChild(containerElement)
   }
 
-  it should "not focus input element if requestFocus prop not changed" in {
-    //given
-    val prevProps = TextFieldProps("test text", onChange = _ => (), requestFocus = true)
-    val comp = renderIntoDocument(<(TextField())(^.wrapped := prevProps)())
-    val props = TextFieldProps("new test text", onChange = _ => (), requestFocus = true)
-    val containerElement = findReactElement(comp).parentNode
-    document.body.appendChild(containerElement)
-    props should not be prevProps
-
-    //when
-    ReactDOM.render(<(TextField())(^.wrapped := props)(), containerElement)
-
-    //then
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
-    inputElem should not be document.activeElement
-    inputElem.value shouldBe props.text
-
-    //cleanup
-    document.body.removeChild(containerElement)
-  }
-
-  it should "select text if requestSelect prop changed from false to true" in {
+  it should "focus input element if requestFocus changed from false to true" in {
     //given
     val prevProps = TextFieldProps("test text", onChange = _ => ())
-    val comp = renderIntoDocument(<(TextField())(^.wrapped := prevProps)())
-    val props = TextFieldProps("new test text", onChange = _ => (), requestSelect = true)
-    val containerElement = findReactElement(comp).parentNode
+    domRender(<(TextField())(^.wrapped := prevProps)())
+    val props = TextFieldProps("new test text", onChange = _ => (), requestFocus = true)
+    props should not be prevProps
+    domContainer.querySelector("input") should not be document.activeElement
+
+    //when
+    domRender(<(TextField())(^.wrapped := props)())
+
+    //then
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
+    inputElem shouldBe document.activeElement
+    inputElem.value shouldBe props.text
+  }
+
+  it should "not focus input element if requestFocus not changed" in {
+    //given
+    val prevProps = TextFieldProps("test text", onChange = _ => ())
+    domRender(<(TextField())(^.wrapped := prevProps)())
+    val props = TextFieldProps("new test text", onChange = _ => ())
     props should not be prevProps
 
     //when
-    ReactDOM.render(<(TextField())(^.wrapped := props)(), containerElement)
+    domRender(<(TextField())(^.wrapped := props)())
 
     //then
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
+    inputElem should not be document.activeElement
+    inputElem.value shouldBe props.text
+  }
+
+  it should "select text if requestSelect = true" in {
+    //given
+    val props = TextFieldProps("new test text", onChange = _ => (), requestSelect = true)
+
+    //when
+    domRender(<(TextField())(^.wrapped := props)())
+
+    //then
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.text
     inputElem.selectionStart shouldBe 0
     inputElem.selectionEnd shouldBe props.text.length
   }
 
-  it should "not select text if requestSelect prop not changed" in {
+  it should "select text if requestSelect changed from false to true" in {
     //given
-    val prevProps = TextFieldProps("test text", onChange = _ => (), requestSelect = true)
-    val comp = renderIntoDocument(<(TextField())(^.wrapped := prevProps)())
+    val prevProps = TextFieldProps("test text", onChange = _ => ())
+    domRender(<(TextField())(^.wrapped := prevProps)())
     val props = TextFieldProps("new test text", onChange = _ => (), requestSelect = true)
-    val containerElement = findReactElement(comp).parentNode
     props should not be prevProps
 
     //when
-    ReactDOM.render(<(TextField())(^.wrapped := props)(), containerElement)
+    domRender(<(TextField())(^.wrapped := props)())
 
     //then
-    val inputElem = findRenderedDOMComponentWithTag(comp, "input").asInstanceOf[HTMLInputElement]
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
+    inputElem.value shouldBe props.text
+    inputElem.selectionStart shouldBe 0
+    inputElem.selectionEnd shouldBe props.text.length
+  }
+
+  it should "not select text if requestSelect not changed" in {
+    //given
+    val prevProps = TextFieldProps("test text", onChange = _ => ())
+    domRender(<(TextField())(^.wrapped := prevProps)())
+    val props = TextFieldProps("new test text", onChange = _ => ())
+    props should not be prevProps
+
+    //when
+    domRender(<(TextField())(^.wrapped := props)())
+
+    //then
+    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
     inputElem.value shouldBe props.text
     inputElem.selectionStart shouldBe 0
     inputElem.selectionEnd shouldBe 0

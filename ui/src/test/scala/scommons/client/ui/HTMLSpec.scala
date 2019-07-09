@@ -6,15 +6,16 @@ import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js
 
-class HTMLSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
+class HTMLSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "render component with wordWrap = true" in {
     //given
     val props = HTMLProps("Test <p>html</p> <br/> text", wordWrap = true)
-    val component = <(HTML())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(HTML())(^.wrapped := props)())
 
     //then
     result.`type` shouldBe "div"
@@ -25,10 +26,9 @@ class HTMLSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
   it should "render component with wordWrap = false" in {
     //given
     val props = HTMLProps("Test <p>html</p> <br/> text", wordWrap = false)
-    val component = <(HTML())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(HTML())(^.wrapped := props)())
 
     //then
     result.`type` shouldBe "div"
@@ -39,20 +39,19 @@ class HTMLSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
   it should "render component in the DOM" in {
     //given
     val props = HTMLProps("Test<p>html</p><br/>text", wordWrap = false)
-    val component = <(HTML())(^.wrapped := props)()
 
     //when
-    val result = renderIntoDocument(component)
+    domRender(<(HTML())(^.wrapped := props)())
 
     //then
-    assertDOMElement(findReactElement(result),
+    assertDOMElement(domContainer, <.div()(
       <.div(^("style") := "white-space: nowrap;")(
         "Test",
         <.p()("html"),
         <.br.empty,
         "text"
       )
-    )
+    ))
   }
 
   it should "convert text to html when HTML.makeHtmlText" in {

@@ -1,38 +1,37 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLButtonElement
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils._
 import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.util.ShallowRendererUtils
 
-class SimpleButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
+class SimpleButtonSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "call onClick when click on button" in {
     //given
     val onClick = mockFunction[Unit]
     val data = SimpleButtonData("test-command", "Test Text")
     val props = SimpleButtonProps(data, onClick = onClick)
-    val comp = renderIntoDocument(<(SimpleButton())(^.wrapped := props)())
-    val button = findRenderedDOMComponentWithClass(comp, "btn")
+    domRender(<(SimpleButton())(^.wrapped := props)())
+    val button = domContainer.querySelector("button")
 
     //then
     onClick.expects()
 
     //when
-    Simulate.click(button)
+    fireDomEvent(Simulate.click(button))
   }
 
   it should "render normal button" in {
     //given
     val data = SimpleButtonData("test-command", "Test Text")
     val props = SimpleButtonProps(data, onClick = () => ())
-    val component = <(SimpleButton())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(SimpleButton())(^.wrapped := props)())
 
     //then
     assertNativeComponent(result, <.button(
@@ -45,10 +44,9 @@ class SimpleButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUt
     //given
     val data = SimpleButtonData("test-command", "Test Text")
     val props = SimpleButtonProps(data, onClick = () => (), disabled = true)
-    val component = <(SimpleButton())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(SimpleButton())(^.wrapped := props)())
 
     //then
     assertNativeComponent(result, <.button(
@@ -62,10 +60,9 @@ class SimpleButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUt
     //given
     val data = SimpleButtonData("test-command", "Test Text", primary = true)
     val props = SimpleButtonProps(data, onClick = () => ())
-    val component = <(SimpleButton())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(SimpleButton())(^.wrapped := props)())
 
     //then
     assertNativeComponent(result, <.button(
@@ -78,10 +75,9 @@ class SimpleButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUt
     //given
     val data = SimpleButtonData("test-command", "Test Text", primary = true)
     val props = SimpleButtonProps(data, onClick = () => (), disabled = true)
-    val component = <(SimpleButton())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = shallowRender(<(SimpleButton())(^.wrapped := props)())
 
     //then
     assertNativeComponent(result, <.button(
@@ -91,44 +87,48 @@ class SimpleButtonSpec extends TestSpec with ShallowRendererUtils with TestDOMUt
     )(data.text))
   }
 
-  it should "focus button element if requestFocus prop changed from false to true" in {
+  it should "focus button element if requestFocus = true" in {
+    //given
+    val data = SimpleButtonData("test-command", "Test Text")
+    val props = SimpleButtonProps(data, () => (), requestFocus = true)
+
+    //when
+    domRender(<(SimpleButton())(^.wrapped := props)())
+
+    //then
+    val buttonElem = domContainer.querySelector("button").asInstanceOf[HTMLButtonElement]
+    buttonElem shouldBe document.activeElement
+  }
+
+  it should "focus button element if requestFocus changed from false to true" in {
     //given
     val data = SimpleButtonData("test-command", "Test Text")
     val prevProps = SimpleButtonProps(data, () => ())
-    val comp = renderIntoDocument(<(SimpleButton())(^.wrapped := prevProps)())
+    domRender(<(SimpleButton())(^.wrapped := prevProps)())
     val props = SimpleButtonProps(data, () => (), requestFocus = true)
-    val containerElement = findReactElement(comp).parentNode
-    document.body.appendChild(containerElement)
     props should not be prevProps
+    domContainer.querySelector("button") should not be document.activeElement
 
     //when
-    ReactDOM.render(<(SimpleButton())(^.wrapped := props)(), containerElement)
+    domRender(<(SimpleButton())(^.wrapped := props)())
 
     //then
-    val buttonElem = findRenderedDOMComponentWithTag(comp, "button").asInstanceOf[HTMLButtonElement]
+    val buttonElem = domContainer.querySelector("button").asInstanceOf[HTMLButtonElement]
     buttonElem shouldBe document.activeElement
-
-    //cleanup
-    document.body.removeChild(containerElement)
   }
 
-  it should "not focus button element if requestFocus prop not changed" in {
+  it should "not focus button element if requestFocus not changed" in {
     //given
-    val prevProps = SimpleButtonProps(SimpleButtonData("test-command", "Text"), () => (), requestFocus = true)
-    val comp = renderIntoDocument(<(SimpleButton())(^.wrapped := prevProps)())
-    val props = SimpleButtonProps(SimpleButtonData("test-command", "New Text"), () => (), requestFocus = true)
-    val containerElement = findReactElement(comp).parentNode
-    document.body.appendChild(containerElement)
+    val prevProps = SimpleButtonProps(SimpleButtonData("test-command", "Text"), () => ())
+    domRender(<(SimpleButton())(^.wrapped := prevProps)())
+    val props = SimpleButtonProps(SimpleButtonData("test-command", "New Text"), () => ())
     props should not be prevProps
 
     //when
-    ReactDOM.render(<(SimpleButton())(^.wrapped := props)(), containerElement)
+    domRender(<(SimpleButton())(^.wrapped := props)())
 
     //then
-    val buttonElem = findRenderedDOMComponentWithTag(comp, "button").asInstanceOf[HTMLButtonElement]
+    val buttonElem = domContainer.querySelector("button").asInstanceOf[HTMLButtonElement]
     buttonElem should not be document.activeElement
-
-    //cleanup
-    document.body.removeChild(containerElement)
   }
 }

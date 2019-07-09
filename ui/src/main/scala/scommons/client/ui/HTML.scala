@@ -1,19 +1,17 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes
 import io.github.shogowada.statictags.{Attribute, AttributeSpec}
-import scommons.react.UiComponent
+import scommons.react._
 
 import scala.scalajs.js
 
 case class HTMLProps(htmlText: String, wordWrap: Boolean)
 
-object HTML extends UiComponent[HTMLProps] {
+object HTML extends FunctionComponent[HTMLProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
 
     <.div(
       if (props.wordWrap) None

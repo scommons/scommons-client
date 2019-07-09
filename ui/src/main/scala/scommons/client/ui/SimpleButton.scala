@@ -1,59 +1,43 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import org.scalajs.dom.raw.HTMLButtonElement
-import scommons.react.UiComponent
+import scommons.react._
+import scommons.react.hooks._
 
 case class SimpleButtonProps(data: SimpleButtonData,
                              onClick: () => Unit,
                              disabled: Boolean = false,
                              requestFocus: Boolean = false)
 
-object SimpleButton extends UiComponent[SimpleButtonProps] {
+object SimpleButton extends FunctionComponent[SimpleButtonProps] {
 
-  private case class SimpleButtonState(setButtonRef: HTMLButtonElement => Unit,
-                                       getButtonRef: () => HTMLButtonElement)
+  protected def render(compProps: Props): ReactElement = {
+    val buttonRef = useRef[HTMLButtonElement](null)
+    val props = compProps.wrapped
 
-  protected def create(): ReactClass = React.createClass[PropsType, SimpleButtonState](
-    getInitialState = { _ =>
-      var buttonRef: HTMLButtonElement = null
-
-      SimpleButtonState({ ref =>
-        buttonRef = ref
-      }, { () =>
-        buttonRef
-      })
-    },
-    componentDidUpdate = { (self, prevProps, _) =>
-      val buttonRef = self.state.getButtonRef()
-      if (self.props.wrapped.requestFocus
-        && self.props.wrapped.requestFocus != prevProps.wrapped.requestFocus) {
-
-        buttonRef.focus()
-      }
-    },
-    render = { self =>
-      val props = self.props.wrapped
-      val data = props.data
-
-      val primaryClass = if (data.primary) "btn-primary" else ""
-
-      <.button(
-        ^.`type` := "button",
-        ^.className := s"btn $primaryClass".trim,
-        ^.disabled := props.disabled,
-        ^.ref := { ref: HTMLButtonElement =>
-          self.state.setButtonRef(ref)
-        },
-        ^.onClick := { _: MouseSyntheticEvent =>
-          props.onClick()
+    useLayoutEffect({ () =>
+      val button = buttonRef.current
+      if (button != null) {
+        if (props.requestFocus) {
+          button.focus()
         }
-      )(
-        data.text
-      )
-    }
-  )
+      }
+    }, List(props.requestFocus))
+
+    val data = props.data
+    val primaryClass = if (data.primary) "btn-primary" else ""
+
+    <.button(
+      ^.`type` := "button",
+      ^.className := s"btn $primaryClass".trim,
+      ^.disabled := props.disabled,
+      ^.reactRef := buttonRef,
+      ^.onClick := { _: MouseSyntheticEvent =>
+        props.onClick()
+      }
+    )(
+      data.text
+    )
+  }
 }
