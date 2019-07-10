@@ -1,31 +1,28 @@
 package scommons.client.ui.list
 
-import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.React.Self
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.ImageLabelWrapper
 import scommons.client.ui.list.ListBoxCss._
-import scommons.react.UiComponent
+import scommons.react._
 
 case class ListBoxProps(items: List[ListBoxData],
                         selectedIds: Set[String] = Set.empty,
                         onSelect: Set[String] => Unit = _ => ())
 
-object ListBox extends UiComponent[ListBoxProps] {
+object ListBox extends ClassComponent[ListBoxProps] {
 
   private type ListBoxSelf = Self[PropsType, ListBoxState]
 
   private case class ListBoxState(selectedIds: Set[String])
 
-  protected def create(): ReactClass = React.createClass[PropsType, ListBoxState](
+  protected def create(): ReactClass = createClass[ListBoxState](
     getInitialState = { self =>
       ListBoxState(self.props.wrapped.selectedIds)
     },
-    componentWillReceiveProps = { (self, nextProps) =>
-      val props = nextProps.wrapped
-      if (self.props.wrapped.selectedIds != props.selectedIds) {
+    componentDidUpdate = { (self, prevProps, _) =>
+      val props = self.props.wrapped
+      if (prevProps.wrapped.selectedIds != props.selectedIds) {
         self.setState(_.copy(selectedIds = props.selectedIds))
       }
     },
@@ -47,7 +44,7 @@ object ListBox extends UiComponent[ListBoxProps] {
         )
       }
 
-      <.div()(
+      <.>()(
         items
       )
     }
