@@ -1,9 +1,6 @@
 package scommons.client.ui.list
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.react.UiComponent
+import scommons.react._
 
 case class PickListProps(items: List[ListBoxData],
                          selectedIds: Set[String] = Set.empty,
@@ -12,21 +9,24 @@ case class PickListProps(items: List[ListBoxData],
                          sourceTitle: String = "Available items:",
                          destTitle: String = "Selected items:")
 
-object PickList extends UiComponent[PickListProps] {
+object PickList extends ClassComponent[PickListProps] {
 
   private case class PickListState(selectedIds: Set[String],
                                    selectedSourceIds: Set[String] = Set.empty,
                                    selectedDestIds: Set[String] = Set.empty)
 
-  protected def create(): ReactClass = React.createClass[PropsType, PickListState](
+  protected def create(): ReactClass = createClass[PickListState](
     getInitialState = { self =>
       val props = self.props.wrapped
       
       PickListState(props.selectedIds ++ props.preSelectedIds)
     },
-    componentWillReceiveProps = { (self, nextProps) =>
-      val props = nextProps.wrapped
-      self.setState(_.copy(selectedIds = props.selectedIds ++ props.preSelectedIds))
+    componentDidUpdate = { (self, prevProps, _) =>
+      val prev = prevProps.wrapped
+      val props = self.props.wrapped
+      if (prev.selectedIds != props.selectedIds || prev.preSelectedIds != props.preSelectedIds) {
+        self.setState(_.copy(selectedIds = props.selectedIds ++ props.preSelectedIds))
+      }
     },
     render = { self =>
       val props = self.props.wrapped

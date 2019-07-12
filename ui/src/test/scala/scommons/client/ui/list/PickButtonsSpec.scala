@@ -2,131 +2,132 @@ package scommons.client.ui.list
 
 import io.github.shogowada.statictags.Element
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils
-import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
-class PickButtonsSpec extends TestSpec with ShallowRendererUtils {
+class PickButtonsSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "call onAdd when onClick in vertical group" in {
     //given
     val onAdd = mockFunction[Unit]
     val props = PickButtonsProps(onAdd = onAdd)
-    val comp = renderIntoDocument(<(PickButtons())(^.wrapped := props)())
-    val items = scryRenderedDOMComponentsWithClass(comp, "btn")
+    domRender(<(PickButtons())(^.wrapped := props)())
+    val items = domContainer.querySelectorAll(".btn")
     items.length shouldBe 8
 
     //then
     onAdd.expects()
 
     //when & then
-    ReactTestUtils.Simulate.click(items.head)
+    fireDomEvent(Simulate.click(items.item(0)))
   }
 
   it should "call onRemove when onClick in vertical group" in {
     //given
     val onRemove = mockFunction[Unit]
     val props = PickButtonsProps(onRemove = onRemove)
-    val comp = renderIntoDocument(<(PickButtons())(^.wrapped := props)())
-    val items = scryRenderedDOMComponentsWithClass(comp, "btn")
+    domRender(<(PickButtons())(^.wrapped := props)())
+    val items = domContainer.querySelectorAll(".btn")
     items.length shouldBe 8
 
     //then
     onRemove.expects()
 
     //when & then
-    ReactTestUtils.Simulate.click(items(1))
+    fireDomEvent(Simulate.click(items.item(1)))
   }
 
   it should "call onAddAll when onClick in vertical group" in {
     //given
     val onAddAll = mockFunction[Unit]
     val props = PickButtonsProps(onAddAll = onAddAll)
-    val comp = renderIntoDocument(<(PickButtons())(^.wrapped := props)())
-    val items = scryRenderedDOMComponentsWithClass(comp, "btn")
+    domRender(<(PickButtons())(^.wrapped := props)())
+    val items = domContainer.querySelectorAll(".btn")
     items.length shouldBe 8
 
     //then
     onAddAll.expects()
 
     //when & then
-    ReactTestUtils.Simulate.click(items(2))
+    fireDomEvent(Simulate.click(items.item(2)))
   }
 
   it should "call onRemoveAll when onClick in vertical group" in {
     //given
     val onRemoveAll = mockFunction[Unit]
     val props = PickButtonsProps(onRemoveAll = onRemoveAll)
-    val comp = renderIntoDocument(<(PickButtons())(^.wrapped := props)())
-    val items = scryRenderedDOMComponentsWithClass(comp, "btn")
+    domRender(<(PickButtons())(^.wrapped := props)())
+    val items = domContainer.querySelectorAll(".btn")
     items.length shouldBe 8
 
     //then
     onRemoveAll.expects()
 
     //when & then
-    ReactTestUtils.Simulate.click(items(3))
+    fireDomEvent(Simulate.click(items.item(3)))
   }
 
   it should "call onAdd when onClick in horizontal group" in {
     //given
     val onAdd = mockFunction[Unit]
     val props = PickButtonsProps(onAdd = onAdd)
-    val comp = renderIntoDocument(<(PickButtons())(^.wrapped := props)())
-    val items = scryRenderedDOMComponentsWithClass(comp, "btn")
+    domRender(<(PickButtons())(^.wrapped := props)())
+    val items = domContainer.querySelectorAll(".btn")
     items.length shouldBe 8
 
     //then
     onAdd.expects()
 
     //when & then
-    ReactTestUtils.Simulate.click(items(4))
+    fireDomEvent(Simulate.click(items.item(4)))
   }
 
   it should "call onRemove when onClick in horizontal group" in {
     //given
     val onRemove = mockFunction[Unit]
     val props = PickButtonsProps(onRemove = onRemove)
-    val comp = renderIntoDocument(<(PickButtons())(^.wrapped := props)())
-    val items = scryRenderedDOMComponentsWithClass(comp, "btn")
+    domRender(<(PickButtons())(^.wrapped := props)())
+    val items = domContainer.querySelectorAll(".btn")
     items.length shouldBe 8
 
     //then
     onRemove.expects()
 
     //when & then
-    ReactTestUtils.Simulate.click(items(5))
+    fireDomEvent(Simulate.click(items.item(5)))
   }
 
   it should "call onAddAll when onClick in horizontal group" in {
     //given
     val onAddAll = mockFunction[Unit]
     val props = PickButtonsProps(onAddAll = onAddAll)
-    val comp = renderIntoDocument(<(PickButtons())(^.wrapped := props)())
-    val items = scryRenderedDOMComponentsWithClass(comp, "btn")
+    domRender(<(PickButtons())(^.wrapped := props)())
+    val items = domContainer.querySelectorAll(".btn")
     items.length shouldBe 8
 
     //then
     onAddAll.expects()
 
     //when & then
-    ReactTestUtils.Simulate.click(items(6))
+    fireDomEvent(Simulate.click(items.item(6)))
   }
 
   it should "call onRemoveAll when onClick in horizontal group" in {
     //given
     val onRemoveAll = mockFunction[Unit]
     val props = PickButtonsProps(onRemoveAll = onRemoveAll)
-    val comp = renderIntoDocument(<(PickButtons())(^.wrapped := props)())
-    val items = scryRenderedDOMComponentsWithClass(comp, "btn")
+    domRender(<(PickButtons())(^.wrapped := props)())
+    val items = domContainer.querySelectorAll(".btn")
     items.length shouldBe 8
 
     //then
     onRemoveAll.expects()
 
     //when & then
-    ReactTestUtils.Simulate.click(items(7))
+    fireDomEvent(Simulate.click(items.item(7)))
   }
 
   it should "render component" in {

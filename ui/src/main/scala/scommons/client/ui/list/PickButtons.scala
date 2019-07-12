@@ -1,11 +1,8 @@
 package scommons.client.ui.list
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import io.github.shogowada.statictags.Element
-import scommons.react.UiComponent
+import scommons.react._
 
 case class PickButtonsProps(addEnabled: Boolean = true,
                             removeEnabled: Boolean = true,
@@ -17,10 +14,10 @@ case class PickButtonsProps(addEnabled: Boolean = true,
                             onRemoveAll: () => Unit = () => (),
                             className: Option[String] = None)
 
-object PickButtons extends UiComponent[PickButtonsProps] {
+object PickButtons extends FunctionComponent[PickButtonsProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
     
     def btn(style: Map[String, String],
             title: String,
