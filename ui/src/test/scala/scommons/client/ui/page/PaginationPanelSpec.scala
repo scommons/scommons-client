@@ -1,57 +1,94 @@
 package scommons.client.ui.page
 
 import io.github.shogowada.statictags.Element
+import org.scalajs.dom
 import scommons.client.ui.page.PaginationPanel._
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils
-import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
-class PaginationPanelSpec extends TestSpec with ShallowRendererUtils {
+class PaginationPanelSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "call onPage once and select page button when click on it" in {
     //given
     val onPage = mockFunction[Int, Unit]
     val props = PaginationPanelProps(5, onPage = onPage)
-    val comp = renderIntoDocument(<(PaginationPanel())(^.wrapped := props)())
-    val buttons = scryRenderedDOMComponentsWithTag(comp, "a")
+    domRender(<(PaginationPanel())(^.wrapped := props)())
+    val buttons = domContainer.querySelectorAll("a")
     buttons.length shouldBe (props.totalPages + 2)
-    val pages = scryRenderedDOMComponentsWithTag(comp, "li")
+    val pages = domContainer.querySelectorAll("li")
     pages.length shouldBe (props.totalPages + 2)
-    pages(props.selectedPage).className shouldBe "active"
+    pages(props.selectedPage).asInstanceOf[dom.Element].getAttribute("class") shouldBe "active"
     val nextSelectPage = props.selectedPage + 1
 
     //then
     onPage.expects(nextSelectPage).once()
 
     //when & then
-    ReactTestUtils.Simulate.click(buttons(nextSelectPage))
-    pages(props.selectedPage).className shouldBe ""
-    pages(nextSelectPage).className shouldBe "active"
+    fireDomEvent(Simulate.click(buttons(nextSelectPage)))
+    Option(pages(props.selectedPage).asInstanceOf[dom.Element].getAttribute("class")).getOrElse("") shouldBe ""
+    pages(nextSelectPage).asInstanceOf[dom.Element].getAttribute("class") shouldBe "active"
 
     //when & then
-    ReactTestUtils.Simulate.click(buttons(nextSelectPage))
-    pages(props.selectedPage).className shouldBe ""
-    pages(nextSelectPage).className shouldBe "active"
+    fireDomEvent(Simulate.click(buttons(nextSelectPage)))
+    Option(pages(props.selectedPage).asInstanceOf[dom.Element].getAttribute("class")).getOrElse("") shouldBe ""
+    pages(nextSelectPage).asInstanceOf[dom.Element].getAttribute("class") shouldBe "active"
   }
 
-  it should "reset selectedPage when componentWillReceiveProps" in {
+  it should "reset selectedPage if page props changed when update" in {
     //given
     val prevProps = PaginationPanelProps(5)
-    val renderer = createRenderer()
-    renderer.render(<(PaginationPanel())(^.wrapped := prevProps)())
-    val comp = renderer.getRenderOutput()
-    assertPaginationPanel(comp, prevProps)
-
+    domRender(<(PaginationPanel())(^.wrapped := prevProps)())
+    (domContainer.querySelectorAll("a"), domContainer.querySelectorAll("li")) match {
+      case (buttons, pages) =>
+        buttons.length shouldBe (prevProps.totalPages + 2)
+        pages.length shouldBe (prevProps.totalPages + 2)
+        pages(prevProps.selectedPage).asInstanceOf[dom.Element].getAttribute("class") shouldBe "active"
+    }
+    
     val props = prevProps.copy(totalPages = 10, selectedPage = 5)
 
     //when
-    renderer.render(<(PaginationPanel())(^.wrapped := props)())
+    domRender(<(PaginationPanel())(^.wrapped := props)())
 
     //then
-    val compV2 = renderer.getRenderOutput()
-    assertPaginationPanel(compV2, props)
+    (domContainer.querySelectorAll("a"), domContainer.querySelectorAll("li")) match {
+      case (buttons, pages) =>
+        buttons.length shouldBe (props.totalPages - 1)
+        pages.length shouldBe (props.totalPages - 1)
+        pages(4).asInstanceOf[dom.Element].getAttribute("class") shouldBe "active"
+    }
+  }
+
+  it should "not reset selectedPage if page props not changed when update" in {
+    //given
+    val prevProps = PaginationPanelProps(5)
+    domRender(<(PaginationPanel())(^.wrapped := prevProps)())
+    val nextSelectPage = 2
+    (domContainer.querySelectorAll("a"), domContainer.querySelectorAll("li")) match {
+      case (buttons, pages) =>
+        fireDomEvent(Simulate.click(buttons(nextSelectPage)))
+        buttons.length shouldBe (prevProps.totalPages + 2)
+        pages.length shouldBe (prevProps.totalPages + 2)
+        pages(nextSelectPage).asInstanceOf[dom.Element].getAttribute("class") shouldBe "active"
+    }
+    
+    val props = prevProps.copy(alignment = PaginationAlignment.Right)
+    props should not be prevProps
+
+    //when
+    domRender(<(PaginationPanel())(^.wrapped := props)())
+
+    //then
+    (domContainer.querySelectorAll("a"), domContainer.querySelectorAll("li")) match {
+      case (buttons, pages) =>
+        buttons.length shouldBe (prevProps.totalPages + 2)
+        pages.length shouldBe (prevProps.totalPages + 2)
+        pages(nextSelectPage).asInstanceOf[dom.Element].getAttribute("class") shouldBe "active"
+    }
   }
 
   it should "render component" in {
