@@ -1,12 +1,10 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.{HTML, HTMLProps, SimpleButtonData}
 import scommons.client.util.ActionsData
-import scommons.react.UiComponent
+import scommons.react._
+import scommons.react.hooks._
 
 case class ErrorPopupProps(show: Boolean,
                            error: String,
@@ -24,57 +22,48 @@ object ErrorPopupProps {
   }
 }
 
-object ErrorPopup extends UiComponent[ErrorPopupProps] {
+object ErrorPopup extends FunctionComponent[ErrorPopupProps] {
 
   private case class ErrorPopupState(showDetails: Boolean = false,
                                      opened: Boolean = false)
 
-  protected def create(): ReactClass = React.createClass[PropsType, ErrorPopupState](
-    getInitialState = { _ =>
-      ErrorPopupState()
-    },
-    componentWillReceiveProps = { (self, nextProps) =>
-      val props = nextProps.wrapped
-      if (self.props.wrapped != props) {
-        self.setState(_.copy(showDetails = false, opened = false))
-      }
-    },
-    render = { self =>
-      val props = self.props.wrapped
-      val detailsBtn = SimpleButtonData("details",
-        if (self.state.showDetails) "Details <<"
-        else "Details >>"
-      )
-      val closeBtn = SimpleButtonData("close", "Close", primary = true)
+  protected def render(compProps: Props): ReactElement = {
+    val (state, setState) = useStateUpdater(() => ErrorPopupState())
+      
+    val props = compProps.wrapped
+    val detailsBtn = SimpleButtonData("details",
+      if (state.showDetails) "Details <<"
+      else "Details >>"
+    )
+    val closeBtn = SimpleButtonData("close", "Close", primary = true)
 
-      <(Modal())(^.wrapped := ModalProps(
-        show = props.show,
-        header = None,
-        buttons = if (props.details.isDefined) List(detailsBtn, closeBtn) else List(closeBtn),
-        actions = ActionsData(Set(detailsBtn.command, closeBtn.command), _ => {
-          case detailsBtn.command => self.setState(s => s.copy(showDetails = !s.showDetails))
-          case _ => props.onClose()
-        },
-          if (self.state.opened) Some(closeBtn.command)
-          else None
-        ),
-        onClose = props.onClose,
-        onOpen = { () =>
-          self.setState(_.copy(opened = true))
-        }
-      ))(
-        <.div(^.className := "row-fluid")(
-          <.img(^.className := IconCss.dialogError, ^.src := "")(),
-          <(HTML())(^.wrapped := HTMLProps(
-            if (self.state.showDetails) getFullText(props)
-            else props.error
-            ,
-            wordWrap = false
-          ))()
-        )
+    <(Modal())(^.wrapped := ModalProps(
+      show = props.show,
+      header = None,
+      buttons = if (props.details.isDefined) List(detailsBtn, closeBtn) else List(closeBtn),
+      actions = ActionsData(Set(detailsBtn.command, closeBtn.command), _ => {
+        case detailsBtn.command => setState(s => s.copy(showDetails = !s.showDetails))
+        case _ => props.onClose()
+      },
+        if (state.opened) Some(closeBtn.command)
+        else None
+      ),
+      onClose = props.onClose,
+      onOpen = { () =>
+        setState(_.copy(opened = true))
+      }
+    ))(
+      <.div(^.className := "row-fluid")(
+        <.img(^.className := IconCss.dialogError, ^.src := "")(),
+        <(HTML())(^.wrapped := HTMLProps(
+          if (state.showDetails) getFullText(props)
+          else props.error
+          ,
+          wordWrap = false
+        ))()
       )
-    }
-  )
+    )
+  }
 
   private def getFullText(props: ErrorPopupProps): String = {
     HTML.makeHtmlText(s"${props.error}\n\n${props.details.getOrElse("")}")
