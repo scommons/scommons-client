@@ -10,6 +10,6 @@ sbt "project scommons-client-showcase" fastOptJS::webpack
 ```
 
 Then open the following file in your browser:
-```
-./showcase/index.dev.html
+```bash
+open ./showcase/index.dev.html
 ```

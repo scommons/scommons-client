@@ -1,11 +1,9 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.{Buttons, TextField, TextFieldProps}
 import scommons.client.util.ActionsData
-import scommons.react.UiComponent
+import scommons.react._
+import scommons.react.hooks._
 
 case class InputPopupProps(show: Boolean,
                            message: String,
@@ -14,64 +12,50 @@ case class InputPopupProps(show: Boolean,
                            placeholder: Option[String] = None,
                            initialValue: String = "")
 
-object InputPopup extends UiComponent[InputPopupProps] {
+object InputPopup extends FunctionComponent[InputPopupProps] {
 
   private case class InputPopupState(value: String,
                                      actionCommands: Set[String],
                                      opened: Boolean = false)
 
-  protected def create(): ReactClass = React.createClass[PropsType, InputPopupState](
-    getInitialState = { self =>
-      val props = self.props.wrapped
-
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
+    val (state, setState) = useStateUpdater { () =>
       InputPopupState(props.initialValue, getActionCommands(props.initialValue))
-    },
-    componentWillReceiveProps = { (self, nextProps) =>
-      val props = nextProps.wrapped
-      if (self.props.wrapped != props) {
-        self.setState(_.copy(
-          value = props.initialValue,
-          actionCommands = getActionCommands(props.initialValue),
-          opened = false
-        ))
+    }
+
+    val onOk = () => props.onOk(state.value)
+
+    <(Modal())(^.wrapped := ModalProps(props.show,
+      None,
+      List(Buttons.OK, Buttons.CANCEL),
+      ActionsData(state.actionCommands, _ => {
+        case Buttons.OK.command => onOk()
+        case _ => props.onCancel()
+      }),
+      onClose = props.onCancel,
+      onOpen = { () =>
+        setState(_.copy(opened = true))
       }
-    },
-    render = { self =>
-      val props = self.props.wrapped
-
-      val onOk = () => props.onOk(self.state.value)
-
-      <(Modal())(^.wrapped := ModalProps(props.show,
-        None,
-        List(Buttons.OK, Buttons.CANCEL),
-        ActionsData(self.state.actionCommands, _ => {
-          case Buttons.OK.command => onOk()
-          case _ => props.onCancel()
-        }),
-        onClose = props.onCancel,
-        onOpen = { () =>
-          self.setState(_.copy(opened = true))
-        }
-      ))(
-        <.div(^.className := "row-fluid")(
-          <.p()(props.message),
-          <.div(^.className := "control-group")(
-            <(TextField())(^.wrapped := TextFieldProps(
-              self.state.value,
-              onChange = { value =>
-                self.setState(_.copy(value = value, actionCommands = getActionCommands(value)))
-              },
-              requestFocus = self.state.opened,
-              requestSelect = self.state.opened,
-              className = Some("span12"),
-              placeholder = props.placeholder,
-              onEnter = onOk
-            ))()
-          )
+    ))(
+      <.div(^.className := "row-fluid")(
+        <.p()(props.message),
+        <.div(^.className := "control-group")(
+          <(TextField())(^.wrapped := TextFieldProps(
+            state.value,
+            onChange = { value =>
+              setState(_.copy(value = value, actionCommands = getActionCommands(value)))
+            },
+            requestFocus = state.opened,
+            requestSelect = state.opened,
+            className = Some("span12"),
+            placeholder = props.placeholder,
+            onEnter = onOk
+          ))()
         )
       )
-    }
-  )
+    )
+  }
 
   private val enabledOkActions = Set(Buttons.OK.command, Buttons.CANCEL.command)
   private val disabledOkActions = Set(Buttons.CANCEL.command)
