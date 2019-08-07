@@ -1,16 +1,13 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.react.UiComponent
+import scommons.react._
 
 case class LoadingPopupProps(show: Boolean)
 
-object LoadingPopup extends UiComponent[LoadingPopupProps] {
+object LoadingPopup extends FunctionComponent[LoadingPopupProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
 
     <(Popup())(^.wrapped := PopupProps(
       show = props.show,

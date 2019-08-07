@@ -1,10 +1,7 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.popup.raw.NativeModal._
-import scommons.react.UiComponent
+import scommons.react._
 
 case class PopupProps(show: Boolean,
                       onClose: () => Unit,
@@ -14,10 +11,10 @@ case class PopupProps(show: Boolean,
                       overlayClass: String = "scommons-modal-overlay",
                       popupClass: String = "scommons-modal")
 
-object Popup extends UiComponent[PopupProps] {
+object Popup extends FunctionComponent[PopupProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
 
     <.ReactModal(
       ^.isOpen := props.show,
@@ -29,7 +26,7 @@ object Popup extends UiComponent[PopupProps] {
       ^.overlayClassName := props.overlayClass,
       ^.modalClassName := props.popupClass
     )(
-      self.props.children
+      compProps.children
     )
   }
 }

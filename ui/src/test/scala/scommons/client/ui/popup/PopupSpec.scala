@@ -3,11 +3,13 @@ package scommons.client.ui.popup
 import org.scalajs.dom.document
 import scommons.client.ui.popup.raw.NativeReactModal
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.raw.TestReactDOM
 import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.util.ShallowRendererUtils
 
-class PopupSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
+class PopupSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "call onOpen function when onAfterOpen" in {
     //given
@@ -89,11 +91,10 @@ class PopupSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
     onOpen.expects()
 
     //when
-    val result = renderIntoDocument(component)
+    domRender(component)
 
     //then
-    val modal = findRenderedComponentWithType(result, NativeReactModal).portal
-    assertDOMElement(findReactElement(modal),
+    assertDOMElement(document.body.querySelector(".ReactModal__Overlay"),
       <.div(^("class") := s"ReactModal__Overlay ReactModal__Overlay--after-open ${props.overlayClass}")(
         <.div(
           ^("class") := s"ReactModal__Content ReactModal__Content--after-open ${props.popupClass}",
@@ -106,6 +107,8 @@ class PopupSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
     )
 
     //cleanup
-    //unmountComponentAtNode(findDOMNode(modal).parentNode) shouldBe true
+    TestReactDOM.unmountComponentAtNode(domContainer)
+
+    document.body.querySelector(".ReactModal__Overlay") shouldBe null
   }
 }

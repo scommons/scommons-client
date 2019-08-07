@@ -1,12 +1,8 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import scommons.client.ui.popup.SaveCancelPopupSpec._
 import scommons.client.ui.{ButtonImagesCss, Buttons}
-import scommons.react.UiComponent
+import scommons.react._
 import scommons.react.test.TestSpec
 import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
@@ -213,10 +209,10 @@ object SaveCancelPopupSpec {
                                         onChange: TestData => Unit,
                                         onEnter: () => Unit)
 
-  private object TestEditPanel extends UiComponent[TestEditPanelProps] {
+  private object TestEditPanel extends FunctionComponent[TestEditPanelProps] {
 
-    protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-      <.div()(s"Name: ${self.props.wrapped.initialData.name}")
+    protected def render(props: Props): ReactElement = {
+      <.div()(s"Name: ${props.wrapped.initialData.name}")
     }
   }
 

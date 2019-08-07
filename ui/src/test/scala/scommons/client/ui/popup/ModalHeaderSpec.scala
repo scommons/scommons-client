@@ -1,23 +1,25 @@
 package scommons.client.ui.popup
 
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.util.ShallowRendererUtils
 
-class ModalHeaderSpec extends TestSpec with ShallowRendererUtils {
+class ModalHeaderSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "call onClose function when onCloseClick" in {
     //given
     val onClose = mockFunction[Unit]
     val props = ModalHeaderProps("Test Header", onClose = onClose)
-    val comp = renderIntoDocument(<(ModalHeader())(^.wrapped := props)())
-    val button = findRenderedDOMComponentWithClass(comp, "close")
+    domRender(<(ModalHeader())(^.wrapped := props)())
+    val button = domContainer.querySelector(".close")
 
     //then
     onClose.expects()
 
     //when
-    Simulate.click(button)
+    fireDomEvent(Simulate.click(button))
   }
 
   it should "render closable header component" in {

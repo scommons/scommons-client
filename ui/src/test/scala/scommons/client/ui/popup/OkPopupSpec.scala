@@ -64,29 +64,6 @@ class OkPopupSpec extends TestSpec with ShallowRendererUtils {
     updatedModalProps.actions.focusedCommand shouldBe Some(Buttons.OK.command)
   }
 
-  it should "reset focusedCommand when componentWillReceiveProps" in {
-    //given
-    val prevProps = getOkPopupProps("Test message")
-    val renderer = createRenderer()
-    renderer.render(<(OkPopup())(^.wrapped := prevProps)())
-    val comp = renderer.getRenderOutput()
-    val modalProps = findComponentProps(comp, Modal)
-    modalProps.actions.focusedCommand shouldBe None
-    modalProps.onOpen()
-    val compV2 = renderer.getRenderOutput()
-    val modalPropsV2 = findComponentProps(compV2, Modal)
-    modalPropsV2.actions.focusedCommand shouldBe Some(Buttons.OK.command)
-    val props = getOkPopupProps("New message")
-
-    //when
-    renderer.render(<(OkPopup())(^.wrapped := props)())
-
-    //then
-    val compV3 = renderer.getRenderOutput()
-    val modalPropsV3 = findComponentProps(compV3, Modal)
-    modalPropsV3.actions.focusedCommand shouldBe None
-  }
-
   private def getOkPopupProps(message: String,
                               onClose: () => Unit = () => (),
                               image: Option[String] = None,

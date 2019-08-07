@@ -6,7 +6,7 @@ import scommons.react.test.util.ShallowRendererUtils
 
 class LoadingPopupSpec extends TestSpec with ShallowRendererUtils {
 
-  it should "render component with correct props" in {
+  it should "render component" in {
     //given
     val props = LoadingPopupProps(show = true)
     val component = <(LoadingPopup())(^.wrapped := props)()

@@ -1,15 +1,12 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.react.UiComponent
+import scommons.react._
 
-object ModalBody extends UiComponent[Unit] {
+object ModalBody extends FunctionComponent[Unit] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
+  protected def render(props: Props): ReactElement = {
     <.div(^.className := "modal-body")(
-      self.props.children
+      props.children
     )
   }
 }
