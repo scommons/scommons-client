@@ -41,16 +41,16 @@ class SaveCancelPopupSpec extends TestSpec with ShallowRendererUtils {
     //given
     val onSave = mockFunction[TestData, Unit]
     val props = TestPopupProps(onSave = onSave)
-    val component = shallowRender(<(SaveCancelPopup())(^.wrapped := props)())
-    val editProps = findComponentProps(component, TestEditPanel)
+    val renderer = createRenderer()
+    renderer.render(<(SaveCancelPopup())(^.wrapped := props)())
     val newData = props.initialData.copy(name = "updated")
-    editProps.onChange(newData)
+    findComponentProps(renderer.getRenderOutput(), TestEditPanel).onChange(newData)
 
     //then
     onSave.expects(newData)
 
     //when
-    editProps.onEnter()
+    findComponentProps(renderer.getRenderOutput(), TestEditPanel).onEnter()
   }
 
   it should "enable SAVE command when all the fields are filled" in {
@@ -140,36 +140,6 @@ class SaveCancelPopupSpec extends TestSpec with ShallowRendererUtils {
     updatedTextProps.requestFocus shouldBe true
   }
 
-  it should "reset requestFocus and data when componentWillReceiveProps" in {
-    //given
-    val prevProps = TestPopupProps()
-    val renderer = createRenderer()
-    renderer.render(<(SaveCancelPopup())(^.wrapped := prevProps)())
-    val comp = renderer.getRenderOutput()
-    val editProps = findComponentProps(comp, TestEditPanel)
-    editProps.initialData shouldBe prevProps.initialData
-    editProps.requestFocus shouldBe false
-    val modalProps = findComponentProps(comp, Modal)
-    modalProps.actions.enabledCommands shouldBe Set(Buttons.SAVE.command, Buttons.CANCEL.command)
-    modalProps.onOpen()
-    val compV2 = renderer.getRenderOutput()
-    val textPropsV2 = findComponentProps(compV2, TestEditPanel)
-    textPropsV2.requestFocus shouldBe true
-    val props = prevProps.copy(initialData = prevProps.initialData.copy(name = ""))
-
-    //when
-    renderer.render(<(SaveCancelPopup())(^.wrapped := props)())
-
-    //then
-    val compV3 = renderer.getRenderOutput()
-    val modalPropsV3 = findComponentProps(compV3, Modal)
-    modalPropsV3.actions.enabledCommands shouldBe Set(Buttons.CANCEL.command)
-
-    val textPropsV3 = findComponentProps(compV3, TestEditPanel)
-    textPropsV3.initialData shouldBe props.initialData
-    textPropsV3.requestFocus shouldBe false
-  }
-
   private def assertSaveCancelPopup(result: ShallowInstance, props: SaveCancelPopupProps): Unit = {
     val data = props.initialData
     val actionCommands =
@@ -180,7 +150,7 @@ class SaveCancelPopupSpec extends TestSpec with ShallowRendererUtils {
 
     assertComponent(result, Modal)({
       case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
-        show shouldBe props.show
+        show shouldBe true
         header shouldBe Some(props.title)
         buttons shouldBe List(Buttons.SAVE.copy(
           image = ButtonImagesCss.dbSave,
@@ -216,8 +186,7 @@ object SaveCancelPopupSpec {
     }
   }
 
-  private case class TestPopupProps(show: Boolean = true,
-                                    title: String = "Test Title",
+  private case class TestPopupProps(title: String = "Test Title",
                                     initialData: TestData = TestData("test name"),
                                     onSave: TestData => Unit = _ => (),
                                     onCancel: () => Unit = () => ()) extends SaveCancelPopupProps {
