@@ -1,24 +1,21 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
 import org.scalajs.dom.Event
 import org.scalajs.dom.raw.HTMLElement
-import scommons.react.UiComponent
+import scommons.react._
 
 import scala.scalajs.js
 
 case class WithAutoHideProps(onHide: () => Unit)
 
-object WithAutoHide extends UiComponent[WithAutoHideProps] {
+object WithAutoHide extends ClassComponent[WithAutoHideProps] {
 
   private case class WithAutoHideState(setAutoHideDiv: HTMLElement => Unit,
                                        getAutoHideDiv: () => HTMLElement,
                                        autoHideHandle: Option[js.Function1[Event, Unit]] = None)
 
-  protected def create(): ReactClass = React.createClass[PropsType, WithAutoHideState](
+  protected def create(): ReactClass = createClass[WithAutoHideState](
     getInitialState = { _ =>
       var autoHideDiv: HTMLElement = null
 

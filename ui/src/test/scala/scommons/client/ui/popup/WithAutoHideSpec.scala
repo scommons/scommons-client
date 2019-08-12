@@ -4,7 +4,7 @@ import org.scalajs.dom.raw.{EventTarget, HTMLElement}
 import org.scalajs.dom.{KeyboardEvent, MouseEvent, document}
 import scommons.client.ui.popup.WithAutoHideSpec.DomEventMock
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.TestReactDOM._
+import scommons.react.test.dom.raw.TestReactDOM.unmountComponentAtNode
 import scommons.react.test.dom.util.TestDOMUtils
 
 import scala.scalajs.js.annotation.JSExportAll
@@ -14,65 +14,57 @@ class WithAutoHideSpec extends TestSpec with TestDOMUtils {
   it should "call onHide when triggered outside content element on mouseUp" in {
     //given
     val onHide = mockFunction[Unit]
-    val comp = renderIntoDocument(
-      <(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content")
-    )
+    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"))
 
     //then
     onHide.expects()
 
     //when
-    document.dispatchEvent(createDomEvent[MouseEvent]("mouseup"))
+    fireDomEvent(document.dispatchEvent(createDomEvent[MouseEvent]("mouseup")))
 
     //cleanup
-    unmountComponentAtNode(findDOMNode(comp).parentNode) shouldBe true
+    unmountComponentAtNode(domContainer) shouldBe true
   }
 
   it should "not call onHide when unmounted on mouseUp" in {
     //given
     val onHide = mockFunction[Unit]
-    val comp = renderIntoDocument(
-      <(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content")
-    )
-    unmountComponentAtNode(findDOMNode(comp).parentNode) shouldBe true
+    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"))
+    unmountComponentAtNode(domContainer) shouldBe true
 
     //then
     onHide.expects().never()
 
     //when
-    document.dispatchEvent(createDomEvent[MouseEvent]("mouseup"))
+    fireDomEvent(document.dispatchEvent(createDomEvent[MouseEvent]("mouseup")))
   }
 
   it should "call onHide when triggered outside content element on keyDown" in {
     //given
     val onHide = mockFunction[Unit]
-    val comp = renderIntoDocument(
-      <(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content")
-    )
+    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"))
 
     //then
     onHide.expects()
 
     //when
-    document.dispatchEvent(createDomEvent[KeyboardEvent]("keydown"))
+    fireDomEvent(document.dispatchEvent(createDomEvent[KeyboardEvent]("keydown")))
 
     //cleanup
-    unmountComponentAtNode(findDOMNode(comp).parentNode) shouldBe true
+    unmountComponentAtNode(domContainer) shouldBe true
   }
 
   it should "not call onHide when unmounted on keyDown" in {
     //given
     val onHide = mockFunction[Unit]
-    val comp = renderIntoDocument(
-      <(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content")
-    )
-    unmountComponentAtNode(findDOMNode(comp).parentNode) shouldBe true
+    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"))
+    unmountComponentAtNode(domContainer) shouldBe true
 
     //then
     onHide.expects().never()
 
     //when
-    document.dispatchEvent(createDomEvent[KeyboardEvent]("keydown"))
+    fireDomEvent(document.dispatchEvent(createDomEvent[KeyboardEvent]("keydown")))
   }
 
   it should "fail if autoHideDiv is null" in {
@@ -124,22 +116,21 @@ class WithAutoHideSpec extends TestSpec with TestDOMUtils {
   it should "render the component" in {
     //given
     val content = "test content"
-    val component = <(WithAutoHide())(^.wrapped := WithAutoHideProps(() => ()))(
-      <.p()(content)
-    )
 
     //when
-    val result = renderIntoDocument(component)
+    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(() => ()))(
+      <.p()(content)
+    ))
 
     //then
-    assertDOMElement(findReactElement(result),
+    assertDOMElement(domContainer, <.div()(
       <.div()(
         <.p()(content)
       )
-    )
+    ))
 
     //cleanup
-    unmountComponentAtNode(findDOMNode(result).parentNode) shouldBe true
+    unmountComponentAtNode(domContainer) shouldBe true
   }
 }
 
