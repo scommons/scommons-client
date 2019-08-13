@@ -79,29 +79,6 @@ class YesNoPopupSpec extends TestSpec with ShallowRendererUtils {
     updatedModalProps.actions.focusedCommand shouldBe Some(props.selected.command)
   }
 
-  it should "reset focusedCommand when componentWillReceiveProps" in {
-    //given
-    val prevProps = getYesNoPopupProps("Test message")
-    val renderer = createRenderer()
-    renderer.render(<(YesNoPopup())(^.wrapped := prevProps)())
-    val comp = renderer.getRenderOutput()
-    val modalProps = findComponentProps(comp, Modal)
-    modalProps.actions.focusedCommand shouldBe None
-    modalProps.onOpen()
-    val compV2 = renderer.getRenderOutput()
-    val modalPropsV2 = findComponentProps(compV2, Modal)
-    modalPropsV2.actions.focusedCommand shouldBe Some(prevProps.selected.command)
-    val props = getYesNoPopupProps("New message")
-
-    //when
-    renderer.render(<(YesNoPopup())(^.wrapped := props)())
-
-    //then
-    val compV3 = renderer.getRenderOutput()
-    val modalPropsV3 = findComponentProps(compV3, Modal)
-    modalPropsV3.actions.focusedCommand shouldBe None
-  }
-
   private def getYesNoPopupProps(message: String,
                                  onSelect: YesNoCancelOption => Unit = _ => (),
                                  selected: YesNoCancelOption = Yes,

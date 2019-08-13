@@ -1,12 +1,10 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import scommons.client.ui.{Buttons, SimpleButtonData}
 import scommons.client.ui.popup.YesNoCancelOption._
+import scommons.client.ui.{Buttons, SimpleButtonData}
 import scommons.client.util.ActionsData
-import scommons.react.UiComponent
+import scommons.react._
+import scommons.react.hooks._
 
 case class YesNoCancelPopupProps(show: Boolean,
                                  message: String,
@@ -14,50 +12,40 @@ case class YesNoCancelPopupProps(show: Boolean,
                                  selected: YesNoCancelOption = Yes,
                                  image: Option[String] = None)
 
-object YesNoCancelPopup extends UiComponent[YesNoCancelPopupProps] {
+object YesNoCancelPopup extends FunctionComponent[YesNoCancelPopupProps] {
 
-  private case class YesNoCancelPopupState(opened: Boolean = false)
+  protected def render(compProps: Props): ReactElement = {
+    val (opened, setOpened) = useState(false)
+    
+    val props = compProps.wrapped
 
-  protected def create(): ReactClass = React.createClass[PropsType, YesNoCancelPopupState](
-    getInitialState = { _ =>
-      YesNoCancelPopupState()
-    },
-    componentWillReceiveProps = { (self, nextProps) =>
-      val props = nextProps.wrapped
-      if (self.props.wrapped != props) {
-        self.setState(_.copy(opened = false))
+    <(Modal())(^.wrapped := ModalProps(
+      show = props.show,
+      header = None,
+      buttons = List(
+        SimpleButtonData(Yes.command, "Yes", props.selected == Yes),
+        SimpleButtonData(No.command, "No", props.selected == No),
+        Buttons.CANCEL.copy(command = Cancel.command, primary = props.selected == Cancel)
+      ),
+      actions = ActionsData(Set(Yes.command, No.command, Cancel.command), _ => {
+        case Yes.command => props.onSelect(Yes)
+        case No.command => props.onSelect(No)
+        case _ => props.onSelect(Cancel)
+      },
+        if (opened) Some(props.selected.command)
+        else None
+      ),
+      onClose = () => props.onSelect(Cancel),
+      onOpen = { () =>
+        setOpened(true)
       }
-    },
-    render = { self =>
-      val props = self.props.wrapped
-
-      <(Modal())(^.wrapped := ModalProps(props.show,
-        None,
-        List(
-          SimpleButtonData(Yes.command, "Yes", props.selected == Yes),
-          SimpleButtonData(No.command, "No", props.selected == No),
-          Buttons.CANCEL.copy(command = Cancel.command, primary = props.selected == Cancel)
-        ),
-        ActionsData(Set(Yes.command, No.command, Cancel.command), _ => {
-            case Yes.command => props.onSelect(Yes)
-            case No.command => props.onSelect(No)
-            case _ => props.onSelect(Cancel)
-          },
-          if (self.state.opened) Some(props.selected.command)
-          else None
-        ),
-        onClose = () => props.onSelect(Cancel),
-        onOpen = { () =>
-          self.setState(_.copy(opened = true))
-        }
-      ))(
-        <.div(^.className := "row-fluid")(
-          props.image.map { image =>
-            <.img(^.className := image, ^.src := "")()
-          },
-          <.p()(props.message)
-        )
+    ))(
+      <.div(^.className := "row-fluid")(
+        props.image.map { image =>
+          <.img(^.className := image, ^.src := "")()
+        },
+        <.p()(props.message)
       )
-    }
-  )
+    )
+  }
 }
