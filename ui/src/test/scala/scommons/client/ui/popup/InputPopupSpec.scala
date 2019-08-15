@@ -173,9 +173,7 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
                                  onOk: String => Unit = _ => (),
                                  onCancel: () => Unit = () => (),
                                  placeholder: Option[String] = None,
-                                 initialValue: String = "",
-                                 show: Boolean = true): InputPopupProps = InputPopupProps(
-    show = show,
+                                 initialValue: String = ""): InputPopupProps = InputPopupProps(
     message = message,
     onOk = onOk,
     onCancel = onCancel,
@@ -189,8 +187,7 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
       else Set(Buttons.CANCEL.command)
 
     assertComponent(result, Modal)({
-      case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
-        show shouldBe props.show
+      case ModalProps(header, buttons, actions, _, onClose, closable, _) =>
         header shouldBe None
         buttons shouldBe List(Buttons.OK, Buttons.CANCEL)
         actions.enabledCommands shouldBe actionCommands

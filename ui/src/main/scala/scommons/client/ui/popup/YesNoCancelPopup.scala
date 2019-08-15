@@ -6,8 +6,7 @@ import scommons.client.util.ActionsData
 import scommons.react._
 import scommons.react.hooks._
 
-case class YesNoCancelPopupProps(show: Boolean,
-                                 message: String,
+case class YesNoCancelPopupProps(message: String,
                                  onSelect: YesNoCancelOption => Unit,
                                  selected: YesNoCancelOption = Yes,
                                  image: Option[String] = None)
@@ -20,7 +19,6 @@ object YesNoCancelPopup extends FunctionComponent[YesNoCancelPopupProps] {
     val props = compProps.wrapped
 
     <(Modal())(^.wrapped := ModalProps(
-      show = props.show,
       header = None,
       buttons = List(
         SimpleButtonData(Yes.command, "Yes", props.selected == Yes),

@@ -5,8 +5,7 @@ import scommons.client.util.ActionsData
 import scommons.react._
 import scommons.react.hooks._
 
-case class OkPopupProps(show: Boolean,
-                        message: String,
+case class OkPopupProps(message: String,
                         onClose: () => Unit,
                         image: Option[String] = None)
 
@@ -19,12 +18,12 @@ object OkPopup extends FunctionComponent[OkPopupProps] {
     
     val props = compProps.wrapped
 
-    <(Modal())(^.wrapped := ModalProps(props.show,
-      None,
-      List(Buttons.OK),
-      ActionsData(Set(Buttons.OK.command), _ => {
-          case _ => props.onClose()
-        },
+    <(Modal())(^.wrapped := ModalProps(
+      header = None,
+      buttons = List(Buttons.OK),
+      actions = ActionsData(Set(Buttons.OK.command), _ => {
+        case _ => props.onClose()
+      },
         if (state.opened) Some(Buttons.OK.command)
         else None
       ),

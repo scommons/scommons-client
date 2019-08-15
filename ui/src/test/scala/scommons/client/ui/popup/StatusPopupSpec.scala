@@ -6,9 +6,20 @@ import scommons.react.test.util.ShallowRendererUtils
 
 class StatusPopupSpec extends TestSpec with ShallowRendererUtils {
 
+  it should "do nothing when onClose/onOpen" in {
+    //given
+    val props = StatusPopupProps("test text", () => ())
+    val comp = shallowRender(<(StatusPopup())(^.wrapped := props)())
+    val popupProps = findComponentProps(comp, Popup)
+
+    //when
+    popupProps.onClose()
+    popupProps.onOpen()
+  }
+
   it should "render component with correct props" in {
     //given
-    val props = StatusPopupProps("test text", show = true, () => ())
+    val props = StatusPopupProps("test text", () => ())
     val component = <(StatusPopup())(^.wrapped := props)()
 
     //when
@@ -16,8 +27,7 @@ class StatusPopupSpec extends TestSpec with ShallowRendererUtils {
 
     //then
     assertComponent(result, Popup)({
-      case PopupProps(show, _, closable, focusable, _, overlayClass, popupClass) =>
-        show shouldBe props.show
+      case PopupProps(_, closable, focusable, _, overlayClass, popupClass) =>
         closable shouldBe true
         focusable shouldBe false
         overlayClass shouldBe "scommons-modal-no-overlay"

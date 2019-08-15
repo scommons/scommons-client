@@ -6,19 +6,17 @@ import scommons.client.util.ActionsData
 import scommons.react._
 import scommons.react.hooks._
 
-case class ErrorPopupProps(show: Boolean,
-                           error: String,
+case class ErrorPopupProps(error: String,
                            onClose: () => Unit,
                            details: Option[String] = None)
 
 object ErrorPopupProps {
 
-  def apply(show: Boolean,
-            error: String,
+  def apply(error: String,
             exception: Throwable,
             onClose: () => Unit): ErrorPopupProps = {
 
-    ErrorPopupProps(show, error, onClose, Some(ErrorPopup.printStackTrace(exception)))
+    ErrorPopupProps(error, onClose, Some(ErrorPopup.printStackTrace(exception)))
   }
 }
 
@@ -38,7 +36,6 @@ object ErrorPopup extends FunctionComponent[ErrorPopupProps] {
     val closeBtn = SimpleButtonData("close", "Close", primary = true)
 
     <(Modal())(^.wrapped := ModalProps(
-      show = props.show,
       header = None,
       buttons = if (props.details.isDefined) List(detailsBtn, closeBtn) else List(closeBtn),
       actions = ActionsData(Set(detailsBtn.command, closeBtn.command), _ => {

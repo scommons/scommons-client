@@ -6,18 +6,23 @@ import scommons.react.test.util.ShallowRendererUtils
 
 class LoadingPopupSpec extends TestSpec with ShallowRendererUtils {
 
-  it should "render component" in {
+  it should "do nothing when onClose/onOpen" in {
     //given
-    val props = LoadingPopupProps(show = true)
-    val component = <(LoadingPopup())(^.wrapped := props)()
+    val comp = shallowRender(<(LoadingPopup())()())
+    val popupProps = findComponentProps(comp, Popup)
 
     //when
-    val result = shallowRender(component)
+    popupProps.onClose()
+    popupProps.onOpen()
+  }
+
+  it should "render component" in {
+    //when
+    val result = shallowRender(<(LoadingPopup())()())
 
     //then
     assertComponent(result, Popup)({
-      case PopupProps(show, _, closable, focusable, _, overlayClass, popupClass) =>
-        show shouldBe props.show
+      case PopupProps(_, closable, focusable, _, overlayClass, popupClass) =>
         closable shouldBe false
         focusable shouldBe false
         overlayClass shouldBe loadingOverlay

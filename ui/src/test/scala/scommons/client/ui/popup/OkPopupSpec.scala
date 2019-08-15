@@ -66,9 +66,7 @@ class OkPopupSpec extends TestSpec with ShallowRendererUtils {
 
   private def getOkPopupProps(message: String,
                               onClose: () => Unit = () => (),
-                              image: Option[String] = None,
-                              show: Boolean = true): OkPopupProps = OkPopupProps(
-    show = show,
+                              image: Option[String] = None): OkPopupProps = OkPopupProps(
     message = message,
     onClose = onClose,
     image = image
@@ -78,8 +76,7 @@ class OkPopupSpec extends TestSpec with ShallowRendererUtils {
     val actionCommands = Set(Buttons.OK.command)
 
     assertComponent(result, Modal)({
-      case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
-        show shouldBe props.show
+      case ModalProps(header, buttons, actions, _, onClose, closable, _) =>
         header shouldBe None
         buttons shouldBe List(Buttons.OK)
         actions.enabledCommands shouldBe actionCommands

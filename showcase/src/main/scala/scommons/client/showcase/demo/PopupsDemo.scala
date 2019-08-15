@@ -35,20 +35,22 @@ object PopupsDemo {
           <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Modal", primary = true), { () =>
             self.setState(_.copy(showModal = true))
           }))(),
-          <(Modal())(^.wrapped := ModalProps(
-            self.state.showModal,
-            Some("Modal header"),
-            List(Buttons.OK, Buttons.CANCEL),
-            ActionsData(Set(Buttons.OK.command, Buttons.CANCEL.command), _ => {
-              case Buttons.CANCEL.command => self.setState(_.copy(showModal = false))
-              case _ =>
-            }),
-            onClose = { () =>
-              self.setState(_.copy(showModal = false))
-            }
-          ))(
-            <.p()("One fine body...")
-          )
+          
+          if (self.state.showModal) Some(
+            <(Modal())(^.wrapped := ModalProps(
+              Some("Modal header"),
+              List(Buttons.OK, Buttons.CANCEL),
+              ActionsData(Set(Buttons.OK.command, Buttons.CANCEL.command), _ => {
+                case Buttons.CANCEL.command => self.setState(_.copy(showModal = false))
+                case _ =>
+              }),
+              onClose = { () =>
+                self.setState(_.copy(showModal = false))
+              }
+            ))(
+              <.p()("One fine body...")
+            )
+          ) else None
         ),
 
         <.h2()("Input Popup"),
@@ -57,22 +59,24 @@ object PopupsDemo {
           <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Input", primary = true), { () =>
             self.setState(_.copy(showInput = true))
           }))(),
-          <(InputPopup())(^.wrapped := InputPopupProps(
-            self.state.showInput,
-            "Please, enter a value",
-            onOk = { inputValue =>
-              self.setState(_.copy(
-                showInput = false,
-                inputValue = inputValue,
-                showOk = true,
-                okMessage = s"You've entered:\n\n$inputValue"
-              ))
-            },
-            onCancel = { () =>
-              self.setState(_.copy(showInput = false))
-            },
-            initialValue = self.state.inputValue
-          ))()
+          
+          if (self.state.showInput) Some(
+            <(InputPopup())(^.wrapped := InputPopupProps(
+              message = "Please, enter a value",
+              onOk = { inputValue =>
+                self.setState(_.copy(
+                  showInput = false,
+                  inputValue = inputValue,
+                  showOk = true,
+                  okMessage = s"You've entered:\n\n$inputValue"
+                ))
+              },
+              onCancel = { () =>
+                self.setState(_.copy(showInput = false))
+              },
+              initialValue = self.state.inputValue
+            ))()
+          ) else None
         ),
 
         <.h2()("OK/Yes/No/Cancel Popups"),
@@ -89,33 +93,38 @@ object PopupsDemo {
             case "yes-no" => self.setState(_.copy(showYesNo = true))
           })))(),
 
-          <(OkPopup())(^.wrapped := OkPopupProps(
-            self.state.showOk,
-            self.state.okMessage,
-            image = Some(IconCss.dialogInformation),
-            onClose = { () =>
-              self.setState(_.copy(showOk = false))
-            }
-          ))(),
-          <(YesNoCancelPopup())(^.wrapped := YesNoCancelPopupProps(
-            self.state.showYesNoCancel,
-            "Do you like Scala.js ?",
-            image = Some(IconCss.dialogQuestion),
-            onSelect = {
-              case Yes => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected: YES"))
-              case No => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected: NO"))
-              case _ => self.setState(_.copy(showYesNoCancel = false))
-            }
-          ))(),
-          <(YesNoPopup())(^.wrapped := YesNoPopupProps(
-            self.state.showYesNo,
-            "Do you like Scala.js and React.js ?",
-            image = Some(IconCss.dialogQuestion),
-            onSelect = {
-              case Yes => self.setState(_.copy(showYesNo = false, showOk = true, okMessage = "You selected: YES"))
-              case _ => self.setState(_.copy(showYesNo = false, showOk = true, okMessage = "You selected: NO"))
-            }
-          ))()
+          if (self.state.showOk) Some(
+            <(OkPopup())(^.wrapped := OkPopupProps(
+              message = self.state.okMessage,
+              image = Some(IconCss.dialogInformation),
+              onClose = { () =>
+                self.setState(_.copy(showOk = false))
+              }
+            ))()
+          ) else None,
+          
+          if (self.state.showYesNoCancel) Some(
+            <(YesNoCancelPopup())(^.wrapped := YesNoCancelPopupProps(
+              message = "Do you like Scala.js ?",
+              image = Some(IconCss.dialogQuestion),
+              onSelect = {
+                case Yes => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected: YES"))
+                case No => self.setState(_.copy(showYesNoCancel = false, showOk = true, okMessage = "You selected: NO"))
+                case _ => self.setState(_.copy(showYesNoCancel = false))
+              }
+            ))()
+          ) else None,
+          
+          if (self.state.showYesNo) Some(
+            <(YesNoPopup())(^.wrapped := YesNoPopupProps(
+              message = "Do you like Scala.js and React.js ?",
+              image = Some(IconCss.dialogQuestion),
+              onSelect = {
+                case Yes => self.setState(_.copy(showYesNo = false, showOk = true, okMessage = "You selected: YES"))
+                case _ => self.setState(_.copy(showYesNo = false, showOk = true, okMessage = "You selected: NO"))
+              }
+            ))()
+          ) else None
         ),
 
         <.h2()("Error Popup"),
@@ -124,14 +133,16 @@ object PopupsDemo {
           <(SimpleButton())(^.wrapped := SimpleButtonProps(SimpleButtonData("", "Error", primary = true), { () =>
             self.setState(_.copy(showError = true))
           }))(),
-          <(ErrorPopup())(^.wrapped := ErrorPopupProps(
-            self.state.showError,
-            "Some error occurred",
-            exception = new Exception(),
-            onClose = { () =>
-              self.setState(_.copy(showError = false))
-            }
-          ))()
+          
+          if (self.state.showError) Some(
+            <(ErrorPopup())(^.wrapped := ErrorPopupProps(
+              error = "Some error occurred",
+              exception = new Exception(),
+              onClose = { () =>
+                self.setState(_.copy(showError = false))
+              }
+            ))()
+          ) else None
         ),
 
         <.h2()("Other Popups"),
@@ -146,12 +157,18 @@ object PopupsDemo {
               dom.window.clearInterval(timerId)
             }, 3000)
           }))(),
-          <(LoadingPopup())(^.wrapped := LoadingPopupProps(show = self.state.showLoading))(),
-          <(StatusPopup())(^.wrapped := StatusPopupProps("Fetching data...", show = self.state.showStatus, { () =>
-            if (!self.state.showLoading) {
-              self.setState(_.copy(showStatus = false))
-            }
-          }))()
+          
+          if (self.state.showLoading) Some(
+            <(LoadingPopup())()()
+          ) else None,
+          
+          if (self.state.showStatus) Some(
+            <(StatusPopup())(^.wrapped := StatusPopupProps("Fetching data...", { () =>
+              if (!self.state.showLoading) {
+                self.setState(_.copy(showStatus = false))
+              }
+            }))()
+          ) else None
         )
       )
     }

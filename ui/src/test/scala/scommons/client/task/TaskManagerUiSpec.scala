@@ -103,44 +103,6 @@ class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
     assertRenderingResult(result, props)
   }
 
-  private def assertRenderingResult(result: ShallowInstance, props: TaskManagerUiProps): Unit = {
-    val showError = props.error.isDefined
-    
-    assertNativeComponent(result, <.>()(), { children =>
-      val (statusPopup, loadingPopup, errorPopup) = children match {
-        case List(sp) => (sp, None, None)
-        case List(sp, lp) if props.showLoading => (sp, Some(lp), None)
-        case List(sp, ep) if showError => (sp, None, Some(ep))
-        case List(sp, lp, ep) => (sp, Some(lp), Some(ep))
-      }
-      
-      assertComponent(statusPopup, StatusPopup) { case StatusPopupProps(text, show, onHide) =>
-        show shouldBe props.status.isDefined
-        text shouldBe props.status.getOrElse("")
-        onHide shouldBe props.onHideStatus
-      }
-      
-      if (props.showLoading) {
-        loadingPopup should not be None
-        assertComponent(loadingPopup.get, LoadingPopup) { case LoadingPopupProps(show) =>
-          show shouldBe props.showLoading
-        }
-      }
-
-      if (showError) {
-        errorPopup should not be None
-        assertComponent(errorPopup.get, ErrorPopup) { case ErrorPopupProps(show, error, onClose, details) =>
-          show shouldBe showError
-          error shouldBe props.error.getOrElse("")
-          details shouldBe props.errorDetails
-          onClose shouldBe props.onCloseErrorPopup
-        }
-      }
-      
-      Succeeded
-    })
-  }
-
   private def getTaskManagerUiProps(showLoading: Boolean = false,
                                     status: Option[String] = None,
                                     onHideStatus: () => Unit = () => (),
@@ -156,5 +118,44 @@ class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
       errorDetails,
       onCloseErrorPopup
     )
+  }
+  
+  private def assertRenderingResult(result: ShallowInstance, props: TaskManagerUiProps): Unit = {
+    val showStatus = props.status.isDefined
+    val showError = props.error.isDefined
+    
+    assertNativeComponent(result, <.>()(), { children =>
+      val (statusPopup, loadingPopup, errorPopup) = children match {
+        case List(sp) if showStatus => (Some(sp), None, None)
+        case List(lp) if props.showLoading => (None, Some(lp), None)
+        case List(sp, lp) if showStatus && props.showLoading => (Some(sp), Some(lp), None)
+        case List(sp, ep) if showStatus && showError => (Some(sp), None, Some(ep))
+        case List(ep) if showError => (None, None, Some(ep))
+      }
+
+      if (showStatus) {
+        statusPopup should not be None
+        assertComponent(statusPopup.get, StatusPopup) { case StatusPopupProps(text, onHide) =>
+          text shouldBe props.status.getOrElse("")
+          onHide shouldBe props.onHideStatus
+        }
+      }
+      
+      if (props.showLoading) {
+        loadingPopup should not be None
+        assertComponent(loadingPopup.get, LoadingPopup)(_ => Succeeded)
+      }
+
+      if (showError) {
+        errorPopup should not be None
+        assertComponent(errorPopup.get, ErrorPopup) { case ErrorPopupProps(error, onClose, details) =>
+          error shouldBe props.error.getOrElse("")
+          details shouldBe props.errorDetails
+          onClose shouldBe props.onCloseErrorPopup
+        }
+      }
+      
+      Succeeded
+    })
   }
 }

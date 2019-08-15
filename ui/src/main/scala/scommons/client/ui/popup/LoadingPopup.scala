@@ -2,15 +2,10 @@ package scommons.client.ui.popup
 
 import scommons.react._
 
-case class LoadingPopupProps(show: Boolean)
-
-object LoadingPopup extends FunctionComponent[LoadingPopupProps] {
+object LoadingPopup extends FunctionComponent[Unit] {
 
   protected def render(compProps: Props): ReactElement = {
-    val props = compProps.wrapped
-
     <(Popup())(^.wrapped := PopupProps(
-      show = props.show,
       onClose = () => (),
       closable = false,
       focusable = false,

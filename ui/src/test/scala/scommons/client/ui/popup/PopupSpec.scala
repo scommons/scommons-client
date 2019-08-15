@@ -14,7 +14,7 @@ class PopupSpec extends TestSpec
   it should "call onOpen function when onAfterOpen" in {
     //given
     val onOpen = mockFunction[Unit]
-    val props = PopupProps(show = true, onClose = () => (), onOpen = onOpen)
+    val props = PopupProps(onClose = () => (), onOpen = onOpen)
     val component = shallowRender(<(Popup())(^.wrapped := props)())
 
     //then
@@ -27,7 +27,7 @@ class PopupSpec extends TestSpec
   it should "call onClose function when onRequestClose" in {
     //given
     val onClose = mockFunction[Unit]
-    val props = PopupProps(show = true, onClose = onClose)
+    val props = PopupProps(onClose = onClose)
     val component = shallowRender(<(Popup())(^.wrapped := props)())
 
     //then
@@ -39,7 +39,7 @@ class PopupSpec extends TestSpec
 
   it should "render closable, non-focusable popup with default styles" in {
     //given
-    val props = PopupProps(show = true, focusable = false, onClose = () => ())
+    val props = PopupProps(focusable = false, onClose = () => ())
     val component = <(Popup())(^.wrapped := props)()
 
     //when
@@ -57,7 +57,8 @@ class PopupSpec extends TestSpec
 
   it should "render non-closable, focusable popup with custom styles" in {
     //given
-    val props = PopupProps(show = true, () => (),
+    val props = PopupProps(
+      onClose = () => (),
       closable = false,
       overlayClass = "test-overlay",
       popupClass = "test-popup"
@@ -82,7 +83,7 @@ class PopupSpec extends TestSpec
     NativeReactModal.setAppElement(document.body)
     
     val onOpen = mockFunction[Unit]
-    val props = PopupProps(show = true, onClose = () => (), onOpen = onOpen)
+    val props = PopupProps(onClose = () => (), onOpen = onOpen)
     val component = <(Popup())(^.wrapped := props)(
       <.p()("some children")
     )

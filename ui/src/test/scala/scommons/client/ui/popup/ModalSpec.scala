@@ -50,7 +50,6 @@ class ModalSpec extends TestSpec with ShallowRendererUtils {
     //then
     assertComponent(result, Popup)({ popupProps =>
       popupProps shouldBe PopupProps(
-        show = props.show,
         onClose = props.onClose,
         closable = props.closable,
         onOpen = props.onOpen
@@ -68,7 +67,6 @@ class ModalSpec extends TestSpec with ShallowRendererUtils {
   private def assertModal(result: ShallowInstance, props: ModalProps): Assertion = {
     assertComponent(result, Popup)({ popupProps =>
       popupProps shouldBe PopupProps(
-        show = props.show,
         onClose = props.onClose,
         closable = props.closable,
         onOpen = props.onOpen
@@ -90,7 +88,6 @@ class ModalSpec extends TestSpec with ShallowRendererUtils {
                             onClose: () => Unit = () => (),
                             closable: Boolean = true,
                             onOpen: () => Unit = () => ()): ModalProps = ModalProps(
-    show = true,
     header,
     List(Buttons.OK, Buttons.CANCEL),
     ActionsData.empty.copy(enabledCommands = Set(Buttons.OK.command, Buttons.CANCEL.command)),

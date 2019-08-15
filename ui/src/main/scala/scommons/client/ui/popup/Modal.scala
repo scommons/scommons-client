@@ -5,8 +5,7 @@ import scommons.client.ui.ButtonData
 import scommons.client.util.ActionsData
 import scommons.react._
 
-case class ModalProps(show: Boolean,
-                      header: Option[String],
+case class ModalProps(header: Option[String],
                       buttons: List[ButtonData],
                       actions: ActionsData,
                       dispatch: Dispatch = _ => (),
@@ -20,7 +19,6 @@ object Modal extends FunctionComponent[ModalProps] {
     val props = compProps.wrapped
 
     <(Popup())(^.wrapped := PopupProps(
-      show = props.show,
       onClose = props.onClose,
       closable = props.closable,
       onOpen = props.onOpen

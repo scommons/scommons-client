@@ -61,14 +61,15 @@ object ApiDemo {
           ))()
         ),
 
-        <(OkPopup())(^.wrapped := OkPopupProps(
-          self.state.showOk,
-          self.state.okMessage,
-          image = Some(IconCss.dialogInformation),
-          onClose = { () =>
-            self.setState(_.copy(showOk = false))
-          }
-        ))()
+        if (self.state.showOk) Some(
+          <(OkPopup())(^.wrapped := OkPopupProps(
+            message = self.state.okMessage,
+            image = Some(IconCss.dialogInformation),
+            onClose = { () =>
+              self.setState(_.copy(showOk = false))
+            }
+          ))()
+        ) else None
       )
     }
   )

@@ -149,8 +149,7 @@ class SaveCancelPopupSpec extends TestSpec with ShallowRendererUtils {
       else Set(Buttons.CANCEL.command)
 
     assertComponent(result, Modal)({
-      case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
-        show shouldBe true
+      case ModalProps(header, buttons, actions, _, onClose, closable, _) =>
         header shouldBe Some(props.title)
         buttons shouldBe List(Buttons.SAVE.copy(
           image = ButtonImagesCss.dbSave,

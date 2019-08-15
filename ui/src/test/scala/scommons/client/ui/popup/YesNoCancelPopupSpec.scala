@@ -110,9 +110,7 @@ class YesNoCancelPopupSpec extends TestSpec with ShallowRendererUtils {
   private def getYesNoCancelPopupProps(message: String,
                                        onSelect: YesNoCancelOption => Unit = _ => (),
                                        selected: YesNoCancelOption = Yes,
-                                       image: Option[String] = None,
-                                       show: Boolean = true): YesNoCancelPopupProps = YesNoCancelPopupProps(
-    show = show,
+                                       image: Option[String] = None): YesNoCancelPopupProps = YesNoCancelPopupProps(
     message = message,
     onSelect = onSelect,
     selected = selected,
@@ -128,8 +126,7 @@ class YesNoCancelPopupSpec extends TestSpec with ShallowRendererUtils {
     val enabledCommands = Set(Yes.command, No.command, Cancel.command)
 
     assertComponent(result, Modal)({
-      case ModalProps(show, header, buttons, actions, _, _, closable, _) =>
-        show shouldBe props.show
+      case ModalProps(header, buttons, actions, _, _, closable, _) =>
         header shouldBe None
         buttons shouldBe expectedButtons
         actions.enabledCommands shouldBe enabledCommands

@@ -3,8 +3,7 @@ package scommons.client.ui.popup
 import scommons.client.ui.popup.raw.NativeModal._
 import scommons.react._
 
-case class PopupProps(show: Boolean,
-                      onClose: () => Unit,
+case class PopupProps(onClose: () => Unit,
                       closable: Boolean = true,
                       focusable: Boolean = true,
                       onOpen: () => Unit = () => (),
@@ -17,7 +16,7 @@ object Popup extends FunctionComponent[PopupProps] {
     val props = compProps.wrapped
 
     <.ReactModal(
-      ^.isOpen := props.show,
+      ^.isOpen := true,
       ^.shouldCloseOnOverlayClick := props.closable,
       ^.shouldFocusAfterRender := props.focusable,
       ^.shouldReturnFocusAfterClose := props.focusable,

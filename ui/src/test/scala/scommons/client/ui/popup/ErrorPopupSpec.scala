@@ -16,10 +16,9 @@ class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
     val onClose = () => ()
 
     //when
-    val props = ErrorPopupProps(show = true, "Some error text", exception, onClose)
+    val props = ErrorPopupProps("Some error text", exception, onClose)
 
     //then
-    props.show shouldBe true
     props.error shouldBe "Some error text"
     props.onClose shouldBe onClose
     props.details shouldBe Some(ErrorPopup.printStackTrace(exception))
@@ -31,7 +30,7 @@ class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
   it should "call onClose function when on close command" in {
     //given
     val onClose = mockFunction[Unit]
-    val props = ErrorPopupProps(show = true, "Some error text", onClose = onClose)
+    val props = ErrorPopupProps("Some error text", onClose = onClose)
     val component = shallowRender(<(ErrorPopup())(^.wrapped := props)())
     val modalProps = findComponentProps(component, Modal)
 
@@ -44,7 +43,7 @@ class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "show details when on details command" in {
     //given
-    val props = ErrorPopupProps(show = true, "Some error text", () => (), details = Some("Error details"))
+    val props = ErrorPopupProps("Some error text", () => (), details = Some("Error details"))
     val renderer = createRenderer()
     renderer.render(<(ErrorPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
@@ -59,7 +58,7 @@ class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "hide details when on details command 2nd time" in {
     //given
-    val props = ErrorPopupProps(show = true, "Some error text", () => (), details = Some("Error details"))
+    val props = ErrorPopupProps("Some error text", () => (), details = Some("Error details"))
     val renderer = createRenderer()
     renderer.render(<(ErrorPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
@@ -76,7 +75,7 @@ class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render component without details" in {
     //given
-    val props = ErrorPopupProps(show = true, "Some error text", () => ())
+    val props = ErrorPopupProps("Some error text", () => ())
     val component = <(ErrorPopup())(^.wrapped := props)()
 
     //when
@@ -88,7 +87,7 @@ class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render component with details" in {
     //given
-    val props = ErrorPopupProps(show = true, "Some error text", () => (), details = Some("Error details"))
+    val props = ErrorPopupProps("Some error text", () => (), details = Some("Error details"))
     val component = <(ErrorPopup())(^.wrapped := props)()
 
     //when
@@ -100,7 +99,7 @@ class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "set focusedCommand when onOpen" in {
     //given
-    val props = ErrorPopupProps(show = true, "Some error text", () => ())
+    val props = ErrorPopupProps("Some error text", () => ())
     val renderer = createRenderer()
     renderer.render(<(ErrorPopup())(^.wrapped := props)())
     val comp = renderer.getRenderOutput()
@@ -124,8 +123,7 @@ class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
       else List(closeButton)
 
     assertComponent(result, Modal)({
-      case ModalProps(show, header, buttons, actions, _, onClose, closable, _) =>
-        show shouldBe props.show
+      case ModalProps(header, buttons, actions, _, onClose, closable, _) =>
         header shouldBe None
         buttons shouldBe buttonsList
         actions.enabledCommands shouldBe Set(detailsButton.command, closeButton.command)

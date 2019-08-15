@@ -5,8 +5,7 @@ import scommons.client.util.ActionsData
 import scommons.react._
 import scommons.react.hooks._
 
-case class InputPopupProps(show: Boolean,
-                           message: String,
+case class InputPopupProps(message: String,
                            onOk: String => Unit,
                            onCancel: () => Unit,
                            placeholder: Option[String] = None,
@@ -26,10 +25,10 @@ object InputPopup extends FunctionComponent[InputPopupProps] {
 
     val onOk = () => props.onOk(state.value)
 
-    <(Modal())(^.wrapped := ModalProps(props.show,
-      None,
-      List(Buttons.OK, Buttons.CANCEL),
-      ActionsData(state.actionCommands, _ => {
+    <(Modal())(^.wrapped := ModalProps(
+      header = None,
+      buttons = List(Buttons.OK, Buttons.CANCEL),
+      actions = ActionsData(state.actionCommands, _ => {
         case Buttons.OK.command => onOk()
         case _ => props.onCancel()
       }),

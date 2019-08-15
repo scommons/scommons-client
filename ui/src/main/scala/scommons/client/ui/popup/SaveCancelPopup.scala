@@ -47,7 +47,6 @@ private object SaveCancelPopup extends FunctionComponent[SaveCancelPopupProps] {
     val actionCommands = if (props.isSaveEnabled(data)) enabledActions else disabledActions
 
     <(Modal())(^.wrapped := ModalProps(
-      show = true,
       header = Some(props.title),
       buttons = List(Buttons.SAVE.copy(
         image = ButtonImagesCss.dbSave,

@@ -20,21 +20,19 @@ object TaskManagerUi extends FunctionComponent[TaskManagerUiProps] {
     val errorMessage = props.error.getOrElse("")
 
     <.>()(
-      <(StatusPopup())(^.wrapped := StatusPopupProps(
-        statusMessage,
-        showStatus,
-        onHide = props.onHideStatus
-      ))(),
+      if (showStatus) Some(
+        <(StatusPopup())(^.wrapped := StatusPopupProps(
+          statusMessage,
+          onHide = props.onHideStatus
+        ))()
+      ) else None,
 
       if (props.showLoading) Some(
-        <(LoadingPopup())(^.wrapped := LoadingPopupProps(
-          props.showLoading
-        ))()
+        <(LoadingPopup())()()
       ) else None,
 
       if (showError) Some(
         <(ErrorPopup())(^.wrapped := ErrorPopupProps(
-          showError,
           errorMessage,
           details = props.errorDetails,
           onClose = props.onCloseErrorPopup
