@@ -2,14 +2,15 @@ package scommons.client.ui.select
 
 import scommons.client.ui.select.raw._
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils._
 import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js
 
-class SingleSelectSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
+class SingleSelectSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "call onSelectChange(Some(data)) when onChange(option)" in {
     //given
@@ -162,13 +163,10 @@ class SingleSelectSpec extends TestSpec with ShallowRendererUtils with TestDOMUt
     val component = <(SingleSelect())(^.wrapped := props)()
 
     //when
-    val result = renderIntoDocument(component)
+    domRender(component)
 
     //then
-    val select = findRenderedComponentWithType(result, NativeReactSelect)
-    
-    val container = findReactElement(select)
-    container.getAttribute("class") should include ("react-select-container")
+    val container = domContainer.querySelector(".react-select-container")
     
     val control = container.firstElementChild
     control.getAttribute("class") should include ("react-select__control")

@@ -1,11 +1,8 @@
 package scommons.client.ui.select
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.select.raw.NativeSelect._
 import scommons.client.ui.select.raw.{ReactSelectAction, ReactSelectOption}
-import scommons.react.UiComponent
+import scommons.react._
 
 import scala.scalajs.js
 
@@ -18,10 +15,10 @@ case class SingleSelectProps(selected: Option[SelectData],
                              onInputChange: Option[String => Unit] = None,
                              readOnly: Boolean = false)
 
-object SingleSelect extends UiComponent[SingleSelectProps] {
+object SingleSelect extends FunctionComponent[SingleSelectProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit] { self =>
-    val props = self.props.wrapped
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
 
     <.ReactSelect(
       ^.className := "react-select-container",

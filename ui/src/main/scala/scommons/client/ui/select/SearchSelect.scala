@@ -1,10 +1,7 @@
 package scommons.client.ui.select
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import org.scalajs.dom
-import scommons.react.UiComponent
+import scommons.react._
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -17,14 +14,14 @@ case class SearchSelectProps(selected: Option[SelectData],
                              isClearable: Boolean = false,
                              readOnly: Boolean = false)
 
-object SearchSelect extends UiComponent[SearchSelectProps] {
+object SearchSelect extends ClassComponent[SearchSelectProps] {
 
   private case class SearchSelectState(isLoading: Boolean = false,
                                        value: String = "",
                                        handleId: Option[Int] = None,
                                        options: List[SelectData] = Nil)
 
-  protected def create(): ReactClass = React.createClass[PropsType, SearchSelectState](
+  protected def create(): ReactClass = createClass[SearchSelectState](
     getInitialState = { _ =>
       SearchSelectState()
     },
