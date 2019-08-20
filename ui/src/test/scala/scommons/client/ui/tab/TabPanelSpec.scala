@@ -1,18 +1,20 @@
 package scommons.client.ui.tab
 
-import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.statictags.Element
+import org.scalajs.dom
 import org.scalatest.Assertion
 import scommons.client.ui.Buttons
+import scommons.react._
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils
-import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
-class TabPanelSpec extends TestSpec with ShallowRendererUtils {
+class TabPanelSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
-  it should "call onSelect when select tab" in {
+  it should "call onSelect when select new tab" in {
     //given
     val onSelect = mockFunction[TabItemData, Int, Unit]
     val items = List(
@@ -20,40 +22,38 @@ class TabPanelSpec extends TestSpec with ShallowRendererUtils {
       TabItemData("Tab 2")
     )
     val props = TabPanelProps(items, onSelect = onSelect)
-    val comp = renderIntoDocument(<(TabPanel())(^.wrapped := props)())
-    val buttons = scryRenderedDOMComponentsWithTag(comp, "a")
+    domRender(<(TabPanel())(^.wrapped := props)())
+    val buttons = domContainer.querySelectorAll("a")
     buttons.length shouldBe items.size
-    val tabs = scryRenderedDOMComponentsWithTag(comp, "li")
+    val tabs = domContainer.querySelectorAll("li")
     tabs.length shouldBe items.size
-    tabs(props.selectedIndex).className shouldBe "active"
-    val panels = scryRenderedDOMComponentsWithClass(comp, "tab-pane")
+    tabs(props.selectedIndex).asInstanceOf[dom.Element].getAttribute("class") shouldBe "active"
+    val panels = domContainer.querySelectorAll(".tab-pane")
     panels.length shouldBe items.size
-    panels(props.selectedIndex).className shouldBe "tab-pane active"
+    panels(props.selectedIndex).asInstanceOf[dom.Element].getAttribute("class") shouldBe "tab-pane active"
     val nextSelectIndex = 1
 
     //then
     onSelect.expects(items(nextSelectIndex), nextSelectIndex)
 
     //when
-    ReactTestUtils.Simulate.click(buttons(nextSelectIndex))
-
-    //then
-    tabs(props.selectedIndex).className shouldBe ""
-    tabs(nextSelectIndex).className shouldBe "active"
-    panels(props.selectedIndex).className shouldBe "tab-pane "
-    panels(nextSelectIndex).className shouldBe "tab-pane active"
+    fireDomEvent(Simulate.click(buttons(nextSelectIndex)))
+    fireDomEvent(Simulate.click(buttons(props.selectedIndex)))
   }
 
-  it should "reset selectedIndex when componentWillReceiveProps" in {
+  it should "select tab with selectedIndex when update" in {
     //given
     val content1 = <.div()()
     val content2 = <.div()("Test second tab content")
     val content3 = <.div()("Test third tab content")
+    val wrapper = new FunctionComponent[Unit] {
+      protected def render(props: Props): ReactElement = {
+        content2
+      }
+    }
     val items = List(
       TabItemData("Tab 1", image = Some(Buttons.ADD.image)),
-      TabItemData("Tab 2", component = Some(React.createClass[Unit, Unit] { _ =>
-        content2
-      })),
+      TabItemData("Tab 2", component = Some(wrapper())),
       TabItemData("Tab 3", render = Some(_ => content3))
     )
     val prevProps = TabPanelProps(items)
@@ -77,11 +77,14 @@ class TabPanelSpec extends TestSpec with ShallowRendererUtils {
     val content1 = <.div()()
     val content2 = <.div()("Test second tab content")
     val content3 = <.div()("Test third tab content")
+    val wrapper = new FunctionComponent[Unit] {
+      protected def render(props: Props): ReactElement = {
+        content2
+      }
+    }
     val items = List(
       TabItemData("Tab 1", image = Some(Buttons.ADD.image)),
-      TabItemData("Tab 2", component = Some(React.createClass[Unit, Unit] { _ =>
-        content2
-      })),
+      TabItemData("Tab 2", component = Some(wrapper())),
       TabItemData("Tab 3", render = Some(_ => content3))
     )
     val props = TabPanelProps(items)
@@ -99,11 +102,14 @@ class TabPanelSpec extends TestSpec with ShallowRendererUtils {
     val content1 = <.div()()
     val content2 = <.div()("Test second tab content")
     val content3 = <.div()("Test third tab content")
+    val wrapper = new FunctionComponent[Unit] {
+      protected def render(props: Props): ReactElement = {
+        content2
+      }
+    }
     val items = List(
       TabItemData("Tab 1", image = Some(Buttons.ADD.image)),
-      TabItemData("Tab 2", component = Some(React.createClass[Unit, Unit] { _ =>
-        content2
-      })),
+      TabItemData("Tab 2", component = Some(wrapper())),
       TabItemData("Tab 3", render = Some(_ => content3))
     )
     val props = TabPanelProps(items, selectedIndex = 1)
@@ -121,11 +127,14 @@ class TabPanelSpec extends TestSpec with ShallowRendererUtils {
     val content1 = <.div()()
     val content2 = <.div()("Test second tab content")
     val content3 = <.div()("Test third tab content")
+    val wrapper = new FunctionComponent[Unit] {
+      protected def render(props: Props): ReactElement = {
+        content2
+      }
+    }
     val items = List(
       TabItemData("Tab 1", image = Some(Buttons.ADD.image)),
-      TabItemData("Tab 2", component = Some(React.createClass[Unit, Unit] { _ =>
-        content2
-      })),
+      TabItemData("Tab 2", component = Some(wrapper())),
       TabItemData("Tab 3", render = Some(_ => content3))
     )
     val props = TabPanelProps(items, direction = TabDirection.Bottom)
