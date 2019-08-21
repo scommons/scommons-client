@@ -24,7 +24,7 @@ object TabPanelDemo extends FunctionComponent[Unit] {
       })
     )
 
-    <.div()(
+    <.>()(
       <.h2()("TabPanel"),
       <.p()("Demonstrates tabs functionality."),
       <.p()(
@@ -36,6 +36,7 @@ object TabPanelDemo extends FunctionComponent[Unit] {
           }
         ))()
       ),
+      
       <.h3()("Tabs on the left"),
       <.p()(
         <(TabPanel())(^.wrapped := TabPanelProps(
@@ -47,6 +48,7 @@ object TabPanelDemo extends FunctionComponent[Unit] {
           direction = TabDirection.Left
         ))()
       ),
+      
       <.h3()("Tabs at the bottom"),
       <.p()(
         <(TabPanel())(^.wrapped := TabPanelProps(

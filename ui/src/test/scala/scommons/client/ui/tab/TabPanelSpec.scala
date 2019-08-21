@@ -14,7 +14,7 @@ class TabPanelSpec extends TestSpec
   with ShallowRendererUtils
   with TestDOMUtils {
 
-  it should "call onSelect when select new tab" in {
+  it should "call onSelect only once" in {
     //given
     val onSelect = mockFunction[TabItemData, Int, Unit]
     val items = List(
@@ -34,10 +34,12 @@ class TabPanelSpec extends TestSpec
     val nextSelectIndex = 1
 
     //then
-    onSelect.expects(items(nextSelectIndex), nextSelectIndex)
+    onSelect.expects(items(nextSelectIndex), nextSelectIndex).once()
 
-    //when
+    //when click on new item
     fireDomEvent(Simulate.click(buttons(nextSelectIndex)))
+
+    //when click on selected item
     fireDomEvent(Simulate.click(buttons(props.selectedIndex)))
   }
 

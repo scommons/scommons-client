@@ -1,16 +1,18 @@
 package scommons.client.ui.table
 
+import org.scalajs.dom
 import org.scalatest.Succeeded
 import scommons.client.ui.table.TablePanelCss._
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils
-import scommons.react.test.dom.raw.ReactTestUtils._
+import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
-class TablePanelSpec extends TestSpec with ShallowRendererUtils {
+class TablePanelSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
-  it should "call onSelect once and select row when click on row" in {
+  it should "call onSelect only once" in {
     //given
     val onSelect = mockFunction[TableRowData, Unit]
     val props = TablePanelProps(List(
@@ -19,25 +21,25 @@ class TablePanelSpec extends TestSpec with ShallowRendererUtils {
     ), List(
       TableRowData("1", List("Cell1.1", "Cell1.2")),
       TableRowData("2", List("Cell2.1", "Cell2.2"))
-    ), onSelect = onSelect)
-    val comp = renderIntoDocument(<(TablePanel())(^.wrapped := props)())
-    val rows = scryRenderedDOMComponentsWithClass(comp, tablePanelRow)
+    ), selectedIds = Set("1"), onSelect = onSelect)
+    domRender(<(TablePanel())(^.wrapped := props)())
+    val rows = domContainer.querySelectorAll("tbody > tr")
     rows.length shouldBe props.rows.size
-    val nextSelectIndex = 0
+    val nextSelectIndex = 1
+    rows(0).asInstanceOf[dom.Element].getAttribute("class") shouldBe tablePanelSelectedRow
+    rows(nextSelectIndex).asInstanceOf[dom.Element].getAttribute("class") shouldBe tablePanelRow
 
     //then
     onSelect.expects(props.rows(nextSelectIndex)).once()
 
-    //when & then
-    ReactTestUtils.Simulate.click(rows(nextSelectIndex))
-    rows(nextSelectIndex).className shouldBe tablePanelSelectedRow
+    //when click on new row
+    fireDomEvent(Simulate.click(rows(nextSelectIndex)))
 
-    //when & then
-    ReactTestUtils.Simulate.click(rows(nextSelectIndex))
-    rows(nextSelectIndex).className shouldBe tablePanelSelectedRow
+    //when click on selected row
+    fireDomEvent(Simulate.click(rows(0)))
   }
 
-  it should "reset selectedIds when componentWillReceiveProps" in {
+  it should "select rows with selectedIds when update" in {
     //given
     val prevProps = TablePanelProps(List(
       TableColumnData("Col1"),
