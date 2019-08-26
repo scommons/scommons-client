@@ -1,15 +1,11 @@
 package scommons.client.ui.tree
 
-import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.React.Self
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import scommons.client.ui.ImageLabelWrapper
 import scommons.client.ui.tree.BrowseTreeCss._
 import scommons.client.ui.tree.TreeCss._
-import scommons.client.ui.ImageLabelWrapper
 import scommons.client.util.BrowsePath
-import scommons.react.UiComponent
+import scommons.react._
 
 case class BrowseTreeProps(roots: List[BrowseTreeData],
                            selectedItem: Option[BrowsePath] = None,
@@ -17,18 +13,18 @@ case class BrowseTreeProps(roots: List[BrowseTreeData],
                            openedNodes: Set[BrowsePath] = Set.empty,
                            initiallyOpenedNodes: Set[BrowsePath] = Set.empty)
 
-object BrowseTree extends UiComponent[BrowseTreeProps] {
+object BrowseTree extends ClassComponent[BrowseTreeProps] {
 
   private case class BrowseTreeState(opened: Set[String])
 
-  protected def create(): ReactClass = React.createClass[PropsType, BrowseTreeState](
+  protected def create(): ReactClass = createClass[BrowseTreeState](
     getInitialState = { self =>
       val props = self.props.wrapped
       BrowseTreeState(props.initiallyOpenedNodes.map(_.prefix) ++ props.openedNodes.map(_.prefix))
     },
-    componentWillReceiveProps = { (self, nextProps) =>
-      val props = nextProps.wrapped
-      if (self.props.wrapped != props) {
+    componentDidUpdate = { (self, prevProps, _) =>
+      val props = self.props.wrapped
+      if (props != prevProps.wrapped) {
         val currKeys = BrowseTreeData.flattenNodes(props.roots).map(_.path.prefix).toSet
         self.setState(s => s.copy(opened = (s.opened ++ props.openedNodes.map(_.prefix)).intersect(currKeys)))
       }

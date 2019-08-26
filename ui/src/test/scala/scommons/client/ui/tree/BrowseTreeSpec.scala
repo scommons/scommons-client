@@ -1,15 +1,18 @@
 package scommons.client.ui.tree
 
-import io.github.shogowada.scalajs.reactjs.React
 import org.scalatest.Assertion
 import scommons.client.ui.tree.BrowseTreeCss._
 import scommons.client.ui.tree.TreeCss._
 import scommons.client.ui.{ButtonImagesCss, ImageLabelWrapper}
 import scommons.client.util.BrowsePath
+import scommons.react._
 import scommons.react.test.TestSpec
+import scommons.react.test.dom.util.TestDOMUtils
 import scommons.react.test.util.ShallowRendererUtils
 
-class BrowseTreeSpec extends TestSpec with ShallowRendererUtils {
+class BrowseTreeSpec extends TestSpec
+  with ShallowRendererUtils
+  with TestDOMUtils {
 
   it should "call onSelect function when select new item" in {
     //given
@@ -127,12 +130,15 @@ class BrowseTreeSpec extends TestSpec with ShallowRendererUtils {
     val data = BrowseTreeItemData("test", BrowsePath("/test"), Some(ButtonImagesCss.folder))
     val props = BrowseTreeProps(List(data), selectedItem = Some(data.path))
     val comp = shallowRender(<(BrowseTree())(^.wrapped := props)())
-    val valueWrapper = React.createClass[Unit, Unit] { _ =>
-      findComponentProps(comp, TreeNode).renderValue()
+    val nodeProps = findComponentProps(comp, TreeNode)
+    val valueWrapper = new FunctionComponent[Unit] {
+      protected def render(props: Props): ReactElement = {
+        nodeProps.renderValue()
+      }
     }
 
     //when
-    val result = shallowRender(<(valueWrapper).empty)
+    val result = shallowRender(<(valueWrapper()).empty)
 
     //then
     assertNativeComponent(result, <.div()(
@@ -145,12 +151,15 @@ class BrowseTreeSpec extends TestSpec with ShallowRendererUtils {
     val data = BrowseTreeItemData("test", BrowsePath("/test"))
     val props = BrowseTreeProps(List(data), selectedItem = Some(data.path))
     val comp = shallowRender(<(BrowseTree())(^.wrapped := props)())
-    val valueWrapper = React.createClass[Unit, Unit] { _ =>
-      findComponentProps(comp, TreeNode).renderValue()
+    val nodeProps = findComponentProps(comp, TreeNode)
+    val valueWrapper = new FunctionComponent[Unit] {
+      protected def render(props: Props): ReactElement = {
+        nodeProps.renderValue()
+      }
     }
 
     //when
-    val result = shallowRender(<(valueWrapper).empty)
+    val result = shallowRender(<(valueWrapper()).empty)
 
     //then
     assertNativeComponent(result, <.div()(
@@ -190,48 +199,40 @@ class BrowseTreeSpec extends TestSpec with ShallowRendererUtils {
     )
   }
 
-  it should "render opened node when componentWillReceiveProps" in {
+  it should "render opened node when update" in {
     //given
     val node1 = BrowseTreeNodeData("node 1", BrowsePath("/node-1"))
     val prevProps = BrowseTreeProps(List(node1), openedNodes = Set(node1.path))
-    val renderer = createRenderer()
-    renderer.render(<(BrowseTree())(^.wrapped := prevProps)())
-    val comp = renderer.getRenderOutput()
-    findComponentProps(comp, TreeNode).arrowClass shouldBe browseTreeOpenArrow
+    domRender(<(BrowseTree())(^.wrapped := prevProps)())
+    domContainer.querySelectorAll(s".$browseTreeOpenArrow").length shouldBe 1
     val node2 = BrowseTreeNodeData("node 2", BrowsePath("/node-2"))
     val props = BrowseTreeProps(List(node1, node2), openedNodes = Set(node2.path))
 
     //when
-    renderer.render(<(BrowseTree())(^.wrapped := props)())
+    domRender(<(BrowseTree())(^.wrapped := props)())
 
     //then
-    findProps(renderer.getRenderOutput(), TreeNode).map(_.arrowClass) shouldBe List(
-      browseTreeOpenArrow,
-      browseTreeOpenArrow
-    )
+    domContainer.querySelectorAll(s".$browseTreeOpenArrow").length shouldBe 2
   }
 
   it should "not render opened node when it was removed" in {
     //given
-    val renderer = createRenderer()
     val node1 = BrowseTreeNodeData("node 1", BrowsePath("/node-1"))
     val props = BrowseTreeProps(List(node1), openedNodes = Set(node1.path))
-    renderer.render(<(BrowseTree())(^.wrapped := props)())
-    findComponentProps(renderer.getRenderOutput(), TreeNode).arrowClass shouldBe browseTreeOpenArrow
+    domRender(<(BrowseTree())(^.wrapped := props)())
+    domContainer.querySelectorAll(s".$browseTreeOpenArrow").length shouldBe 1
     val node2 = BrowseTreeNodeData("node 2", BrowsePath("/node-2"))
     val propsV2 = BrowseTreeProps(List(node2), openedNodes = Set(node2.path))
-    renderer.render(<(BrowseTree())(^.wrapped := propsV2)())
-    findComponentProps(renderer.getRenderOutput(), TreeNode).arrowClass shouldBe browseTreeOpenArrow
+    domRender(<(BrowseTree())(^.wrapped := propsV2)())
+    domContainer.querySelectorAll(s".$browseTreeOpenArrow").length shouldBe 1
     val propsV3 = BrowseTreeProps(List(node1, node2))
 
     //when
-    renderer.render(<(BrowseTree())(^.wrapped := propsV3)())
+    domRender(<(BrowseTree())(^.wrapped := propsV3)())
 
     //then
-    findProps(renderer.getRenderOutput(), TreeNode).map(_.arrowClass) shouldBe List(
-      browseTreeClosedArrow,
-      browseTreeOpenArrow
-    )
+    domContainer.querySelectorAll(s".$browseTreeClosedArrow").length shouldBe 1
+    domContainer.querySelectorAll(s".$browseTreeOpenArrow").length shouldBe 1
   }
 
   it should "render opened child nodes" in {
