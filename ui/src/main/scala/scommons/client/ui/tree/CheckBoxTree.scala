@@ -1,13 +1,9 @@
 package scommons.client.ui.tree
 
-import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.React.Self
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import scommons.client.ui.{ImageCheckBox, ImageCheckBoxProps, TriState}
 import scommons.client.ui.tree.TreeCss._
-import scommons.react.UiComponent
+import scommons.client.ui.{ImageCheckBox, ImageCheckBoxProps, TriState}
+import scommons.react._
 
 case class CheckBoxTreeProps(roots: List[CheckBoxTreeData],
                              onChange: (CheckBoxTreeData, TriState) => Unit = (_, _) => (),
@@ -15,22 +11,22 @@ case class CheckBoxTreeProps(roots: List[CheckBoxTreeData],
                              openNodes: Set[String] = Set.empty,
                              closeNodes: Set[String] = Set.empty)
 
-object CheckBoxTree extends UiComponent[CheckBoxTreeProps] {
+object CheckBoxTree extends ClassComponent[CheckBoxTreeProps] {
 
   private case class CheckBoxTreeState(opened: Set[String])
 
-  protected def create(): ReactClass = React.createClass[PropsType, CheckBoxTreeState](
+  protected def create(): ReactClass = createClass[CheckBoxTreeState](
     getInitialState = { self =>
       val props = self.props.wrapped
       CheckBoxTreeState(props.openNodes -- props.closeNodes)
     },
-    componentWillReceiveProps = { (self, nextProps) =>
-      val props = nextProps.wrapped
-      if (self.props.wrapped.openNodes != props.openNodes) {
+    componentDidUpdate = { (self, prevProps, _) =>
+      val props = self.props.wrapped
+      if (props.openNodes != prevProps.wrapped.openNodes) {
         val currKeys = CheckBoxTreeData.flattenNodes(props.roots).map(_.key).toSet
         self.setState(s => s.copy(opened = (s.opened ++ props.openNodes).intersect(currKeys)))
       }
-      if (self.props.wrapped.closeNodes != props.closeNodes) {
+      if (props.closeNodes != prevProps.wrapped.closeNodes) {
         val currKeys = CheckBoxTreeData.flattenNodes(props.roots).map(_.key).toSet
         self.setState(s => s.copy(opened = (s.opened -- props.closeNodes).intersect(currKeys)))
       }
