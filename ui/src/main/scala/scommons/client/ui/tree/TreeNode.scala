@@ -1,12 +1,7 @@
 package scommons.client.ui.tree
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.React.Self
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import scommons.react.UiComponent
+import scommons.react._
 
 case class TreeNodeProps(isNode: Boolean,
                          paddingLeft: Int,
@@ -19,10 +14,10 @@ case class TreeNodeProps(isNode: Boolean,
                          onExpand: () => Unit,
                          renderValue: () => ReactElement)
 
-object TreeNode extends UiComponent[TreeNodeProps] {
+object TreeNode extends FunctionComponent[TreeNodeProps] {
 
-  protected def create(): ReactClass = React.createClass[PropsType, Unit]{ self =>
-    val props = self.props.wrapped
+  protected def render(compProps: Props): ReactElement = {
+    val props = compProps.wrapped
 
     val item = <.div(
       ^.className := props.itemClass,
@@ -38,7 +33,7 @@ object TreeNode extends UiComponent[TreeNodeProps] {
     )(
       <.div(^.className := props.nodeClass)(
         if (props.isNode) {
-          <.div(^.className := props.nodeIconClass, ^.onClick := arrowClick(self))(
+          <.div(^.className := props.nodeIconClass, ^.onClick := arrowClick(props))(
             <.div(^.className := props.arrowClass)()
           )
         }
@@ -52,16 +47,15 @@ object TreeNode extends UiComponent[TreeNodeProps] {
     if (props.isNode) {
       <.div()(
         item,
-        self.props.children
+        compProps.children
       )
     }
     else item
   }
 
-  private[tree] def arrowClick(self: Self[TreeNodeProps, Unit]): MouseSyntheticEvent => Unit = { event =>
+  private[tree] def arrowClick(props: TreeNodeProps): MouseSyntheticEvent => Unit = { event =>
     event.stopPropagation()
 
-    val props = self.props.wrapped
     props.onExpand()
   }
 }

@@ -1,63 +1,55 @@
 package scommons.client.ui.tree
 
-import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.tree.TreeNodeSpec.MouseSyntheticEventMock
+import scommons.react._
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.ReactTestUtils
-import scommons.react.test.dom.raw.ReactTestUtils._
 import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.util.ShallowRendererUtils
 
 import scala.scalajs.js.annotation.JSExportAll
 
-class TreeNodeSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils {
+class TreeNodeSpec extends TestSpec with TestDOMUtils {
 
   it should "call onSelect when click on item div" in {
     //given
     val onSelect = mockFunction[Unit]
     val props = getTreeNodeProps(isNode = true, 0, onSelect = Some(onSelect))
-    val comp = renderIntoDocument(getTreeNode(props))
-    val itemDiv = findRenderedDOMComponentWithClass(comp, props.itemClass)
+    domRender(getTreeNode(props))
+    val itemDiv = domContainer.querySelector(s".${props.itemClass}")
 
     //then
     onSelect.expects()
 
     //when
-    ReactTestUtils.Simulate.click(itemDiv)
+    fireDomEvent(Simulate.click(itemDiv))
   }
 
   it should "call onExpand when click on node arrow" in {
     //given
     val onExpand = mockFunction[Unit]
     val props = getTreeNodeProps(isNode = true, 0, onExpand = onExpand)
-    val comp = renderIntoDocument(getTreeNode(props))
-    val arrowDiv = findRenderedDOMComponentWithClass(comp, props.nodeIconClass)
+    domRender(getTreeNode(props))
+    val arrowDiv = domContainer.querySelector(s".${props.nodeIconClass}")
 
     //then
     onExpand.expects()
 
     //when
-    ReactTestUtils.Simulate.click(arrowDiv)
+    fireDomEvent(Simulate.click(arrowDiv))
   }
 
   it should "call stopPropagation on click event" in {
     //given
     val onExpand = mockFunction[Unit]
     val props = getTreeNodeProps(isNode = true, 0, onExpand = onExpand)
-    val self = mock[Self[TreeNodeProps, Unit]]
-    val selfProps = mock[Props[TreeNodeProps]]
     val event = mock[MouseSyntheticEventMock]
 
     //then
     (event.stopPropagation _).expects()
-    (self.props _).expects().returning(selfProps)
-    (selfProps.wrapped _).expects().returning(props)
     onExpand.expects()
 
     //when
-    TreeNode.arrowClick(self)(event.asInstanceOf[MouseSyntheticEvent])
+    TreeNode.arrowClick(props)(event.asInstanceOf[MouseSyntheticEvent])
   }
 
   it should "render top item" in {
@@ -67,18 +59,18 @@ class TreeNodeSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils 
     val component = getTreeNode(props)
 
     //when
-    val result = shallowRender(component)
+    domRender(component)
 
     //then
-    assertNativeComponent(result,
-      <.div(^.className := props.itemClass)(
-        <.div(^.className := props.nodeClass)(
-          <.div(^.className := props.valueClass)(
+    assertDOMElement(domContainer, <.div()(
+      <.div(^("class") := props.itemClass)(
+        <.div(^("class") := props.nodeClass)(
+          <.div(^("class") := props.valueClass)(
             <.label()(text)
           )
         )
       )
-    )
+    ))
   }
 
   it should "render empty node" in {
@@ -88,10 +80,10 @@ class TreeNodeSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils 
     val component = getTreeNode(props)
 
     //when
-    val result = renderIntoDocument(component)
+    domRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
+    assertDOMElement(domContainer, <.div()(
       <.div()(
         <.div(^("class") := props.itemClass, ^("style") := "padding-left: 1px;")(
           <.div(^("class") := props.nodeClass)(
@@ -104,7 +96,7 @@ class TreeNodeSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils 
           )
         )
       )
-    )
+    ))
   }
 
   it should "render non-empty node" in {
@@ -117,10 +109,10 @@ class TreeNodeSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils 
     ))
 
     //when
-    val result = renderIntoDocument(component)
+    domRender(component)
 
     //then
-    assertDOMElement(findReactElement(result),
+    assertDOMElement(domContainer, <.div()(
       <.div()(
         <.div(^("class") := props.itemClass, ^("style") := "padding-left: 2px;")(
           <.div(^("class") := props.nodeClass)(
@@ -140,7 +132,7 @@ class TreeNodeSpec extends TestSpec with ShallowRendererUtils with TestDOMUtils 
           )
         )
       )
-    )
+    ))
   }
 
   private def getTreeNodeProps(isNode: Boolean,
