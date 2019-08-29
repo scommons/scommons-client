@@ -1,15 +1,11 @@
 package scommons.client.showcase.demo
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.{HTML, HTMLProps}
+import scommons.react._
 
-object HTMLDemo {
+object HTMLDemo extends FunctionComponent[Unit] {
 
-  def apply(): ReactClass = reactClass
-
-  private lazy val reactClass = React.createClass[Unit, Unit] { _ =>
+  protected def render(props: Props): ReactElement = {
     <.div(^.style := Map(
       "position" -> "relative",
       "overflow" -> "auto"

@@ -1,17 +1,13 @@
 package scommons.client.showcase.demo
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.ButtonImagesCss._
 import scommons.client.ui._
 import scommons.client.util.ActionsData
+import scommons.react._
 
-object ButtonsDemo {
+object ButtonsDemo extends FunctionComponent[Unit] {
 
-  def apply(): ReactClass = reactClass
-
-  private lazy val reactClass = React.createClass[Unit, Unit] { _ =>
+  protected def render(props: Props): ReactElement = {
     val imageButtons = List(
       Buttons.ADD,
       Buttons.REMOVE,
@@ -32,8 +28,7 @@ object ButtonsDemo {
       <.p()(
         <(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
           imageButtons,
-          ActionsData.empty.copy(enabledCommands = Set(Buttons.ADD.command, "primary")),
-          group = false
+          ActionsData.empty.copy(enabledCommands = Set(Buttons.ADD.command, "primary"))
         ))()
       ),
       <.h3()("Group"),

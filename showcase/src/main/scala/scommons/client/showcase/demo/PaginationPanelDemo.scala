@@ -1,15 +1,11 @@
 package scommons.client.showcase.demo
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.page._
+import scommons.react._
 
-object PaginationPanelDemo {
+object PaginationPanelDemo extends FunctionComponent[Unit] {
 
-  def apply(): ReactClass = reactClass
-
-  private lazy val reactClass = React.createClass[Unit, Unit] { _ =>
+  protected def render(props: Props): ReactElement = {
     <.div()(
       <.h2()("PaginationPanel"),
       <.p()("Demonstrates pagination functionality."),

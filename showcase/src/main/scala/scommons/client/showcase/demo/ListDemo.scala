@@ -1,17 +1,12 @@
 package scommons.client.showcase.demo
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui.ButtonImagesCss
 import scommons.client.ui.list._
+import scommons.react._
 
-object ListDemo {
-  
-  def apply(): ReactClass = reactClass
-  private lazy val reactClass = createComp
-  
-  private def createComp = React.createClass[Unit, Unit] { _ =>
+object ListDemo extends FunctionComponent[Unit] {
+
+  protected def render(props: Props): ReactElement = {
     <.div()(
       <.h2()("ListBox"),
       <.p()("Demonstrates list box functionality."),

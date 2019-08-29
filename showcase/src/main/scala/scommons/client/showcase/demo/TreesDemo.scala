@@ -1,20 +1,17 @@
 package scommons.client.showcase.demo
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import scommons.client.ui._
 import scommons.client.ui.tree._
+import scommons.react._
+import scommons.react.hooks._
 
-case class TreesState(checkboxValue: TriState,
-                      roots: List[CheckBoxTreeData])
+object TreesDemo extends FunctionComponent[Unit] {
 
-object TreesDemo {
+  private case class TreesState(checkboxValue: TriState,
+                                roots: List[CheckBoxTreeData])
 
-  def apply(): ReactClass = reactClass
-
-  private lazy val reactClass = React.createClass[Unit, TreesState](
-    getInitialState = { _ =>
+  protected def render(props: Props): ReactElement = {
+    val (state, setState) = useStateUpdater { () =>
       val item1 = CheckBoxTreeItemData("i1", TriState.Deselected, "Item 1")
       val item2 = CheckBoxTreeItemData("i2", TriState.Deselected, "Item 2")
       val item3 = CheckBoxTreeItemData("i3", TriState.Selected, "Item 3")
@@ -28,35 +25,34 @@ object TreesDemo {
       val roots = List(node1, node3, item1)
       
       TreesState(TriState.Indeterminate, roots)
-    },
-    render = { self =>
-      <.div()(
-        <.h2()("CheckBoxTree"),
-        <.p()("Tree component with checkboxes in nodes/leafs."),
-        <.p()(
-          <(CheckBoxTree())(^.wrapped := CheckBoxTreeProps(
-            roots = self.state.roots,
-            onChange = { (data, value) =>
-              self.setState(s => s.copy(roots = updateCheckBoxTree(s.roots, data, value)))
-            },
-            openNodes = Set("n2", "n3")
-          ))()
-        ),
-        <.h3()("Read-only CheckBoxTree"),
-        <.p()("Pre-filled Tree with read-only checkboxes in nodes/leafs."),
-        <.p()(
-          <(CheckBoxTree())(^.wrapped := CheckBoxTreeProps(
-            roots = self.state.roots,
-            onChange = { (data, value) =>
-              self.setState(s => s.copy(roots = updateCheckBoxTree(s.roots, data, value)))
-            },
-            openNodes = Set("n2", "n3"),
-            readOnly = true
-          ))()
-        )
-      )
     }
-  )
+    
+    <.div()(
+      <.h2()("CheckBoxTree"),
+      <.p()("Tree component with checkboxes in nodes/leafs."),
+      <.p()(
+        <(CheckBoxTree())(^.wrapped := CheckBoxTreeProps(
+          roots = state.roots,
+          onChange = { (data, value) =>
+            setState(s => s.copy(roots = updateCheckBoxTree(s.roots, data, value)))
+          },
+          openNodes = Set("n2", "n3")
+        ))()
+      ),
+      <.h3()("Read-only CheckBoxTree"),
+      <.p()("Pre-filled Tree with read-only checkboxes in nodes/leafs."),
+      <.p()(
+        <(CheckBoxTree())(^.wrapped := CheckBoxTreeProps(
+          roots = state.roots,
+          onChange = { (data, value) =>
+            setState(s => s.copy(roots = updateCheckBoxTree(s.roots, data, value)))
+          },
+          openNodes = Set("n2", "n3"),
+          readOnly = true
+        ))()
+      )
+    )
+  }
 
   private def updateCheckBoxTree(roots: List[CheckBoxTreeData],
                                  data: CheckBoxTreeData,

@@ -12,7 +12,7 @@ case class ListBoxProps(items: List[ListBoxData],
 
 object ListBox extends ClassComponent[ListBoxProps] {
 
-  private type ListBoxSelf = Self[PropsType, ListBoxState]
+  private type ListBoxSelf = Self[ListBoxProps, ListBoxState]
 
   private case class ListBoxState(selectedIds: Set[String])
 
