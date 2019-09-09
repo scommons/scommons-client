@@ -8,25 +8,6 @@ import scommons.react.test.util.ShallowRendererUtils
 
 class ErrorPopupSpec extends TestSpec with ShallowRendererUtils {
 
-  it should "use stackTrace as error details when create props with exception" in {
-    //given
-    val nestedCause = new Exception("test nestedCause exception")
-    val cause = new Exception("test cause exception", nestedCause)
-    val exception = new Exception("test exception", cause)
-    val onClose = () => ()
-
-    //when
-    val props = ErrorPopupProps("Some error text", exception, onClose)
-
-    //then
-    props.error shouldBe "Some error text"
-    props.onClose shouldBe onClose
-    props.details shouldBe Some(ErrorPopup.printStackTrace(exception))
-    props.details.get should include ("test exception")
-    props.details.get should include ("test cause exception")
-    props.details.get should include ("test nestedCause exception")
-  }
-
   it should "call onClose function when on close command" in {
     //given
     val onClose = mockFunction[Unit]

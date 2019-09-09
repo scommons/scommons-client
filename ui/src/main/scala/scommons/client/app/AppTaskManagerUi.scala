@@ -1,16 +1,25 @@
-package scommons.client.task
+package scommons.client.app
 
+import scommons.api.ApiResponse
 import scommons.client.ui.popup._
 import scommons.react._
+import scommons.react.redux.task.TaskManagerUiProps
 
-case class TaskManagerUiProps(showLoading: Boolean,
-                              status: Option[String],
-                              onHideStatus: () => Unit,
-                              error: Option[String],
-                              errorDetails: Option[String],
-                              onCloseErrorPopup: () => Unit)
+import scala.util.{Success, Try}
 
-object TaskManagerUi extends FunctionComponent[TaskManagerUiProps] {
+/**
+  * Displays status of running tasks.
+  */
+object AppTaskManagerUi extends FunctionComponent[TaskManagerUiProps] {
+
+  var errorHandler: PartialFunction[Try[_], (Option[String], Option[String])] = {
+    case Success(result) => result match {
+      case res: ApiResponse if res.status.nonSuccessful =>
+        (Some(res.status.error.getOrElse("Non-successful response")), res.status.details)
+      case _ =>
+        (None, None)
+    }
+  }
 
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped

@@ -134,7 +134,7 @@ object PopupsDemo extends FunctionComponent[Unit] {
         if (state.showError) Some(
           <(ErrorPopup())(^.wrapped := ErrorPopupProps(
             error = "Some error occurred",
-            exception = new Exception(),
+            details = Some("Some\n\terror\n\t\tdetails"),
             onClose = { () =>
               setState(_.copy(showError = false))
             }

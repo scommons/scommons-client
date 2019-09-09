@@ -1,13 +1,42 @@
-package scommons.client.task
+package scommons.client.app
 
 import org.scalatest.Succeeded
+import scommons.api.{ApiStatus, StatusResponse}
 import scommons.client.ui.popup._
 import scommons.react._
+import scommons.react.redux.task.TaskManagerUiProps
 import scommons.react.test.TestSpec
 import scommons.react.test.raw.ShallowInstance
 import scommons.react.test.util.ShallowRendererUtils
 
-class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
+import scala.util.Success
+
+class AppTaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
+
+  it should "return error if unsuccessful response in errorHandler" in {
+    //given
+    val status = ApiStatus(500, "Some API error", "Some error details")
+    val value = Success(StatusResponse(status))
+
+    //when
+    val (error, errorDetails) = AppTaskManagerUi.errorHandler(value)
+
+    //then
+    error shouldBe status.error
+    errorDetails shouldBe status.details
+  }
+
+  it should "return None if successful response in errorHandler" in {
+    //given
+    val value = Success(StatusResponse(ApiStatus.Ok))
+
+    //when
+    val (error, errorDetails) = AppTaskManagerUi.errorHandler(value)
+
+    //then
+    error shouldBe None
+    errorDetails shouldBe None
+  }
 
   it should "call onHideStatus function when onHide status popup" in {
     //given
@@ -17,7 +46,7 @@ class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
       status = Some("Fetching data"),
       onHideStatus = onHideStatus
     )
-    val comp = shallowRender(<(TaskManagerUi())(^.wrapped := props)())
+    val comp = shallowRender(<(AppTaskManagerUi())(^.wrapped := props)())
     val statusProps = findComponentProps(comp, StatusPopup)
 
     //then
@@ -34,7 +63,7 @@ class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
       error = Some("Some error"),
       onCloseErrorPopup = onCloseErrorPopup
     )
-    val comp = shallowRender(<(TaskManagerUi())(^.wrapped := props)())
+    val comp = shallowRender(<(AppTaskManagerUi())(^.wrapped := props)())
     val errorProps = findComponentProps(comp, ErrorPopup)
 
     //then
@@ -50,7 +79,7 @@ class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
       showLoading = true,
       status = Some("Fetching data")
     )
-    val component = <(TaskManagerUi())(^.wrapped := props)()
+    val component = <(AppTaskManagerUi())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -64,7 +93,7 @@ class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
     val props = getTaskManagerUiProps(
       status = Some("Fetching data")
     )
-    val component = <(TaskManagerUi())(^.wrapped := props)()
+    val component = <(AppTaskManagerUi())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -79,7 +108,7 @@ class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
       status = Some("Fetching data"),
       error = Some("Some error")
     )
-    val component = <(TaskManagerUi())(^.wrapped := props)()
+    val component = <(AppTaskManagerUi())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)
@@ -94,7 +123,7 @@ class TaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
       error = Some("Some error"),
       errorDetails = Some("Some error details")
     )
-    val component = <(TaskManagerUi())(^.wrapped := props)()
+    val component = <(AppTaskManagerUi())(^.wrapped := props)()
 
     //when
     val result = shallowRender(component)

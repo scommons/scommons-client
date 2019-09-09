@@ -10,16 +10,6 @@ case class ErrorPopupProps(error: String,
                            onClose: () => Unit,
                            details: Option[String] = None)
 
-object ErrorPopupProps {
-
-  def apply(error: String,
-            exception: Throwable,
-            onClose: () => Unit): ErrorPopupProps = {
-
-    ErrorPopupProps(error, onClose, Some(ErrorPopup.printStackTrace(exception)))
-  }
-}
-
 object ErrorPopup extends FunctionComponent[ErrorPopupProps] {
 
   private case class ErrorPopupState(showDetails: Boolean = false,
@@ -64,54 +54,5 @@ object ErrorPopup extends FunctionComponent[ErrorPopupProps] {
 
   private def getFullText(props: ErrorPopupProps): String = {
     HTML.makeHtmlText(s"${props.error}\n\n${props.details.getOrElse("")}")
-  }
-
-  def printStackTrace(x: Throwable): String = {
-    val sb = new StringBuilder(x.toString)
-    val trace = x.getStackTrace
-    for (t <- trace) {
-      sb.append("\n\tat&nbsp").append(t)
-    }
-
-    val cause = x.getCause
-    if (cause != null) {
-      printStackTraceAsCause(sb, cause, trace)
-    }
-
-    sb.toString
-  }
-
-  /**
-    * Print stack trace as a cause for the specified stack trace.
-    */
-  private def printStackTraceAsCause(sb: StringBuilder,
-                                     cause: Throwable,
-                                     causedTrace: Array[StackTraceElement]): Unit = {
-
-    // Compute number of frames in common between this and caused
-    val trace = cause.getStackTrace
-    var m = trace.length - 1
-    var n = causedTrace.length - 1
-    while (m >= 0 && n >= 0 && trace(m) == causedTrace(n)) {
-      m -= 1
-      n -= 1
-    }
-
-    val framesInCommon = trace.length - 1 - m
-    sb.append("\nCaused by: " + cause)
-
-    for (i <- 0 to m) {
-      sb.append("\n\tat&nbsp").append(trace(i))
-    }
-
-    if (framesInCommon != 0) {
-      sb.append("\n\t...&nbsp").append(framesInCommon).append("&nbspmore")
-    }
-
-    // Recurse if we have a cause
-    val ourCause = cause.getCause
-    if (ourCause != null) {
-      printStackTraceAsCause(sb, ourCause, trace)
-    }
   }
 }
