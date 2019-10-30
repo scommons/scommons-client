@@ -10,7 +10,7 @@ import scala.scalajs.js.annotation.JSExportAll
 
 class RouteParamsSpec extends TestSpec {
 
-  it should "return PathParams with pathname from the router location" in {
+  it should "return PathParams from pathname when pathParams" in {
     //given
     val routerProps = mock[RouterProps]
     val location = mock[LocationMock]
@@ -25,6 +25,25 @@ class RouteParamsSpec extends TestSpec {
     
     //then
     result.path shouldBe pathname
+  }
+  
+  it should "return PathParams from pathname and search when allParams" in {
+    //given
+    val routerProps = mock[RouterProps]
+    val location = mock[LocationMock]
+    val pathname = "/app/1/2//3/"
+    val search = "?testId=123"
+    val routeParams = new RouteParams(routerProps)
+    
+    (routerProps.location _).expects().returning(location.asInstanceOf[Location])
+    (location.pathname _).expects().returning(pathname)
+    (location.search _).expects().returning(search)
+
+    //when
+    val result = routeParams.allParams
+    
+    //then
+    result.path shouldBe s"$pathname$search"
   }
   
   it should "push url to the browser history" in {
@@ -49,6 +68,7 @@ object RouteParamsSpec {
   trait LocationMock {
 
     def pathname: String
+    def search: String
   }
   
   @JSExportAll

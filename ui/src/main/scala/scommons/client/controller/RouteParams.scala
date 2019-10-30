@@ -2,9 +2,14 @@ package scommons.client.controller
 
 import io.github.shogowada.scalajs.reactjs.router.RouterProps.RouterProps
 
-class RouteParams(routerProps: RouterProps) {
+class RouteParams(props: RouterProps) {
 
-  def pathParams: PathParams = PathParams(routerProps.location.pathname)
+  def pathParams: PathParams = PathParams(props.location.pathname)
   
-  def push(url: String): Unit = routerProps.history.push(url)
+  def allParams: PathParams = {
+    val location = props.location
+    PathParams(s"${location.pathname}${location.search}")
+  }
+  
+  def push(url: String): Unit = props.history.push(url)
 }
