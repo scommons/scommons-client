@@ -1,6 +1,6 @@
 package scommons.client.ui.popup
 
-import scommons.client.ui.Buttons
+import scommons.client.ui.{Buttons, UiSettings}
 import scommons.client.util.ActionsData
 import scommons.react._
 import scommons.react.hooks._
@@ -34,7 +34,7 @@ object OkPopup extends FunctionComponent[OkPopupProps] {
     ))(
       <.div(^.className := "row-fluid")(
         props.image.map { image =>
-          <.img(^.className := image, ^.src := "")()
+          <.img(^.className := image, ^.src := UiSettings.imgClearCacheUrl)()
         },
         <.p()(props.message)
       )

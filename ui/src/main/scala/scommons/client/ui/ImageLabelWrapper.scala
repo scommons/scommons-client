@@ -16,7 +16,7 @@ object ImageLabelWrapper {
   private val nonAlignedTextStyle = alignedTextStyle - "verticalAlign"
 
   def apply(image: String, maybeText: Option[String], alignText: Boolean = true): List[Element] = {
-    val imageElement = <.img(^.className := image, ^.src := "")()
+    val imageElement = <.img(^.className := image, ^.src := UiSettings.imgClearCacheUrl)()
 
     maybeText match {
       case None => List(imageElement)

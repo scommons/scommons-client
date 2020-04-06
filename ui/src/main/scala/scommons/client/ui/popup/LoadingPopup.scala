@@ -1,5 +1,6 @@
 package scommons.client.ui.popup
 
+import scommons.client.ui.UiSettings
 import scommons.react._
 
 object LoadingPopup extends FunctionComponent[Unit] {
@@ -12,7 +13,7 @@ object LoadingPopup extends FunctionComponent[Unit] {
       overlayClass = PopupCss.loadingOverlay,
       popupClass = PopupCss.loadingContent
     ))(
-      <.img(^.className := PopupCss.loadingImg, ^.src := "")()
+      <.img(^.className := PopupCss.loadingImg, ^.src := UiSettings.imgClearCacheUrl)()
     )
   }
 }

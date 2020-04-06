@@ -1,6 +1,6 @@
 package scommons.client.ui.popup
 
-import scommons.client.ui.SimpleButtonData
+import scommons.client.ui.{SimpleButtonData, UiSettings}
 import scommons.client.ui.popup.YesNoCancelOption._
 import scommons.client.util.ActionsData
 import scommons.react._
@@ -39,7 +39,7 @@ object YesNoPopup extends FunctionComponent[YesNoPopupProps] {
     ))(
       <.div(^.className := "row-fluid")(
         props.image.map { image =>
-          <.img(^.className := image, ^.src := "")()
+          <.img(^.className := image, ^.src := UiSettings.imgClearCacheUrl)()
         },
         <.p()(props.message)
       )

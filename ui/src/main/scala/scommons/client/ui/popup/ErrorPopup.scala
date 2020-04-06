@@ -1,7 +1,7 @@
 package scommons.client.ui.popup
 
 import scommons.client.ui.icon.IconCss
-import scommons.client.ui.{HTML, HTMLProps, SimpleButtonData}
+import scommons.client.ui.{HTML, HTMLProps, SimpleButtonData, UiSettings}
 import scommons.client.util.ActionsData
 import scommons.react._
 import scommons.react.hooks._
@@ -41,7 +41,7 @@ object ErrorPopup extends FunctionComponent[ErrorPopupProps] {
       }
     ))(
       <.div(^.className := "row-fluid")(
-        <.img(^.className := IconCss.dialogError, ^.src := "")(),
+        <.img(^.className := IconCss.dialogError, ^.src := UiSettings.imgClearCacheUrl)(),
         <(HTML())(^.wrapped := HTMLProps(
           if (state.showDetails) getFullText(props)
           else props.error
