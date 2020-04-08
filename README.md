@@ -44,6 +44,12 @@ the proper dependency resolver to your `build.sbt` settings:
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 ```
 
+### How to use it
+
+* [TablePanelDemo](showcase/src/main/scala/scommons/client/showcase/table/TablePanelDemo.scala) => [tests](showcase/src/test/scala/scommons/client/showcase/table/TablePanelDemoSpec.scala)
+  * [SimpleTablePanel](showcase/src/main/scala/scommons/client/showcase/table/SimpleTablePanel.scala) => [tests](showcase/src/test/scala/scommons/client/showcase/table/SimpleTablePanelSpec.scala)
+  * [CustomTablePanel](showcase/src/main/scala/scommons/client/showcase/table/CustomTablePanel.scala) => [tests](showcase/src/test/scala/scommons/client/showcase/table/CustomTablePanelSpec.scala)
+
 ### How to Build
 
 To build and run all the tests use the following command:

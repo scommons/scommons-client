@@ -4,12 +4,47 @@ import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.table.TablePanelCss._
 import scommons.react._
 
-case class TablePanelProps(header: List[TableColumnData],
-                           rows: List[TableRowData],
-                           selectedIds: Set[String] = Set.empty,
-                           onSelect: TableRowData => Unit = _ => ())
+case class TablePanelProps[K, T](header: List[TableColumnData],
+                                 rows: Seq[T],
+                                 keyExtractor: T => K,
+                                 rowClassExtractor: (T, Boolean) => String,
+                                 cellRenderer: (T, Int) => ReactElement,
+                                 selectedIds: Set[K],
+                                 onSelect: T => Unit)
 
-object TablePanel extends FunctionComponent[TablePanelProps] {
+object TablePanelProps {
+  
+  private lazy val _defaultRowClassExtractor = { (_: Any, isSelected: Boolean) =>
+    if (isSelected) tablePanelSelectedRow
+    else tablePanelRow
+  }
+
+  def defaultRowClassExtractor[T]: (T, Boolean) => String = {
+    _defaultRowClassExtractor.asInstanceOf[(T, Boolean) => String]
+  }
+
+  def apply(header: List[TableColumnData],
+            rows: List[TableRowData],
+            selectedIds: Set[String] = Set.empty,
+            onSelect: TableRowData => Unit = _ => ()): TablePanelProps[String, TableRowData] = {
+    
+    new TablePanelProps[String, TableRowData](
+      header = header,
+      rows = rows,
+      keyExtractor = _.id,
+      rowClassExtractor = defaultRowClassExtractor,
+      cellRenderer = { (data, index) =>
+        data.cells(index).asInstanceOf[ReactElement]
+      },
+      selectedIds = selectedIds,
+      onSelect = onSelect
+    )
+  }
+}
+
+object TablePanel extends TablePanel[String, TableRowData]
+
+class TablePanel[K, T] extends FunctionComponent[TablePanelProps[K, T]] {
 
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped
@@ -18,16 +53,18 @@ object TablePanel extends FunctionComponent[TablePanelProps] {
       <.th(^.colspan := 1)(column.title)
     }
 
-    val tableBody = props.rows.map { row =>
-      val rowClass =
-        if (isRowSelected(props, row)) tablePanelSelectedRow
-        else tablePanelRow
+    val tableBody = props.rows.map { data =>
+      val key = props.keyExtractor(data)
+      val rowClass = props.rowClassExtractor(data, isRowSelected(props, key))
 
       <.tr(
+        ^.key := s"$key",
         ^.className := rowClass,
-        ^.onClick := rowClick(props, row)
-      )(row.cells.map { cell =>
-        <.td()(cell)
+        ^.onClick := rowClick(props, key, data)
+      )(props.header.indices.toList.map { cellIndex =>
+        <.td(^.key := s"$cellIndex")(
+          props.cellRenderer(data, cellIndex)
+        )
       })
     }
 
@@ -39,12 +76,12 @@ object TablePanel extends FunctionComponent[TablePanelProps] {
     )
   }
 
-  private def isRowSelected(props: TablePanelProps, row: TableRowData): Boolean = {
-    props.selectedIds.contains(row.id)
+  private def isRowSelected(props: TablePanelProps[K, T], key: K): Boolean = {
+    props.selectedIds.contains(key)
   }
 
-  private def rowClick(props: TablePanelProps, row: TableRowData): MouseSyntheticEvent => Unit = { _ =>
-    if (!isRowSelected(props, row)) {
+  private def rowClick(props: TablePanelProps[K, T], key: K, row: T): MouseSyntheticEvent => Unit = { _ =>
+    if (!isRowSelected(props, key)) {
       //event.stopPropagation()
 
       props.onSelect(row)

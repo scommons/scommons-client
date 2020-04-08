@@ -1,6 +1,7 @@
 package scommons.client.showcase
 
 import scommons.client.showcase.demo._
+import scommons.client.showcase.table.TablePanelDemo
 import scommons.client.ui.Buttons
 import scommons.client.ui.tree._
 import scommons.client.util.{ActionsData, BrowsePath}

@@ -103,7 +103,7 @@ class TablePanelSpec extends TestSpec
     assertTablePanel(result, props)
   }
 
-  private def assertTablePanel(result: ShallowInstance, props: TablePanelProps): Unit = {
+  private def assertTablePanel(result: ShallowInstance, props: TablePanelProps[String, TableRowData]): Unit = {
     val expectedHeader = props.header.map { column =>
       <.th(^("colSpan") := "1")(column.title)
     }
@@ -113,8 +113,8 @@ class TablePanelSpec extends TestSpec
         if (props.selectedIds.contains(row.id)) tablePanelSelectedRow
         else tablePanelRow
 
-      <.tr(^.className := rowClass)() -> row.cells.map { cell =>
-        <.td()(cell)
+      <.tr(^.key := row.id, ^.className := rowClass)() -> row.cells.zipWithIndex.map { case (cell, index) =>
+        <.td(^.key := s"$index")(cell)
       }
     }
 
