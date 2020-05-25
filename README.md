@@ -28,7 +28,7 @@ libraryDependencies ++= Seq(
   "org.scommons.api" %%% "scommons-api-joda-time" % scommonsApiVer,
 
   // client/js only
-  "org.scommons.api" %%% "scommons-api-dom" % scommonsApiVer,
+  "org.scommons.api" %%% "scommons-api-xhr" % scommonsApiVer,
   "org.scommons.client" %%% "scommons-client-ui" % scommonsClientVer,
   "org.scommons.react" %%% "scommons-react-test-dom" % scommonsReactVer % "test",
 

@@ -50,7 +50,7 @@ object ClientUi extends ScalaJsModule {
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil
 
   override val superRepoProjectsDependencies: Seq[(String, String, Option[String])] = Seq(
-    ("scommons-api", "scommons-api-dom", None),
+    ("scommons-api", "scommons-api-xhr", None),
     ("scommons-react", "scommons-react-core", None),
     ("scommons-react", "scommons-react-dom", None),
     ("scommons-react", "scommons-react-redux", None),
@@ -60,7 +60,7 @@ object ClientUi extends ScalaJsModule {
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    Libs.scommonsApiDom.value,
+    Libs.scommonsApiXhr.value,
     Libs.scommonsReactCore.value,
     Libs.scommonsReactDom.value,
     Libs.scommonsReactRedux.value,

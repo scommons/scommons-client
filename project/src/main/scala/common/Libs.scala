@@ -10,7 +10,7 @@ object Libs extends CommonLibs {
   private val scommonsApiVersion = "1.0.0-SNAPSHOT"
   private val sjsReactJsVer = "0.14.0"
 
-  lazy val scommonsApiDom = Def.setting("org.scommons.api" %%% "scommons-api-dom" % scommonsApiVersion)
+  lazy val scommonsApiXhr = Def.setting("org.scommons.api" %%% "scommons-api-xhr" % scommonsApiVersion)
   
   lazy val scommonsReactCore = Def.setting("org.scommons.react" %%% "scommons-react-core" % scommonsReactVersion)
   lazy val scommonsReactDom = Def.setting("org.scommons.react" %%% "scommons-react-dom" % scommonsReactVersion)
