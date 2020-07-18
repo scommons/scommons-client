@@ -6,8 +6,8 @@ import scommons.sbtplugin.project.CommonLibs
 
 object Libs extends CommonLibs {
 
-  val scommonsReactVersion = "1.0.0-SNAPSHOT"
-  private val scommonsApiVersion = "1.0.0-SNAPSHOT"
+  val scommonsReactVersion = "0.3.0"
+  private val scommonsApiVersion = "0.3.0"
   private val sjsReactJsVer = "0.14.0"
 
   lazy val scommonsApiXhr = Def.setting("org.scommons.api" %%% "scommons-api-xhr" % scommonsApiVersion)
