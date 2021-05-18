@@ -15,6 +15,14 @@ object WithAutoHide extends ClassComponent[WithAutoHideProps] {
                                        getAutoHideDiv: () => HTMLElement,
                                        autoHideHandle: Option[js.Function1[Event, Unit]] = None)
 
+  private[popup] var addDomListener: (String, js.Function1[Event, Unit]) => Unit = { (`type`, listener) =>
+    dom.document.addEventListener(`type`, listener)
+  }
+
+  private[popup] var removeDomListener: (String, js.Function1[Event, Unit]) => Unit = { (`type`, listener) =>
+    dom.document.removeEventListener(`type`, listener)
+  }
+
   protected def create(): ReactClass = createClass[WithAutoHideState](
     getInitialState = { _ =>
       var autoHideDiv: HTMLElement = null
@@ -30,8 +38,8 @@ object WithAutoHide extends ClassComponent[WithAutoHideProps] {
         self.state.getAutoHideDiv(),
         self.props.wrapped.onHide
       )
-      dom.document.addEventListener("mouseup", autoHideHandle)
-      dom.document.addEventListener("keydown", autoHideHandle)
+      addDomListener("mouseup", autoHideHandle)
+      addDomListener("keydown", autoHideHandle)
 
       self.setState(_.copy(autoHideHandle = Some(autoHideHandle)))
     },
@@ -39,8 +47,8 @@ object WithAutoHide extends ClassComponent[WithAutoHideProps] {
       self.state.autoHideHandle match {
         case None =>
         case Some(autoHideHandle) =>
-          dom.document.removeEventListener("mouseup", autoHideHandle)
-          dom.document.removeEventListener("keydown", autoHideHandle)
+          removeDomListener("mouseup", autoHideHandle)
+          removeDomListener("keydown", autoHideHandle)
           self.setState(_.copy(autoHideHandle = None))
       }
     },

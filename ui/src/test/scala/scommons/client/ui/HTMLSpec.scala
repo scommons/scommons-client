@@ -1,21 +1,17 @@
 package scommons.client.ui
 
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
 import scala.scalajs.js
 
-class HTMLSpec extends TestSpec
-  with ShallowRendererUtils
-  with TestDOMUtils {
+class HTMLSpec extends TestSpec with TestRendererUtils {
 
   it should "render component with wordWrap = true" in {
     //given
     val props = HTMLProps("Test <p>html</p> <br/> text", wordWrap = true)
 
     //when
-    val result = shallowRender(<(HTML())(^.wrapped := props)())
+    val result = testRender(<(HTML())(^.wrapped := props)())
 
     //then
     result.`type` shouldBe "div"
@@ -28,30 +24,12 @@ class HTMLSpec extends TestSpec
     val props = HTMLProps("Test <p>html</p> <br/> text", wordWrap = false)
 
     //when
-    val result = shallowRender(<(HTML())(^.wrapped := props)())
+    val result = testRender(<(HTML())(^.wrapped := props)())
 
     //then
     result.`type` shouldBe "div"
     result.props.style.whiteSpace shouldBe "nowrap"
     result.props.dangerouslySetInnerHTML.__html shouldBe props.htmlText
-  }
-
-  it should "render component in the DOM" in {
-    //given
-    val props = HTMLProps("Test<p>html</p><br/>text", wordWrap = false)
-
-    //when
-    domRender(<(HTML())(^.wrapped := props)())
-
-    //then
-    assertDOMElement(domContainer, <.div()(
-      <.div(^("style") := "white-space: nowrap;")(
-        "Test",
-        <.p()("html"),
-        <.br.empty,
-        "text"
-      )
-    ))
   }
 
   it should "convert text to html when HTML.makeHtmlText" in {

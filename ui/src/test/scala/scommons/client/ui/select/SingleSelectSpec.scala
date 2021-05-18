@@ -1,23 +1,23 @@
 package scommons.client.ui.select
 
+import scommons.client.ui.select.SingleSelect._
+import scommons.client.ui.select.raw.NativeSelect._
 import scommons.client.ui.select.raw._
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react._
+import scommons.react.test._
 
 import scala.scalajs.js
 
-class SingleSelectSpec extends TestSpec
-  with ShallowRendererUtils
-  with TestDOMUtils {
+class SingleSelectSpec extends TestSpec with TestRendererUtils {
+
+  SingleSelect.reactSelect = "ReactSelect".asInstanceOf[ReactClass]
 
   it should "call onSelectChange(Some(data)) when onChange(option)" in {
     //given
     val onSelectChange = mockFunction[Option[SelectData], Unit]
     val data = SelectData("test", "Test")
     val props = SingleSelectProps(None, List(data), onSelectChange = onSelectChange)
-    val component = shallowRender(<(SingleSelect())(^.wrapped := props)())
+    val component = testRender(<(SingleSelect())(^.wrapped := props)())
 
     //then
     onSelectChange.expects(Some(data))
@@ -34,7 +34,7 @@ class SingleSelectSpec extends TestSpec
     val onSelectChange = mockFunction[Option[SelectData], Unit]
     val data = SelectData("test", "Test")
     val props = SingleSelectProps(None, List(data), onSelectChange = onSelectChange)
-    val component = shallowRender(<(SingleSelect())(^.wrapped := props)())
+    val component = testRender(<(SingleSelect())(^.wrapped := props)())
 
     //then
     onSelectChange.expects(None)
@@ -48,7 +48,7 @@ class SingleSelectSpec extends TestSpec
     val onSelectChange = mockFunction[Option[SelectData], Unit]
     val data = SelectData("test", "Test")
     val props = SingleSelectProps(None, List(data), onSelectChange = onSelectChange)
-    val component = shallowRender(<(SingleSelect())(^.wrapped := props)())
+    val component = testRender(<(SingleSelect())(^.wrapped := props)())
 
     //then
     onSelectChange.expects(None)
@@ -62,7 +62,7 @@ class SingleSelectSpec extends TestSpec
     val onInputChange = mockFunction[String, Unit]
     val data = SelectData("test", "Test")
     val props = SingleSelectProps(None, List(data), onInputChange = Some(onInputChange))
-    val component = shallowRender(<(SingleSelect())(^.wrapped := props)())
+    val component = testRender(<(SingleSelect())(^.wrapped := props)())
     val inputValue = "some input"
 
     //then
@@ -79,7 +79,7 @@ class SingleSelectSpec extends TestSpec
     val onInputChange = mockFunction[String, Unit]
     val data = SelectData("test", "Test")
     val props = SingleSelectProps(None, List(data), onInputChange = Some(onInputChange))
-    val component = shallowRender(<(SingleSelect())(^.wrapped := props)())
+    val component = testRender(<(SingleSelect())(^.wrapped := props)())
     val inputValue = "some input"
 
     //then
@@ -100,7 +100,7 @@ class SingleSelectSpec extends TestSpec
     val component = <(SingleSelect())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertSingleSelect(result, props)
@@ -116,7 +116,7 @@ class SingleSelectSpec extends TestSpec
     val component = <(SingleSelect())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertSingleSelect(result, props)
@@ -132,7 +132,7 @@ class SingleSelectSpec extends TestSpec
     val component = <(SingleSelect())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertSingleSelect(result, props)
@@ -148,39 +148,24 @@ class SingleSelectSpec extends TestSpec
     val component = <(SingleSelect())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertSingleSelect(result, props)
   }
 
-  it should "render component in the DOM" in {
-    //given
-    val props = SingleSelectProps(None, List(
-      SelectData("test", "Test"),
-      SelectData("test2", "Test2")
-    ))
-    val component = <(SingleSelect())(^.wrapped := props)()
-
-    //when
-    domRender(component)
-
-    //then
-    val container = domContainer.querySelector(".react-select-container")
-    
-    val control = container.firstElementChild
-    control.getAttribute("class") should include ("react-select__control")
-  }
-  
-  private def assertSingleSelect(result: ShallowInstance, props: SingleSelectProps): Unit = {
-    result.`type` shouldBe NativeReactSelect
-    result.props.className shouldBe "react-select-container"
-    result.props.classNamePrefix shouldBe "react-select"
-    result.props.menuPlacement shouldBe "auto"
-    result.props.isClearable shouldBe props.isClearable
-    result.props.isDisabled shouldBe props.readOnly
-    result.props.isSearchable shouldBe props.isSearchable
-    result.props.isLoading shouldBe props.isLoading
+  private def assertSingleSelect(result: TestInstance, props: SingleSelectProps): Unit = {
+    assertNativeComponent(result,
+      <(reactSelect)(
+        ^.className := "react-select-container",
+        ^.classNamePrefix := "react-select",
+        ^.menuPlacement := "auto", // bottom, top
+        ^.isClearable := props.isClearable,
+        ^.isDisabled := props.readOnly,
+        ^.isSearchable := props.isSearchable,
+        ^.isLoading := props.isLoading
+      )()
+    )
 
     result.props.asInstanceOf[js.Dynamic].selectDynamic("value").asInstanceOf[js.Array[ReactSelectOption]].map { o =>
       SelectData(o.value.getOrElse(""), o.label.getOrElse(""))

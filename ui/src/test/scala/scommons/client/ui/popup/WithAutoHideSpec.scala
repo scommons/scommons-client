@@ -1,144 +1,162 @@
 package scommons.client.ui.popup
 
-import org.scalajs.dom.raw.{EventTarget, HTMLElement}
-import org.scalajs.dom.{KeyboardEvent, MouseEvent, document}
-import scommons.client.ui.popup.WithAutoHideSpec.DomEventMock
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.TestReactDOM.unmountComponentAtNode
-import scommons.react.test.dom.util.TestDOMUtils
+import org.scalajs.dom.raw.HTMLElement
+import org.scalajs.dom.{Event, MouseEvent}
+import scommons.client.ui.popup.WithAutoHideSpec._
+import scommons.react.test._
 
+import scala.scalajs.js
+import scala.scalajs.js.Dynamic.literal
 import scala.scalajs.js.annotation.JSExportAll
 
-class WithAutoHideSpec extends TestSpec with TestDOMUtils {
+class WithAutoHideSpec extends TestSpec with TestRendererUtils {
 
-  it should "call onHide when triggered outside content element on mouseUp" in {
+  WithAutoHide.addDomListener = null
+  WithAutoHide.removeDomListener = null
+
+  it should "not call onHide if triggered inside content element when on(mouseup/keydown)" in {
     //given
     val onHide = mockFunction[Unit]
-    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"))
-
-    //then
-    onHide.expects()
+    val divMock = mock[HTMLElementMock]
+    val addDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
+    val removeDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
+    WithAutoHide.addDomListener = addDomListener
+    WithAutoHide.removeDomListener = removeDomListener
+    
+    var onEvent: js.Function1[Event, Unit] = null
+    addDomListener.expects("mouseup", *).onCall { (_, listener) =>
+      onEvent = listener
+    }
+    addDomListener.expects("keydown", *).onCall { (_, listener) =>
+      listener shouldBe onEvent
+    }
+    val target = literal().asInstanceOf[HTMLElement]
 
     //when
-    fireDomEvent(document.dispatchEvent(createDomEvent[MouseEvent]("mouseup")))
-
-    //cleanup
-    unmountComponentAtNode(domContainer) shouldBe true
-  }
-
-  it should "not call onHide when unmounted on mouseUp" in {
-    //given
-    val onHide = mockFunction[Unit]
-    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"))
-    unmountComponentAtNode(domContainer) shouldBe true
+    testRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"), { el =>
+      if (el.`type` == "div".asInstanceOf[js.Any]) divMock.asInstanceOf[js.Any]
+      else null
+    })
 
     //then
+    (divMock.contains _).expects(target).returning(true)
     onHide.expects().never()
 
     //when
-    fireDomEvent(document.dispatchEvent(createDomEvent[MouseEvent]("mouseup")))
+    onEvent(literal(target = target).asInstanceOf[Event])
   }
 
-  it should "call onHide when triggered outside content element on keyDown" in {
+  it should "call onHide if triggered outside content element when on(mouseup/keydown)" in {
     //given
     val onHide = mockFunction[Unit]
-    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"))
+    val divMock = mock[HTMLElementMock]
+    val addDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
+    val removeDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
+    WithAutoHide.addDomListener = addDomListener
+    WithAutoHide.removeDomListener = removeDomListener
+    
+    var onEvent: js.Function1[Event, Unit] = null
+    addDomListener.expects("mouseup", *).onCall { (_, listener) =>
+      onEvent = listener
+    }
+    addDomListener.expects("keydown", *).onCall { (_, listener) =>
+      listener shouldBe onEvent
+    }
+    val target = literal().asInstanceOf[HTMLElement]
+
+    //when
+    testRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"), { el =>
+      if (el.`type` == "div".asInstanceOf[js.Any]) divMock.asInstanceOf[js.Any]
+      else null
+    })
 
     //then
+    (divMock.contains _).expects(target).returning(false)
     onHide.expects()
 
     //when
-    fireDomEvent(document.dispatchEvent(createDomEvent[KeyboardEvent]("keydown")))
-
-    //cleanup
-    unmountComponentAtNode(domContainer) shouldBe true
+    onEvent(literal(target = target).asInstanceOf[Event])
   }
 
-  it should "not call onHide when unmounted on keyDown" in {
+  it should "remove listeners when un-mount" in {
     //given
     val onHide = mockFunction[Unit]
-    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"))
-    unmountComponentAtNode(domContainer) shouldBe true
+    val divMock = mock[HTMLElementMock]
+    val addDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
+    val removeDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
+    WithAutoHide.addDomListener = addDomListener
+    WithAutoHide.removeDomListener = removeDomListener
+
+    var onEvent: js.Function1[Event, Unit] = null
+    addDomListener.expects("mouseup", *).onCall { (_, listener) =>
+      onEvent = listener
+    }
+    addDomListener.expects("keydown", *).onCall { (_, listener) =>
+      listener shouldBe onEvent
+    }
+    val renderer = createTestRenderer(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"), { el =>
+      if (el.`type` == "div".asInstanceOf[js.Any]) divMock.asInstanceOf[js.Any]
+      else null
+    })
 
     //then
     onHide.expects().never()
+    removeDomListener.expects("mouseup", onEvent)
+    removeDomListener.expects("keydown", onEvent)
 
     //when
-    fireDomEvent(document.dispatchEvent(createDomEvent[KeyboardEvent]("keydown")))
+    TestRenderer.act { () =>
+      renderer.unmount()
+    }
   }
 
   it should "fail if autoHideDiv is null" in {
     //given
     val onHide = mockFunction[Unit]
-    val event = mock[DomEventMock]
+    val target = literal().asInstanceOf[HTMLElement]
 
     //when
     val e = the[IllegalArgumentException] thrownBy {
-      WithAutoHide.onAutoHide(null, onHide)(event.asInstanceOf[MouseEvent])
+      WithAutoHide.onAutoHide(null, onHide)(literal(target = target).asInstanceOf[MouseEvent])
     }
 
     //then
     e.getMessage should include ("autoHideDiv should not be null")
   }
 
-  it should "call onHide when event target is outside autoHide element" in {
-    //given
-    val onHide = mockFunction[Unit]
-    val child = document.createElement("div").asInstanceOf[HTMLElement]
-    val parent = document.createElement("p").asInstanceOf[HTMLElement]
-    parent.appendChild(child)
-    val event = mock[DomEventMock]
-
-    //then
-    (event.target _).expects().returning(parent)
-    onHide.expects()
-
-    //when
-    WithAutoHide.onAutoHide(child, onHide)(event.asInstanceOf[MouseEvent])
-  }
-
-  it should "not call onHide when event target is inside autoHide element" in {
-    //given
-    val onHide = mockFunction[Unit]
-    val child = document.createElement("div").asInstanceOf[HTMLElement]
-    val parent = document.createElement("p").asInstanceOf[HTMLElement]
-    parent.appendChild(child)
-    val event = mock[DomEventMock]
-
-    //then
-    (event.target _).expects().returning(child)
-    onHide.expects().never()
-
-    //when
-    WithAutoHide.onAutoHide(parent, onHide)(event.asInstanceOf[MouseEvent])
-  }
-
-  it should "render the component" in {
+  it should "render component" in {
     //given
     val content = "test content"
+    val divMock = mock[HTMLElementMock]
+    val addDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
+    val removeDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
+    WithAutoHide.addDomListener = addDomListener
+    WithAutoHide.removeDomListener = removeDomListener
+    addDomListener.expects("mouseup", *)
+    addDomListener.expects("keydown", *)
 
     //when
-    domRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(() => ()))(
+    val result = testRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(() => ()))(
       <.p()(content)
-    ))
+    ), { el =>
+      if (el.`type` == "div".asInstanceOf[js.Any]) divMock.asInstanceOf[js.Any]
+      else null
+    })
 
     //then
-    assertDOMElement(domContainer, <.div()(
+    assertNativeComponent(result,
       <.div()(
         <.p()(content)
       )
-    ))
-
-    //cleanup
-    unmountComponentAtNode(domContainer) shouldBe true
+    )
   }
 }
 
 object WithAutoHideSpec {
 
   @JSExportAll
-  trait DomEventMock {
+  trait HTMLElementMock {
 
-    def target: EventTarget
+    def contains(child: HTMLElement): Boolean
   }
 }

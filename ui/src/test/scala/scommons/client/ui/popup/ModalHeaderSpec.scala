@@ -1,25 +1,21 @@
 package scommons.client.ui.popup
 
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
-class ModalHeaderSpec extends TestSpec
-  with ShallowRendererUtils
-  with TestDOMUtils {
+class ModalHeaderSpec extends TestSpec with TestRendererUtils {
 
   it should "call onClose function when onCloseClick" in {
     //given
     val onClose = mockFunction[Unit]
     val props = ModalHeaderProps("Test Header", onClose = onClose)
-    domRender(<(ModalHeader())(^.wrapped := props)())
-    val button = domContainer.querySelector(".close")
+    val comp = testRender(<(ModalHeader())(^.wrapped := props)())
+    val List(button) = findComponents(comp, <.button.name)
 
     //then
     onClose.expects()
 
     //when
-    fireDomEvent(Simulate.click(button))
+    button.props.onClick(null)
   }
 
   it should "render closable header component" in {
@@ -28,7 +24,7 @@ class ModalHeaderSpec extends TestSpec
     val component = <(ModalHeader())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertNativeComponent(result, <.div(^.className := "modal-header")(), { case List(closeButton, h3) =>
@@ -46,7 +42,7 @@ class ModalHeaderSpec extends TestSpec
     val component = <(ModalHeader())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertNativeComponent(result, <.div(^.className := "modal-header")(), { case List(h3) =>

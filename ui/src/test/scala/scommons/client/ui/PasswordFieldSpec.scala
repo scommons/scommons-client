@@ -1,61 +1,56 @@
 package scommons.client.ui
 
-import org.scalajs.dom.document
 import org.scalajs.dom.ext.KeyCode
-import org.scalajs.dom.raw.HTMLInputElement
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.client.ui.PasswordFieldSpec.InputMock
+import scommons.react.test._
 
+import scala.scalajs.js
 import scala.scalajs.js.Dynamic.literal
+import scala.scalajs.js.annotation.JSExportAll
 
-class PasswordFieldSpec extends TestSpec
-  with ShallowRendererUtils
-  with TestDOMUtils {
+class PasswordFieldSpec extends TestSpec with TestRendererUtils {
 
   it should "call onChange function when input is changed" in {
     //given
     val onChange = mockFunction[String, Unit]
     val props = PasswordFieldProps("test password", onChange)
-    domRender(<(PasswordField())(^.wrapped := props)())
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem.value shouldBe props.password
+    val comp = testRender(<(PasswordField())(^.wrapped := props)())
+    comp.props.selectDynamic("value") shouldBe props.password
+    val newValue = "new password"
 
     //then
-    onChange.expects(props.password)
+    onChange.expects(newValue)
 
     //when
-    fireDomEvent(Simulate.change(inputElem, literal(target = inputElem)))
+    comp.props.onChange(literal(target = literal(value = newValue)))
   }
 
   it should "call onEnter function when keyCode is Enter" in {
     //given
     val onEnter = mockFunction[Unit]
     val props = PasswordFieldProps("test password", _ => (), onEnter = onEnter)
-    domRender(<(PasswordField())(^.wrapped := props)())
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem.value shouldBe props.password
+    val comp = testRender(<(PasswordField())(^.wrapped := props)())
+    comp.props.selectDynamic("value") shouldBe props.password
 
     //then
     onEnter.expects()
 
     //when
-    fireDomEvent(Simulate.keyDown(inputElem, literal(keyCode = KeyCode.Enter)))
+    comp.props.onKeyDown(literal(keyCode = KeyCode.Enter))
   }
 
   it should "not call onEnter function when keyCode is other than Enter" in {
     //given
     val onEnter = mockFunction[Unit]
     val props = PasswordFieldProps("test password", _ => (), onEnter = onEnter)
-    domRender(<(PasswordField())(^.wrapped := props)())
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem.value shouldBe props.password
+    val comp = testRender(<(PasswordField())(^.wrapped := props)())
+    comp.props.selectDynamic("value") shouldBe props.password
 
     //then
     onEnter.expects().never()
 
     //when
-    fireDomEvent(Simulate.keyDown(inputElem, literal(keyCode = KeyCode.Up)))
+    comp.props.onKeyDown(literal(keyCode = KeyCode.Up))
   }
 
   it should "render correct props" in {
@@ -69,7 +64,7 @@ class PasswordFieldSpec extends TestSpec
     )
 
     //when
-    val result = shallowRender(<(PasswordField())(^.wrapped := props)())
+    val result = testRender(<(PasswordField())(^.wrapped := props)())
 
     //then
     assertNativeComponent(result, <.input(
@@ -84,94 +79,130 @@ class PasswordFieldSpec extends TestSpec
   it should "focus input element if requestFocus = true" in {
     //given
     val props = PasswordFieldProps("new password", onChange = _ => (), requestFocus = true)
-
-    //when
-    domRender(<(PasswordField())(^.wrapped := props)())
+    val inputMock = mock[InputMock]
+    (inputMock.value _).expects().returning("")
 
     //then
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem shouldBe document.activeElement
-    inputElem.value shouldBe props.password
+    (inputMock.focus _).expects()
+
+    //when
+    testRender(<(PasswordField())(^.wrapped := props)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
   }
 
   it should "focus input element if requestFocus changed from false to true" in {
     //given
     val prevProps = PasswordFieldProps("test password", onChange = _ => ())
-    domRender(<(PasswordField())(^.wrapped := prevProps)())
+    val inputMock = mock[InputMock]
+    (inputMock.value _).expects().returning("")
+    val renderer = createTestRenderer(<(PasswordField())(^.wrapped := prevProps)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
     val props = PasswordFieldProps("new password", onChange = _ => (), requestFocus = true)
     props should not be prevProps
-    domContainer.querySelector("input") should not be document.activeElement
-
-    //when
-    domRender(<(PasswordField())(^.wrapped := props)())
 
     //then
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem shouldBe document.activeElement
-    inputElem.value shouldBe props.password
+    (inputMock.focus _).expects()
+
+    //when
+    TestRenderer.act { () =>
+      renderer.update(<(PasswordField())(^.wrapped := props)())
+    }
   }
 
   it should "not focus input element if requestFocus not changed" in {
     //given
     val prevProps = PasswordFieldProps("test password", onChange = _ => ())
-    domRender(<(PasswordField())(^.wrapped := prevProps)())
+    val inputMock = mock[InputMock]
+    (inputMock.value _).expects().returning("")
+    val renderer = createTestRenderer(<(PasswordField())(^.wrapped := prevProps)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
     val props = PasswordFieldProps("new password", onChange = _ => ())
     props should not be prevProps
 
-    //when
-    domRender(<(PasswordField())(^.wrapped := props)())
-
     //then
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem should not be document.activeElement
-    inputElem.value shouldBe props.password
+    (inputMock.focus _).expects().never()
+
+    //when
+    TestRenderer.act { () =>
+      renderer.update(<(PasswordField())(^.wrapped := props)())
+    }
   }
 
   it should "select password if requestSelect = true" in {
     //given
     val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
-
-    //when
-    domRender(<(PasswordField())(^.wrapped := props)())
+    val inputMock = mock[InputMock]
+    (inputMock.value _).expects().returning(props.password)
 
     //then
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem.value shouldBe props.password
-    inputElem.selectionStart shouldBe 0
-    inputElem.selectionEnd shouldBe props.password.length
+    (inputMock.setSelectionRange _).expects(0, props.password.length)
+
+    //when
+    testRender(<(PasswordField())(^.wrapped := props)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
   }
 
   it should "select password if requestSelect changed from false to true" in {
     //given
     val prevProps = PasswordFieldProps("test password", onChange = _ => ())
-    domRender(<(PasswordField())(^.wrapped := prevProps)())
+    val inputMock = mock[InputMock]
+    (inputMock.value _).expects().returning(prevProps.password)
+    val renderer = createTestRenderer(<(PasswordField())(^.wrapped := prevProps)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
     val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
     props should not be prevProps
 
-    //when
-    domRender(<(PasswordField())(^.wrapped := props)())
-
     //then
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem.value shouldBe props.password
-    inputElem.selectionStart shouldBe 0
-    inputElem.selectionEnd shouldBe props.password.length
+    (inputMock.value _).expects().returning(props.password)
+    (inputMock.setSelectionRange _).expects(0, props.password.length)
+
+    //when
+    TestRenderer.act { () =>
+      renderer.update(<(PasswordField())(^.wrapped := props)())
+    }
   }
 
   it should "not select password if requestSelect not changed" in {
     //given
     val prevProps = PasswordFieldProps("test password", onChange = _ => (), requestSelect = true)
-    domRender(<(PasswordField())(^.wrapped := prevProps)())
+    val inputMock = mock[InputMock]
+    (inputMock.value _).expects().returning(prevProps.password)
+    (inputMock.setSelectionRange _).expects(0, prevProps.password.length)
+    val renderer = createTestRenderer(<(PasswordField())(^.wrapped := prevProps)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
     val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
     props should not be prevProps
 
-    //when
-    domRender(<(PasswordField())(^.wrapped := props)())
-
     //then
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem.value shouldBe props.password
-    inputElem.selectionStart shouldBe 0
-    inputElem.selectionEnd shouldBe 0
+    (inputMock.value _).expects().never()
+    (inputMock.setSelectionRange _).expects(*, *).never()
+
+    //when
+    TestRenderer.act { () =>
+      renderer.update(<(PasswordField())(^.wrapped := props)())
+    }
+  }
+}
+
+object PasswordFieldSpec {
+
+  @JSExportAll
+  trait InputMock {
+
+    def value: String
+    def setSelectionRange(start: Int, end: Int): Unit
+    def focus(): Unit
   }
 }

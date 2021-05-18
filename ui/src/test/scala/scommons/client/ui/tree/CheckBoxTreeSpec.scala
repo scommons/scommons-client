@@ -3,70 +3,61 @@ package scommons.client.ui.tree
 import org.scalatest.Assertion
 import scommons.client.ui.TriState._
 import scommons.client.ui._
+import scommons.client.ui.tree.CheckBoxTree._
 import scommons.client.ui.tree.TreeCss._
 import scommons.react._
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
-class CheckBoxTreeSpec extends TestSpec
-  with ShallowRendererUtils
-  with TestDOMUtils {
+class CheckBoxTreeSpec extends TestSpec with TestRendererUtils {
+
+  CheckBoxTree.treeNodeComp = () => "TreeNode".asInstanceOf[ReactClass]
 
   it should "expand node when onExpand" in {
     //given
     val data = CheckBoxTreeNodeData("test", Deselected, "/test")
     val props = CheckBoxTreeProps(List(data))
-    val renderer = createRenderer()
-    renderer.render(<(CheckBoxTree())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val nodeProps = findComponentProps(comp, TreeNode)
+    val renderer = createTestRenderer(<(CheckBoxTree())(^.wrapped := props)())
+    val nodeProps = findComponentProps(renderer.root, treeNodeComp)
     nodeProps.arrowClass shouldBe treeClosedArrow
 
     //when
     nodeProps.onExpand()
 
     //then
-    val updatedComp = renderer.getRenderOutput()
-    findComponentProps(updatedComp, TreeNode).arrowClass shouldBe treeOpenArrow
+    findComponentProps(renderer.root, treeNodeComp).arrowClass shouldBe treeOpenArrow
   }
 
   it should "collapse initially opened node when onExpand" in {
     //given
     val data = CheckBoxTreeNodeData("test", Deselected, "/test")
     val props = CheckBoxTreeProps(List(data), openNodes = Set(data.key))
-    val renderer = createRenderer()
-    renderer.render(<(CheckBoxTree())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val nodeProps = findComponentProps(comp, TreeNode)
+    val renderer = createTestRenderer(<(CheckBoxTree())(^.wrapped := props)())
+    val nodeProps = findComponentProps(renderer.root, treeNodeComp)
     nodeProps.arrowClass shouldBe treeOpenArrow
 
     //when
     nodeProps.onExpand()
 
     //then
-    val updatedComp = renderer.getRenderOutput()
-    findComponentProps(updatedComp, TreeNode).arrowClass shouldBe treeClosedArrow
+    findComponentProps(renderer.root, treeNodeComp).arrowClass shouldBe treeClosedArrow
   }
 
   it should "collapse node when onExpand again" in {
     //given
     val data = CheckBoxTreeNodeData("test", Deselected, "/test")
     val props = CheckBoxTreeProps(List(data))
-    val renderer = createRenderer()
-    renderer.render(<(CheckBoxTree())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val nodeProps = findComponentProps(comp, TreeNode)
+    val renderer = createTestRenderer(<(CheckBoxTree())(^.wrapped := props)())
+    val nodeProps = findComponentProps(renderer.root, treeNodeComp)
     nodeProps.arrowClass shouldBe treeClosedArrow
     nodeProps.onExpand()
-    val nodePropsV2 = findComponentProps(renderer.getRenderOutput(), TreeNode)
+    val nodePropsV2 = findComponentProps(renderer.root, treeNodeComp)
     nodePropsV2.arrowClass shouldBe treeOpenArrow
 
     //when
     nodePropsV2.onExpand()
 
     //then
-    val nodePropsV3 = findComponentProps(renderer.getRenderOutput(), TreeNode)
+    val nodePropsV3 = findComponentProps(renderer.root, treeNodeComp)
     nodePropsV3.arrowClass shouldBe treeClosedArrow
   }
 
@@ -75,14 +66,14 @@ class CheckBoxTreeSpec extends TestSpec
     val onChange = mockFunction[CheckBoxTreeData, TriState, Unit]
     val data = CheckBoxTreeItemData("test", Deselected, "/test")
     val props = CheckBoxTreeProps(List(data), onChange = onChange)
-    val comp = shallowRender(<(CheckBoxTree())(^.wrapped := props)())
-    val nodeProps = findComponentProps(comp, TreeNode)
+    val comp = testRender(<(CheckBoxTree())(^.wrapped := props)())
+    val nodeProps = findComponentProps(comp, treeNodeComp)
     val checkBoxWrapper = new FunctionComponent[Unit] {
       protected def render(props: Props): ReactElement = {
         nodeProps.renderValue()
       }
     }
-    val result = shallowRender(<(checkBoxWrapper()).empty)
+    val result = testRender(<(checkBoxWrapper()).empty)
     val checkBoxProps = findComponentProps(result, ImageCheckBox)
 
     //then
@@ -96,8 +87,8 @@ class CheckBoxTreeSpec extends TestSpec
     //given
     val data = CheckBoxTreeItemData("test", Deselected, "/test")
     val props = CheckBoxTreeProps(List(data))
-    val comp = shallowRender(<(CheckBoxTree())(^.wrapped := props)())
-    val nodeProps = findComponentProps(comp, TreeNode)
+    val comp = testRender(<(CheckBoxTree())(^.wrapped := props)())
+    val nodeProps = findComponentProps(comp, treeNodeComp)
     val checkBoxWrapper = new FunctionComponent[Unit] {
       protected def render(props: Props): ReactElement = {
         nodeProps.renderValue()
@@ -105,7 +96,7 @@ class CheckBoxTreeSpec extends TestSpec
     }
 
     //when
-    val result = shallowRender(<(checkBoxWrapper()).empty)
+    val result = testRender(<(checkBoxWrapper()).empty)
 
     //then
     assertCheckBox(findComponentProps(result, ImageCheckBox), props, data)
@@ -115,8 +106,8 @@ class CheckBoxTreeSpec extends TestSpec
     //given
     val data = CheckBoxTreeItemData("test", Selected, "/test", Some(ButtonImagesCss.folder))
     val props = CheckBoxTreeProps(List(data), readOnly = true)
-    val comp = shallowRender(<(CheckBoxTree())(^.wrapped := props)())
-    val nodeProps = findComponentProps(comp, TreeNode)
+    val comp = testRender(<(CheckBoxTree())(^.wrapped := props)())
+    val nodeProps = findComponentProps(comp, treeNodeComp)
     val checkBoxWrapper = new FunctionComponent[Unit] {
       protected def render(props: Props): ReactElement = {
         nodeProps.renderValue()
@@ -124,7 +115,7 @@ class CheckBoxTreeSpec extends TestSpec
     }
 
     //when
-    val result = shallowRender(<(checkBoxWrapper()).empty)
+    val result = testRender(<(checkBoxWrapper()).empty)
 
     //then
     assertCheckBox(findComponentProps(result, ImageCheckBox), props, data)
@@ -137,62 +128,70 @@ class CheckBoxTreeSpec extends TestSpec
     val component = <(CheckBoxTree())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
-    assertTreeNode(findComponentProps(result, TreeNode), props, data)
+    assertTreeNode(findComponentProps(result, treeNodeComp), props, data)
   }
 
   it should "render opened node when update" in {
     //given
     val node1 = CheckBoxTreeNodeData("node 1", Deselected, "/node-1")
     val prevProps = CheckBoxTreeProps(List(node1), openNodes = Set(node1.key))
-    domRender(<(CheckBoxTree())(^.wrapped := prevProps)())
-    domContainer.querySelectorAll(s".$treeOpenArrow").length shouldBe 1
+    val renderer = createTestRenderer(<(CheckBoxTree())(^.wrapped := prevProps)())
+    findProps(renderer.root, treeNodeComp).count(_.arrowClass == treeOpenArrow) shouldBe 1
     val node2 = CheckBoxTreeNodeData("node 2", Deselected, "/node-2")
     val props = CheckBoxTreeProps(List(node1, node2), openNodes = Set(node2.key))
 
     //when
-    domRender(<(CheckBoxTree())(^.wrapped := props)())
+    TestRenderer.act { () =>
+      renderer.update(<(CheckBoxTree())(^.wrapped := props)())
+    }
 
     //then
-    domContainer.querySelectorAll(s".$treeOpenArrow").length shouldBe 2
+    findProps(renderer.root, treeNodeComp).count(_.arrowClass == treeOpenArrow) shouldBe 2
   }
 
   it should "render closed node when update" in {
     //given
     val node1 = CheckBoxTreeNodeData("node 1", Deselected, "/node-1")
     val prevProps = CheckBoxTreeProps(List(node1), openNodes = Set(node1.key))
-    domRender(<(CheckBoxTree())(^.wrapped := prevProps)())
-    domContainer.querySelectorAll(s".$treeOpenArrow").length shouldBe 1
+    val renderer = createTestRenderer(<(CheckBoxTree())(^.wrapped := prevProps)())
+    findProps(renderer.root, treeNodeComp).count(_.arrowClass == treeOpenArrow) shouldBe 1
     val node2 = CheckBoxTreeNodeData("node 2", Deselected, "/node-2")
     val props = CheckBoxTreeProps(List(node1, node2), closeNodes = Set(node1.key))
 
     //when
-    domRender(<(CheckBoxTree())(^.wrapped := props)())
+    TestRenderer.act { () =>
+      renderer.update(<(CheckBoxTree())(^.wrapped := props)())
+    }
 
     //then
-    domContainer.querySelectorAll(s".$treeClosedArrow").length shouldBe 2
+    findProps(renderer.root, treeNodeComp).count(_.arrowClass == treeClosedArrow) shouldBe 2
   }
 
   it should "not render opened node when it was removed" in {
     //given
     val node1 = CheckBoxTreeNodeData("node 1", Deselected, "/node-1")
     val props = CheckBoxTreeProps(List(node1), openNodes = Set(node1.key))
-    domRender(<(CheckBoxTree())(^.wrapped := props)())
-    domContainer.querySelectorAll(s".$treeOpenArrow").length shouldBe 1
+    val renderer = createTestRenderer(<(CheckBoxTree())(^.wrapped := props)())
+    findProps(renderer.root, treeNodeComp).count(_.arrowClass == treeOpenArrow) shouldBe 1
     val node2 = CheckBoxTreeNodeData("node 2", Deselected, "/node-2")
     val propsV2 = CheckBoxTreeProps(List(node2), openNodes = Set(node2.key))
-    domRender(<(CheckBoxTree())(^.wrapped := propsV2)())
-    domContainer.querySelectorAll(s".$treeOpenArrow").length shouldBe 1
+    TestRenderer.act { () =>
+      renderer.update(<(CheckBoxTree())(^.wrapped := propsV2)())
+    }
+    findProps(renderer.root, treeNodeComp).count(_.arrowClass == treeOpenArrow) shouldBe 1
     val propsV3 = CheckBoxTreeProps(List(node1, node2))
 
     //when
-    domRender(<(CheckBoxTree())(^.wrapped := propsV3)())
+    TestRenderer.act { () =>
+      renderer.update(<(CheckBoxTree())(^.wrapped := propsV3)())
+    }
 
     //then
-    domContainer.querySelectorAll(s".$treeClosedArrow").length shouldBe 1
-    domContainer.querySelectorAll(s".$treeOpenArrow").length shouldBe 1
+    findProps(renderer.root, treeNodeComp).count(_.arrowClass == treeClosedArrow) shouldBe 1
+    findProps(renderer.root, treeNodeComp).count(_.arrowClass == treeOpenArrow) shouldBe 1
   }
 
   it should "render opened child nodes" in {
@@ -205,20 +204,20 @@ class CheckBoxTreeSpec extends TestSpec
     val component = <(CheckBoxTree())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
-      assertComponent(topItemE, TreeNode) { topItemProps =>
+      assertTestComponent(topItemE, treeNodeComp) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
       }
-      assertComponent(topNodeE, TreeNode)({ topNodeProps =>
+      assertTestComponent(topNodeE, treeNodeComp)({ topNodeProps =>
         assertTreeNode(topNodeProps, props, topNode)
       }, { case List(childNodeE) =>
-        assertComponent(childNodeE, TreeNode)({ childNodeProps =>
+        assertTestComponent(childNodeE, treeNodeComp)({ childNodeProps =>
           assertTreeNode(childNodeProps, props, childNode, level = 1)
         }, { case List(childItemE) =>
-          assertComponent(childItemE, TreeNode) { childItemProps =>
+          assertTestComponent(childItemE, treeNodeComp) { childItemProps =>
             assertTreeNode(childItemProps, props, childItem, level = 2)
           }
         })
@@ -236,14 +235,14 @@ class CheckBoxTreeSpec extends TestSpec
     val component = <(CheckBoxTree())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
-      assertComponent(topItemE, TreeNode) { topItemProps =>
+      assertTestComponent(topItemE, treeNodeComp) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
       }
-      assertComponent(topNodeE, TreeNode) { topNodeProps =>
+      assertTestComponent(topNodeE, treeNodeComp) { topNodeProps =>
         assertTreeNode(topNodeProps, props, topNode)
       }
     })

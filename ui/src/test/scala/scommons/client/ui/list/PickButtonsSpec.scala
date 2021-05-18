@@ -1,133 +1,128 @@
 package scommons.client.ui.list
 
 import io.github.shogowada.statictags.Element
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
-class PickButtonsSpec extends TestSpec
-  with ShallowRendererUtils
-  with TestDOMUtils {
+class PickButtonsSpec extends TestSpec with TestRendererUtils {
 
   it should "call onAdd when onClick in vertical group" in {
     //given
     val onAdd = mockFunction[Unit]
     val props = PickButtonsProps(onAdd = onAdd)
-    domRender(<(PickButtons())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(".btn")
-    items.length shouldBe 8
+    val comp = testRender(<(PickButtons())(^.wrapped := props)())
+    val items = findComponents(comp, <.button.name)
+    items.size shouldBe 8
 
     //then
     onAdd.expects()
 
     //when & then
-    fireDomEvent(Simulate.click(items.item(0)))
+    items.head.props.onClick(null)
   }
 
   it should "call onRemove when onClick in vertical group" in {
     //given
     val onRemove = mockFunction[Unit]
     val props = PickButtonsProps(onRemove = onRemove)
-    domRender(<(PickButtons())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(".btn")
-    items.length shouldBe 8
+    val comp = testRender(<(PickButtons())(^.wrapped := props)())
+    val items = findComponents(comp, <.button.name)
+    items.size shouldBe 8
 
     //then
     onRemove.expects()
 
     //when & then
-    fireDomEvent(Simulate.click(items.item(1)))
+    items(1).props.onClick(null)
   }
 
   it should "call onAddAll when onClick in vertical group" in {
     //given
     val onAddAll = mockFunction[Unit]
     val props = PickButtonsProps(onAddAll = onAddAll)
-    domRender(<(PickButtons())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(".btn")
-    items.length shouldBe 8
+    val comp = testRender(<(PickButtons())(^.wrapped := props)())
+    val items = findComponents(comp, <.button.name)
+    items.size shouldBe 8
 
     //then
     onAddAll.expects()
 
     //when & then
-    fireDomEvent(Simulate.click(items.item(2)))
+    items(2).props.onClick(null)
   }
 
   it should "call onRemoveAll when onClick in vertical group" in {
     //given
     val onRemoveAll = mockFunction[Unit]
     val props = PickButtonsProps(onRemoveAll = onRemoveAll)
-    domRender(<(PickButtons())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(".btn")
-    items.length shouldBe 8
+    val comp = testRender(<(PickButtons())(^.wrapped := props)())
+    val items = findComponents(comp, <.button.name)
+    items.size shouldBe 8
 
     //then
     onRemoveAll.expects()
 
     //when & then
-    fireDomEvent(Simulate.click(items.item(3)))
+    items(3).props.onClick(null)
   }
 
   it should "call onAdd when onClick in horizontal group" in {
     //given
     val onAdd = mockFunction[Unit]
     val props = PickButtonsProps(onAdd = onAdd)
-    domRender(<(PickButtons())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(".btn")
-    items.length shouldBe 8
+    val comp = testRender(<(PickButtons())(^.wrapped := props)())
+    val items = findComponents(comp, <.button.name)
+    items.size shouldBe 8
 
     //then
     onAdd.expects()
 
     //when & then
-    fireDomEvent(Simulate.click(items.item(4)))
+    items(4).props.onClick(null)
   }
 
   it should "call onRemove when onClick in horizontal group" in {
     //given
     val onRemove = mockFunction[Unit]
     val props = PickButtonsProps(onRemove = onRemove)
-    domRender(<(PickButtons())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(".btn")
-    items.length shouldBe 8
+    val comp = testRender(<(PickButtons())(^.wrapped := props)())
+    val items = findComponents(comp, <.button.name)
+    items.size shouldBe 8
 
     //then
     onRemove.expects()
 
     //when & then
-    fireDomEvent(Simulate.click(items.item(5)))
+    items(5).props.onClick(null)
   }
 
   it should "call onAddAll when onClick in horizontal group" in {
     //given
     val onAddAll = mockFunction[Unit]
     val props = PickButtonsProps(onAddAll = onAddAll)
-    domRender(<(PickButtons())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(".btn")
-    items.length shouldBe 8
+    val comp = testRender(<(PickButtons())(^.wrapped := props)())
+    val items = findComponents(comp, <.button.name)
+    items.size shouldBe 8
 
     //then
     onAddAll.expects()
 
     //when & then
-    fireDomEvent(Simulate.click(items.item(6)))
+    items(6).props.onClick(null)
   }
 
   it should "call onRemoveAll when onClick in horizontal group" in {
     //given
     val onRemoveAll = mockFunction[Unit]
     val props = PickButtonsProps(onRemoveAll = onRemoveAll)
-    domRender(<(PickButtons())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(".btn")
-    items.length shouldBe 8
+    val comp = testRender(<(PickButtons())(^.wrapped := props)())
+    val items = findComponents(comp, <.button.name)
+    items.size shouldBe 8
 
     //then
     onRemoveAll.expects()
 
     //when & then
-    fireDomEvent(Simulate.click(items.item(7)))
+    items(7).props.onClick(null)
   }
 
   it should "render component" in {
@@ -136,7 +131,7 @@ class PickButtonsSpec extends TestSpec
     val comp = <(PickButtons())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(comp)
+    val result = testRender(comp)
 
     //then
     assertPickButtons(result, props)
@@ -148,7 +143,7 @@ class PickButtonsSpec extends TestSpec
     val comp = <(PickButtons())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(comp)
+    val result = testRender(comp)
 
     //then
     assertPickButtons(result, props)
@@ -160,7 +155,7 @@ class PickButtonsSpec extends TestSpec
     val comp = <(PickButtons())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(comp)
+    val result = testRender(comp)
 
     //then
     assertPickButtons(result, props)
@@ -172,7 +167,7 @@ class PickButtonsSpec extends TestSpec
     val comp = <(PickButtons())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(comp)
+    val result = testRender(comp)
 
     //then
     assertPickButtons(result, props)
@@ -184,7 +179,7 @@ class PickButtonsSpec extends TestSpec
     val comp = <(PickButtons())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(comp)
+    val result = testRender(comp)
 
     //then
     assertPickButtons(result, props)
@@ -196,13 +191,13 @@ class PickButtonsSpec extends TestSpec
     val comp = <(PickButtons())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(comp)
+    val result = testRender(comp)
 
     //then
     assertPickButtons(result, props)
   }
 
-  private def assertPickButtons(result: ShallowInstance, props: PickButtonsProps): Unit = {
+  private def assertPickButtons(result: TestInstance, props: PickButtonsProps): Unit = {
 
     def btn(style: Map[String, String], title: String, text: String, enabled: Boolean): Element = {
       <.button(

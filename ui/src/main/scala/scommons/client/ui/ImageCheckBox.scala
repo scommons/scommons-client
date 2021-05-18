@@ -57,8 +57,8 @@ object ImageCheckBox extends FunctionComponent[ImageCheckBoxProps] {
     )
   }
   
-  private[ui] def onChange(readOnly: Boolean)
-                          (f: () => Unit): FormSyntheticEvent[HTMLInputElement] => Unit = { event =>
+  private def onChange(readOnly: Boolean)
+                      (f: () => Unit): FormSyntheticEvent[HTMLInputElement] => Unit = { event =>
 
     if (readOnly) {
       event.stopPropagation()

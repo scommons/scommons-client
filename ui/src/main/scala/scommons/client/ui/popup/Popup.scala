@@ -11,11 +11,13 @@ case class PopupProps(onClose: () => Unit,
                       popupClass: String = "scommons-modal")
 
 object Popup extends FunctionComponent[PopupProps] {
+  
+  private[popup] var reactModal: ReactClass = <.ReactModal.reactClass
 
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped
 
-    <.ReactModal(
+    <(reactModal)(
       ^.isOpen := true,
       ^.shouldCloseOnOverlayClick := props.closable,
       ^.shouldFocusAfterRender := props.focusable,

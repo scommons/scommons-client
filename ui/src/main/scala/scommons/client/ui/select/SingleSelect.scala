@@ -17,10 +17,12 @@ case class SingleSelectProps(selected: Option[SelectData],
 
 object SingleSelect extends FunctionComponent[SingleSelectProps] {
 
+  private[select] var reactSelect: ReactClass = <.ReactSelect.reactClass
+  
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped
 
-    <.ReactSelect(
+    <(reactSelect)(
       ^.className := "react-select-container",
       ^.classNamePrefix := "react-select",
       ^.menuPlacement := "auto", // bottom, top

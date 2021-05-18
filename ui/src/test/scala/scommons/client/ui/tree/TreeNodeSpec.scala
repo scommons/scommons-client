@@ -1,47 +1,42 @@
 package scommons.client.ui.tree
 
-import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.tree.TreeNodeSpec.MouseSyntheticEventMock
 import scommons.react._
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
+import scommons.react.test._
 
+import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportAll
 
-class TreeNodeSpec extends TestSpec with TestDOMUtils {
+class TreeNodeSpec extends TestSpec with TestRendererUtils {
 
   it should "call onSelect when click on item div" in {
     //given
     val onSelect = mockFunction[Unit]
     val props = getTreeNodeProps(isNode = true, 0, onSelect = Some(onSelect))
-    domRender(getTreeNode(props))
-    val itemDiv = domContainer.querySelector(s".${props.itemClass}")
+    val comp = testRender(getTreeNode(props))
+    val itemDiv = inside(findComponents(comp, <.div.name).filter(
+      _.props.className.asInstanceOf[js.UndefOr[String]].contains(props.itemClass)
+    )) {
+      case List(div) => div
+    }
 
     //then
     onSelect.expects()
 
     //when
-    fireDomEvent(Simulate.click(itemDiv))
+    itemDiv.props.onClick(null)
   }
 
   it should "call onExpand when click on node arrow" in {
     //given
     val onExpand = mockFunction[Unit]
     val props = getTreeNodeProps(isNode = true, 0, onExpand = onExpand)
-    domRender(getTreeNode(props))
-    val arrowDiv = domContainer.querySelector(s".${props.nodeIconClass}")
-
-    //then
-    onExpand.expects()
-
-    //when
-    fireDomEvent(Simulate.click(arrowDiv))
-  }
-
-  it should "call stopPropagation on click event" in {
-    //given
-    val onExpand = mockFunction[Unit]
-    val props = getTreeNodeProps(isNode = true, 0, onExpand = onExpand)
+    val comp = testRender(getTreeNode(props))
+    val arrowDiv = inside(findComponents(comp, <.div.name).filter(
+      _.props.className.asInstanceOf[js.UndefOr[String]].contains(props.nodeIconClass)
+    )) {
+      case List(div) => div
+    }
     val event = mock[MouseSyntheticEventMock]
 
     //then
@@ -49,7 +44,7 @@ class TreeNodeSpec extends TestSpec with TestDOMUtils {
     onExpand.expects()
 
     //when
-    TreeNode.arrowClick(props)(event.asInstanceOf[MouseSyntheticEvent])
+    arrowDiv.props.onClick(event.asInstanceOf[js.Any])
   }
 
   it should "render top item" in {
@@ -59,18 +54,18 @@ class TreeNodeSpec extends TestSpec with TestDOMUtils {
     val component = getTreeNode(props)
 
     //when
-    domRender(component)
+    val result = testRender(component)
 
     //then
-    assertDOMElement(domContainer, <.div()(
-      <.div(^("class") := props.itemClass)(
-        <.div(^("class") := props.nodeClass)(
-          <.div(^("class") := props.valueClass)(
+    assertNativeComponent(result,
+      <.div(^.className := props.itemClass)(
+        <.div(^.className := props.nodeClass)(
+          <.div(^.className := props.valueClass)(
             <.label()(text)
           )
         )
       )
-    ))
+    )
   }
 
   it should "render empty node" in {
@@ -80,23 +75,23 @@ class TreeNodeSpec extends TestSpec with TestDOMUtils {
     val component = getTreeNode(props)
 
     //when
-    domRender(component)
+    val result = testRender(component)
 
     //then
-    assertDOMElement(domContainer, <.div()(
+    assertNativeComponent(result,
       <.div()(
-        <.div(^("class") := props.itemClass, ^("style") := "padding-left: 1px;")(
-          <.div(^("class") := props.nodeClass)(
-            <.div(^("class") := props.nodeIconClass)(
-              <.div(^("class") := props.arrowClass)()
+        <.div(^.className := props.itemClass, ^.style := Map("paddingLeft" -> "1px"))(
+          <.div(^.className := props.nodeClass)(
+            <.div(^.className := props.nodeIconClass)(
+              <.div(^.className := props.arrowClass)()
             ),
-            <.div(^("class") := props.valueClass)(
+            <.div(^.className := props.valueClass)(
               <.label()(nodeText)
             )
           )
         )
       )
-    ))
+    )
   }
 
   it should "render non-empty node" in {
@@ -109,30 +104,55 @@ class TreeNodeSpec extends TestSpec with TestDOMUtils {
     ))
 
     //when
-    domRender(component)
+    val result = testRender(component)
 
     //then
-    assertDOMElement(domContainer, <.div()(
-      <.div()(
-        <.div(^("class") := props.itemClass, ^("style") := "padding-left: 2px;")(
-          <.div(^("class") := props.nodeClass)(
-            <.div(^("class") := props.nodeIconClass)(
-              <.div(^("class") := props.arrowClass)()
+    assertNativeComponent(result, <.div()(), { case List(item1, item2) =>
+      assertNativeComponent(item1,
+        <.div(^.className := props.itemClass, ^.style := Map("paddingLeft" -> "2px"))(
+          <.div(^.className := props.nodeClass)(
+            <.div(^.className := props.nodeIconClass)(
+              <.div(^.className := props.arrowClass)()
             ),
-            <.div(^("class") := props.valueClass)(
+            <.div(^.className := props.valueClass)(
               <.label()(nodeText)
-            )
-          )
-        ),
-        <.div(^("class") := props.itemClass, ^("style") := "padding-left: 3px;")(
-          <.div(^("class") := props.nodeClass)(
-            <.div(^("class") := props.valueClass)(
-              <.label()(childText)
             )
           )
         )
       )
-    ))
+      assertTestComponent(item2, TreeNode) { case TreeNodeProps(
+        isNode,
+        paddingLeft,
+        itemClass,
+        nodeClass,
+        nodeIconClass,
+        arrowClass,
+        valueClass,
+        _,
+        _,
+        renderValue
+      ) =>
+        isNode shouldBe false
+        paddingLeft shouldBe 3
+        itemClass shouldBe "itemClass"
+        nodeClass shouldBe "nodeClass"
+        nodeIconClass shouldBe "nodeIconClass"
+        arrowClass shouldBe "arrowClass"
+        valueClass shouldBe "valueClass"
+
+        assertNativeComponent(createTestRenderer(renderValue()).root,
+          <.label()(childText)
+        )
+      }
+//        <.div(^.className := props.itemClass, ^.style := Map("paddingLeft" -> "3px"))(
+//          <.div(^.className := props.nodeClass)(
+//            <.div(^.className := props.valueClass)(
+//              <.label()(childText)
+//            )
+//          )
+//        )
+//      )
+    })
   }
 
   private def getTreeNodeProps(isNode: Boolean,

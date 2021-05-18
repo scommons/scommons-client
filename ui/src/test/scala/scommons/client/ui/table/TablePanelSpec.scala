@@ -1,16 +1,10 @@
 package scommons.client.ui.table
 
-import org.scalajs.dom
 import org.scalatest.Succeeded
 import scommons.client.ui.table.TablePanelCss._
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
-class TablePanelSpec extends TestSpec
-  with ShallowRendererUtils
-  with TestDOMUtils {
+class TablePanelSpec extends TestSpec with TestRendererUtils {
 
   it should "call onSelect only once" in {
     //given
@@ -22,21 +16,21 @@ class TablePanelSpec extends TestSpec
       TableRowData("1", List("Cell1.1", "Cell1.2")),
       TableRowData("2", List("Cell2.1", "Cell2.2"))
     ), selectedIds = Set("1"), onSelect = onSelect)
-    domRender(<(TablePanel())(^.wrapped := props)())
-    val rows = domContainer.querySelectorAll("tbody > tr")
+    val comp = testRender(<(TablePanel())(^.wrapped := props)())
+    val rows = findComponents(findComponents(comp, <.tbody.name).head, <.tr.name)
     rows.length shouldBe props.rows.size
     val nextSelectIndex = 1
-    rows(0).asInstanceOf[dom.Element].getAttribute("class") shouldBe tablePanelSelectedRow
-    rows(nextSelectIndex).asInstanceOf[dom.Element].getAttribute("class") shouldBe tablePanelRow
+    rows.head.props.className shouldBe tablePanelSelectedRow
+    rows(nextSelectIndex).props.className shouldBe tablePanelRow
 
     //then
     onSelect.expects(props.rows(nextSelectIndex)).once()
 
     //when click on new row
-    fireDomEvent(Simulate.click(rows(nextSelectIndex)))
+    rows(nextSelectIndex).props.onClick(null)
 
     //when click on selected row
-    fireDomEvent(Simulate.click(rows(0)))
+    rows.head.props.onClick(null)
   }
 
   it should "select rows with selectedIds when update" in {
@@ -48,19 +42,18 @@ class TablePanelSpec extends TestSpec
       TableRowData("1", List("Cell1.1", "Cell1.2")),
       TableRowData("2", List("Cell2.1", "Cell2.2"))
     ))
-    val renderer = createRenderer()
-    renderer.render(<(TablePanel())(^.wrapped := prevProps)())
-    val comp = renderer.getRenderOutput()
-    assertTablePanel(comp, prevProps)
+    val renderer = createTestRenderer(<(TablePanel())(^.wrapped := prevProps)())
+    assertTablePanel(renderer.root.children(0), prevProps)
 
     val props = prevProps.copy(selectedIds = Set("1"))
 
     //when
-    renderer.render(<(TablePanel())(^.wrapped := props)())
+    TestRenderer.act { () =>
+      renderer.update(<(TablePanel())(^.wrapped := props)())
+    }
 
     //then
-    val compV2 = renderer.getRenderOutput()
-    assertTablePanel(compV2, props)
+    assertTablePanel(renderer.root.children(0), props)
   }
 
   it should "render component" in {
@@ -75,7 +68,7 @@ class TablePanelSpec extends TestSpec
     val comp = <(TablePanel())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(comp)
+    val result = testRender(comp)
 
     //then
     assertTablePanel(result, props)
@@ -97,13 +90,13 @@ class TablePanelSpec extends TestSpec
     val comp = <(TablePanel())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(comp)
+    val result = testRender(comp)
 
     //then
     assertTablePanel(result, props)
   }
 
-  private def assertTablePanel(result: ShallowInstance, props: TablePanelProps[String, TableRowData]): Unit = {
+  private def assertTablePanel(result: TestInstance, props: TablePanelProps[String, TableRowData]): Unit = {
     val expectedHeader = props.header.map { column =>
       <.th(^("colSpan") := "1")(column.title)
     }

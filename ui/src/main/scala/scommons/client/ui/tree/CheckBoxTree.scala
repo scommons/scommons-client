@@ -13,6 +13,8 @@ case class CheckBoxTreeProps(roots: List[CheckBoxTreeData],
 
 object CheckBoxTree extends ClassComponent[CheckBoxTreeProps] {
 
+  private[tree] var treeNodeComp: UiComponent[TreeNodeProps] = TreeNode
+
   private case class CheckBoxTreeState(opened: Set[String])
 
   protected def create(): ReactClass = createClass[CheckBoxTreeState](
@@ -40,7 +42,7 @@ object CheckBoxTree extends ClassComponent[CheckBoxTreeProps] {
           case n: CheckBoxTreeNodeData => (true, isOpen(self.state, n), n.children)
         }
 
-        <(TreeNode())(^.wrapped := TreeNodeProps(
+        <(treeNodeComp())(^.wrapped := TreeNodeProps(
           isNode = isNode,
           paddingLeft = level * 16,
           itemClass = treeItem,

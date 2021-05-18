@@ -53,7 +53,7 @@ object TreeNode extends FunctionComponent[TreeNodeProps] {
     else item
   }
 
-  private[tree] def arrowClick(props: TreeNodeProps): MouseSyntheticEvent => Unit = { event =>
+  private def arrowClick(props: TreeNodeProps): MouseSyntheticEvent => Unit = { event =>
     event.stopPropagation()
 
     props.onExpand()

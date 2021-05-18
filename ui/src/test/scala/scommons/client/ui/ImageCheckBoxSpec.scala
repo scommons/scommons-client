@@ -1,61 +1,47 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
-import org.scalajs.dom.document
-import org.scalajs.dom.raw.HTMLInputElement
-import scommons.client.ui.ImageCheckBoxSpec.FormSyntheticEventMock
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.client.ui.ImageCheckBoxSpec._
+import scommons.react.test._
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportAll
 
-class ImageCheckBoxSpec extends TestSpec
-  with ShallowRendererUtils
-  with TestDOMUtils {
-
-  it should "call stopPropagation and preventDefault if readOnly when onChange" in {
+class ImageCheckBoxSpec extends TestSpec with TestRendererUtils {
+  
+  it should "not call onChange if readOnly when input is changed" in {
     //given
-    val f = mockFunction[Unit]
+    val onChange = mockFunction[TriState, Unit]
+    val props = getImageCheckBoxProps(onChange = onChange, readOnly = true)
+    val comp = testRender(<(ImageCheckBox())(^.wrapped := props)())
+    val inputComp = findComponents(comp, <.input.name).head
+    inputComp.props.checked shouldBe true
     val event = mock[FormSyntheticEventMock]
-    
+
     //then
     (event.stopPropagation _).expects()
     (event.preventDefault _).expects()
-    f.expects().never()
-    
+    onChange.expects(*).never()
+
     //when
-    ImageCheckBox.onChange(readOnly = true)(f)(event.asInstanceOf[FormSyntheticEvent[HTMLInputElement]])
-  }
-  
-  it should "call callback function if not readOnly when onChange" in {
-    //given
-    val f = mockFunction[Unit]
-    val event = mock[FormSyntheticEventMock]
-    
-    //then
-    (event.stopPropagation _).expects().never()
-    (event.preventDefault _).expects().never()
-    f.expects()
-    
-    //when
-    ImageCheckBox.onChange(readOnly = false)(f)(event.asInstanceOf[FormSyntheticEvent[HTMLInputElement]])
+    inputComp.props.onChange(event.asInstanceOf[js.Any])
   }
 
-  it should "call onChange function when input is changed" in {
+  it should "call onChange callback when input is changed" in {
     //given
     val onChange = mockFunction[TriState, Unit]
     val props = getImageCheckBoxProps(onChange = onChange)
-    domRender(<(ImageCheckBox())(^.wrapped := props)())
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem.checked shouldBe true
+    val comp = testRender(<(ImageCheckBox())(^.wrapped := props)())
+    val inputComp = findComponents(comp, <.input.name).head
+    inputComp.props.checked shouldBe true
+    val event = mock[FormSyntheticEventMock]
 
     //then
+    (event.stopPropagation _).expects().never()
+    (event.preventDefault _).expects().never()
     onChange.expects(props.value.next)
 
     //when
-    fireDomEvent(Simulate.change(inputElem, js.Dynamic.literal(target = inputElem)))
+    inputComp.props.onChange(event.asInstanceOf[js.Any])
   }
 
   it should "render correct props" in {
@@ -63,7 +49,7 @@ class ImageCheckBoxSpec extends TestSpec
     val props = getImageCheckBoxProps()
 
     //when
-    val result = shallowRender(<(ImageCheckBox())(^.wrapped := props)())
+    val result = testRender(<(ImageCheckBox())(^.wrapped := props)())
 
     //then
     assertNativeComponent(result, <.label()(
@@ -79,87 +65,122 @@ class ImageCheckBoxSpec extends TestSpec
   it should "reset indeterminate on input element if value changed" in {
     //given
     val prevProps = getImageCheckBoxProps(TriState.Indeterminate)
-    domRender(<(ImageCheckBox())(^.wrapped := prevProps)())
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem.indeterminate shouldBe true
-    inputElem.checked shouldBe false
+    val inputMock = mock[InputMock]
+    (inputMock.indeterminate_= _).expects(true)
+
+    val renderer = createTestRenderer(<(ImageCheckBox())(^.wrapped := prevProps)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
+    findComponents(renderer.root, <.input.name).head.props.checked shouldBe false
     
     val props = getImageCheckBoxProps(TriState.Selected)
     props should not be prevProps
 
+    //then
+    (inputMock.indeterminate_= _).expects(false)
+
     //when
-    domRender(<(ImageCheckBox())(^.wrapped := props)())
+    TestRenderer.act { () =>
+      renderer.update(<(ImageCheckBox())(^.wrapped := props)())
+    }
 
     //then
-    val updatedElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    updatedElem.indeterminate shouldBe false
-    updatedElem.checked shouldBe true
+    findComponents(renderer.root, <.input.name).head.props.checked shouldBe true
   }
 
   it should "not reset indeterminate on input element if value not changed" in {
     //given
     val prevProps = getImageCheckBoxProps(TriState.Indeterminate, text = "Old Text")
-    domRender(<(ImageCheckBox())(^.wrapped := prevProps)())
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem.indeterminate shouldBe true
-    inputElem.checked shouldBe false
+    val inputMock = mock[InputMock]
+    (inputMock.indeterminate_= _).expects(true)
+
+    val renderer = createTestRenderer(<(ImageCheckBox())(^.wrapped := prevProps)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
+    findComponents(renderer.root, <.input.name).head.props.checked shouldBe false
 
     val props = getImageCheckBoxProps(TriState.Indeterminate, text = "New Text")
     props should not be prevProps
 
     //when
-    domRender(<(ImageCheckBox())(^.wrapped := props)())
+    TestRenderer.act { () =>
+      renderer.update(<(ImageCheckBox())(^.wrapped := props)())
+    }
 
     //then
-    val updatedElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    updatedElem.indeterminate shouldBe true
-    updatedElem.checked shouldBe false
+    findComponents(renderer.root, <.input.name).head.props.checked shouldBe false
   }
   
   it should "focus input element if requestFocus = true" in {
     //given
     val props = getImageCheckBoxProps(requestFocus = true)
+    val inputMock = mock[InputMock]
+    (inputMock.indeterminate_= _).expects(false)
+    
+    //then
+    (inputMock.focus _).expects()
 
     //when
-    domRender(<(ImageCheckBox())(^.wrapped := props)())
+    val comp = testRender(<(ImageCheckBox())(^.wrapped := props)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
 
     //then
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem shouldBe document.activeElement
-    inputElem.checked shouldBe true
+    findComponents(comp, <.input.name).head.props.checked shouldBe true
   }
 
   it should "focus input element if requestFocus changed from false to true" in {
     //given
     val prevProps = getImageCheckBoxProps()
-    domRender(<(ImageCheckBox())(^.wrapped := prevProps)())
+    val inputMock = mock[InputMock]
+    (inputMock.indeterminate_= _).expects(false)
+    
+    val renderer = createTestRenderer(<(ImageCheckBox())(^.wrapped := prevProps)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
     val props = getImageCheckBoxProps(requestFocus = true)
     props should not be prevProps
-    domContainer.querySelector("input") should not be document.activeElement
-
-    //when
-    domRender(<(ImageCheckBox())(^.wrapped := props)())
 
     //then
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem shouldBe document.activeElement
-    inputElem.checked shouldBe true
+    (inputMock.focus _).expects()
+
+    //when
+    TestRenderer.act { () =>
+      renderer.update(<(ImageCheckBox())(^.wrapped := props)())
+    }
+
+    //then
+    findComponents(renderer.root, <.input.name).head.props.checked shouldBe true
   }
 
   it should "not focus input element if requestFocus not changed" in {
     //given
     val prevProps = getImageCheckBoxProps(TriState.Deselected)
-    domRender(<(ImageCheckBox())(^.wrapped := prevProps)())
+    val inputMock = mock[InputMock]
+    (inputMock.indeterminate_= _).expects(false)
+
+    val renderer = createTestRenderer(<(ImageCheckBox())(^.wrapped := prevProps)(), { el =>
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      else null
+    })
     val props = getImageCheckBoxProps(TriState.Selected)
     props should not be prevProps
 
+    //then
+    (inputMock.focus _).expects().never()
+    (inputMock.indeterminate_= _).expects(false)
+
     //when
-    domRender(<(ImageCheckBox())(^.wrapped := props)())
+    TestRenderer.act { () =>
+      renderer.update(<(ImageCheckBox())(^.wrapped := props)())
+    }
 
     //then
-    val inputElem = domContainer.querySelector("input").asInstanceOf[HTMLInputElement]
-    inputElem should not be document.activeElement
-    inputElem.checked shouldBe true
+    findComponents(renderer.root, <.input.name).head.props.checked shouldBe true
   }
   
   private def getImageCheckBoxProps(value: TriState = TriState.Selected,
@@ -187,5 +208,12 @@ object ImageCheckBoxSpec {
 
     def stopPropagation(): Unit
     def preventDefault(): Unit
+  }
+
+  @JSExportAll
+  trait InputMock {
+
+    def indeterminate_=(value: Boolean): Unit
+    def focus(): Unit
   }
 }

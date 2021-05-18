@@ -1,20 +1,13 @@
 package scommons.client.ui.list
 
 import org.scalactic.source.Position
-import org.scalajs.dom
 import scommons.client.ui.list.ListBoxCss._
 import scommons.client.ui.{ButtonImagesCss, ImageLabelWrapper}
-import scommons.react._
-import scommons.react.test.TestSpec
-import scommons.react.test.dom.util.TestDOMUtils
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
 import scala.scalajs.js.Dynamic.literal
 
-class ListBoxSpec extends TestSpec
-  with ShallowRendererUtils
-  with TestDOMUtils {
+class ListBoxSpec extends TestSpec with TestRendererUtils {
 
   it should "call onSelect once and select single item when onClick" in {
     //given
@@ -23,8 +16,8 @@ class ListBoxSpec extends TestSpec
       ListBoxData("1", "Test"),
       ListBoxData("2", "Test2")
     ), onSelect = onSelect)
-    domRender(<(ListBox())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(s".$listBoxItem")
+    val root = createTestRenderer(<(ListBox())(^.wrapped := props)()).root
+    val items = root.children
     items.length shouldBe props.items.size
     val nextSelectIndex = 0
 
@@ -32,14 +25,14 @@ class ListBoxSpec extends TestSpec
     onSelect.expects(Set(props.items(nextSelectIndex).id)).once()
 
     //when & then
-    fireDomEvent(Simulate.click(items(nextSelectIndex), literal(ctrlKey = false, metaKey = false)))
-    items.item(nextSelectIndex).asInstanceOf[dom.Element].getAttribute("class") shouldBe {
+    root.children(nextSelectIndex).props.onClick(literal(ctrlKey = false, metaKey = false))
+    root.children(nextSelectIndex).props.className shouldBe {
       s"$listBoxItem $listBoxSelectedItem"
     }
 
     //when & then
-    fireDomEvent(Simulate.click(items(nextSelectIndex), literal(ctrlKey = false, metaKey = false)))
-    items.item(nextSelectIndex).asInstanceOf[dom.Element].getAttribute("class") shouldBe {
+    root.children(nextSelectIndex).props.onClick(literal(ctrlKey = false, metaKey = false))
+    root.children(nextSelectIndex).props.className shouldBe {
       s"$listBoxItem $listBoxSelectedItem"
     }
   }
@@ -51,8 +44,8 @@ class ListBoxSpec extends TestSpec
       ListBoxData("1", "Test"),
       ListBoxData("2", "Test2")
     ), onSelect = onSelect)
-    domRender(<(ListBox())(^.wrapped := props)())
-    val items = domContainer.querySelectorAll(s".$listBoxItem")
+    val root = createTestRenderer(<(ListBox())(^.wrapped := props)()).root
+    val items = root.children
     items.length shouldBe props.items.size
 
     //then
@@ -62,20 +55,20 @@ class ListBoxSpec extends TestSpec
     onSelect.expects(Set.empty[String])
 
     //when & then
-    fireDomEvent(Simulate.click(items(0), literal(ctrlKey = true, metaKey = false)))
-    items.item(0).asInstanceOf[dom.Element].getAttribute("class") shouldBe s"$listBoxItem $listBoxSelectedItem"
+    root.children(0).props.onClick(literal(ctrlKey = true, metaKey = false))
+    root.children(0).props.className shouldBe s"$listBoxItem $listBoxSelectedItem"
 
     //when & then
-    fireDomEvent(Simulate.click(items(1), literal(ctrlKey = false, metaKey = true)))
-    items.item(1).asInstanceOf[dom.Element].getAttribute("class") shouldBe s"$listBoxItem $listBoxSelectedItem"
+    root.children(1).props.onClick(literal(ctrlKey = false, metaKey = true))
+    root.children(1).props.className shouldBe s"$listBoxItem $listBoxSelectedItem"
     
     //when & then
-    fireDomEvent(Simulate.click(items(1), literal(ctrlKey = false, metaKey = true)))
-    items.item(1).asInstanceOf[dom.Element].getAttribute("class") shouldBe s"$listBoxItem "
+    root.children(1).props.onClick(literal(ctrlKey = false, metaKey = true))
+    root.children(1).props.className shouldBe s"$listBoxItem "
 
     //when & then
-    fireDomEvent(Simulate.click(items(0), literal(ctrlKey = true, metaKey = false)))
-    items.item(0).asInstanceOf[dom.Element].getAttribute("class") shouldBe s"$listBoxItem "
+    root.children(0).props.onClick(literal(ctrlKey = true, metaKey = false))
+    root.children(0).props.className shouldBe s"$listBoxItem "
   }
 
   it should "reset selectedIds when update" in {
@@ -84,21 +77,24 @@ class ListBoxSpec extends TestSpec
       ListBoxData("1", "Test"),
       ListBoxData("2", "Test2")
     ))
-    domRender(<(ListBox())(^.wrapped := prevProps)())
-    val items = domContainer.querySelectorAll(s".$listBoxItem")
+    val renderer = createTestRenderer(<(ListBox())(^.wrapped := prevProps)())
+    val root = renderer.root
+    val items = root.children
     items.length shouldBe prevProps.items.size
-    fireDomEvent(Simulate.click(items(1), literal(ctrlKey = false, metaKey = false)))
-    items.item(0).asInstanceOf[dom.Element].getAttribute("class") shouldBe s"$listBoxItem "
-    items.item(1).asInstanceOf[dom.Element].getAttribute("class") shouldBe s"$listBoxItem $listBoxSelectedItem"
+    root.children(1).props.onClick(literal(ctrlKey = false, metaKey = false))
+    root.children(0).props.className shouldBe s"$listBoxItem "
+    root.children(1).props.className shouldBe s"$listBoxItem $listBoxSelectedItem"
 
     val props = prevProps.copy(selectedIds = Set("1"))
 
     //when
-    domRender(<(ListBox())(^.wrapped := props)())
+    TestRenderer.act { () =>
+      renderer.update(<(ListBox())(^.wrapped := props)())
+    }
 
     //then
-    items.item(0).asInstanceOf[dom.Element].getAttribute("class") shouldBe s"$listBoxItem $listBoxSelectedItem"
-    items.item(1).asInstanceOf[dom.Element].getAttribute("class") shouldBe s"$listBoxItem "
+    root.children(0).props.className shouldBe s"$listBoxItem $listBoxSelectedItem"
+    root.children(1).props.className shouldBe s"$listBoxItem "
   }
 
   it should "render component" in {
@@ -109,7 +105,7 @@ class ListBoxSpec extends TestSpec
     ))
 
     //when
-    val result = shallowRender(<(ListBox())(^.wrapped := props)())
+    val result = createTestRenderer(<(ListBox())(^.wrapped := props)()).root
 
     //then
     assertListBox(result, props)
@@ -127,13 +123,13 @@ class ListBoxSpec extends TestSpec
     )
 
     //when
-    val result = shallowRender(<(ListBox())(^.wrapped := props)())
+    val result = createTestRenderer(<(ListBox())(^.wrapped := props)()).root
 
     //then
     assertListBox(result, props)
   }
 
-  private def assertListBox(result: ShallowInstance, props: ListBoxProps)(implicit pos: Position): Unit = {
+  private def assertListBox(result: TestInstance, props: ListBoxProps)(implicit pos: Position): Unit = {
     val expectedItems = props.items.map { data =>
       val selectedClass = if (props.selectedIds.contains(data.id)) listBoxSelectedItem else ""
 
@@ -148,6 +144,9 @@ class ListBoxSpec extends TestSpec
       )
     }
 
-    assertNativeComponent(result, <.>()(expectedItems))
+    result.children.length shouldBe expectedItems.size
+    result.children.toList.zip(expectedItems).foreach { case (item, expected) =>
+      assertNativeComponent(item, expected)
+    }
   }
 }

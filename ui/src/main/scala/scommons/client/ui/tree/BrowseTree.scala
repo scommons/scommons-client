@@ -14,6 +14,8 @@ case class BrowseTreeProps(roots: List[BrowseTreeData],
                            initiallyOpenedNodes: Set[BrowsePath] = Set.empty)
 
 object BrowseTree extends ClassComponent[BrowseTreeProps] {
+  
+  private[tree] var treeNodeComp: UiComponent[TreeNodeProps] = TreeNode
 
   private case class BrowseTreeState(opened: Set[String])
 
@@ -44,7 +46,7 @@ object BrowseTree extends ClassComponent[BrowseTreeProps] {
         val selectedClass = if (selected) browseTreeSelectedItem else ""
         val nodeClass = if (isNode) treeNode else ""
 
-        <(TreeNode())(^.wrapped := TreeNodeProps(
+        <(treeNodeComp())(^.wrapped := TreeNodeProps(
           isNode = isNode,
           paddingLeft = level * 16,
           itemClass = s"$treeItem $selectedClass $topItemClass",
