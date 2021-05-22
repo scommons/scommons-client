@@ -55,8 +55,8 @@ object ClientUi extends ScalaJsModule {
     ("scommons-react", "scommons-react-dom", None),
     ("scommons-react", "scommons-react-redux", None),
     
-    ("scommons-react", "scommons-react-test", Some("test")),
-    ("scommons-react", "scommons-react-test-dom", Some("test"))
+//    ("scommons-nodejs", "scommons-nodejs-test", Some("test")),
+    ("scommons-react", "scommons-react-test", Some("test"))
   )
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
@@ -70,6 +70,7 @@ object ClientUi extends ScalaJsModule {
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    TestLibs.scommonsReactTestDom.value
+    TestLibs.scommonsNodejsTest.value,
+    TestLibs.scommonsReactTest.value
   ).map(_ % "test"))
 }

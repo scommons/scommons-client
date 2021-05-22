@@ -40,12 +40,12 @@ object ClientShowcase extends ScalaJsModule {
   )
 
   override def superRepoProjectsDependencies: Seq[(String, String, Option[String])] = Seq(
-    ("scommons-react", "scommons-react-test-dom", Some("test"))
+    ("scommons-react", "scommons-react-test", Some("test"))
   )
 
   override def runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)
 
   override def testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
-    TestLibs.scommonsReactTestDom.value
+    TestLibs.scommonsReactTest.value
   ).map(_ % "test"))
 }

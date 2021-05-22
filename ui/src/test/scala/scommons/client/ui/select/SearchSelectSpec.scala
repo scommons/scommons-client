@@ -1,13 +1,12 @@
 package scommons.client.ui.select
 
 import org.scalatest.{Assertion, Succeeded}
-import scommons.react.test.dom.AsyncTestSpec
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.nodejs.test.AsyncTestSpec
+import scommons.react.test._
 
 import scala.concurrent.{Future, Promise}
 
-class SearchSelectSpec extends AsyncTestSpec with ShallowRendererUtils {
+class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRendererUtils {
 
   it should "call onChange function when onSelectChange" in {
     //given

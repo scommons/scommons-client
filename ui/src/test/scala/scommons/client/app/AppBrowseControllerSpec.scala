@@ -3,12 +3,12 @@ package scommons.client.app
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.app.AppBrowseController.findItemAndPath
 import scommons.client.app.AppBrowseControllerSpec._
+import scommons.client.test.raw.MemoryRouter._
 import scommons.client.ui.Buttons
 import scommons.client.ui.tree.{BrowseTreeItemData, BrowseTreeNodeData}
 import scommons.client.util.{ActionsData, BrowsePath}
 import scommons.react._
 import scommons.react.test.TestSpec
-import scommons.react.test.dom.raw.MemoryRouter._
 import scommons.react.test.raw.TestInstance
 import scommons.react.test.util.TestRendererUtils
 
