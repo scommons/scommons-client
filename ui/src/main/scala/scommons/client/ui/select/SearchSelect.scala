@@ -1,11 +1,12 @@
 package scommons.client.ui.select
 
-import org.scalajs.dom
+import org.scalajs.dom.window
 import scommons.react._
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+import scala.scalajs.js
 import scala.util.{Failure, Success}
 
 case class SearchSelectProps(selected: Option[SelectData],
@@ -15,10 +16,12 @@ case class SearchSelectProps(selected: Option[SelectData],
                              readOnly: Boolean = false)
 
 object SearchSelect extends ClassComponent[SearchSelectProps] {
+  
+  private[select] var global: js.Dynamic = window.asInstanceOf[js.Dynamic]
 
   private case class SearchSelectState(isLoading: Boolean = false,
                                        value: String = "",
-                                       handleId: Option[Int] = None,
+                                       handleId: Option[js.Any] = None,
                                        options: List[SelectData] = Nil)
 
   protected def create(): ReactClass = createClass[SearchSelectState](
@@ -40,12 +43,12 @@ object SearchSelect extends ClassComponent[SearchSelectProps] {
         onInputChange = Some({ value =>
           self.state.handleId.foreach { handleId =>
             // clear intermediate load schedule
-            dom.window.clearTimeout(handleId)
+            global.clearTimeout(handleId)
           }
 
-          var handleId = 0
-          handleId = dom.window.setTimeout({ () =>
-            dom.window.clearTimeout(handleId)
+          var handleId: js.Any = 0
+          handleId = global.setTimeout({ () =>
+            global.clearTimeout(handleId)
             self.setState(s => s.copy(isLoading = true, handleId = None))
             
             val loadValue = self.state.value

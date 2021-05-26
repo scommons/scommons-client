@@ -30,9 +30,7 @@ object ClientShowcase extends ScalaJsModule {
       //dev
       webpackConfigFile in fastOptJS := Some(baseDirectory.value / "client.webpack.config.js"),
       //production
-      webpackConfigFile in fullOptJS := Some(baseDirectory.value / "client.webpack.config.js"),
-      //reload workflow and tests
-      webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js")
+      webpackConfigFile in fullOptJS := Some(baseDirectory.value / "client.webpack.config.js")
     )
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(

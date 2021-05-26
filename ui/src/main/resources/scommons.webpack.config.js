@@ -1,4 +1,4 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   stats: {
@@ -8,29 +8,34 @@ module.exports = {
   module: {
     rules: [{
       test: /\.(ico|png|gif|jpe?g|svg)$/i,
-      loader: 'url-loader',
-      options: {
-        //limit: 8192
+      use: {
+        loader: 'url-loader',
+        options: {
+          esModule: false
+          //limit: 8192
+        }
       },
       exclude: /node_modules/
     }, {
       test: /\.css$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: [{
-          loader: 'css-loader',
-          options: {
-            modules: true,
-            localIdentName: '[local]__[hash:base64:5]',
-            sourceMap: true
-          }
-        }, {
-          loader: 'resolve-url-loader',
-          options: {
-            sourceMap: true
-          },
-        }]
-      }),
+      use: [{
+        loader: MiniCssExtractPlugin.loader,
+        options: {
+          esModule: false
+        }
+      }, {
+        loader: 'css-loader',
+        options: {
+          modules: true,
+          localIdentName: '[local]__[hash:base64:5]',
+          sourceMap: true
+        }
+      }, {
+        loader: 'resolve-url-loader',
+        options: {
+          sourceMap: true
+        },
+      }],
       exclude: /node_modules/
     }]
   },
@@ -43,6 +48,8 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('styles/[name].css')
+    new MiniCssExtractPlugin({
+      filename: 'styles/[name].css'
+    })
   ]
 }

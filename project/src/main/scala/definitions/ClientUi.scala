@@ -23,10 +23,6 @@ object ClientUi extends ScalaJsModule {
         ";scommons.client.ui.select.raw" +
         ";scommons.client.ui.HTML.InnerHTML",
 
-      webpackConfigFile in Test := Some(
-        baseDirectory.value / "src" / "main" / "resources" / "scommons.webpack.config.js"
-      ),
-
       npmDependencies in Compile ++= Seq(
         "react-modal" -> "3.8.1",
         "react-select" -> "2.0.0"
@@ -37,12 +33,11 @@ object ClientUi extends ScalaJsModule {
         "@babel/core" -> "7.4.0",
         "@babel/preset-env" -> "7.4.2",
         
-        "css-loader" -> "0.28.7",
-        "extract-text-webpack-plugin" -> "3.0.0",
-        "resolve-url-loader" -> "3.0.0",
-        "url-loader" -> "1.1.2",
-        "file-loader" -> "1.1.4",
-        "style-loader" -> "0.18.2",
+        "css-loader" -> "2.1.1",
+        "mini-css-extract-plugin" -> "0.12.0",
+        "resolve-url-loader" -> "3.1.2",
+        "url-loader" -> "4.1.1",
+        "webpack-node-externals" -> "2.5.2",
         "webpack-merge" -> "4.2.1"
       )
     )
