@@ -1,8 +1,8 @@
 package scommons.client.ui.tab
 
-import org.scalatest.{FlatSpec, Matchers}
+import scommons.nodejs.test.TestSpec
 
-class TabPanelPropsSpec extends FlatSpec with Matchers {
+class TabPanelPropsSpec extends TestSpec {
 
   it should "fail if selectedIndex is out of items range" in {
     def assertFailedProps(props: => TabPanelProps, selectedIndex: Int): Unit = {

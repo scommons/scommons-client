@@ -1,8 +1,8 @@
 package scommons.client.ui.page
 
-import org.scalatest.{FlatSpec, Matchers}
+import scommons.nodejs.test.TestSpec
 
-class PaginationPanelPropsSpec extends FlatSpec with Matchers {
+class PaginationPanelPropsSpec extends TestSpec {
 
   it should "fail if totalPages is less than 1" in {
     def assertFailedProps(totalPages: Int): Unit = {

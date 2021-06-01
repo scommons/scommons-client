@@ -1,8 +1,8 @@
 package scommons.client.util
 
-import org.scalatest.{FlatSpec, Matchers}
+import scommons.nodejs.test.TestSpec
 
-class ActionsDataSpec extends FlatSpec with Matchers {
+class ActionsDataSpec extends TestSpec {
 
   it should "return empty actions when ActionsData.empty" in {
     //when

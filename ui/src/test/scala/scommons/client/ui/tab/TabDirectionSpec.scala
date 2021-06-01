@@ -1,8 +1,8 @@
 package scommons.client.ui.tab
 
-import org.scalatest.{FlatSpec, Matchers}
+import scommons.nodejs.test.TestSpec
 
-class TabDirectionSpec extends FlatSpec with Matchers {
+class TabDirectionSpec extends TestSpec {
 
   it should "return style according to tab direction type" in {
     //when & then

@@ -10,8 +10,8 @@ env:
   - secure: ArRCYDfNlBMAQJpRBtFedg6Bw43nvxfkh7Eec0oFUdxrO9z1zf9ezpNeyx67lnJ29E8i9eEWtaT+XE1W8KpewQJHogxq84A1PoVI84VMtzf5NAwjZBN+TV3mPbmme8rADmFAFWBD7zF5eSpNtQkDK2BUjC4uwrGVP0/0K5VhunKTBBg4jW2r+cogncLYJ9KTEpMx9HhO3hOvdnR0v8oqOptlCla6Nmnb8DjyVVbO1fg8pRW2XQ4wE012e7MHRnw0CaRge1kaj8yrRMJhdxFgrY0OdetKFS1DJ1tSeQCT8AdCXErNN8M6lGRiYELpIddEd479NsJ4QDTZ0dU2tHfWHJCakb4CfehJ0Qm6Q4NVQafIAlwLfIROV3TaoZkjS1ZuLhV0az3pdnzNGJGkLmjV41otk1DoboV4lON9rjiyO04Gj53M+ZpmsbjxDQiCU07E5fSrT6Hdnt0Z0RbLBPE/ge21UNK8WBUElD3XMtsFSPvOziJu6iUVxw+CNx1yQVu2ENEDMRKf/qdulx4H2Ee3TIXYtYqMvYnxP2NN/BVJ2cxp+YiNpnzJBl3o6rnvPoF+vTbEKBEqf4cpuITVBADHUHwHsRaSFdTAdcT3/6VhltCcYuPOHWzONlMfQZJLQhi25PTO7L8eImatFKpccPR1Aqido57AYUtzajk9m9pRDDo=
   - secure: wRICZjpieMeuW6/Od8l+DqzpLgo5wxofbSGM7TUqP1NaSDBvmCYv9fKzZPsVQqyEdet4Q+xNw+28ymbGo9toToAcdLSvClfCPglpLmg9HoiB3y1xp4cy84/i+riHYz1NbOgFrIf5TsG53IMqd74PAtblbh4JGvQEzILupk45XPGydp7L5sEE5JOibZj6YrFkixbadfCWWFEmwx7SJp83kSOeaq12h3AWoaBmfza4BOYe+NDa2oGaITcz7iWxZUGDdPaWSdZyqOx0lPqprCPMdRwpe+VihrpucH8Qa0aWSxJNCAYNJI8vk95FWbtRnycMRluVdm3v5WWvczNrjyj0aU3n4irtjeV8Gfter1F9bvis7LVfH5i+xTUmqkcrIciIyuODTAdsUiMWBGg9wqCEOrvcAmH+gVC/2a8X/VO0rusE4buGBrQsxCXUGAyswGjaMZHbN6mVdMXHwNPXG6s4nJdUAFGu6ThzeTzuByYUpXj80u6AtbUgmvcAd57lLiLYFfQv8IIqxQ8pf8oRojB/imvXKrouLkxZO8jVoiVvMFy5R8Pcb+UWYUbTW4ylHScOQPkdo4riMa+3qlBcO5g07u7EXSu0GHO6y/ci4scLNFkwdCoVjcf42oeFZOlrKJ4VV4VVBBA4uQ7mflRlSX0l3PlUg4A+dY5J6CiMjE5z2z4=
 before_install:
-- nvm install 10 &&
-  nvm use 10
+- nvm install 12 &&
+  nvm use 12
 - node --version &&
   npm --version
 - if [ $TRAVIS_PULL_REQUEST = 'false' ]; then
@@ -28,7 +28,7 @@ script:
        sbt clean publish;
     else
        echo "Publish a release version=$TRAVIS_TAG";
-       version=$TRAVIS_TAG sbt clean publishSigned sonatypeRelease;
+       version=$TRAVIS_TAG sbt clean publishSigned sonatypeBundleRelease;
     fi
   else
     echo "This is not a master branch commit. Skipping the publish/release step";
@@ -36,6 +36,7 @@ script:
 cache:
   directories:
   - ~/.npm
+  - ~/.nvm
   - "$HOME/.ivy2/cache"
   - "$HOME/.sbt"
 before_cache:

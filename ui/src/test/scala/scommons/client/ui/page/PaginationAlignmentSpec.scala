@@ -1,8 +1,8 @@
 package scommons.client.ui.page
 
-import org.scalatest.{FlatSpec, Matchers}
+import scommons.nodejs.test.TestSpec
 
-class PaginationAlignmentSpec extends FlatSpec with Matchers {
+class PaginationAlignmentSpec extends TestSpec {
 
   it should "return style according to pagination alignment type" in {
     //when & then

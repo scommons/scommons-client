@@ -1,8 +1,8 @@
 package scommons.client.util
 
-import org.scalatest.{FlatSpec, Matchers}
+import scommons.nodejs.test.TestSpec
 
-class BrowsePathSpec extends FlatSpec with Matchers {
+class BrowsePathSpec extends TestSpec {
 
   it should "perform value equality" in {
     //given
