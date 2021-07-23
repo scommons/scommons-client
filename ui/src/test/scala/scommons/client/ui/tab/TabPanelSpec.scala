@@ -26,7 +26,7 @@ class TabPanelSpec extends TestSpec with TestRendererUtils {
     tabs.length shouldBe items.size
     tabs(props.selectedIndex).props.className shouldBe "active"
     val panels = findComponents(comp, <.div.name).filter {
-      case c if c.props.className.asInstanceOf[js.Any] == js.undefined => false
+      case c if c.props.className.asInstanceOf[js.UndefOr[String]].isEmpty => false
       case c => c.props.className.asInstanceOf[String].contains("tab-pane")
     }
     panels.length shouldBe items.size

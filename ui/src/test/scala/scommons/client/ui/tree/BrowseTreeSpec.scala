@@ -42,7 +42,7 @@ class BrowseTreeSpec extends TestSpec with TestRendererUtils {
     props.selectedItem.map(_.prefix) shouldBe Some(data.path.prefix)
 
     //then
-    onSelect.expects(_: BrowseTreeData).never()
+    onSelect.expects(*).never()
 
     //when
     nodeProps.onSelect.get()
