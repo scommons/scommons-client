@@ -1,23 +1,26 @@
 package scommons.client.ui.select
 
 import org.scalatest.{Assertion, Succeeded}
+import scommons.client.ui.select.SearchSelect._
 import scommons.nodejs
 import scommons.nodejs.test.AsyncTestSpec
+import scommons.react._
 import scommons.react.test._
 
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.js
 
-class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRendererUtils {
+class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with TestRendererUtils {
 
   SearchSelect.global = nodejs.global.asInstanceOf[js.Dynamic]
+  SearchSelect.singleSelectComp = () => "SingleSelect".asInstanceOf[ReactClass]
 
   it should "call onChange function when onSelectChange" in {
     //given
     val onChange = mockFunction[Option[SelectData], Unit]
     val props = SearchSelectProps(None, onChange = onChange)
-    val component = shallowRender(<(SearchSelect())(^.wrapped := props)())
-    val selectProps = findComponentProps(component, SingleSelect)
+    val component = testRender(<(SearchSelect())(^.wrapped := props)())
+    val selectProps = findComponentProps(component, singleSelectComp)
     val data = SelectData("test", "Test")
 
     //then
@@ -33,10 +36,9 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     //given
     val onLoad = mockFunction[String, Future[List[SelectData]]]
     val props = SearchSelectProps(None, onLoad = onLoad)
-    val renderer = createRenderer()
-    renderer.render(<(SearchSelect())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val selectProps = findComponentProps(comp, SingleSelect)
+    val renderer = createTestRenderer(<(SearchSelect())(^.wrapped := props)())
+    val comp = renderer.root
+    val selectProps = findComponentProps(comp, singleSelectComp)
     selectProps.isLoading shouldBe false
     val inputValue = "some input"
     val promise = Promise[List[SelectData]]()
@@ -48,8 +50,8 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     
     //then
     eventually {
-      val updatedComp = renderer.getRenderOutput()
-      val updatedSelectProps = findComponentProps(updatedComp, SingleSelect)
+      val updatedComp = renderer.root
+      val updatedSelectProps = findComponentProps(updatedComp, singleSelectComp)
       updatedSelectProps.isLoading shouldBe true
     }
   }
@@ -58,10 +60,9 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     //given
     val onLoad = mockFunction[String, Future[List[SelectData]]]
     val props = SearchSelectProps(None, onLoad = onLoad)
-    val renderer = createRenderer()
-    renderer.render(<(SearchSelect())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val selectProps = findComponentProps(comp, SingleSelect)
+    val renderer = createTestRenderer(<(SearchSelect())(^.wrapped := props)())
+    val comp = renderer.root
+    val selectProps = findComponentProps(comp, singleSelectComp)
     selectProps.isLoading shouldBe false
     val inputValue = "some input"
     val options = List(
@@ -76,8 +77,8 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     
     //then
     eventually {
-      val updatedComp = renderer.getRenderOutput()
-      val updatedSelectProps = findComponentProps(updatedComp, SingleSelect)
+      val updatedComp = renderer.root
+      val updatedSelectProps = findComponentProps(updatedComp, singleSelectComp)
       updatedSelectProps.isLoading shouldBe false
       updatedSelectProps.options shouldBe options
     }
@@ -87,10 +88,9 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     //given
     val onLoad = mockFunction[String, Future[List[SelectData]]]
     val props = SearchSelectProps(None, onLoad = onLoad)
-    val renderer = createRenderer()
-    renderer.render(<(SearchSelect())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val selectProps = findComponentProps(comp, SingleSelect)
+    val renderer = createTestRenderer(<(SearchSelect())(^.wrapped := props)())
+    val comp = renderer.root
+    val selectProps = findComponentProps(comp, singleSelectComp)
     selectProps.isLoading shouldBe false
     val inputValue = "some input"
     val promise = Promise[List[SelectData]]()
@@ -103,8 +103,8 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     //then
     var loaded = false
     eventually {
-      val updatedComp = renderer.getRenderOutput()
-      val updatedSelectProps = findComponentProps(updatedComp, SingleSelect)
+      val updatedComp = renderer.root
+      val updatedSelectProps = findComponentProps(updatedComp, singleSelectComp)
       
       if (!loaded) {
         updatedSelectProps.isLoading shouldBe true
@@ -126,10 +126,9 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     //given
     val onLoad = mockFunction[String, Future[List[SelectData]]]
     val props = SearchSelectProps(None, onLoad = onLoad)
-    val renderer = createRenderer()
-    renderer.render(<(SearchSelect())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val selectProps = findComponentProps(comp, SingleSelect)
+    val renderer = createTestRenderer(<(SearchSelect())(^.wrapped := props)())
+    val comp = renderer.root
+    val selectProps = findComponentProps(comp, singleSelectComp)
     selectProps.isLoading shouldBe false
     val inputValue1 = "some input 1"
     val inputValue2 = "some input 2"
@@ -145,8 +144,8 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     //then
     var loaded = false
     eventually {
-      val updatedComp = renderer.getRenderOutput()
-      val updatedSelectProps = findComponentProps(updatedComp, SingleSelect)
+      val updatedComp = renderer.root
+      val updatedSelectProps = findComponentProps(updatedComp, singleSelectComp)
       
       if (!loaded) {
         updatedSelectProps.isLoading shouldBe true
@@ -170,10 +169,9 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     //given
     val onLoad = mockFunction[String, Future[List[SelectData]]]
     val props = SearchSelectProps(None, onLoad = onLoad)
-    val renderer = createRenderer()
-    renderer.render(<(SearchSelect())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val selectProps = findComponentProps(comp, SingleSelect)
+    val renderer = createTestRenderer(<(SearchSelect())(^.wrapped := props)())
+    val comp = renderer.root
+    val selectProps = findComponentProps(comp, singleSelectComp)
     selectProps.isLoading shouldBe false
     val inputValue1 = "some input 1"
     val inputValue2 = "some input 2"
@@ -188,8 +186,8 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
 
     //then
     eventually {
-      val updatedComp = renderer.getRenderOutput()
-      val updatedSelectProps = findComponentProps(updatedComp, SingleSelect)
+      val updatedComp = renderer.root
+      val updatedSelectProps = findComponentProps(updatedComp, singleSelectComp)
       updatedSelectProps.isLoading shouldBe false
       updatedSelectProps.options shouldBe options
     }
@@ -201,7 +199,7 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     val component = <(SearchSelect())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertSearchSelect(result, props)
@@ -213,7 +211,7 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     val component = <(SearchSelect())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertSearchSelect(result, props)
@@ -225,14 +223,14 @@ class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with ShallowRende
     val component = <(SearchSelect())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertSearchSelect(result, props)
   }
 
-  private def assertSearchSelect(result: ShallowInstance, props: SearchSelectProps): Assertion = {
-    assertComponent(result, SingleSelect) {
+  private def assertSearchSelect(result: TestInstance, props: SearchSelectProps): Assertion = {
+    assertTestComponent(result, singleSelectComp) {
       case SingleSelectProps(
       selected,
       options,

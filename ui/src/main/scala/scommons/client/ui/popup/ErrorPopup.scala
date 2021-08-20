@@ -15,6 +15,9 @@ object ErrorPopup extends FunctionComponent[ErrorPopupProps] {
   private case class ErrorPopupState(showDetails: Boolean = false,
                                      opened: Boolean = false)
 
+  private[popup] var modalComp: UiComponent[ModalProps] = Modal
+  private[popup] var htmlComp: UiComponent[HTMLProps] = HTML
+
   protected def render(compProps: Props): ReactElement = {
     val (state, setState) = useStateUpdater(() => ErrorPopupState())
       
@@ -25,7 +28,7 @@ object ErrorPopup extends FunctionComponent[ErrorPopupProps] {
     )
     val closeBtn = SimpleButtonData("close", "Close", primary = true)
 
-    <(Modal())(^.wrapped := ModalProps(
+    <(modalComp())(^.wrapped := ModalProps(
       header = None,
       buttons = if (props.details.isDefined) List(detailsBtn, closeBtn) else List(closeBtn),
       actions = ActionsData(Set(detailsBtn.command, closeBtn.command), _ => {
@@ -42,7 +45,7 @@ object ErrorPopup extends FunctionComponent[ErrorPopupProps] {
     ))(
       <.div(^.className := "row-fluid")(
         <.img(^.className := IconCss.dialogError, ^.src := UiSettings.imgClearCacheUrl)(),
-        <(HTML())(^.wrapped := HTMLProps(
+        <(htmlComp())(^.wrapped := HTMLProps(
           if (state.showDetails) getFullText(props)
           else props.error
           ,

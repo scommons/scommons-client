@@ -13,12 +13,14 @@ case class YesNoPopupProps(message: String,
 
 object YesNoPopup extends FunctionComponent[YesNoPopupProps] {
 
+  private[popup] var modalComp: UiComponent[ModalProps] = Modal
+
   protected def render(compProps: Props): ReactElement = {
     val (opened, setOpened) = useState(false)
     
     val props = compProps.wrapped
 
-    <(Modal())(^.wrapped := ModalProps(
+    <(modalComp())(^.wrapped := ModalProps(
       header = None,
       buttons = List(
         SimpleButtonData(Yes.command, "Yes", props.selected == Yes),

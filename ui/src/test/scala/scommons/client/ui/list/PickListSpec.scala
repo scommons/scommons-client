@@ -1,21 +1,16 @@
 package scommons.client.ui.list
 
 import scommons.client.ui.ButtonImagesCss
-import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.{ShallowRendererUtils, TestRendererUtils}
+import scommons.react.test._
 
-class PickListSpec extends TestSpec
-  with TestRendererUtils
-  with ShallowRendererUtils {
+class PickListSpec extends TestSpec with TestRendererUtils {
 
   it should "call onSelectChange when onAdd" in {
     //given
     val onSelectChange = mockFunction[Set[String], Boolean, Unit]
     val props = PickListProps(List(ListBoxData("1", "Test")), onSelectChange = onSelectChange)
-    val renderer = createRenderer()
-    renderer.render(<(PickList())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
+    val renderer = createTestRenderer(<(PickList())(^.wrapped := props)())
+    val comp = renderer.root
     val lists = findProps(comp, ListBox)
     lists.size shouldBe 2
     val srcList = lists.head
@@ -26,12 +21,12 @@ class PickListSpec extends TestSpec
 
     //when & then
     srcList.onSelect(ids)
-    val compV2 = renderer.getRenderOutput()
+    val compV2 = renderer.root
     assertPickList(compV2, props, selectedSourceIds = ids, addEnabled = true)
 
     //when & then
     findComponentProps(compV2, PickButtons).onAdd()
-    val compV3 = renderer.getRenderOutput()
+    val compV3 = renderer.root
     assertPickList(compV3, props.copy(selectedIds = ids), addAllEnabled = false, removeAllEnabled = true)
   }
 
@@ -39,9 +34,8 @@ class PickListSpec extends TestSpec
     //given
     val onSelectChange = mockFunction[Set[String], Boolean, Unit]
     val props = PickListProps(List(ListBoxData("1", "Test")), selectedIds = Set("1"), onSelectChange = onSelectChange)
-    val renderer = createRenderer()
-    renderer.render(<(PickList())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
+    val renderer = createTestRenderer(<(PickList())(^.wrapped := props)())
+    val comp = renderer.root
     val lists = findProps(comp, ListBox)
     lists.size shouldBe 2
     val dstList = lists(1)
@@ -52,13 +46,13 @@ class PickListSpec extends TestSpec
 
     //when & then
     dstList.onSelect(ids)
-    val compV2 = renderer.getRenderOutput()
+    val compV2 = renderer.root
     assertPickList(compV2, props, selectedDestIds = ids,
       removeEnabled = true, addAllEnabled = false, removeAllEnabled = true)
 
     //when & then
     findComponentProps(compV2, PickButtons).onRemove()
-    val compV3 = renderer.getRenderOutput()
+    val compV3 = renderer.root
     assertPickList(compV3, props.copy(selectedIds = Set.empty[String]))
   }
 
@@ -66,9 +60,8 @@ class PickListSpec extends TestSpec
     //given
     val onSelectChange = mockFunction[Set[String], Boolean, Unit]
     val props = PickListProps(List(ListBoxData("1", "Test")), onSelectChange = onSelectChange)
-    val renderer = createRenderer()
-    renderer.render(<(PickList())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
+    val renderer = createTestRenderer(<(PickList())(^.wrapped := props)())
+    val comp = renderer.root
     val ids = Set("1")
 
     //then
@@ -78,7 +71,7 @@ class PickListSpec extends TestSpec
     findComponentProps(comp, PickButtons).onAddAll()
     
     //then
-    val compV2 = renderer.getRenderOutput()
+    val compV2 = renderer.root
     assertPickList(compV2, props.copy(selectedIds = ids), addAllEnabled = false, removeAllEnabled = true)
   }
 
@@ -86,9 +79,8 @@ class PickListSpec extends TestSpec
     //given
     val onSelectChange = mockFunction[Set[String], Boolean, Unit]
     val props = PickListProps(List(ListBoxData("1", "Test")), selectedIds = Set("1"), onSelectChange = onSelectChange)
-    val renderer = createRenderer()
-    renderer.render(<(PickList())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
+    val renderer = createTestRenderer(<(PickList())(^.wrapped := props)())
+    val comp = renderer.root
     val ids = Set("1")
 
     //then
@@ -98,7 +90,7 @@ class PickListSpec extends TestSpec
     findComponentProps(comp, PickButtons).onRemoveAll()
     
     //then
-    val compV2 = renderer.getRenderOutput()
+    val compV2 = renderer.root
     assertPickList(compV2, props.copy(selectedIds = Set.empty[String]))
   }
 
@@ -159,7 +151,7 @@ class PickListSpec extends TestSpec
     val comp = <(PickList())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(comp)
+    val result = createTestRenderer(comp).root
 
     //then
     assertPickList(result, props)
@@ -171,9 +163,8 @@ class PickListSpec extends TestSpec
       ListBoxData("1", "Test"),
       ListBoxData("2", "Test2")
     ), preSelectedIds = Set("2"))
-    val renderer = createRenderer()
-    renderer.render(<(PickList())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
+    val renderer = createTestRenderer(<(PickList())(^.wrapped := props)())
+    val comp = renderer.root
     val lists = findProps(comp, ListBox)
     lists.size shouldBe 2
     val dstList = lists(1)
@@ -182,7 +173,7 @@ class PickListSpec extends TestSpec
     dstList.onSelect(Set("2"))
 
     //then
-    assertPickList(renderer.getRenderOutput(), props,
+    assertPickList(renderer.root, props,
       selectedDestIds = Set("2")
     )
   }
@@ -193,9 +184,8 @@ class PickListSpec extends TestSpec
       ListBoxData("1", "Test"),
       ListBoxData("2", "Test2")
     ), selectedIds = Set("2"))
-    val renderer = createRenderer()
-    renderer.render(<(PickList())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
+    val renderer = createTestRenderer(<(PickList())(^.wrapped := props)())
+    val comp = renderer.root
     val lists = findProps(comp, ListBox)
     lists.size shouldBe 2
     val srcList = lists.head
@@ -206,7 +196,7 @@ class PickListSpec extends TestSpec
     dstList.onSelect(Set("2"))
 
     //then
-    assertPickList(renderer.getRenderOutput(), props,
+    assertPickList(renderer.root, props,
       selectedSourceIds = Set("1"),
       selectedDestIds = Set("2"),
       addEnabled = true,
@@ -215,7 +205,7 @@ class PickListSpec extends TestSpec
     )
   }
 
-  private def assertPickList(result: ShallowInstance,
+  private def assertPickList(result: TestInstance,
                              props: PickListProps,
                              selectedSourceIds: Set[String] = Set.empty,
                              selectedDestIds: Set[String] = Set.empty,
@@ -228,35 +218,34 @@ class PickListSpec extends TestSpec
     val sourceItems = props.items.filterNot(i => selectedIds.contains(i.id))
     val destItems = props.items.filter(i => selectedIds.contains(i.id))
 
-    assertNativeComponent(result, <.div(^.className := "row-fluid")(), { children: List[ShallowInstance] =>
-      val List(src, btns, dst) = children
-      
-      assertNativeComponent(src, <.div(^.className := "span5")(), { children: List[ShallowInstance] =>
-        val List(title, hr, list) = children
-        assertNativeComponent(title, <.strong()(props.sourceTitle))
-        assertNativeComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
-        assertComponent(list, ListBox) { case ListBoxProps(items, srcSelectedIds, _) =>
-          items shouldBe sourceItems
-          srcSelectedIds shouldBe selectedSourceIds
+    assertNativeComponent(result.children(0), <.div(^.className := "row-fluid")(), inside(_) {
+      case List(src, btns, dst) =>
+        assertNativeComponent(src, <.div(^.className := "span5")(), inside(_) {
+          case List(title, hr, list) =>
+            assertNativeComponent(title, <.strong()(props.sourceTitle))
+            assertNativeComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
+            assertTestComponent(list, ListBox) { case ListBoxProps(items, srcSelectedIds, _) =>
+              items shouldBe sourceItems
+              srcSelectedIds shouldBe selectedSourceIds
+            }
+        })
+        assertTestComponent(btns, PickButtons) {
+          case PickButtonsProps(add, remove, addAll, removeAll, _, _, _, _, className) =>
+            className shouldBe Some("span2")
+            add shouldBe addEnabled
+            remove shouldBe removeEnabled
+            addAll shouldBe addAllEnabled
+            removeAll shouldBe removeAllEnabled
         }
-      })
-      assertComponent(btns, PickButtons) {
-        case PickButtonsProps(add, remove, addAll, removeAll, _, _, _, _, className) =>
-          className shouldBe Some("span2")
-          add shouldBe addEnabled
-          remove shouldBe removeEnabled
-          addAll shouldBe addAllEnabled
-          removeAll shouldBe removeAllEnabled
-      }
-      assertNativeComponent(dst, <.div(^.className := "span5")(), { children: List[ShallowInstance] =>
-        val List(title, hr, list) = children
-        assertNativeComponent(title, <.strong()(props.destTitle))
-        assertNativeComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
-        assertComponent(list, ListBox) { case ListBoxProps(items, dstSelectedIds, _) =>
-          items shouldBe destItems
-          dstSelectedIds shouldBe selectedDestIds
-        }
-      })
+        assertNativeComponent(dst, <.div(^.className := "span5")(), inside(_) {
+          case List(title, hr, list) =>
+            assertNativeComponent(title, <.strong()(props.destTitle))
+            assertNativeComponent(hr, <.hr(^.style := Map("margin" -> "7px 0"))())
+            assertTestComponent(list, ListBox) { case ListBoxProps(items, dstSelectedIds, _) =>
+              items shouldBe destItems
+              dstSelectedIds shouldBe selectedDestIds
+            }
+        })
     })
   }
 }

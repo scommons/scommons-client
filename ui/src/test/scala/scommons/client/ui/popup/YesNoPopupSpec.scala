@@ -3,18 +3,20 @@ package scommons.client.ui.popup
 import scommons.client.ui.SimpleButtonData
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.YesNoCancelOption._
-import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.client.ui.popup.YesNoPopup._
+import scommons.react._
+import scommons.react.test._
 
-class YesNoPopupSpec extends TestSpec with ShallowRendererUtils {
+class YesNoPopupSpec extends TestSpec with TestRendererUtils {
+
+  YesNoPopup.modalComp = () => "Modal".asInstanceOf[ReactClass]
 
   it should "call onSelect(Yes) function when Yes selected" in {
     //given
     val onSelect = mockFunction[YesNoCancelOption, Unit]
     val props = getYesNoPopupProps("Test message", onSelect = onSelect)
-    val component = shallowRender(<(YesNoPopup())(^.wrapped := props)())
-    val modalProps = findComponentProps(component, Modal)
+    val component = testRender(<(YesNoPopup())(^.wrapped := props)())
+    val modalProps = findComponentProps(component, modalComp)
 
     //then
     onSelect.expects(Yes)
@@ -27,8 +29,8 @@ class YesNoPopupSpec extends TestSpec with ShallowRendererUtils {
     //given
     val onSelect = mockFunction[YesNoCancelOption, Unit]
     val props = getYesNoPopupProps("Test message", onSelect = onSelect)
-    val component = shallowRender(<(YesNoPopup())(^.wrapped := props)())
-    val modalProps = findComponentProps(component, Modal)
+    val component = testRender(<(YesNoPopup())(^.wrapped := props)())
+    val modalProps = findComponentProps(component, modalComp)
 
     //then
     onSelect.expects(No)
@@ -43,7 +45,7 @@ class YesNoPopupSpec extends TestSpec with ShallowRendererUtils {
     val component = <(YesNoPopup())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertYesNoPopup(result, props)
@@ -55,7 +57,7 @@ class YesNoPopupSpec extends TestSpec with ShallowRendererUtils {
     val component = <(YesNoPopup())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertYesNoPopup(result, props)
@@ -64,18 +66,17 @@ class YesNoPopupSpec extends TestSpec with ShallowRendererUtils {
   it should "set focusedCommand when onOpen" in {
     //given
     val props = getYesNoPopupProps("Test message")
-    val renderer = createRenderer()
-    renderer.render(<(YesNoPopup())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val modalProps = findComponentProps(comp, Modal)
+    val renderer = createTestRenderer(<(YesNoPopup())(^.wrapped := props)())
+    val comp = renderer.root
+    val modalProps = findComponentProps(comp, modalComp)
     modalProps.actions.focusedCommand shouldBe None
 
     //when
     modalProps.onOpen()
 
     //then
-    val updatedComp = renderer.getRenderOutput()
-    val updatedModalProps = findComponentProps(updatedComp, Modal)
+    val updatedComp = renderer.root
+    val updatedModalProps = findComponentProps(updatedComp, modalComp)
     updatedModalProps.actions.focusedCommand shouldBe Some(props.selected.command)
   }
 
@@ -89,23 +90,23 @@ class YesNoPopupSpec extends TestSpec with ShallowRendererUtils {
     image = image
   )
 
-  private def assertYesNoPopup(result: ShallowInstance, props: YesNoPopupProps): Unit = {
+  private def assertYesNoPopup(result: TestInstance, props: YesNoPopupProps): Unit = {
     val expectedButtons = List(
       SimpleButtonData(Yes.command, "Yes", props.selected == Yes),
       SimpleButtonData(No.command, "No", props.selected == No)
     )
     val enabledCommands = Set(Yes.command, No.command)
 
-    assertComponent(result, Modal)({
+    assertTestComponent(result, modalComp)({
       case ModalProps(header, buttons, actions, _, _, closable, _) =>
         header shouldBe None
         buttons shouldBe expectedButtons
         actions.enabledCommands shouldBe enabledCommands
         actions.focusedCommand shouldBe None
         closable shouldBe false
-    }, { case List(modalChild) =>
+    }, inside(_) { case List(modalChild) =>
       assertNativeComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
-        val (img, p) = children match {
+        val (img, p) = inside(children) {
           case List(pElem) => (None, pElem)
           case List(imgElem, pElem) => (Some(imgElem), pElem)
         }

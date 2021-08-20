@@ -2,16 +2,19 @@ package scommons.client.app
 
 import org.scalatest.Succeeded
 import scommons.api.{ApiStatus, StatusResponse}
+import scommons.client.app.AppTaskManagerUi._
 import scommons.client.ui.popup._
 import scommons.react._
 import scommons.react.redux.task.TaskManagerUiProps
-import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
 import scala.util.Success
 
-class AppTaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
+class AppTaskManagerUiSpec extends TestSpec with TestRendererUtils {
+
+  AppTaskManagerUi.statusPopup = () => "StatusPopup".asInstanceOf[ReactClass]
+  AppTaskManagerUi.loadingPopup = () => "LoadingPopup".asInstanceOf[ReactClass]
+  AppTaskManagerUi.errorPopup = () => "ErrorPopup".asInstanceOf[ReactClass]
 
   it should "return error if unsuccessful response in errorHandler" in {
     //given
@@ -46,8 +49,8 @@ class AppTaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
       status = Some("Fetching data"),
       onHideStatus = onHideStatus
     )
-    val comp = shallowRender(<(AppTaskManagerUi())(^.wrapped := props)())
-    val statusProps = findComponentProps(comp, StatusPopup)
+    val comp = createTestRenderer(<(AppTaskManagerUi())(^.wrapped := props)()).root
+    val statusProps = findComponentProps(comp, statusPopup)
 
     //then
     onHideStatus.expects()
@@ -63,8 +66,8 @@ class AppTaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
       error = Some("Some error"),
       onCloseErrorPopup = onCloseErrorPopup
     )
-    val comp = shallowRender(<(AppTaskManagerUi())(^.wrapped := props)())
-    val errorProps = findComponentProps(comp, ErrorPopup)
+    val comp = createTestRenderer(<(AppTaskManagerUi())(^.wrapped := props)()).root
+    val errorProps = findComponentProps(comp, errorPopup)
 
     //then
     onCloseErrorPopup.expects()
@@ -82,7 +85,7 @@ class AppTaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
     val component = <(AppTaskManagerUi())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = createTestRenderer(component).root
 
     //then
     assertRenderingResult(result, props)
@@ -96,7 +99,7 @@ class AppTaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
     val component = <(AppTaskManagerUi())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = createTestRenderer(component).root
 
     //then
     assertRenderingResult(result, props)
@@ -111,7 +114,7 @@ class AppTaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
     val component = <(AppTaskManagerUi())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = createTestRenderer(component).root
 
     //then
     assertRenderingResult(result, props)
@@ -126,7 +129,7 @@ class AppTaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
     val component = <(AppTaskManagerUi())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = createTestRenderer(component).root
 
     //then
     assertRenderingResult(result, props)
@@ -149,42 +152,39 @@ class AppTaskManagerUiSpec extends TestSpec with ShallowRendererUtils {
     )
   }
   
-  private def assertRenderingResult(result: ShallowInstance, props: TaskManagerUiProps): Unit = {
+  private def assertRenderingResult(result: TestInstance, props: TaskManagerUiProps): Unit = {
     val showStatus = props.status.isDefined
     val showError = props.error.isDefined
     
-    assertNativeComponent(result, <.>()(), { children =>
-      val (statusPopup, loadingPopup, errorPopup) = children match {
-        case List(sp) if showStatus => (Some(sp), None, None)
-        case List(lp) if props.showLoading => (None, Some(lp), None)
-        case List(sp, lp) if showStatus && props.showLoading => (Some(sp), Some(lp), None)
-        case List(sp, ep) if showStatus && showError => (Some(sp), None, Some(ep))
-        case List(ep) if showError => (None, None, Some(ep))
-      }
+    val children = result.children.toList
+    val (resStatusPopup, resLoadingPopup, resErrorPopup) = inside(children) {
+      case List(sp) if showStatus => (Some(sp), None, None)
+      case List(lp) if props.showLoading => (None, Some(lp), None)
+      case List(sp, lp) if showStatus && props.showLoading => (Some(sp), Some(lp), None)
+      case List(sp, ep) if showStatus && showError => (Some(sp), None, Some(ep))
+      case List(ep) if showError => (None, None, Some(ep))
+    }
 
-      if (showStatus) {
-        statusPopup should not be None
-        assertComponent(statusPopup.get, StatusPopup) { case StatusPopupProps(text, onHide) =>
-          text shouldBe props.status.getOrElse("")
-          onHide shouldBe props.onHideStatus
-        }
+    if (showStatus) {
+      resStatusPopup should not be None
+      assertTestComponent(resStatusPopup.get, statusPopup) { case StatusPopupProps(text, onHide) =>
+        text shouldBe props.status.getOrElse("")
+        onHide shouldBe props.onHideStatus
       }
-      
-      if (props.showLoading) {
-        loadingPopup should not be None
-        assertComponent(loadingPopup.get, LoadingPopup)(_ => Succeeded)
-      }
+    }
+    
+    if (props.showLoading) {
+      resLoadingPopup should not be None
+      assertTestComponent(resLoadingPopup.get, loadingPopup)(_ => Succeeded)
+    }
 
-      if (showError) {
-        errorPopup should not be None
-        assertComponent(errorPopup.get, ErrorPopup) { case ErrorPopupProps(error, onClose, details) =>
-          error shouldBe props.error.getOrElse("")
-          details shouldBe props.errorDetails
-          onClose shouldBe props.onCloseErrorPopup
-        }
+    if (showError) {
+      resErrorPopup should not be None
+      assertTestComponent(resErrorPopup.get, errorPopup) { case ErrorPopupProps(error, onClose, details) =>
+        error shouldBe props.error.getOrElse("")
+        details shouldBe props.errorDetails
+        onClose shouldBe props.onCloseErrorPopup
       }
-      
-      Succeeded
-    })
+    }
   }
 }

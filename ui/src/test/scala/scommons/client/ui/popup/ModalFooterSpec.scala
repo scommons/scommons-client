@@ -2,10 +2,9 @@ package scommons.client.ui.popup
 
 import scommons.client.ui.{Buttons, ButtonsPanel, ButtonsPanelProps}
 import scommons.client.util.ActionsData
-import scommons.react.test.TestSpec
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
-class ModalFooterSpec extends TestSpec with ShallowRendererUtils {
+class ModalFooterSpec extends TestSpec with TestRendererUtils {
 
   it should "render component with correct props" in {
     //given
@@ -16,10 +15,10 @@ class ModalFooterSpec extends TestSpec with ShallowRendererUtils {
     val component = <(ModalFooter())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
-    assertComponent(result, ButtonsPanel) {
+    assertTestComponent(result, ButtonsPanel) {
       case ButtonsPanelProps(buttons, actions, dispatch, group, className) =>
         buttons shouldBe props.buttons
         actions shouldBe props.actions

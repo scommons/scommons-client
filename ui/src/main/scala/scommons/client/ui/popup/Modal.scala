@@ -15,21 +15,26 @@ case class ModalProps(header: Option[String],
 
 object Modal extends FunctionComponent[ModalProps] {
 
+  private[popup] var popupComp: UiComponent[PopupProps] = Popup
+  private[popup] var modalHeaderComp: UiComponent[ModalHeaderProps] = ModalHeader
+  private[popup] var modalBodyComp: UiComponent[Unit] = ModalBody
+  private[popup] var modalFooterComp: UiComponent[ModalFooterProps] = ModalFooter
+
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped
 
-    <(Popup())(^.wrapped := PopupProps(
+    <(popupComp())(^.wrapped := PopupProps(
       onClose = props.onClose,
       closable = props.closable,
       onOpen = props.onOpen
     ))(
       props.header.map { header =>
-        <(ModalHeader())(^.wrapped := ModalHeaderProps(header, props.onClose, closable = props.closable))()
+        <(modalHeaderComp())(^.wrapped := ModalHeaderProps(header, props.onClose, closable = props.closable))()
       },
-      <(ModalBody())()(
+      <(modalBodyComp())()(
         compProps.children
       ),
-      <(ModalFooter())(^.wrapped := ModalFooterProps(props.buttons, props.actions, props.dispatch))()
+      <(modalFooterComp())(^.wrapped := ModalFooterProps(props.buttons, props.actions, props.dispatch))()
     )
   }
 }

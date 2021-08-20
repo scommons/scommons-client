@@ -18,6 +18,7 @@ case class SearchSelectProps(selected: Option[SelectData],
 object SearchSelect extends ClassComponent[SearchSelectProps] {
   
   private[select] var global: js.Dynamic = window.asInstanceOf[js.Dynamic]
+  private[select] var singleSelectComp: UiComponent[SingleSelectProps] = SingleSelect
 
   private case class SearchSelectState(isLoading: Boolean = false,
                                        value: String = "",
@@ -31,7 +32,7 @@ object SearchSelect extends ClassComponent[SearchSelectProps] {
     render = { self =>
       val props = self.props.wrapped
   
-      <(SingleSelect())(^.wrapped := SingleSelectProps(
+      <(singleSelectComp())(^.wrapped := SingleSelectProps(
         selected = props.selected,
         options = self.state.options,
         onSelectChange = props.onChange,

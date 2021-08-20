@@ -2,18 +2,20 @@ package scommons.client.ui.popup
 
 import scommons.client.ui.Buttons
 import scommons.client.ui.icon.IconCss
-import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.client.ui.popup.OkPopup._
+import scommons.react._
+import scommons.react.test._
 
-class OkPopupSpec extends TestSpec with ShallowRendererUtils {
+class OkPopupSpec extends TestSpec with TestRendererUtils {
+
+  OkPopup.modalComp = () => "Modal".asInstanceOf[ReactClass]
 
   it should "call onClose function when onOkCommand" in {
     //given
     val onClose = mockFunction[Unit]
     val props = getOkPopupProps("Test message", onClose = onClose)
-    val component = shallowRender(<(OkPopup())(^.wrapped := props)())
-    val modalProps = findComponentProps(component, Modal)
+    val component = testRender(<(OkPopup())(^.wrapped := props)())
+    val modalProps = findComponentProps(component, modalComp)
 
     //then
     onClose.expects()
@@ -28,7 +30,7 @@ class OkPopupSpec extends TestSpec with ShallowRendererUtils {
     val component = <(OkPopup())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertOkPopup(result, props)
@@ -40,7 +42,7 @@ class OkPopupSpec extends TestSpec with ShallowRendererUtils {
     val component = <(OkPopup())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertOkPopup(result, props)
@@ -49,18 +51,17 @@ class OkPopupSpec extends TestSpec with ShallowRendererUtils {
   it should "set focusedCommand when onOpen" in {
     //given
     val props = getOkPopupProps("Test message")
-    val renderer = createRenderer()
-    renderer.render(<(OkPopup())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val modalProps = findComponentProps(comp, Modal)
+    val renderer = createTestRenderer(<(OkPopup())(^.wrapped := props)())
+    val comp = renderer.root
+    val modalProps = findComponentProps(comp, modalComp)
     modalProps.actions.focusedCommand shouldBe None
 
     //when
     modalProps.onOpen()
 
     //then
-    val updatedComp = renderer.getRenderOutput()
-    val updatedModalProps = findComponentProps(updatedComp, Modal)
+    val updatedComp = renderer.root
+    val updatedModalProps = findComponentProps(updatedComp, modalComp)
     updatedModalProps.actions.focusedCommand shouldBe Some(Buttons.OK.command)
   }
 
@@ -72,10 +73,10 @@ class OkPopupSpec extends TestSpec with ShallowRendererUtils {
     image = image
   )
 
-  private def assertOkPopup(result: ShallowInstance, props: OkPopupProps): Unit = {
+  private def assertOkPopup(result: TestInstance, props: OkPopupProps): Unit = {
     val actionCommands = Set(Buttons.OK.command)
 
-    assertComponent(result, Modal)({
+    assertTestComponent(result, modalComp)({
       case ModalProps(header, buttons, actions, _, onClose, closable, _) =>
         header shouldBe None
         buttons shouldBe List(Buttons.OK)
@@ -83,9 +84,9 @@ class OkPopupSpec extends TestSpec with ShallowRendererUtils {
         actions.focusedCommand shouldBe None
         onClose shouldBe props.onClose
         closable shouldBe true
-    }, { case List(modalChild) =>
+    }, inside(_) { case List(modalChild) =>
       assertNativeComponent(modalChild, <.div(^.className := "row-fluid")(), { children =>
-        val (img, p) = children match {
+        val (img, p) = inside(children) {
           case List(pElem) => (None, pElem)
           case List(imgElem, pElem) => (Some(imgElem), pElem)
         }

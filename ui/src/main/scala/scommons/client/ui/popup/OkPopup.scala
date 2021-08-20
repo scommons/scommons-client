@@ -13,12 +13,14 @@ object OkPopup extends FunctionComponent[OkPopupProps] {
 
   private case class OkPopupState(opened: Boolean = false)
 
+  private[popup] var modalComp: UiComponent[ModalProps] = Modal
+
   protected def render(compProps: Props): ReactElement = {
     val (state, setState) = useStateUpdater(() => OkPopupState())
     
     val props = compProps.wrapped
 
-    <(Modal())(^.wrapped := ModalProps(
+    <(modalComp())(^.wrapped := ModalProps(
       header = None,
       buttons = List(Buttons.OK),
       actions = ActionsData(Set(Buttons.OK.command), _ => {

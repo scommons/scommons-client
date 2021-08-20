@@ -9,15 +9,18 @@ case class AppMainPanelProps(name: String = "App",
 
 object AppMainPanel extends FunctionComponent[AppMainPanelProps] {
 
+  private[app] var appHeaderComp: UiComponent[AppHeaderProps] = AppHeader
+  private[app] var appFooterComp: UiComponent[AppFooterProps] = AppFooter
+
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped
     
     <.>()(
-      <(AppHeader())(^.wrapped := AppHeaderProps(props.name, props.user))(),
+      <(appHeaderComp())(^.wrapped := AppHeaderProps(props.name, props.user))(),
       <.div(^.className := "container-fluid")(
         compProps.children
       ),
-      <(AppFooter())(^.wrapped := AppFooterProps(props.copyright, props.version))()
+      <(appFooterComp())(^.wrapped := AppFooterProps(props.copyright, props.version))()
     )
   }
 }

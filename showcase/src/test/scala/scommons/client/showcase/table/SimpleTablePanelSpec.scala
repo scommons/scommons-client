@@ -1,23 +1,21 @@
 package scommons.client.showcase.table
 
 import scommons.client.ui.table._
-import scommons.react.test.TestSpec
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
-class SimpleTablePanelSpec extends TestSpec with ShallowRendererUtils {
+class SimpleTablePanelSpec extends TestSpec with TestRendererUtils {
 
   it should "select row when onSelect" in {
     //given
-    val renderer = createRenderer()
-    renderer.render(<(SimpleTablePanel())()())
-    val tableProps = findComponentProps(renderer.getRenderOutput(), TablePanel)
+    val renderer = createTestRenderer(<(SimpleTablePanel())()())
+    val tableProps = findComponentProps(renderer.root, TablePanel)
     tableProps.selectedIds shouldBe Set.empty
     
     //when
     tableProps.onSelect(tableProps.rows(1))
     
     //then
-    val updatedProps = findComponentProps(renderer.getRenderOutput(), TablePanel)
+    val updatedProps = findComponentProps(renderer.root, TablePanel)
     updatedProps.selectedIds shouldBe Set("2")
   }
   
@@ -26,10 +24,10 @@ class SimpleTablePanelSpec extends TestSpec with ShallowRendererUtils {
     val component = <(SimpleTablePanel())()()
     
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
     
     //then
-    assertComponent(result, TablePanel) {
+    assertTestComponent(result, TablePanel) {
       case TablePanelProps(header, rows, keyExtractor, rowClassExtractor, cellRenderer, selectedIds, _) =>
         header shouldBe List(
           TableColumnData("Id"),

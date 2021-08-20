@@ -5,8 +5,10 @@ import scommons.react._
 
 object LoadingPopup extends FunctionComponent[Unit] {
 
+  private[popup] var popupComp: UiComponent[PopupProps] = Popup
+
   protected def render(compProps: Props): ReactElement = {
-    <(Popup())(^.wrapped := PopupProps(
+    <(popupComp())(^.wrapped := PopupProps(
       onClose = () => (),
       closable = false,
       focusable = false,

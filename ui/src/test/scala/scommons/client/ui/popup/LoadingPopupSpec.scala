@@ -1,15 +1,18 @@
 package scommons.client.ui.popup
 
+import scommons.client.ui.popup.LoadingPopup.popupComp
 import scommons.client.ui.popup.PopupCss._
-import scommons.react.test.TestSpec
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react._
+import scommons.react.test._
 
-class LoadingPopupSpec extends TestSpec with ShallowRendererUtils {
+class LoadingPopupSpec extends TestSpec with TestRendererUtils {
+
+  LoadingPopup.popupComp = () => "Popup".asInstanceOf[ReactClass]
 
   it should "do nothing when onClose/onOpen" in {
     //given
-    val comp = shallowRender(<(LoadingPopup())()())
-    val popupProps = findComponentProps(comp, Popup)
+    val comp = testRender(<(LoadingPopup())()())
+    val popupProps = findComponentProps(comp, popupComp)
 
     //when
     popupProps.onClose()
@@ -18,16 +21,16 @@ class LoadingPopupSpec extends TestSpec with ShallowRendererUtils {
 
   it should "render component" in {
     //when
-    val result = shallowRender(<(LoadingPopup())()())
+    val result = testRender(<(LoadingPopup())()())
 
     //then
-    assertComponent(result, Popup)({
+    assertTestComponent(result, popupComp)({
       case PopupProps(_, closable, focusable, _, overlayClass, popupClass) =>
         closable shouldBe false
         focusable shouldBe false
         overlayClass shouldBe loadingOverlay
         popupClass shouldBe loadingContent
-    }, { case List(img) =>
+    }, inside(_) { case List(img) =>
       assertNativeComponent(img, <.img(^.className := loadingImg, ^.src := "")())
     })
   }

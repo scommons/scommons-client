@@ -2,11 +2,9 @@ package scommons.client.ui
 
 import scommons.client.ui.ButtonImagesCss._
 import scommons.client.util.ActionsData
-import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
-class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
+class ButtonsPanelSpec extends TestSpec with TestRendererUtils {
 
   it should "call onCommand when click on button" in {
     //given
@@ -21,7 +19,7 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
       SimpleButtonData("accept", "test button 1"),
       ImageButtonData("add", add, addDisabled, "test button 2")
     )
-    val comp = shallowRender(<(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
+    val comp = testRender(<(ButtonsPanel())(^.wrapped := ButtonsPanelProps(
       buttons, ActionsData(buttons.map(_.command).toSet, onCommand), dispatch
     ))())
     val btn1 = findComponentProps(comp, SimpleButton)
@@ -49,7 +47,7 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
     )
 
     //when
-    val result = shallowRender(<(ButtonsPanel())(^.wrapped := props)())
+    val result = testRender(<(ButtonsPanel())(^.wrapped := props)())
 
     //then
     assertButtonsPanel(result, props.className.get, group = false, b1, b2)
@@ -65,7 +63,7 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
     )
 
     //when
-    val result = shallowRender(<(ButtonsPanel())(^.wrapped := props)())
+    val result = testRender(<(ButtonsPanel())(^.wrapped := props)())
 
     //then
     assertButtonsPanel(result, "btn-toolbar", group = false, b1, b2)
@@ -82,26 +80,26 @@ class ButtonsPanelSpec extends TestSpec with ShallowRendererUtils {
     )
 
     //when
-    val result = shallowRender(<(ButtonsPanel())(^.wrapped := props)())
+    val result = testRender(<(ButtonsPanel())(^.wrapped := props)())
 
     //then
     assertButtonsPanel(result, "btn-group", group = true, b1, b2)
   }
 
-  private def assertButtonsPanel(result: ShallowInstance,
+  private def assertButtonsPanel(result: TestInstance,
                                  className: String,
                                  group: Boolean,
                                  b1: SimpleButtonData,
                                  b2: ImageButtonData): Unit = {
 
     assertNativeComponent(result, <.div(^.className := className)(), { case List(simpleBtn, imageBtn) =>
-      assertComponent(simpleBtn, SimpleButton) {
+      assertTestComponent(simpleBtn, SimpleButton) {
         case SimpleButtonProps(data, _, disabled, requestFocus) =>
           data shouldBe b1
           disabled shouldBe false
           requestFocus shouldBe true
       }
-      assertComponent(imageBtn, ImageButton) {
+      assertTestComponent(imageBtn, ImageButton) {
         case ImageButtonProps(data, _, disabled, showTextAsTitle, requestFocus) =>
           data shouldBe b2
           disabled shouldBe true

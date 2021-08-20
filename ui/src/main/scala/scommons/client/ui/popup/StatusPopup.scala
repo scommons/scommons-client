@@ -7,16 +7,19 @@ case class StatusPopupProps(text: String,
 
 object StatusPopup extends FunctionComponent[StatusPopupProps] {
 
+  private[popup] var popupComp: UiComponent[PopupProps] = Popup
+  private[popup] var withAutoHideComp: UiComponent[WithAutoHideProps] = WithAutoHide
+
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped
 
-    <(Popup())(^.wrapped := PopupProps(
+    <(popupComp())(^.wrapped := PopupProps(
       onClose = () => (),
       focusable = false,
       overlayClass = "scommons-modal-no-overlay",
       popupClass = PopupCss.statusContent
     ))(
-      <(WithAutoHide())(^.wrapped := WithAutoHideProps(props.onHide))(props.text)
+      <(withAutoHideComp())(^.wrapped := WithAutoHideProps(props.onHide))(props.text)
     )
   }
 }

@@ -21,6 +21,10 @@ object AppTaskManagerUi extends FunctionComponent[TaskManagerUiProps] {
     }
   }
 
+  private[app] var statusPopup: UiComponent[StatusPopupProps] = StatusPopup
+  private[app] var loadingPopup: UiComponent[Unit] = LoadingPopup
+  private[app] var errorPopup: UiComponent[ErrorPopupProps] = ErrorPopup
+
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped
     val showStatus = props.status.isDefined
@@ -30,18 +34,18 @@ object AppTaskManagerUi extends FunctionComponent[TaskManagerUiProps] {
 
     <.>()(
       if (showStatus) Some(
-        <(StatusPopup())(^.wrapped := StatusPopupProps(
+        <(statusPopup())(^.wrapped := StatusPopupProps(
           statusMessage,
           onHide = props.onHideStatus
         ))()
       ) else None,
 
       if (props.showLoading) Some(
-        <(LoadingPopup())()()
+        <(loadingPopup())()()
       ) else None,
 
       if (showError) Some(
-        <(ErrorPopup())(^.wrapped := ErrorPopupProps(
+        <(errorPopup())(^.wrapped := ErrorPopupProps(
           errorMessage,
           details = props.errorDetails,
           onClose = props.onCloseErrorPopup

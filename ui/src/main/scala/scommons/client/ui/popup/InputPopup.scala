@@ -17,6 +17,9 @@ object InputPopup extends FunctionComponent[InputPopupProps] {
                                      actionCommands: Set[String],
                                      opened: Boolean = false)
 
+  private[popup] var modalComp: UiComponent[ModalProps] = Modal
+  private[popup] var textFieldComp: UiComponent[TextFieldProps] = TextField
+
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped
     val (state, setState) = useStateUpdater { () =>
@@ -25,7 +28,7 @@ object InputPopup extends FunctionComponent[InputPopupProps] {
 
     val onOk = () => props.onOk(state.value)
 
-    <(Modal())(^.wrapped := ModalProps(
+    <(modalComp())(^.wrapped := ModalProps(
       header = None,
       buttons = List(Buttons.OK, Buttons.CANCEL),
       actions = ActionsData(state.actionCommands, _ => {
@@ -40,7 +43,7 @@ object InputPopup extends FunctionComponent[InputPopupProps] {
       <.div(^.className := "row-fluid")(
         <.p()(props.message),
         <.div(^.className := "control-group")(
-          <(TextField())(^.wrapped := TextFieldProps(
+          <(textFieldComp())(^.wrapped := TextFieldProps(
             state.value,
             onChange = { value =>
               setState(_.copy(value = value, actionCommands = getActionCommands(value)))

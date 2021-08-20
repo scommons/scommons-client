@@ -1,27 +1,26 @@
 package scommons.client.ui
 
 import scommons.react._
-import scommons.react.test.TestSpec
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react.test._
 
-class ImageLabelWrapperSpec extends TestSpec with ShallowRendererUtils {
+class ImageLabelWrapperSpec extends TestSpec with TestRendererUtils {
 
   it should "render only image" in {
     //given
     val image = ButtonImagesCss.folder
     val wrapper = new FunctionComponent[Unit] {
       protected def render(props: Props): ReactElement = {
-        <.>()(
+        <.div()(
           ImageLabelWrapper(image, None)
         )
       }
     }
 
     //when
-    val result = shallowRender(<(wrapper()).empty)
+    val result = testRender(<(wrapper()).empty)
     
     //then
-    assertNativeComponent(result, <.>()(
+    assertNativeComponent(result, <.div()(
       <.img(^.className := image, ^.src := "")()
     ))
   }
@@ -32,17 +31,17 @@ class ImageLabelWrapperSpec extends TestSpec with ShallowRendererUtils {
     val text = "some text"
     val wrapper = new FunctionComponent[Unit] {
       protected def render(props: Props): ReactElement = {
-        <.>()(
+        <.div()(
           ImageLabelWrapper(image, Some(text))
         )
       }
     }
 
     //when
-    val result = shallowRender(<(wrapper()).empty)
+    val result = testRender(<(wrapper()).empty)
     
     //then
-    assertNativeComponent(result, <.>()(
+    assertNativeComponent(result, <.div()(
       <.img(^.className := image, ^.src := "")(),
       <.span(^.style := Map(
         "paddingLeft" -> "3px",
@@ -57,17 +56,17 @@ class ImageLabelWrapperSpec extends TestSpec with ShallowRendererUtils {
     val text = "some text"
     val wrapper = new FunctionComponent[Unit] {
       protected def render(props: Props): ReactElement = {
-        <.>()(
+        <.div()(
           ImageLabelWrapper(image, Some(text), alignText = false)
         )
       }
     }
 
     //when
-    val result = shallowRender(<(wrapper()).empty)
+    val result = testRender(<(wrapper()).empty)
     
     //then
-    assertNativeComponent(result, <.>()(
+    assertNativeComponent(result, <.div()(
       <.img(^.className := image, ^.src := "")(),
       <.span(^.style := Map(
         "paddingLeft" -> "3px"

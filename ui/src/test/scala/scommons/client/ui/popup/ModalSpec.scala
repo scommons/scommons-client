@@ -2,12 +2,17 @@ package scommons.client.ui.popup
 
 import org.scalatest.{Assertion, Succeeded}
 import scommons.client.ui.Buttons
+import scommons.client.ui.popup.Modal._
 import scommons.client.util.ActionsData
-import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.react._
+import scommons.react.test._
 
-class ModalSpec extends TestSpec with ShallowRendererUtils {
+class ModalSpec extends TestSpec with TestRendererUtils {
+
+  Modal.popupComp = () => "Popup".asInstanceOf[ReactClass]
+  Modal.modalHeaderComp = () => "ModalHeader".asInstanceOf[ReactClass]
+  Modal.modalBodyComp = () => "ModalBody".asInstanceOf[ReactClass]
+  Modal.modalFooterComp = () => "ModalFooter".asInstanceOf[ReactClass]
 
   it should "render closable modal with header" in {
     //given
@@ -17,7 +22,7 @@ class ModalSpec extends TestSpec with ShallowRendererUtils {
     )
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertModal(result, props)
@@ -31,7 +36,7 @@ class ModalSpec extends TestSpec with ShallowRendererUtils {
     )
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertModal(result, props)
@@ -45,40 +50,40 @@ class ModalSpec extends TestSpec with ShallowRendererUtils {
     )
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
-    assertComponent(result, Popup)({ popupProps =>
+    assertTestComponent(result, popupComp)({ popupProps =>
       popupProps shouldBe PopupProps(
         onClose = props.onClose,
         closable = props.closable,
         onOpen = props.onOpen
       )
-    }, { case List(body, footer) =>
-      assertComponent(body, ModalBody)({ _ => Succeeded }, { case List(child) =>
+    }, inside(_) { case List(body, footer) =>
+      assertTestComponent(body, modalBodyComp)({ _ => Succeeded }, inside(_) { case List(child) =>
         assertNativeComponent(child, <.p()("some children"))
       })
-      assertComponent(footer, ModalFooter) { footerProps =>
+      assertTestComponent(footer, modalFooterComp) { footerProps =>
         footerProps shouldBe ModalFooterProps(props.buttons, props.actions, props.dispatch)
       }
     })
   }
 
-  private def assertModal(result: ShallowInstance, props: ModalProps): Assertion = {
-    assertComponent(result, Popup)({ popupProps =>
+  private def assertModal(result: TestInstance, props: ModalProps): Assertion = {
+    assertTestComponent(result, popupComp)({ popupProps =>
       popupProps shouldBe PopupProps(
         onClose = props.onClose,
         closable = props.closable,
         onOpen = props.onOpen
       )
-    }, { case List(header, body, footer) =>
-      assertComponent(header, ModalHeader) { headerProps: ModalHeaderProps =>
+    }, inside(_) { case List(header, body, footer) =>
+      assertTestComponent(header, modalHeaderComp) { headerProps: ModalHeaderProps =>
         headerProps shouldBe ModalHeaderProps(props.header.get, props.onClose, closable = props.closable)
       }
-      assertComponent(body, ModalBody)({ _ => Succeeded }, { case List(child) =>
+      assertTestComponent(body, modalBodyComp)({ _ => Succeeded }, inside(_) { case List(child) =>
         assertNativeComponent(child, <.p()("some children"))
       })
-      assertComponent(footer, ModalFooter) { footerProps =>
+      assertTestComponent(footer, modalFooterComp) { footerProps =>
         footerProps shouldBe ModalFooterProps(props.buttons, props.actions, props.dispatch)
       }
     })

@@ -1,18 +1,21 @@
 package scommons.client.ui.popup
 
-import scommons.client.ui.{Buttons, TextField, TextFieldProps}
-import scommons.react.test.TestSpec
-import scommons.react.test.raw.ShallowInstance
-import scommons.react.test.util.ShallowRendererUtils
+import scommons.client.ui.popup.InputPopup._
+import scommons.client.ui.{Buttons, TextFieldProps}
+import scommons.react._
+import scommons.react.test._
 
-class InputPopupSpec extends TestSpec with ShallowRendererUtils {
+class InputPopupSpec extends TestSpec with TestRendererUtils {
+
+  InputPopup.modalComp = () => "Modal".asInstanceOf[ReactClass]
+  InputPopup.textFieldComp = () => "TextField".asInstanceOf[ReactClass]
 
   it should "call onCancel when cancel command" in {
     //given
     val onCancel = mockFunction[Unit]
     val props = getInputPopupProps("Test message", onCancel = onCancel)
-    val component = shallowRender(<(InputPopup())(^.wrapped := props)())
-    val modalProps = findComponentProps(component, Modal)
+    val component = testRender(<(InputPopup())(^.wrapped := props)())
+    val modalProps = findComponentProps(component, modalComp)
 
     //then
     onCancel.expects()
@@ -25,8 +28,8 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
     //given
     val onOk = mockFunction[String, Unit]
     val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
-    val component = shallowRender(<(InputPopup())(^.wrapped := props)())
-    val modalProps = findComponentProps(component, Modal)
+    val component = testRender(<(InputPopup())(^.wrapped := props)())
+    val modalProps = findComponentProps(component, modalComp)
 
     //then
     onOk.expects(props.initialValue)
@@ -39,85 +42,81 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
     //given
     val onOk = mockFunction[String, Unit]
     val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
-    val renderer = createRenderer()
-    renderer.render(<(InputPopup())(^.wrapped := props)())
+    val renderer = createTestRenderer(<(InputPopup())(^.wrapped := props)())
     val newValue = "new value"
-    findComponentProps(renderer.getRenderOutput(), TextField).onChange(newValue)
+    findComponentProps(renderer.root, textFieldComp).onChange(newValue)
 
     //then
     onOk.expects(newValue)
 
     //when
-    findComponentProps(renderer.getRenderOutput(), Modal).actions.onCommand(_ => ())(Buttons.OK.command)
+    findComponentProps(renderer.root, modalComp).actions.onCommand(_ => ())(Buttons.OK.command)
   }
 
   it should "call onOk with initial value when onEnter" in {
     //given
     val onOk = mockFunction[String, Unit]
     val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
-    val comp = shallowRender(<(InputPopup())(^.wrapped := props)())
+    val comp = testRender(<(InputPopup())(^.wrapped := props)())
 
     //then
     onOk.expects(props.initialValue)
 
     //when
-    findComponentProps(comp, TextField).onEnter()
+    findComponentProps(comp, textFieldComp).onEnter()
   }
 
   it should "call onOk with new value when onEnter" in {
     //given
     val onOk = mockFunction[String, Unit]
     val props = getInputPopupProps("Test message", initialValue = "initial value", onOk = onOk)
-    val renderer = createRenderer()
-    renderer.render(<(InputPopup())(^.wrapped := props)())
+    val renderer = createTestRenderer(<(InputPopup())(^.wrapped := props)())
     val newValue = "new value"
-    findComponentProps(renderer.getRenderOutput(), TextField).onChange(newValue)
+    findComponentProps(renderer.root, textFieldComp).onChange(newValue)
 
     //then
     onOk.expects(newValue)
 
     //when
-    findComponentProps(renderer.getRenderOutput(), TextField).onEnter()
+    findComponentProps(renderer.root, textFieldComp).onEnter()
   }
 
   it should "enable OK command when new value is non-emtpy" in {
     //given
     val props = getInputPopupProps("Test message")
-    val renderer = createRenderer()
-    renderer.render(<(InputPopup())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
+    val renderer = createTestRenderer(<(InputPopup())(^.wrapped := props)())
+    val comp = renderer.root
     val newValue = "new value"
 
     //when
-    findComponentProps(comp, TextField).onChange(newValue)
+    findComponentProps(comp, textFieldComp).onChange(newValue)
 
     //then
-    val updatedComp = renderer.getRenderOutput()
-    val textProps = findComponentProps(updatedComp, TextField)
+    val updatedComp = renderer.root
+    val textProps = findComponentProps(updatedComp, textFieldComp)
     textProps.text shouldBe newValue
 
-    val modalProps = findComponentProps(updatedComp, Modal)
+    val modalProps = findComponentProps(updatedComp, modalComp)
     modalProps.actions.enabledCommands shouldBe Set(Buttons.OK.command, Buttons.CANCEL.command)
   }
 
   it should "disable OK command when new value is emtpy" in {
     //given
     val props = getInputPopupProps("Test message", initialValue = "initial value")
-    val renderer = createRenderer()
-    renderer.render(<(InputPopup())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val prevTextProps = findComponentProps(comp, TextField)
+    val renderer = createTestRenderer(<(InputPopup())(^.wrapped := props)())
+    val comp = renderer.root
+    val prevTextProps = findComponentProps(comp, textFieldComp)
     val newValue = ""
 
     //when
     prevTextProps.onChange(newValue)
 
     //then
-    val updatedComp = renderer.getRenderOutput()
-    val textProps = findComponentProps(updatedComp, TextField)
+    val updatedComp = renderer.root
+    val textProps = findComponentProps(updatedComp, textFieldComp)
     textProps.text shouldBe newValue
 
-    val modalProps = findComponentProps(updatedComp, Modal)
+    val modalProps = findComponentProps(updatedComp, modalComp)
     modalProps.actions.enabledCommands shouldBe Set(Buttons.CANCEL.command)
   }
 
@@ -127,7 +126,7 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
     val component = <(InputPopup())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertInputPopup(result, props)
@@ -142,7 +141,7 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
     val component = <(InputPopup())(^.wrapped := props)()
 
     //when
-    val result = shallowRender(component)
+    val result = testRender(component)
 
     //then
     assertInputPopup(result, props)
@@ -151,11 +150,10 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
   it should "set requestFocus when onOpen" in {
     //given
     val props = getInputPopupProps("Test message")
-    val renderer = createRenderer()
-    renderer.render(<(InputPopup())(^.wrapped := props)())
-    val comp = renderer.getRenderOutput()
-    val modalProps = findComponentProps(comp, Modal)
-    val textProps = findComponentProps(comp, TextField)
+    val renderer = createTestRenderer(<(InputPopup())(^.wrapped := props)())
+    val comp = renderer.root
+    val modalProps = findComponentProps(comp, modalComp)
+    val textProps = findComponentProps(comp, textFieldComp)
     textProps.requestFocus shouldBe false
     textProps.requestSelect shouldBe false
 
@@ -163,8 +161,8 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
     modalProps.onOpen()
 
     //then
-    val updatedComp = renderer.getRenderOutput()
-    val updatedTextProps = findComponentProps(updatedComp, TextField)
+    val updatedComp = renderer.root
+    val updatedTextProps = findComponentProps(updatedComp, textFieldComp)
     updatedTextProps.requestFocus shouldBe true
     updatedTextProps.requestSelect shouldBe true
   }
@@ -181,23 +179,23 @@ class InputPopupSpec extends TestSpec with ShallowRendererUtils {
     initialValue = initialValue
   )
 
-  private def assertInputPopup(result: ShallowInstance, props: InputPopupProps): Unit = {
+  private def assertInputPopup(result: TestInstance, props: InputPopupProps): Unit = {
     val actionCommands =
       if (props.initialValue.nonEmpty) Set(Buttons.OK.command, Buttons.CANCEL.command)
       else Set(Buttons.CANCEL.command)
 
-    assertComponent(result, Modal)({
+    assertTestComponent(result, modalComp)({
       case ModalProps(header, buttons, actions, _, onClose, closable, _) =>
         header shouldBe None
         buttons shouldBe List(Buttons.OK, Buttons.CANCEL)
         actions.enabledCommands shouldBe actionCommands
         onClose shouldBe props.onCancel
         closable shouldBe true
-    }, { case List(modalChild) =>
-      assertNativeComponent(modalChild, <.div(^.className := "row-fluid")(), { case List(p, div) =>
+    }, inside(_) { case List(modalChild) =>
+      assertNativeComponent(modalChild, <.div(^.className := "row-fluid")(), inside(_) { case List(p, div) =>
         assertNativeComponent(p, <.p()(props.message))
-        assertNativeComponent(div, <.div(^.className := "control-group")(), { case List(textField) =>
-          assertComponent(textField, TextField) {
+        assertNativeComponent(div, <.div(^.className := "control-group")(), inside(_) { case List(textField) =>
+          assertTestComponent(textField, textFieldComp) {
             case TextFieldProps(text, _, requestFocus, requestSelect, className, placeholder, _, readOnly) =>
               text shouldBe props.initialValue
               requestFocus shouldBe false

@@ -29,6 +29,8 @@ private object SaveCancelPopup extends FunctionComponent[SaveCancelPopupProps] {
 
   private case class SaveCancelPopupState(data: Any, opened: Boolean = false)
 
+  private[popup] var modalComp: UiComponent[ModalProps] = Modal
+
   protected def render(compProps: Props): ReactElement = {
     val props = compProps.wrapped
     val (state, setState) = useStateUpdater(() => SaveCancelPopupState(props.initialData))
@@ -46,7 +48,7 @@ private object SaveCancelPopup extends FunctionComponent[SaveCancelPopupProps] {
     val data = state.data.asInstanceOf[props.DataType]
     val actionCommands = if (props.isSaveEnabled(data)) enabledActions else disabledActions
 
-    <(Modal())(^.wrapped := ModalProps(
+    <(modalComp())(^.wrapped := ModalProps(
       header = Some(props.title),
       buttons = List(Buttons.SAVE.copy(
         image = ButtonImagesCss.dbSave,
