@@ -2,6 +2,7 @@ package scommons.client.ui.popup
 
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.react._
+import scommons.react.dom._
 
 case class ModalHeaderProps(header: String,
                             onClose: () => Unit,

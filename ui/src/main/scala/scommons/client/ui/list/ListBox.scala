@@ -5,6 +5,7 @@ import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.ImageLabelWrapper
 import scommons.client.ui.list.ListBoxCss._
 import scommons.react._
+import scommons.react.dom._
 
 case class ListBoxProps(items: List[ListBoxData],
                         selectedIds: Set[String] = Set.empty,

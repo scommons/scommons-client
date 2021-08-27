@@ -3,6 +3,7 @@ package scommons.client.ui.page
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import io.github.shogowada.statictags.Element
 import scommons.react._
+import scommons.react.dom._
 import scommons.react.hooks._
 
 case class PaginationPanelProps(totalPages: Int,

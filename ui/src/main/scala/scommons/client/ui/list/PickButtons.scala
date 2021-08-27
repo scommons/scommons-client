@@ -3,6 +3,7 @@ package scommons.client.ui.list
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import io.github.shogowada.statictags.Element
 import scommons.react._
+import scommons.react.dom._
 
 case class PickButtonsProps(addEnabled: Boolean = true,
                             removeEnabled: Boolean = true,

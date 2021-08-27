@@ -2,6 +2,7 @@ package scommons.client.ui.tree
 
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.react._
+import scommons.react.dom._
 
 case class TreeNodeProps(isNode: Boolean,
                          paddingLeft: Int,

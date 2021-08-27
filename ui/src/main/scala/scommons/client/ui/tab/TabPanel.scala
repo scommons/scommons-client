@@ -3,6 +3,7 @@ package scommons.client.ui.tab
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.ImageLabelWrapper
 import scommons.react._
+import scommons.react.dom._
 
 case class TabPanelProps(items: List[TabItemData],
                          selectedIndex: Int = 0,

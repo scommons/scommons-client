@@ -3,6 +3,7 @@ package scommons.client.ui.table
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import scommons.client.ui.table.TablePanelCss._
 import scommons.react._
+import scommons.react.dom._
 
 case class TablePanelProps[K, T](header: List[TableColumnData],
                                  rows: Seq[T],

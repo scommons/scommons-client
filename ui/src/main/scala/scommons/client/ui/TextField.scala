@@ -4,6 +4,7 @@ import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, KeyboardS
 import org.scalajs.dom.ext.KeyCode
 import org.scalajs.dom.raw.HTMLInputElement
 import scommons.react._
+import scommons.react.dom._
 import scommons.react.hooks._
 
 case class TextFieldProps(text: String,

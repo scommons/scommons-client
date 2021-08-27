@@ -3,6 +3,7 @@ package scommons.client.ui
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
 import org.scalajs.dom.raw.HTMLButtonElement
 import scommons.react._
+import scommons.react.dom._
 import scommons.react.hooks._
 
 case class SimpleButtonProps(data: SimpleButtonData,
