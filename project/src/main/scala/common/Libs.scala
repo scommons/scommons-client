@@ -18,5 +18,4 @@ object Libs extends CommonLibs {
   lazy val scommonsReactRedux = Def.setting("org.scommons.react" %%% "scommons-react-redux" % scommonsReactVersion)
 
   lazy val sjsReactJsRouterDom = Def.setting("org.scommons.shogowada" %%% "scalajs-reactjs-router-dom" % sjsReactJsVer)
-  lazy val sjsReactJsRouterRedux = Def.setting("org.scommons.shogowada" %%% "scalajs-reactjs-router-redux" % sjsReactJsVer)
 }

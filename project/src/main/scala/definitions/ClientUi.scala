@@ -59,9 +59,7 @@ object ClientUi extends ScalaJsModule {
     Libs.scommonsReactCore.value,
     Libs.scommonsReactDom.value,
     Libs.scommonsReactRedux.value,
-
-    Libs.sjsReactJsRouterDom.value,     // Optional. For react-router-dom facade
-    Libs.sjsReactJsRouterRedux.value    // Optional. For react-router-redux facade
+    Libs.sjsReactJsRouterDom.value
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
