@@ -25,7 +25,7 @@ object ClientUi extends ScalaJsModule {
 
       npmDependencies in Compile ++= Seq(
         "react-modal" -> "3.14.3",
-        "react-select" -> "3.2.0",
+        "react-select" -> "3.2.0"
       ),
 
       npmDevDependencies in Compile ++= Seq(
