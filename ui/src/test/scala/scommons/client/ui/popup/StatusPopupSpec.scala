@@ -2,13 +2,12 @@ package scommons.client.ui.popup
 
 import scommons.client.ui.popup.PopupCss._
 import scommons.client.ui.popup.StatusPopup._
-import scommons.react._
 import scommons.react.test._
 
 class StatusPopupSpec extends TestSpec with TestRendererUtils {
 
-  StatusPopup.popupComp = () => "Popup".asInstanceOf[ReactClass]
-  StatusPopup.withAutoHideComp = () => "WithAutoHide".asInstanceOf[ReactClass]
+  StatusPopup.popupComp = mockUiComponent("Popup")
+  StatusPopup.withAutoHideComp = mockUiComponent("WithAutoHide")
 
   it should "do nothing when onClose/onOpen" in {
     //given

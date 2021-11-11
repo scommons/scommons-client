@@ -2,12 +2,11 @@ package scommons.client.ui.popup
 
 import scommons.client.ui.popup.LoadingPopup.popupComp
 import scommons.client.ui.popup.PopupCss._
-import scommons.react._
 import scommons.react.test._
 
 class LoadingPopupSpec extends TestSpec with TestRendererUtils {
 
-  LoadingPopup.popupComp = () => "Popup".asInstanceOf[ReactClass]
+  LoadingPopup.popupComp = mockUiComponent("Popup")
 
   it should "do nothing when onClose/onOpen" in {
     //given

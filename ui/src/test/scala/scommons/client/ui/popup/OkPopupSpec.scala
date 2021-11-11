@@ -3,12 +3,11 @@ package scommons.client.ui.popup
 import scommons.client.ui.Buttons
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.OkPopup._
-import scommons.react._
 import scommons.react.test._
 
 class OkPopupSpec extends TestSpec with TestRendererUtils {
 
-  OkPopup.modalComp = () => "Modal".asInstanceOf[ReactClass]
+  OkPopup.modalComp = mockUiComponent("Modal")
 
   it should "call onClose function when onOkCommand" in {
     //given

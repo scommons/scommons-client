@@ -1,8 +1,7 @@
 package scommons.client.showcase.action.api
 
-import io.github.shogowada.scalajs.reactjs.redux.Action
-import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.api.{ApiStatus, StatusResponse}
+import scommons.react.redux._
 import scommons.react.redux.task.{FutureTask, TaskAction}
 
 import scala.concurrent.ExecutionContext.Implicits.global

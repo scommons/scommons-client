@@ -1,9 +1,9 @@
 package scommons.client.ui.popup
 
-import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.ui.ButtonData
 import scommons.client.util.ActionsData
 import scommons.react._
+import scommons.react.redux.Dispatch
 
 case class ModalProps(header: Option[String],
                       buttons: List[ButtonData],

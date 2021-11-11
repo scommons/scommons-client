@@ -1,13 +1,12 @@
 package scommons.client.showcase.table
 
 import scommons.client.showcase.table.TablePanelDemo._
-import scommons.react._
 import scommons.react.test._
 
 class TablePanelDemoSpec extends TestSpec with TestRendererUtils {
 
-  TablePanelDemo.simpleTablePanel = () => "SimpleTablePanel".asInstanceOf[ReactClass]
-  TablePanelDemo.customTablePanel = () => "CustomTablePanel".asInstanceOf[ReactClass]
+  TablePanelDemo.simpleTablePanel = mockUiComponent("SimpleTablePanel")
+  TablePanelDemo.customTablePanel = mockUiComponent("CustomTablePanel")
 
   it should "render component" in {
     //given

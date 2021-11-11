@@ -4,15 +4,14 @@ import org.scalatest.{Assertion, Succeeded}
 import scommons.client.ui.Buttons
 import scommons.client.ui.popup.Modal._
 import scommons.client.util.ActionsData
-import scommons.react._
 import scommons.react.test._
 
 class ModalSpec extends TestSpec with TestRendererUtils {
 
-  Modal.popupComp = () => "Popup".asInstanceOf[ReactClass]
-  Modal.modalHeaderComp = () => "ModalHeader".asInstanceOf[ReactClass]
-  Modal.modalBodyComp = () => "ModalBody".asInstanceOf[ReactClass]
-  Modal.modalFooterComp = () => "ModalFooter".asInstanceOf[ReactClass]
+  Modal.popupComp = mockUiComponent("Popup")
+  Modal.modalHeaderComp = mockUiComponent("ModalHeader")
+  Modal.modalBodyComp = mockUiComponent("ModalBody")
+  Modal.modalFooterComp = mockUiComponent("ModalFooter")
 
   it should "render closable modal with header" in {
     //given

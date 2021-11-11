@@ -3,13 +3,12 @@ package scommons.client.ui.popup
 import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.ErrorPopup._
 import scommons.client.ui.{HTML, HTMLProps, SimpleButtonData}
-import scommons.react._
 import scommons.react.test._
 
 class ErrorPopupSpec extends TestSpec with TestRendererUtils {
 
-  ErrorPopup.modalComp = () => "Modal".asInstanceOf[ReactClass]
-  ErrorPopup.htmlComp = () => "HTML".asInstanceOf[ReactClass]
+  ErrorPopup.modalComp = mockUiComponent("Modal")
+  ErrorPopup.htmlComp = mockUiComponent("HTML")
 
   it should "call onClose function when on close command" in {
     //given

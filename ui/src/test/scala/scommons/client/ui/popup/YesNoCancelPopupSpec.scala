@@ -4,12 +4,11 @@ import scommons.client.ui.icon.IconCss
 import scommons.client.ui.popup.YesNoCancelOption._
 import scommons.client.ui.popup.YesNoCancelPopup._
 import scommons.client.ui.{Buttons, SimpleButtonData}
-import scommons.react._
 import scommons.react.test._
 
 class YesNoCancelPopupSpec extends TestSpec with TestRendererUtils {
 
-  YesNoCancelPopup.modalComp = () => "Modal".asInstanceOf[ReactClass]
+  YesNoCancelPopup.modalComp = mockUiComponent("Modal")
 
   it should "call onSelect(Yes) function when Yes selected" in {
     //given

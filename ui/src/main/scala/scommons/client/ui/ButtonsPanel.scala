@@ -1,8 +1,8 @@
 package scommons.client.ui
 
-import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.util.ActionsData
 import scommons.react._
+import scommons.react.redux.Dispatch
 
 case class ButtonsPanelProps(buttons: List[ButtonData],
                              actions: ActionsData,

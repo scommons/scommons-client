@@ -1,7 +1,6 @@
 package scommons.client.showcase.demo
 
 import io.github.shogowada.scalajs.reactjs.React.Props
-import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import play.api.libs.json.Json
 import scommons.client.showcase.ShowcaseState
 import scommons.client.showcase.action.api.ApiActions
@@ -11,7 +10,7 @@ import scommons.client.ui.popup._
 import scommons.client.util.ActionsData
 import scommons.react._
 import scommons.react.hooks._
-import scommons.react.redux.BaseStateController
+import scommons.react.redux._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Success

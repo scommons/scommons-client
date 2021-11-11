@@ -8,7 +8,7 @@ import scommons.react.test._
 
 class SaveCancelPopupSpec extends TestSpec with TestRendererUtils {
 
-  SaveCancelPopup.modalComp = () => "Modal".asInstanceOf[ReactClass]
+  SaveCancelPopup.modalComp = mockUiComponent("Modal")
 
   it should "call onCancel function when cancel command" in {
     //given

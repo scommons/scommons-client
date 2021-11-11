@@ -1,12 +1,12 @@
 package scommons.client.app
 
-import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import scommons.client.ui._
 import scommons.client.ui.tree._
 import scommons.client.util.{ActionsData, BrowsePath}
 import scommons.react._
+import scommons.react.redux.Dispatch
 
 case class AppBrowseControllerProps(buttons: List[ButtonData],
                                     treeRoots: List[BrowseTreeData],

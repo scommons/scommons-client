@@ -2,13 +2,12 @@ package scommons.client.ui.popup
 
 import scommons.client.ui.popup.InputPopup._
 import scommons.client.ui.{Buttons, TextFieldProps}
-import scommons.react._
 import scommons.react.test._
 
 class InputPopupSpec extends TestSpec with TestRendererUtils {
 
-  InputPopup.modalComp = () => "Modal".asInstanceOf[ReactClass]
-  InputPopup.textFieldComp = () => "TextField".asInstanceOf[ReactClass]
+  InputPopup.modalComp = mockUiComponent("Modal")
+  InputPopup.textFieldComp = mockUiComponent("TextField")
 
   it should "call onCancel when cancel command" in {
     //given

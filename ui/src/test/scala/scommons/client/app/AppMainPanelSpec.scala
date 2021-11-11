@@ -1,13 +1,12 @@
 package scommons.client.app
 
 import scommons.client.app.AppMainPanel._
-import scommons.react._
 import scommons.react.test._
 
 class AppMainPanelSpec extends TestSpec with TestRendererUtils {
 
-  AppMainPanel.appHeaderComp = () => "AppHeader".asInstanceOf[ReactClass]
-  AppMainPanel.appFooterComp = () => "AppFooter".asInstanceOf[ReactClass]
+  AppMainPanel.appHeaderComp = mockUiComponent("AppHeader")
+  AppMainPanel.appFooterComp = mockUiComponent("AppFooter")
 
   it should "render the component" in {
     //given

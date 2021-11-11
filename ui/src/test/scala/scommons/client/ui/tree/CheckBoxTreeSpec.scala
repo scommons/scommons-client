@@ -10,7 +10,7 @@ import scommons.react.test._
 
 class CheckBoxTreeSpec extends TestSpec with TestRendererUtils {
 
-  CheckBoxTree.treeNodeComp = () => "TreeNode".asInstanceOf[ReactClass]
+  CheckBoxTree.treeNodeComp = mockUiComponent("TreeNode")
 
   it should "expand node when onExpand" in {
     //given

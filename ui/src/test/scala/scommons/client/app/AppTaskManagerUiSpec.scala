@@ -4,7 +4,6 @@ import org.scalatest.Succeeded
 import scommons.api.{ApiStatus, StatusResponse}
 import scommons.client.app.AppTaskManagerUi._
 import scommons.client.ui.popup._
-import scommons.react._
 import scommons.react.redux.task.TaskManagerUiProps
 import scommons.react.test._
 
@@ -12,9 +11,9 @@ import scala.util.Success
 
 class AppTaskManagerUiSpec extends TestSpec with TestRendererUtils {
 
-  AppTaskManagerUi.statusPopup = () => "StatusPopup".asInstanceOf[ReactClass]
-  AppTaskManagerUi.loadingPopup = () => "LoadingPopup".asInstanceOf[ReactClass]
-  AppTaskManagerUi.errorPopup = () => "ErrorPopup".asInstanceOf[ReactClass]
+  AppTaskManagerUi.statusPopup = mockUiComponent("StatusPopup")
+  AppTaskManagerUi.loadingPopup = mockUiComponent("LoadingPopup")
+  AppTaskManagerUi.errorPopup = mockUiComponent("ErrorPopup")
 
   it should "return error if unsuccessful response in errorHandler" in {
     //given

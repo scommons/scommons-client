@@ -11,7 +11,7 @@ import scommons.react.test._
 
 class BrowseTreeSpec extends TestSpec with TestRendererUtils {
 
-  BrowseTree.treeNodeComp = () => "TreeNode".asInstanceOf[ReactClass]
+  BrowseTree.treeNodeComp = mockUiComponent("TreeNode")
 
   it should "call onSelect function when select new item" in {
     //given

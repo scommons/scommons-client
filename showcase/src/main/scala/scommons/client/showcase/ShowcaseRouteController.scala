@@ -1,11 +1,10 @@
 package scommons.client.showcase
 
 import io.github.shogowada.scalajs.reactjs.React.Props
-import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import scommons.client.app.{AppBrowseController, AppBrowseControllerProps}
 import scommons.client.ui.Buttons
 import scommons.react.UiComponent
-import scommons.react.redux.BaseStateController
+import scommons.react.redux._
 
 object ShowcaseRouteController extends BaseStateController[ShowcaseState, AppBrowseControllerProps] {
 
