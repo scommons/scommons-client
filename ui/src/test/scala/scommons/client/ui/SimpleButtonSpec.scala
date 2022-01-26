@@ -1,10 +1,9 @@
 package scommons.client.ui
 
-import scommons.client.ui.SimpleButtonSpec.ButtonMock
 import scommons.react.test._
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSExportAll
+import scala.scalajs.js.Dynamic.literal
 
 class SimpleButtonSpec extends TestSpec with TestRendererUtils {
 
@@ -88,14 +87,15 @@ class SimpleButtonSpec extends TestSpec with TestRendererUtils {
     //given
     val data = SimpleButtonData("test-command", "Test Text")
     val props = SimpleButtonProps(data, () => (), requestFocus = true)
-    val buttonMock = mock[ButtonMock]
+    val focusMock = mockFunction[Unit]
+    val buttonMock = literal("focus" -> focusMock)
 
     //then
-    (buttonMock.focus _).expects()
+    focusMock.expects()
 
     //when
     testRender(<(SimpleButton())(^.wrapped := props)(), { el =>
-      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock.asInstanceOf[js.Any]
+      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock
       else null
     })
   }
@@ -104,16 +104,17 @@ class SimpleButtonSpec extends TestSpec with TestRendererUtils {
     //given
     val data = SimpleButtonData("test-command", "Test Text")
     val prevProps = SimpleButtonProps(data, () => ())
-    val buttonMock = mock[ButtonMock]
+    val focusMock = mockFunction[Unit]
+    val buttonMock = literal("focus" -> focusMock)
     val renderer = createTestRenderer(<(SimpleButton())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock.asInstanceOf[js.Any]
+      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock
       else null
     })
     val props = SimpleButtonProps(data, () => (), requestFocus = true)
     props should not be prevProps
 
     //then
-    (buttonMock.focus _).expects()
+    focusMock.expects()
 
     //when
     TestRenderer.act { () =>
@@ -124,29 +125,21 @@ class SimpleButtonSpec extends TestSpec with TestRendererUtils {
   it should "not focus button element if requestFocus not changed" in {
     //given
     val prevProps = SimpleButtonProps(SimpleButtonData("test-command", "Text"), () => ())
-    val buttonMock = mock[ButtonMock]
+    val focusMock = mockFunction[Unit]
+    val buttonMock = literal("focus" -> focusMock)
     val renderer = createTestRenderer(<(SimpleButton())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock.asInstanceOf[js.Any]
+      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock
       else null
     })
     val props = SimpleButtonProps(SimpleButtonData("test-command", "New Text"), () => ())
     props should not be prevProps
 
     //then
-    (buttonMock.focus _).expects().never()
+    focusMock.expects().never()
 
     //when
     TestRenderer.act { () =>
       renderer.update(<(SimpleButton())(^.wrapped := props)())
     }
-  }
-}
-
-object SimpleButtonSpec {
-
-  @JSExportAll
-  trait ButtonMock {
-
-    def focus(): Unit
   }
 }

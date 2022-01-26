@@ -2,16 +2,13 @@ package scommons.client.ui.select
 
 import org.scalatest.{Assertion, Succeeded}
 import scommons.client.ui.select.SearchSelect._
-import scommons.nodejs
 import scommons.nodejs.test.AsyncTestSpec
 import scommons.react.test._
 
 import scala.concurrent.{Future, Promise}
-import scala.scalajs.js
 
 class SearchSelectSpec extends AsyncTestSpec with BaseTestSpec with TestRendererUtils {
 
-  SearchSelect.global = nodejs.global.asInstanceOf[js.Dynamic]
   SearchSelect.singleSelectComp = mockUiComponent("SingleSelect")
 
   it should "call onChange function when onSelectChange" in {

@@ -1,12 +1,10 @@
 package scommons.client.ui
 
 import org.scalajs.dom.ext.KeyCode
-import scommons.client.ui.TextFieldSpec._
 import scommons.react.test._
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.literal
-import scala.scalajs.js.annotation.JSExportAll
 
 class TextFieldSpec extends TestSpec with TestRendererUtils {
 
@@ -79,15 +77,15 @@ class TextFieldSpec extends TestSpec with TestRendererUtils {
   it should "focus input element if requestFocus = true" in {
     //given
     val props = TextFieldProps("new test text", onChange = _ => (), requestFocus = true)
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning("")
+    val focusMock = mockFunction[Unit]
+    val inputMock = literal("value" -> "", "focus" -> focusMock)
 
     //then
-    (inputMock.focus _).expects()
+    focusMock.expects()
 
     //when
     testRender(<(TextField())(^.wrapped := props)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
   }
@@ -95,17 +93,17 @@ class TextFieldSpec extends TestSpec with TestRendererUtils {
   it should "focus input element if requestFocus changed from false to true" in {
     //given
     val prevProps = TextFieldProps("test text", onChange = _ => ())
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning("")
+    val focusMock = mockFunction[Unit]
+    val inputMock = literal("value" -> "", "focus" -> focusMock)
     val renderer = createTestRenderer(<(TextField())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
     val props = TextFieldProps("new test text", onChange = _ => (), requestFocus = true)
     props should not be prevProps
 
     //then
-    (inputMock.focus _).expects()
+    focusMock.expects()
 
     //when
     TestRenderer.act { () =>
@@ -116,17 +114,17 @@ class TextFieldSpec extends TestSpec with TestRendererUtils {
   it should "not focus input element if requestFocus not changed" in {
     //given
     val prevProps = TextFieldProps("test text", onChange = _ => ())
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning("")
+    val focusMock = mockFunction[Unit]
+    val inputMock = literal("value" -> "", "focus" -> focusMock)
     val renderer = createTestRenderer(<(TextField())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
     val props = TextFieldProps("new test text", onChange = _ => ())
     props should not be prevProps
 
     //then
-    (inputMock.focus _).expects().never()
+    focusMock.expects().never()
 
     //when
     TestRenderer.act { () =>
@@ -137,15 +135,15 @@ class TextFieldSpec extends TestSpec with TestRendererUtils {
   it should "select text if requestSelect = true" in {
     //given
     val props = TextFieldProps("new test text", onChange = _ => (), requestSelect = true)
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning(props.text)
+    val setSelectionRangeMock = mockFunction[Int, Int, Unit]
+    val inputMock = literal("value" -> props.text, "setSelectionRange" -> setSelectionRangeMock)
 
     //then
-    (inputMock.setSelectionRange _).expects(0, props.text.length)
+    setSelectionRangeMock.expects(0, props.text.length)
 
     //when
     testRender(<(TextField())(^.wrapped := props)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
   }
@@ -153,18 +151,18 @@ class TextFieldSpec extends TestSpec with TestRendererUtils {
   it should "select text if requestSelect changed from false to true" in {
     //given
     val prevProps = TextFieldProps("test text", onChange = _ => ())
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning(prevProps.text)
+    val setSelectionRangeMock = mockFunction[Int, Int, Unit]
+    val inputMock = literal("value" -> prevProps.text, "setSelectionRange" -> setSelectionRangeMock)
     val renderer = createTestRenderer(<(TextField())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
     val props = TextFieldProps("new test text", onChange = _ => (), requestSelect = true)
     props should not be prevProps
 
     //then
-    (inputMock.value _).expects().returning(props.text)
-    (inputMock.setSelectionRange _).expects(0, props.text.length)
+    inputMock.updateDynamic("value")(props.text)
+    setSelectionRangeMock.expects(0, props.text.length)
 
     //when
     TestRenderer.act { () =>
@@ -175,34 +173,22 @@ class TextFieldSpec extends TestSpec with TestRendererUtils {
   it should "not select text if requestSelect not changed" in {
     //given
     val prevProps = TextFieldProps("test text", onChange = _ => (), requestSelect = true)
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning(prevProps.text)
-    (inputMock.setSelectionRange _).expects(0, prevProps.text.length)
+    val setSelectionRangeMock = mockFunction[Int, Int, Unit]
+    val inputMock = literal("value" -> prevProps.text, "setSelectionRange" -> setSelectionRangeMock)
+    setSelectionRangeMock.expects(0, prevProps.text.length)
     val renderer = createTestRenderer(<(TextField())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
     val props = TextFieldProps("new test text", onChange = _ => (), requestSelect = true)
     props should not be prevProps
 
     //then
-    (inputMock.value _).expects().never()
-    (inputMock.setSelectionRange _).expects(*, *).never()
+    setSelectionRangeMock.expects(*, *).never()
 
     //when
     TestRenderer.act { () =>
       renderer.update(<(TextField())(^.wrapped := props)())
     }
-  }
-}
-
-object TextFieldSpec {
-
-  @JSExportAll
-  trait InputMock {
-
-    def value: String
-    def setSelectionRange(start: Int, end: Int): Unit
-    def focus(): Unit
   }
 }

@@ -1,12 +1,12 @@
 package scommons.client.ui.select
 
-import org.scalajs.dom.window
 import scommons.react._
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
+import scala.scalajs.js.Dynamic.global
 import scala.util.{Failure, Success}
 
 case class SearchSelectProps(selected: Option[SelectData],
@@ -17,7 +17,6 @@ case class SearchSelectProps(selected: Option[SelectData],
 
 object SearchSelect extends ClassComponent[SearchSelectProps] {
   
-  private[select] var global: js.Dynamic = window.asInstanceOf[js.Dynamic]
   private[select] var singleSelectComp: UiComponent[SingleSelectProps] = SingleSelect
 
   private case class SearchSelectState(isLoading: Boolean = false,

@@ -1,24 +1,20 @@
 package scommons.client.controller
 
-import io.github.shogowada.scalajs.history.History
-import io.github.shogowada.scalajs.reactjs.router.Location
+import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.router.RouterProps.RouterProps
-import scommons.client.controller.RouteParamsSpec._
 import scommons.react.test.TestSpec
 
-import scala.scalajs.js.annotation.JSExportAll
+import scala.scalajs.js.Dynamic.literal
 
 class RouteParamsSpec extends TestSpec {
 
   it should "return PathParams from pathname when pathParams" in {
     //given
-    val routerProps = mock[RouterProps]
-    val location = mock[LocationMock]
     val pathname = "/app/1/2//3/"
+    val location = literal("pathname" -> pathname)
+    val nativeProps = literal("location" -> location)
+    val routerProps = new RouterProps(Props[Unit](nativeProps))
     val routeParams = new RouteParams(routerProps)
-    
-    (routerProps.location _).expects().returning(location.asInstanceOf[Location])
-    (location.pathname _).expects().returning(pathname)
 
     //when
     val result = routeParams.pathParams
@@ -29,15 +25,12 @@ class RouteParamsSpec extends TestSpec {
   
   it should "return PathParams from pathname and search when allParams" in {
     //given
-    val routerProps = mock[RouterProps]
-    val location = mock[LocationMock]
     val pathname = "/app/1/2//3/"
     val search = "?testId=123"
+    val location = literal("pathname" -> pathname, "search" -> search)
+    val nativeProps = literal("location" -> location)
+    val routerProps = new RouterProps(Props[Unit](nativeProps))
     val routeParams = new RouteParams(routerProps)
-    
-    (routerProps.location _).expects().returning(location.asInstanceOf[Location])
-    (location.pathname _).expects().returning(pathname)
-    (location.search _).expects().returning(search)
 
     //when
     val result = routeParams.allParams
@@ -48,32 +41,17 @@ class RouteParamsSpec extends TestSpec {
   
   it should "push url to the browser history" in {
     //given
-    val routerProps = mock[RouterProps]
-    val history = mock[HistoryMock]
-    val url = "/app/1/2//3/"
+    val pushMock = mockFunction[String, Unit]
+    val history = literal("push" -> pushMock)
+    val nativeProps = literal("history" -> history)
+    val routerProps = new RouterProps(Props[Unit](nativeProps))
     val routeParams = new RouteParams(routerProps)
+    val url = "/app/1/2//3/"
 
     //then
-    (routerProps.history _).expects().returning(history.asInstanceOf[History])
-    (history.push _).expects(url)
+    pushMock.expects(url)
 
     //when
     routeParams.push(url)
-  }
-}
-
-object RouteParamsSpec {
-
-  @JSExportAll
-  trait LocationMock {
-
-    def pathname: String
-    def search: String
-  }
-  
-  @JSExportAll
-  trait HistoryMock {
-
-    def push(url: String): Unit
   }
 }

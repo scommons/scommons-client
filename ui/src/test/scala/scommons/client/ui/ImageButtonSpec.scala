@@ -1,11 +1,10 @@
 package scommons.client.ui
 
 import scommons.client.ui.ButtonImagesCss._
-import scommons.client.ui.ImageButtonSpec._
 import scommons.react.test._
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSExportAll
+import scala.scalajs.js.Dynamic.literal
 
 class ImageButtonSpec extends TestSpec with TestRendererUtils {
 
@@ -109,14 +108,15 @@ class ImageButtonSpec extends TestSpec with TestRendererUtils {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
     val props = ImageButtonProps(data, () => (), requestFocus = true)
-    val buttonMock = mock[ButtonMock]
+    val focusMock = mockFunction[Unit]
+    val buttonMock = literal("focus" -> focusMock)
 
     //then
-    (buttonMock.focus _).expects()
+    focusMock.expects()
     
     //when
     testRender(<(ImageButton())(^.wrapped := props)(), { el =>
-      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock.asInstanceOf[js.Any]
+      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock
       else null
     })
   }
@@ -125,16 +125,17 @@ class ImageButtonSpec extends TestSpec with TestRendererUtils {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
     val prevProps = ImageButtonProps(data, () => ())
-    val buttonMock = mock[ButtonMock]
+    val focusMock = mockFunction[Unit]
+    val buttonMock = literal("focus" -> focusMock)
     val renderer = createTestRenderer(<(ImageButton())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock.asInstanceOf[js.Any]
+      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock
       else null
     })
     val props = ImageButtonProps(data, () => (), requestFocus = true)
     props should not be prevProps
 
     //then
-    (buttonMock.focus _).expects()
+    focusMock.expects()
 
     //when
     TestRenderer.act { () =>
@@ -146,29 +147,21 @@ class ImageButtonSpec extends TestSpec with TestRendererUtils {
     //given
     val data = ImageButtonData("accept", accept, acceptDisabled, "test button")
     val prevProps = ImageButtonProps(data, () => ())
-    val buttonMock = mock[ButtonMock]
+    val focusMock = mockFunction[Unit]
+    val buttonMock = literal("focus" -> focusMock)
     val renderer = createTestRenderer(<(ImageButton())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock.asInstanceOf[js.Any]
+      if (el.`type` == "button".asInstanceOf[js.Any]) buttonMock
       else null
     })
     val props = ImageButtonProps(data, () => (), showTextAsTitle = true)
     props should not be prevProps
 
     //then
-    (buttonMock.focus _).expects().never()
+    focusMock.expects().never()
 
     //when
     TestRenderer.act { () =>
       renderer.update(<(ImageButton())(^.wrapped := props)())
     }
-  }
-}
-
-object ImageButtonSpec {
-
-  @JSExportAll
-  trait ButtonMock {
-
-    def focus(): Unit
   }
 }

@@ -2,11 +2,10 @@ package scommons.client.ui.page
 
 import io.github.shogowada.statictags.Element
 import scommons.client.ui.page.PaginationPanel._
-import scommons.client.ui.page.PaginationPanelSpec._
 import scommons.react.test._
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSExportAll
+import scala.scalajs.js.Dynamic.literal
 
 class PaginationPanelSpec extends TestSpec with TestRendererUtils {
 
@@ -21,19 +20,20 @@ class PaginationPanelSpec extends TestSpec with TestRendererUtils {
     pages.size shouldBe (props.totalPages + 2)
     pages(props.selectedPage).props.className shouldBe "active"
     val nextSelectPage = props.selectedPage + 1
-    val event = mock[MouseSyntheticEventMock]
+    val preventDefaultMock = mockFunction[Unit]
+    val event = literal("preventDefault" -> preventDefaultMock)
 
     //then
     onPage.expects(nextSelectPage).once()
-    (event.preventDefault _).expects().twice()
+    preventDefaultMock.expects().twice()
 
     //when & then
-    buttons(nextSelectPage).props.onClick(event.asInstanceOf[js.Any])
+    buttons(nextSelectPage).props.onClick(event)
     pages(props.selectedPage).props.className shouldBe js.undefined
     pages(nextSelectPage).props.className shouldBe "active"
 
     //when & then
-    buttons(nextSelectPage).props.onClick(event.asInstanceOf[js.Any])
+    buttons(nextSelectPage).props.onClick(event)
     pages(props.selectedPage).props.className shouldBe js.undefined
     pages(nextSelectPage).props.className shouldBe "active"
   }
@@ -70,11 +70,12 @@ class PaginationPanelSpec extends TestSpec with TestRendererUtils {
     val prevProps = PaginationPanelProps(5)
     val renderer = createTestRenderer(<(PaginationPanel())(^.wrapped := prevProps)())
     val nextSelectPage = 2
-    val event = mock[MouseSyntheticEventMock]
+    val preventDefaultMock = mockFunction[Unit]
+    val event = literal("preventDefault" -> preventDefaultMock)
     (findComponents(renderer.root, <.a.name), findComponents(renderer.root, <.li.name)) match {
       case (buttons, pages) =>
-        (event.preventDefault _).expects()
-        buttons(nextSelectPage).props.onClick(event.asInstanceOf[js.Any])
+        preventDefaultMock.expects()
+        buttons(nextSelectPage).props.onClick(event)
         buttons.length shouldBe (prevProps.totalPages + 2)
         pages.length shouldBe (prevProps.totalPages + 2)
         pages(nextSelectPage).props.className shouldBe "active"
@@ -240,14 +241,5 @@ class PaginationPanelSpec extends TestSpec with TestRendererUtils {
         pageBtn(">>", maxPage, disableable = true)
       ))
     })
-  }
-}
-
-object PaginationPanelSpec {
-
-  @JSExportAll
-  trait MouseSyntheticEventMock {
-
-    def preventDefault(): Unit
   }
 }

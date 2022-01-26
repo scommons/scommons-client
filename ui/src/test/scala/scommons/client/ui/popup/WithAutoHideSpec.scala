@@ -2,12 +2,10 @@ package scommons.client.ui.popup
 
 import org.scalajs.dom.raw.HTMLElement
 import org.scalajs.dom.{Event, MouseEvent}
-import scommons.client.ui.popup.WithAutoHideSpec._
 import scommons.react.test._
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.literal
-import scala.scalajs.js.annotation.JSExportAll
 
 class WithAutoHideSpec extends TestSpec with TestRendererUtils {
 
@@ -17,7 +15,8 @@ class WithAutoHideSpec extends TestSpec with TestRendererUtils {
   it should "not call onHide if triggered inside content element when on(mouseup/keydown)" in {
     //given
     val onHide = mockFunction[Unit]
-    val divMock = mock[HTMLElementMock]
+    val containsMock = mockFunction[HTMLElement, Boolean]
+    val divMock = literal("contains" -> containsMock)
     val addDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
     val removeDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
     WithAutoHide.addDomListener = addDomListener
@@ -34,12 +33,12 @@ class WithAutoHideSpec extends TestSpec with TestRendererUtils {
 
     //when
     testRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"), { el =>
-      if (el.`type` == "div".asInstanceOf[js.Any]) divMock.asInstanceOf[js.Any]
+      if (el.`type` == "div".asInstanceOf[js.Any]) divMock
       else null
     })
 
     //then
-    (divMock.contains _).expects(target).returning(true)
+    containsMock.expects(target).returning(true)
     onHide.expects().never()
 
     //when
@@ -49,7 +48,8 @@ class WithAutoHideSpec extends TestSpec with TestRendererUtils {
   it should "call onHide if triggered outside content element when on(mouseup/keydown)" in {
     //given
     val onHide = mockFunction[Unit]
-    val divMock = mock[HTMLElementMock]
+    val containsMock = mockFunction[HTMLElement, Boolean]
+    val divMock = literal("contains" -> containsMock)
     val addDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
     val removeDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
     WithAutoHide.addDomListener = addDomListener
@@ -66,12 +66,12 @@ class WithAutoHideSpec extends TestSpec with TestRendererUtils {
 
     //when
     testRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"), { el =>
-      if (el.`type` == "div".asInstanceOf[js.Any]) divMock.asInstanceOf[js.Any]
+      if (el.`type` == "div".asInstanceOf[js.Any]) divMock
       else null
     })
 
     //then
-    (divMock.contains _).expects(target).returning(false)
+    containsMock.expects(target).returning(false)
     onHide.expects()
 
     //when
@@ -81,7 +81,7 @@ class WithAutoHideSpec extends TestSpec with TestRendererUtils {
   it should "remove listeners when un-mount" in {
     //given
     val onHide = mockFunction[Unit]
-    val divMock = mock[HTMLElementMock]
+    val divMock = literal()
     val addDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
     val removeDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
     WithAutoHide.addDomListener = addDomListener
@@ -95,7 +95,7 @@ class WithAutoHideSpec extends TestSpec with TestRendererUtils {
       listener shouldBe onEvent
     }
     val renderer = createTestRenderer(<(WithAutoHide())(^.wrapped := WithAutoHideProps(onHide))("test content"), { el =>
-      if (el.`type` == "div".asInstanceOf[js.Any]) divMock.asInstanceOf[js.Any]
+      if (el.`type` == "div".asInstanceOf[js.Any]) divMock
       else null
     })
 
@@ -127,7 +127,7 @@ class WithAutoHideSpec extends TestSpec with TestRendererUtils {
   it should "render component" in {
     //given
     val content = "test content"
-    val divMock = mock[HTMLElementMock]
+    val divMock = literal()
     val addDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
     val removeDomListener = mockFunction[String, js.Function1[Event, Unit], Unit]
     WithAutoHide.addDomListener = addDomListener
@@ -139,7 +139,7 @@ class WithAutoHideSpec extends TestSpec with TestRendererUtils {
     val result = testRender(<(WithAutoHide())(^.wrapped := WithAutoHideProps(() => ()))(
       <.p()(content)
     ), { el =>
-      if (el.`type` == "div".asInstanceOf[js.Any]) divMock.asInstanceOf[js.Any]
+      if (el.`type` == "div".asInstanceOf[js.Any]) divMock
       else null
     })
 
@@ -149,14 +149,5 @@ class WithAutoHideSpec extends TestSpec with TestRendererUtils {
         <.p()(content)
       )
     )
-  }
-}
-
-object WithAutoHideSpec {
-
-  @JSExportAll
-  trait HTMLElementMock {
-
-    def contains(child: HTMLElement): Boolean
   }
 }

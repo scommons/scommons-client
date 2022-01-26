@@ -1,11 +1,10 @@
 package scommons.client.ui.tree
 
-import scommons.client.ui.tree.TreeNodeSpec.MouseSyntheticEventMock
 import scommons.react._
 import scommons.react.test._
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSExportAll
+import scala.scalajs.js.Dynamic.literal
 
 class TreeNodeSpec extends TestSpec with TestRendererUtils {
 
@@ -37,10 +36,11 @@ class TreeNodeSpec extends TestSpec with TestRendererUtils {
     )) {
       case List(div) => div
     }
-    val event = mock[MouseSyntheticEventMock]
+    val stopPropagationMock = mockFunction[Unit]
+    val event = literal("stopPropagation" -> stopPropagationMock)
 
     //then
-    (event.stopPropagation _).expects()
+    stopPropagationMock.expects()
     onExpand.expects()
 
     //when
@@ -189,14 +189,5 @@ class TreeNodeSpec extends TestSpec with TestRendererUtils {
     <(TreeNode())(^.wrapped := props)(
       children
     )
-  }
-}
-
-object TreeNodeSpec {
-
-  @JSExportAll
-  trait MouseSyntheticEventMock {
-
-    def stopPropagation(): Unit
   }
 }

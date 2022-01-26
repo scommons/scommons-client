@@ -1,12 +1,10 @@
 package scommons.client.ui
 
 import org.scalajs.dom.ext.KeyCode
-import scommons.client.ui.PasswordFieldSpec.InputMock
 import scommons.react.test._
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.literal
-import scala.scalajs.js.annotation.JSExportAll
 
 class PasswordFieldSpec extends TestSpec with TestRendererUtils {
 
@@ -79,15 +77,15 @@ class PasswordFieldSpec extends TestSpec with TestRendererUtils {
   it should "focus input element if requestFocus = true" in {
     //given
     val props = PasswordFieldProps("new password", onChange = _ => (), requestFocus = true)
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning("")
+    val focusMock = mockFunction[Unit]
+    val inputMock = literal("value" -> "", "focus" -> focusMock)
 
     //then
-    (inputMock.focus _).expects()
+    focusMock.expects()
 
     //when
     testRender(<(PasswordField())(^.wrapped := props)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
   }
@@ -95,17 +93,17 @@ class PasswordFieldSpec extends TestSpec with TestRendererUtils {
   it should "focus input element if requestFocus changed from false to true" in {
     //given
     val prevProps = PasswordFieldProps("test password", onChange = _ => ())
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning("")
+    val focusMock = mockFunction[Unit]
+    val inputMock = literal("value" -> "", "focus" -> focusMock)
     val renderer = createTestRenderer(<(PasswordField())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
     val props = PasswordFieldProps("new password", onChange = _ => (), requestFocus = true)
     props should not be prevProps
 
     //then
-    (inputMock.focus _).expects()
+    focusMock.expects()
 
     //when
     TestRenderer.act { () =>
@@ -116,17 +114,17 @@ class PasswordFieldSpec extends TestSpec with TestRendererUtils {
   it should "not focus input element if requestFocus not changed" in {
     //given
     val prevProps = PasswordFieldProps("test password", onChange = _ => ())
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning("")
+    val focusMock = mockFunction[Unit]
+    val inputMock = literal("value" -> "", "focus" -> focusMock)
     val renderer = createTestRenderer(<(PasswordField())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
     val props = PasswordFieldProps("new password", onChange = _ => ())
     props should not be prevProps
 
     //then
-    (inputMock.focus _).expects().never()
+    focusMock.expects().never()
 
     //when
     TestRenderer.act { () =>
@@ -137,15 +135,15 @@ class PasswordFieldSpec extends TestSpec with TestRendererUtils {
   it should "select password if requestSelect = true" in {
     //given
     val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning(props.password)
+    val setSelectionRangeMock = mockFunction[Int, Int, Unit]
+    val inputMock = literal("value" -> props.password, "setSelectionRange" -> setSelectionRangeMock)
 
     //then
-    (inputMock.setSelectionRange _).expects(0, props.password.length)
+    setSelectionRangeMock.expects(0, props.password.length)
 
     //when
     testRender(<(PasswordField())(^.wrapped := props)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
   }
@@ -153,18 +151,18 @@ class PasswordFieldSpec extends TestSpec with TestRendererUtils {
   it should "select password if requestSelect changed from false to true" in {
     //given
     val prevProps = PasswordFieldProps("test password", onChange = _ => ())
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning(prevProps.password)
+    val setSelectionRangeMock = mockFunction[Int, Int, Unit]
+    val inputMock = literal("value" -> prevProps.password, "setSelectionRange" -> setSelectionRangeMock)
     val renderer = createTestRenderer(<(PasswordField())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
     val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
     props should not be prevProps
 
     //then
-    (inputMock.value _).expects().returning(props.password)
-    (inputMock.setSelectionRange _).expects(0, props.password.length)
+    inputMock.updateDynamic("value")(props.password)
+    setSelectionRangeMock.expects(0, props.password.length)
 
     //when
     TestRenderer.act { () =>
@@ -175,34 +173,22 @@ class PasswordFieldSpec extends TestSpec with TestRendererUtils {
   it should "not select password if requestSelect not changed" in {
     //given
     val prevProps = PasswordFieldProps("test password", onChange = _ => (), requestSelect = true)
-    val inputMock = mock[InputMock]
-    (inputMock.value _).expects().returning(prevProps.password)
-    (inputMock.setSelectionRange _).expects(0, prevProps.password.length)
+    val setSelectionRangeMock = mockFunction[Int, Int, Unit]
+    val inputMock = literal("value" -> prevProps.password, "setSelectionRange" -> setSelectionRangeMock)
+    setSelectionRangeMock.expects(0, prevProps.password.length)
     val renderer = createTestRenderer(<(PasswordField())(^.wrapped := prevProps)(), { el =>
-      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock.asInstanceOf[js.Any]
+      if (el.`type` == "input".asInstanceOf[js.Any]) inputMock
       else null
     })
     val props = PasswordFieldProps("new password", onChange = _ => (), requestSelect = true)
     props should not be prevProps
 
     //then
-    (inputMock.value _).expects().never()
-    (inputMock.setSelectionRange _).expects(*, *).never()
+    setSelectionRangeMock.expects(*, *).never()
 
     //when
     TestRenderer.act { () =>
       renderer.update(<(PasswordField())(^.wrapped := props)())
     }
-  }
-}
-
-object PasswordFieldSpec {
-
-  @JSExportAll
-  trait InputMock {
-
-    def value: String
-    def setSelectionRange(start: Int, end: Int): Unit
-    def focus(): Unit
   }
 }

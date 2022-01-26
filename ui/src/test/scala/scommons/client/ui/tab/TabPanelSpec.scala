@@ -2,12 +2,11 @@ package scommons.client.ui.tab
 
 import org.scalatest.Assertion
 import scommons.client.ui.Buttons
-import scommons.client.ui.tab.TabPanelSpec.MouseSyntheticEventMock
 import scommons.react._
 import scommons.react.test._
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSExportAll
+import scala.scalajs.js.Dynamic.literal
 
 class TabPanelSpec extends TestSpec with TestRendererUtils {
 
@@ -32,8 +31,9 @@ class TabPanelSpec extends TestSpec with TestRendererUtils {
     panels.length shouldBe items.size
     panels(props.selectedIndex).props.className shouldBe "tab-pane active"
     val nextSelectIndex = 1
-    val event = mock[MouseSyntheticEventMock]
-    (event.preventDefault _).expects().twice()
+    val preventDefaultMock = mockFunction[Unit]
+    val event = literal("preventDefault" -> preventDefaultMock)
+    preventDefaultMock.expects().twice()
 
     //then
     onSelect.expects(items(nextSelectIndex), nextSelectIndex).once()
@@ -171,14 +171,5 @@ class TabPanelSpec extends TestSpec with TestRendererUtils {
       if (props.direction == TabDirection.Bottom) assertTabsAndContent(content, tabs)
       else assertTabsAndContent(tabs, content)
     })
-  }
-}
-
-object TabPanelSpec {
-
-  @JSExportAll
-  trait MouseSyntheticEventMock {
-
-    def preventDefault(): Unit
   }
 }
