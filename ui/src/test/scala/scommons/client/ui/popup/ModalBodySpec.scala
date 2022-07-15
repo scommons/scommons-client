@@ -14,7 +14,7 @@ class ModalBodySpec extends TestSpec with TestRendererUtils {
     val result = testRender(component)
 
     //then
-    assertNativeComponent(result, <.div(^.className := "modal-body")(), { case List(child) =>
+    assertNativeComponent(result, <.div(^.className := "modal-body")(), inside(_) { case List(child) =>
       assertNativeComponent(child, <.p()("some children"))
     })
   }

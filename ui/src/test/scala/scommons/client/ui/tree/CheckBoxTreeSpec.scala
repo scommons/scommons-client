@@ -207,16 +207,16 @@ class CheckBoxTreeSpec extends TestSpec with TestRendererUtils {
     val result = testRender(component)
 
     //then
-    assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
+    assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), inside(_) { case List(topItemE, topNodeE) =>
       assertTestComponent(topItemE, treeNodeComp) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
       }
       assertTestComponent(topNodeE, treeNodeComp)({ topNodeProps =>
         assertTreeNode(topNodeProps, props, topNode)
-      }, { case List(childNodeE) =>
+      }, inside(_) { case List(childNodeE) =>
         assertTestComponent(childNodeE, treeNodeComp)({ childNodeProps =>
           assertTreeNode(childNodeProps, props, childNode, level = 1)
-        }, { case List(childItemE) =>
+        }, inside(_) { case List(childItemE) =>
           assertTestComponent(childItemE, treeNodeComp) { childItemProps =>
             assertTreeNode(childItemProps, props, childItem, level = 2)
           }
@@ -238,7 +238,7 @@ class CheckBoxTreeSpec extends TestSpec with TestRendererUtils {
     val result = testRender(component)
 
     //then
-    assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), { case List(topItemE, topNodeE) =>
+    assertNativeComponent(result, <.div(^.className := TreeCss.tree)(), inside(_) { case List(topItemE, topNodeE) =>
       assertTestComponent(topItemE, treeNodeComp) { topItemProps =>
         assertTreeNode(topItemProps, props, topItem)
       }

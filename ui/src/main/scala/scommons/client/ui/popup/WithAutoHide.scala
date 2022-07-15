@@ -1,8 +1,7 @@
 package scommons.client.ui.popup
 
 import org.scalajs.dom
-import org.scalajs.dom.Event
-import org.scalajs.dom.raw.HTMLElement
+import org.scalajs.dom.{Event, HTMLElement}
 import scommons.react._
 
 import scala.scalajs.js

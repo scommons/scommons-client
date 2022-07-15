@@ -1,7 +1,7 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.events.MouseSyntheticEvent
-import org.scalajs.dom.raw.HTMLButtonElement
+import org.scalajs.dom.HTMLButtonElement
 import scommons.react._
 import scommons.react.dom._
 import scommons.react.hooks._

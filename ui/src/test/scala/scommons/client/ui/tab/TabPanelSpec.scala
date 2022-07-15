@@ -167,7 +167,7 @@ class TabPanelSpec extends TestSpec with TestRendererUtils {
       assertNativeComponent(content, <.div(^.className := "tab-content")(expectedItems))
     }
 
-    assertNativeComponent(result, <.div(^.className := props.direction.style)(), { case List(tabs, content) =>
+    assertNativeComponent(result, <.div(^.className := props.direction.style)(), inside(_) { case List(tabs, content) =>
       if (props.direction == TabDirection.Bottom) assertTabsAndContent(content, tabs)
       else assertTabsAndContent(tabs, content)
     })

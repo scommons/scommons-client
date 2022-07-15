@@ -1,8 +1,8 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, KeyboardSyntheticEvent}
+import org.scalajs.dom.HTMLInputElement
 import org.scalajs.dom.ext.KeyCode
-import org.scalajs.dom.raw.HTMLInputElement
 import scommons.react._
 import scommons.react.dom._
 import scommons.react.hooks._

@@ -1,7 +1,7 @@
 package scommons.client.ui
 
 import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
-import org.scalajs.dom.raw.HTMLInputElement
+import org.scalajs.dom.HTMLInputElement
 import scommons.react._
 import scommons.react.dom._
 import scommons.react.hooks._

@@ -1,7 +1,6 @@
 package scommons.client.ui.popup
 
-import org.scalajs.dom.raw.HTMLElement
-import org.scalajs.dom.{Event, MouseEvent}
+import org.scalajs.dom.{Event, HTMLElement, MouseEvent}
 import scommons.react.test._
 
 import scala.scalajs.js

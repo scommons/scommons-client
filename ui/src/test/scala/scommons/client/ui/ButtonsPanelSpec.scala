@@ -92,7 +92,7 @@ class ButtonsPanelSpec extends TestSpec with TestRendererUtils {
                                  b1: SimpleButtonData,
                                  b2: ImageButtonData): Unit = {
 
-    assertNativeComponent(result, <.div(^.className := className)(), { case List(simpleBtn, imageBtn) =>
+    assertNativeComponent(result, <.div(^.className := className)(), inside(_) { case List(simpleBtn, imageBtn) =>
       assertTestComponent(simpleBtn, SimpleButton) {
         case SimpleButtonProps(data, _, disabled, requestFocus) =>
           data shouldBe b1
