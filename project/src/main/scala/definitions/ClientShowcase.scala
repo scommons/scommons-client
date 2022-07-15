@@ -16,7 +16,7 @@ object ClientShowcase extends ScalaJsModule {
 
   override def definition: Project = super.definition
     .settings(
-      skip in publish := true,
+      publish / skip := true,
       publish := ((): Unit),
       publishLocal := ((): Unit),
       publishM2 := ((): Unit),
@@ -28,9 +28,9 @@ object ClientShowcase extends ScalaJsModule {
       webpackBundlingMode := BundlingMode.LibraryOnly(),
 
       //dev
-      webpackConfigFile in fastOptJS := Some(baseDirectory.value / "client.webpack.config.js"),
+      fastOptJS / webpackConfigFile := Some(baseDirectory.value / "client.webpack.config.js"),
       //production
-      webpackConfigFile in fullOptJS := Some(baseDirectory.value / "client.webpack.config.js")
+      fullOptJS / webpackConfigFile := Some(baseDirectory.value / "client.webpack.config.js")
     )
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Seq(

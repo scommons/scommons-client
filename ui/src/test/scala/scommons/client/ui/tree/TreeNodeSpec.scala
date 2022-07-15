@@ -107,7 +107,7 @@ class TreeNodeSpec extends TestSpec with TestRendererUtils {
     val result = testRender(component)
 
     //then
-    assertNativeComponent(result, <.div()(), { case List(item1, item2) =>
+    assertNativeComponent(result, <.div()(), inside(_) { case List(item1, item2) =>
       assertNativeComponent(item1,
         <.div(^.className := props.itemClass, ^.style := Map("paddingLeft" -> "2px"))(
           <.div(^.className := props.nodeClass)(

@@ -26,10 +26,10 @@ class AppBrowsePanelSpec extends TestSpec with TestRendererUtils {
     val result = testRender(component)
 
     //then
-    assertNativeComponent(result, <.div(^.className := "row-fluid")(), { case List(span4, span8) =>
-      assertNativeComponent(span4, <.div(^.className := "span4")(), { case List(sidebar) =>
-        assertNativeComponent(sidebar, <.div(^.className := "well sidebar-nav")(), { case List(sidebarBp, tree) =>
-          assertNativeComponent(sidebarBp, <.div(^.className := AppBrowsePanelCss.sidebarBp)(), { case List(bp) =>
+    assertNativeComponent(result, <.div(^.className := "row-fluid")(), inside(_) { case List(span4, span8) =>
+      assertNativeComponent(span4, <.div(^.className := "span4")(), inside(_) { case List(sidebar) =>
+        assertNativeComponent(sidebar, <.div(^.className := "well sidebar-nav")(), inside(_) { case List(sidebarBp, tree) =>
+          assertNativeComponent(sidebarBp, <.div(^.className := AppBrowsePanelCss.sidebarBp)(), inside(_) { case List(bp) =>
             assertTestComponent(bp, ButtonsPanel) { bpProps =>
               bpProps shouldBe buttonsPanelProps
             }
@@ -39,7 +39,7 @@ class AppBrowsePanelSpec extends TestSpec with TestRendererUtils {
           }
         })
       })
-      assertNativeComponent(span8, <.div(^.className := "span8")(), { case List(children) =>
+      assertNativeComponent(span8, <.div(^.className := "span8")(), inside(_) { case List(children) =>
         assertNativeComponent(children, <.div()("Some child element"))
       })
     })

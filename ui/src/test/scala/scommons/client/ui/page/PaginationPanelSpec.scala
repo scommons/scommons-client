@@ -226,7 +226,7 @@ class PaginationPanelSpec extends TestSpec with TestRendererUtils {
       Some(pageBtn(s"$page", page, disableable = false))
     }
 
-    assertNativeComponent(result, <.div(^.className := props.alignment.style)(), { case List(ul) =>
+    assertNativeComponent(result, <.div(^.className := props.alignment.style)(), inside(_) { case List(ul) =>
       assertNativeComponent(ul, <.ul()(
         pageBtn("<<", minPage, disableable = true),
         if (minPage < selectedRange.start) {

@@ -114,8 +114,8 @@ class TablePanelSpec extends TestSpec with TestRendererUtils {
     assertNativeComponent(result, <.table(
       ^.className := "table table-condensed",
       ^("cellSpacing") := "0"
-    )(), { case List(thead, tbody) =>
-      assertNativeComponent(thead, <.thead(^("aria-hidden") := "false")(), { case List(tr) =>
+    )(), inside(_) { case List(thead, tbody) =>
+      assertNativeComponent(thead, <.thead(^("aria-hidden") := "false")(), inside(_) { case List(tr) =>
         assertNativeComponent(tr, <.tr()(), { headerRow =>
           headerRow.size shouldBe expectedHeader.size
           headerRow.zip(expectedHeader).foreach { case (headerCell, expectedElem) =>

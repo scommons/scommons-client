@@ -213,15 +213,15 @@ class PickButtonsSpec extends TestSpec with TestRendererUtils {
     val btnHoriz = Map("height" -> "30px", "writingMode" -> "tb-rl")
     val btnGroupHoriz = Map("margin" -> "10px 0")
     
-    assertNativeComponent(result, <.div(props.className.map(cn => ^.className := cn))(), { case List(vert, horiz) =>
-      assertNativeComponent(vert, <.div(^.className := "btn-group btn-group-vertical hidden-phone")(), {
+    assertNativeComponent(result, <.div(props.className.map(cn => ^.className := cn))(), inside(_) { case List(vert, horiz) =>
+      assertNativeComponent(vert, <.div(^.className := "btn-group btn-group-vertical hidden-phone")(), inside(_) {
         case List(add, remove, addAll, removeAll) =>
           assertNativeComponent(add, btn(btnVert, "Add", ">", props.addEnabled))
           assertNativeComponent(remove, btn(btnVert, "Remove", "<", props.removeEnabled))
           assertNativeComponent(addAll, btn(btnVert, "Add All", ">>", props.addAllEnabled))
           assertNativeComponent(removeAll, btn(btnVert, "Remove All", "<<", props.removeAllEnabled))
       })
-      assertNativeComponent(horiz, <.div(^.className := "btn-group visible-phone", ^.style := btnGroupHoriz)(), {
+      assertNativeComponent(horiz, <.div(^.className := "btn-group visible-phone", ^.style := btnGroupHoriz)(), inside(_) {
         case List(add, remove, addAll, removeAll) =>
           assertNativeComponent(add, btn(btnHoriz, "Add", ">", props.addEnabled))
           assertNativeComponent(remove, btn(btnHoriz, "Remove", "<", props.removeEnabled))

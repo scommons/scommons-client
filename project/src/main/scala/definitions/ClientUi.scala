@@ -23,16 +23,12 @@ object ClientUi extends ScalaJsModule {
         ";scommons.client.ui.select.raw" +
         ";scommons.client.ui.HTML.InnerHTML",
 
-      npmDependencies in Compile ++= Seq(
+      Compile / npmDependencies ++= Seq(
         "react-modal" -> "3.14.3",
         "react-select" -> "3.2.0"
       ),
 
-      npmDevDependencies in Compile ++= Seq(
-        "babel-loader" -> "8.0.5",
-        "@babel/core" -> "7.4.0",
-        "@babel/preset-env" -> "7.4.2",
-        
+      Compile / npmDevDependencies ++= Seq(
         "css-loader" -> "2.1.1",
         "mini-css-extract-plugin" -> "0.12.0",
         "resolve-url-loader" -> "3.1.2",
