@@ -29,12 +29,10 @@ object ClientUi extends ScalaJsModule {
       ),
 
       Compile / npmDevDependencies ++= Seq(
-        "css-loader" -> "2.1.1",
-        "mini-css-extract-plugin" -> "0.12.0",
-        "resolve-url-loader" -> "3.1.2",
-        "url-loader" -> "4.1.1",
-        "webpack-node-externals" -> "2.5.2",
-        "webpack-merge" -> "4.2.1"
+        "css-loader" -> "6.7.2",
+        "mini-css-extract-plugin" -> "2.6.1",
+        "webpack-node-externals" -> "3.0.0",
+        "webpack-merge" -> "5.8.0"
       )
     )
 

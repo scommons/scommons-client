@@ -8,16 +8,11 @@ module.exports = {
   module: {
     rules: [{
       test: /\.(ico|png|gif|jpe?g|svg)$/i,
-      use: {
-        loader: 'url-loader',
-        options: {
-          esModule: false
-          //limit: 8192
-        }
-      },
+      // More information here https://webpack.js.org/guides/asset-modules/
+      type: "asset",
       exclude: /node_modules/
     }, {
-      test: /\.css$/,
+      test: /\.css$/i,
       use: [{
         loader: MiniCssExtractPlugin.loader,
         options: {
@@ -27,14 +22,11 @@ module.exports = {
         loader: 'css-loader',
         options: {
           modules: true,
-          localIdentName: '[local]__[hash:base64:5]',
-          sourceMap: true
+          sourceMap: true,
+          modules: {
+            localIdentName: '[local]__[hash:base64:5]'
+          }
         }
-      }, {
-        loader: 'resolve-url-loader',
-        options: {
-          sourceMap: true
-        },
       }],
       exclude: /node_modules/
     }]
