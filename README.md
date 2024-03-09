@@ -12,7 +12,7 @@ Common Scala.js, React.js web-client utilities and components.
 
 To see the showcase/demo UI with all the components live use the following link:
 
-[https://scommons.org/scommons-client/showcase/](https://scommons.org/scommons-client/showcase/)
+[https://scommons.github.io/scommons-client/showcase/](https://scommons.github.io/scommons-client/showcase/)
 
 ### How to add it to your project
 
@@ -64,4 +64,4 @@ Please, see the README.md in [showcase](https://github.com/scommons/scommons-cli
 
 ## Documentation
 
-You can find more documentation [here](https://scommons.org/scommons-client)
+You can find more documentation [here](https://scommons.github.io/scommons-client)
